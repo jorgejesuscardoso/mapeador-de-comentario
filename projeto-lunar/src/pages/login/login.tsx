@@ -1,25 +1,27 @@
-import { useNavigate } from "react-router-dom";
+
 import { Container, ContainerFormLogin, ContainerLogin, FormLogin, WelcomeBox } from "./style";
 import { useState } from "react";
+import AnimatedLogin from "../../component/animate/login/modal_login";
 
 const Login = () => {
-    const navigate = useNavigate();
     const [user, setUser] = useState('');
     const [p, setP] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
-    const fakelogin = (e) => {
+    const fakelogin = (e: React.FormEvent<HTMLFormElement> ) => {
+        e.preventDefault();
         const fakeUser = 'AnnaFr4nca';
         const fakePassword = 'vizinha';
 
         if (user === fakeUser && p === fakePassword) {
-            
-            navigate('/home');
+            setShowModal(true);
         }  else {
             alert('Usuário ou senha incorretos!');
         }
     }
     return (
         <Container>
+            {showModal && <AnimatedLogin />}
             <WelcomeBox>
                 <div>
                 <h1>Seja bem-vindo ao projeto Lunar!</h1>
@@ -30,7 +32,7 @@ const Login = () => {
             <ContainerLogin>
                 <ContainerFormLogin>
                     <h1>Login</h1>
-                    <FormLogin>
+                    <FormLogin onSubmit={(e) => fakelogin(e)}>
                         <input 
                             type="text"
                             placeholder="Usuário"
@@ -44,9 +46,7 @@ const Login = () => {
                             onChange={(e) => setP(e.target.value)}
                         />
                         <button
-                            onClick={(e) => fakelogin(
-                                e.preventDefault()
-                            )}
+                            type="submit"
                         >
                             Entrar
                         </button>
