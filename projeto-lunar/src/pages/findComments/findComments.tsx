@@ -1,48 +1,64 @@
-import puppeteer from "puppeteer";
 import { Container } from "./style";
+import { Robozinho } from "../../API/APIRobozinho";
+import { useState } from "react";
 
-const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/google-chrome', // ou o caminho correto para o Chrome na sua máquina
-});
-    const page = await browser.newPage();
+type Commentss = {
+    usuario: string;
+    comentario: string;
+    dataFormatada: string;
+};
 
-    // Navigate the page to a URL.
-    await page.goto('https://developer.chrome.com/');
+const FindComments = () => {
+    const [comments, setComments] = useState([]);  // Estado dos comentários
+    const [loading, setLoading] = useState(false); // Estado de carregamento
+    const [error, setError] = useState("");        // Estado para erros
 
-    // Set screen size.
-    await page.setViewport({width: 1080, height: 1024});
+    const getComments = async () => {
+        if (loading) return; // Impede chamadas simultâneas
 
-    // Type into search box.
-    await page.locator('.devsite-search-field').fill('automate beyond recorder');
+        setLoading(true);
+        setError(""); // Reseta erro antes de uma nova tentativa
 
-    // Wait and click on first result.
-    await page.locator('.devsite-result-item-link').click();
+        try {
+            const data = await Robozinho();
+            if (!data || data.length === 0) {
+                throw new Error("Nenhum comentário encontrado.");
+            }
+            setComments(data);
+        } catch (error) {
+            setError("Erro ao buscar comentários.");
+            return error;
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    // Locate the full title with a unique string.
-    const textSelector = await page
-    .locator('text/Customize and automate')
-    .waitHandle();
-    const fullTitle = await textSelector?.evaluate(el => el.textContent);
-
-    // Print the full title.
-    console.log('The title of this blog post is "%s".', fullTitle);
-
-    await browser.close(); 
-
-const FindComments = async () => {
-    // Launch the browser and open a new blank page
-       
-    
     return (
         <Container>
             <button
                 className="btn btn-primary"
+                onClick={getComments}
+                disabled={loading} // Desabilita o botão enquanto carrega
             >
-                Buscar Comentários
+                {loading ? "Carregando..." : "Buscar Comentários"}
             </button>
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            <ul>
+                {comments.length > 0 ? (
+                    comments.map((comment: Commentss) => (
+                        <li key={comment.dataFormatada}>
+                            <p><strong>{comment.usuario}:</strong></p>
+                            <p>{comment.comentario}</p>
+                        </li>
+                    ))
+                ) : !loading && !error ? (
+                    <p>Nenhum comentário disponível.</p>
+                ) : null}
+            </ul>
         </Container>
     );
-
 };
 
 export default FindComments;
