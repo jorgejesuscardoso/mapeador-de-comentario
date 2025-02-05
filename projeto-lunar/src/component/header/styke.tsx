@@ -1,9 +1,11 @@
 import { styled } from 'styled-components';
 
 export const HeaderContainer = styled.header`
+    background-image: url('oficial-img.jpg');
+    background-size: cover;
     display: flex;
     position: absolute;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     gap: 1rem;
     width: 100%;
@@ -15,7 +17,7 @@ export const HeaderContainer = styled.header`
 
     nav {
     display: flex;
-    justify-content: center;
+    justify-content: end;
     align-items: center;
     width: 100%;
     height: 15vh;
@@ -24,7 +26,7 @@ export const HeaderContainer = styled.header`
     ul {
         display: flex;
         justify-content: space-around;
-        width: 100%;
+        width: 65%;
         list-style: none;
         padding: 0;
         gap: 1rem;
@@ -42,6 +44,7 @@ export const HeaderContainer = styled.header`
                 align-items: center;
                 width: 100%;
                 height: 100%;
+                font-size: 0.9rem;
                 color: #fff;
                 text-decoration: none;
               }
@@ -64,12 +67,18 @@ export const HeaderContainer = styled.header`
         height: 5vh;
         color: #fff;
         border: 1px solid dodgerblue;
-        background-color: #000;
+        background-color: transparent;
         border-radius: 10px;
         cursor: pointer;
 
         a {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-content: center;
             color: #fff;
+            font-size: 0.7rem;
             text-decoration: none;
         }
 

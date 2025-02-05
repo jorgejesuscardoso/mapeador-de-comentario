@@ -15,7 +15,7 @@ const HeaderLunar = () => {
             </nav>
 
             <button>
-                <a href="/login">SAIR</a>
+                <a href="/">SAIR</a>
             </button>
 
         </HeaderContainer>
