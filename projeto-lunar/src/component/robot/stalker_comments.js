@@ -1,17 +1,17 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
+import puppeteer from 'puppeteer';
+import fs from 'fs';
 
-(async () => {
+export const Robozin = async (bookUrl, tries) => {
     const browser = await puppeteer.launch({ headless: false }); // Abre o navegador visível para debug
     const page = await browser.newPage();
 
     // URL do capítulo do Wattpad (mude para seu link)
-    const url = 'https://www.wattpad.com/1501648271-darkbonds-cap%C3%ADtulo-2-o-ataque-ao-culto';
+    const url = bookUrl;
     await page.goto(url, { waitUntil: 'networkidle2' });
     const botaoClasse = '.show-more-btn'
 
     let tentativas = 0;
-    while (tentativas < 1) { // Evita loop infinito
+    while (tentativas < tries) { // Evita loop infinito
         const botaoExiste = await page.$(botaoClasse); // Verifica se o botão ainda está na página
         if (!botaoExiste) break; // Sai do loop se o botão sumiu
 
@@ -89,8 +89,12 @@ const fs = require('fs');
 
     console.log(comentarios);
 
-    // Salva os dados em um arquivo JSON
+    // Salva os dados em um arquivo JSON na pasta ./data
+
     fs.writeFileSync('comentarios.json', JSON.stringify(comentarios, null, 2));
 
     await browser.close();
-})();
+    
+    return comentarios;
+};
+

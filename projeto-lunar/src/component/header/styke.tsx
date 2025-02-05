@@ -26,7 +26,7 @@ export const HeaderContainer = styled.header`
     ul {
         display: flex;
         justify-content: space-around;
-        width: 65%;
+        width: 67%;
         list-style: none;
         padding: 0;
         gap: 1rem;
@@ -45,6 +45,8 @@ export const HeaderContainer = styled.header`
                 width: 100%;
                 height: 100%;
                 font-size: 0.9rem;
+                font-weight: 900;
+                font-family: montserrat;
                 color: #fff;
                 text-decoration: none;
               }
