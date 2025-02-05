@@ -1,12 +1,13 @@
 import { Outlet } from "react-router-dom"
 import HeaderLunar from "../header/header"
+import { LayOutContainer } from "./style"
 
 const LayOut = () => {
   return (
-    <div>
+    <LayOutContainer>
       <Outlet />
       <HeaderLunar />
-    </div>
+    </LayOutContainer>
   )
 }
 

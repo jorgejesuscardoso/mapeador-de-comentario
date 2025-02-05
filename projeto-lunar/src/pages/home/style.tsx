@@ -6,8 +6,9 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  wydth: 100vw;
+  width: 100vw;
   background-color: #f0f0f0;
+  margin-top: 16vh;
 `;
 
 export const Card = styled.div`
