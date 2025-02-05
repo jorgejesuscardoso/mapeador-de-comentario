@@ -2,6 +2,7 @@
 import { Container, ContainerFormLogin, ContainerLogin, FormLogin, WelcomeBox } from "./style";
 import { useState } from "react";
 import AnimatedLogin from "../../component/animate/login/modal_login";
+import { SetTolocalStorage } from "../../utils/localstorage";
 
 const Login = () => {
     const [user, setUser] = useState('');
@@ -10,14 +11,38 @@ const Login = () => {
 
     const fakelogin = (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
-        const fakeUser = 'AnnaFr4nca';
-        const fakePassword = 'vizinha';
-
-        if (user === fakeUser && p === fakePassword) {
-            setShowModal(true);
-        }  else {
-            alert('Usuário ou senha incorretos!');
+        const fakeUsers = [
+            'Anna',
+            'Gley',
+            'Leh',
+            'Joao',
+            'Igor',
+            'Yu',
+            'Duda'
+        ];
+        const fakePasswords = [
+            '123',
+            '123',
+            '123',
+            '123',
+            '123',
+            '123',
+            '123'
+        ];
+        
+        const handleLogin = (user: string, p: string) => {
+            // Encontrar o índice do usuário
+            const userIndex = fakeUsers.indexOf(user);
+        
+            // Se encontrou o usuário e a senha no mesmo índice bate
+            if (userIndex !== -1 && fakePasswords[userIndex] === p) {
+                SetTolocalStorage('user', user);
+                setShowModal(true);
+            } else {
+                alert('Usuário ou senha incorretos!');
         }
+    }
+        handleLogin(user, p);
     }
     return (
         <Container>
