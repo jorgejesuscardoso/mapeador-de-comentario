@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { HeaderContainer } from "./styke";
 
 const HeaderLunar = () => {
@@ -6,11 +7,11 @@ const HeaderLunar = () => {
             <img src="oficial-img.jpg" alt="" />
             <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/bot">Robozinho Lunar</a></li>
-                    <li><a href="/member">Lista de membros</a></li>
-                    <li><a href="/subs">Subs</a></li>
-                    <li><a href="/shop">Lojinha Lunar</a></li>
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/bot">Robozinho Lunar</Link></li>
+                    <li><Link to="/member">Lista de membros</Link></li>
+                    <li><Link to="/subs">Subs</Link></li>
+                    <li><Link to="/shop">Lojinha Lunar</Link></li>
                 </ul>
             </nav>
 
