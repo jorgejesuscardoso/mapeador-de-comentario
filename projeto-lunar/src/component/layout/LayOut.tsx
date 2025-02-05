@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import HeaderLunar from "../header"
+import HeaderLunar from "../header/header"
 
 const LayOut = () => {
   return (
