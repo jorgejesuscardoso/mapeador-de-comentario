@@ -1,20 +1,19 @@
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';
 import fs from 'fs';
+import os from 'os';
 // Or import puppeteer from 'puppeteer-core';
 
 const Robozinho = async () => {
 async function Robot () {
-    const browser = await puppeteer.launch({
-        executablePath: '/usr/bin/google-chrome-stable',
-        headless: true,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--remote-debugging-port=9222'
-        ]
-    });
+    const isWindows = os.platform() === 'win32'; // Verifica se está rodando no Windows
+        const chromePath = isWindows
+            ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' // Caminho do Chrome no Windows
+            : '/usr/bin/google-chrome-stable'; // Caminho do Chrome no Linux/Render
+
+        const browser = await puppeteer.launch({
+            executablePath: chromePath,
+            headless: true
+        });
     
         const page = await browser.newPage();
     
@@ -35,23 +34,28 @@ async function Robot () {
         // Verificando se existe o botão de "Carregar mais comentários" e clicando nele
         let loadMoreButtonVisible = true;
     
-        while (loadMoreButtonVisible) {
-            try {
-                // Espera até o botão "Carregar mais comentários" aparecer
-                const button = await page.$('.show-more-btn'); // Seletor para o botão "Carregar mais"
-                if (button) {
-                    console.log('Carregando mais comentários...');
-                    await button.click();  // Clica no botão de "Carregar mais"
-                    await new Promise(resolve => setTimeout(resolve, 3000));  // Espera 3 segundos para carregar novos comentários
-                } else {
-                    console.log('Botão de "Carregar mais" não encontrado ou não é mais clicável.');
-                    loadMoreButtonVisible = false;  // Para o loop quando o botão não estiver mais disponível
-                }
-            } catch (err) {
-                console.log('Erro ao clicar no botão "Carregar mais":', err);
-                loadMoreButtonVisible = false;
+        let clickAttempts = 0; // Contador para evitar loop infinito
+
+        while (loadMoreButtonVisible && clickAttempts < 5) { // Limitar tentativas de clique
+        try {
+            // Espera até o botão "Carregar mais comentários" aparecer e ficar visível
+            await page.waitForSelector('.show-more-btn', { visible: true, timeout: 5000 }); // Espera até 5 segundos para o botão aparecer
+            const button = await page.$('.show-more-btn'); // Seletor para o botão "Carregar mais"
+            if (button) {
+                console.log('Carregando mais comentários...');
+                await button.click();  // Clica no botão de "Carregar mais"
+                await new Promise(resolve => setTimeout(resolve, 3000));  // Espera 3 segundos para carregar novos comentários
+                clickAttempts += 1; // Incrementa o contador de tentativas               
+            } else {
+            console.log('Botão de "Carregar mais" não encontrado ou não é mais clicável.');
+            loadMoreButtonVisible = false;  // Para o loop quando o botão não estiver mais disponível
+            break;
             }
+        } catch (err) {
+            console.log('Erro ao clicar no botão "Carregar mais":', err);
+            loadMoreButtonVisible = false;
         }
+        } // Fim do loop de clique
     
         // Coletar comentários após carregamento
         if (loadMoreButtonVisible === false) {
