@@ -5,15 +5,8 @@ import fs from 'fs';
 const Robozinho = async () => {
 async function Robot () {
     const browser = await puppeteer.launch({
-        headless: true, // Rodar sem abrir o navegador
+        headless: false, // Rodar sem abrir o navegador
         executablePath: puppeteer.executablePath(), // Usa o caminho correto do Puppeteer
-        args: [
-            '--no-sandbox', 
-            '--disable-setuid-sandbox', 
-            '--disable-gpu', 
-            '--disable-dev-shm-usage', 
-            '--mute-audio'
-        ] 
     });
     
         const page = await browser.newPage();
@@ -24,7 +17,7 @@ async function Robot () {
     
         // Rolando até o final da página
         let previousHeight;
-        for (let i = 0; i < 5; i++) {  // Ajuste a quantidade de scrolls conforme necessário
+        for (let i = 0; i < 100; i++) {  // Ajuste a quantidade de scrolls conforme necessário
             previousHeight = await page.evaluate('document.body.scrollHeight');
             await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
             await new Promise(r => setTimeout(r, 3000)); // Espera carregar novos comentários
@@ -55,6 +48,7 @@ async function Robot () {
     
         // Coletar comentários após carregamento
         if (loadMoreButtonVisible === false) {
+            console.log('Carregamento de comentários finalizado.');
             const comentariosNovos = await page.evaluate(() => {
                 let elements = document.querySelectorAll('.comment-card-container'); // Ajuste o seletor conforme necessário
                 let data = [] as any[];
@@ -65,7 +59,7 @@ async function Robot () {
         
                     function calcularHorario(tempoRelativo: any, horaAtual: any) {
                         let data = new Date(horaAtual); // Começa com a hora atual do sistema
-                    
+                        console.log('Ajustando os horários dos comentários...');
                         if (tempoRelativo.includes("Agora")) {
                             let segundos = parseInt(tempoRelativo.match(/\d+/)[0]) || 0;
                             data.setSeconds(data.getSeconds() - segundos);
@@ -106,7 +100,7 @@ async function Robot () {
         
     
         let comentarios = []; // Array para armazenar os comentários
-        console.log('Comentários novos coletados:', comentariosNovos);
+        console.log('Comentários novos coletados com sucesso:', comentariosNovos.length);
         comentarios.push(...comentariosNovos); // Adiciona os novos comentários ao array original
         
     
