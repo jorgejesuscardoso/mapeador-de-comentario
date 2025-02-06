@@ -1,24 +1,18 @@
 import puppeteer from 'puppeteer';
 import fs from 'fs';
-import os from 'os';
 // Or import puppeteer from 'puppeteer-core';
 
-const Robozinho = async () => {
+const Robozinho = async (wUrl: string, click: number) => {
 async function Robot () {
-    const isWindows = os.platform() === 'win32'; // Verifica se está rodando no Windows
-        // const chromePath = isWindows
-        //     ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' // Caminho do Chrome no Windows
-        //     : '/usr/bin/google-chrome-stable'; // Caminho do Chrome no Linux/Render
-
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        });
+    const browser = await puppeteer.launch({
+        headless: false, // Rodar sem abrir o navegador
+        executablePath: puppeteer.executablePath(), // Usa o caminho correto do Puppeteer
+    });
     
         const page = await browser.newPage();
     
         // URL do capítulo do Wattpad (mude para seu link)
-        const url = 'https://www.wattpad.com/1503437794-darkbonds-cap%C3%ADtulo-3-1-alvorada';
+        const url = wUrl;
         await page.goto(url, { waitUntil: 'networkidle2' });
     
         // Rolando até o final da página
@@ -33,29 +27,29 @@ async function Robot () {
     
         // Verificando se existe o botão de "Carregar mais comentários" e clicando nele
         let loadMoreButtonVisible = true;
-    
-        let clickAttempts = 0; // Contador para evitar loop infinito
-
-        while (loadMoreButtonVisible && clickAttempts < 5) { // Limitar tentativas de clique
-        try {
-            // Espera até o botão "Carregar mais comentários" aparecer e ficar visível
-            await page.waitForSelector('.show-more-btn', { visible: true, timeout: 5000 }); // Espera até 5 segundos para o botão aparecer
-            const button = await page.$('.show-more-btn'); // Seletor para o botão "Carregar mais"
-            if (button) {
-                console.log('Carregando mais comentários...');
-                await button.click();  // Clica no botão de "Carregar mais"
-                await new Promise(resolve => setTimeout(resolve, 3000));  // Espera 3 segundos para carregar novos comentários
-                clickAttempts += 1; // Incrementa o contador de tentativas               
-            } else {
-            console.log('Botão de "Carregar mais" não encontrado ou não é mais clicável.');
-            loadMoreButtonVisible = false;  // Para o loop quando o botão não estiver mais disponível
-            break;
+        let clickCount = 0;
+        while (loadMoreButtonVisible) {
+            try {
+                // Espera até o botão "Carregar mais comentários" aparecer
+                const button = await page.$('.show-more-btn'); // Seletor para o botão "Carregar mais"
+                if (button) {
+                    console.log('Carregando mais comentários...');
+                    await button.click();  // Clica no botão de "Carregar mais"
+                    await new Promise(resolve => setTimeout(resolve, 3000));  // Espera 3 segundos para carregar novos comentários
+                    clickCount++;
+                    if (clickCount >= click) {  // Ajuste o número de cliques conforme necessário
+                        console.log('Número máximo de cliques atingido.');
+                        loadMoreButtonVisible = false;
+                    }
+                } else {
+                    console.log('Botão de "Carregar mais" não encontrado ou não é mais clicável.');
+                    loadMoreButtonVisible = false;  // Para o loop quando o botão não estiver mais disponível
+                }
+            } catch (err) {
+                console.log('Erro ao clicar no botão "Carregar mais":', err);
+                loadMoreButtonVisible = false;
             }
-        } catch (err) {
-            console.log('Erro ao clicar no botão "Carregar mais":', err);
-            loadMoreButtonVisible = false;
         }
-        } // Fim do loop de clique
     
         // Coletar comentários após carregamento
         if (loadMoreButtonVisible === false) {
@@ -113,7 +107,7 @@ async function Robot () {
         let comentarios = []; // Array para armazenar os comentários
         console.log('Comentários novos coletados com sucesso:', comentariosNovos.length);
         comentarios.push(...comentariosNovos); // Adiciona os novos comentários ao array original
-    
+        
         // Não feche o browser ainda. Se você quiser continuar interagindo com o navegador ou fazer mais ações, deixe-o aberto.
     
         // Apenas ao final, quando terminar tudo:
