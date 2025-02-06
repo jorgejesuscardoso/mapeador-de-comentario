@@ -1,4 +1,4 @@
-import { Container } from "./style";
+import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, Message } from "./style";
 import { Robozinho } from "../../API/APIRobozinho";
 import { useState } from "react";
 
@@ -34,30 +34,27 @@ const FindComments = () => {
     };
 
     return (
-        <Container>
-            <button
-                className="btn btn-primary"
-                onClick={getComments}
-                disabled={loading} // Desabilita o botão enquanto carrega
-            >
+        <ContainerFindComments>
+            <Button onClick={getComments} disabled={loading}>
                 {loading ? "Carregando..." : "Buscar Comentários"}
-            </button>
+            </Button>
+            {loading && <Message>Isso pode demorar um pouco.</Message>}
+            {error && <Message>{error}</Message>}
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
-
-            <ul>
+            <CommentsContainer>
                 {comments.length > 0 ? (
-                    comments.map((comment: Commentss) => (
-                        <li key={comment.dataFormatada}>
-                            <p><strong>{comment.usuario}:</strong></p>
-                            <p>{comment.comentario}</p>
-                        </li>
-                    ))
+                comments.map((comment: Commentss, index: number) => (
+                    <CommentCard key={index}>
+                    <CommentUser>Usuário: <strong>{comment.usuario}</strong></CommentUser>
+                    <CommentText>Comentário: {comment.comentario}</CommentText>
+                    <CommentDate>Hora: {comment.dataFormatada}</CommentDate>
+                    </CommentCard>
+                ))
                 ) : !loading && !error ? (
-                    <p>Nenhum comentário disponível.</p>
+                <Message>Nenhum comentário disponível.</Message>
                 ) : null}
-            </ul>
-        </Container>
+            </CommentsContainer>
+            </ContainerFindComments>
     );
 };
 

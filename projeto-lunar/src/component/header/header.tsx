@@ -7,8 +7,8 @@ const HeaderLunar = () => {
             <img src="oficial-img.jpg" alt="" />
             <nav>
                 <ul>
-                    <li><Link to="/">Home</Link></li>
-                    <li><Link to="/bot">Robozinho Lunar</Link></li>
+                    <li><Link to="/home">Home</Link></li>
+                    <li><Link to="/bot">Robozinho</Link></li>
                     <li><Link to="/member">Lista de membros</Link></li>
                     <li><Link to="/subs">Subs</Link></li>
                     <li><Link to="/shop">Lojinha Lunar</Link></li>
