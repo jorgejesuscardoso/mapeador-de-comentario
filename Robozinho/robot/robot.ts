@@ -1,12 +1,19 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 import fs from 'fs';
 // Or import puppeteer from 'puppeteer-core';
 
 const Robozinho = async () => {
 async function Robot () {
     const browser = await puppeteer.launch({
-        headless: false, // Rodar sem abrir o navegador
-        executablePath: puppeteer.executablePath(), // Usa o caminho correto do Puppeteer
+        executablePath: '/usr/bin/google-chrome-stable',
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--remote-debugging-port=9222'
+        ]
     });
     
         const page = await browser.newPage();
@@ -102,10 +109,6 @@ async function Robot () {
         let comentarios = []; // Array para armazenar os comentários
         console.log('Comentários novos coletados com sucesso:', comentariosNovos.length);
         comentarios.push(...comentariosNovos); // Adiciona os novos comentários ao array original
-        
-    
-        // Salva os dados em um arquivo JSON na pasta ./data
-        fs.writeFileSync('comentarios.json', JSON.stringify(comentarios, null, 2));
     
         // Não feche o browser ainda. Se você quiser continuar interagindo com o navegador ou fazer mais ações, deixe-o aberto.
     
