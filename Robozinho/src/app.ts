@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', async (req, res) => {
+app.get('/bot', async (req, res) => {
     try {
         const url = req.body.wUrl as string || 'https://www.wattpad.com/1503437794-darkbonds-capítulo-2-o-ataque-ao-culto';
         const click = req.body.click as number || 15;
@@ -26,7 +26,7 @@ app.get('/', async (req, res) => {
     }
 });
 
-app.get('/status', (req, res) => {
+app.get('/', (req, res) => {
     res.json({ status: 'ok' });
 });
 
