@@ -6,13 +6,13 @@ import os from 'os';
 const Robozinho = async () => {
 async function Robot () {
     const isWindows = os.platform() === 'win32'; // Verifica se está rodando no Windows
-        const chromePath = isWindows
-            ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' // Caminho do Chrome no Windows
-            : '/usr/bin/google-chrome-stable'; // Caminho do Chrome no Linux/Render
+        // const chromePath = isWindows
+        //     ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' // Caminho do Chrome no Windows
+        //     : '/usr/bin/google-chrome-stable'; // Caminho do Chrome no Linux/Render
 
         const browser = await puppeteer.launch({
-            executablePath: chromePath,
-            headless: true
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
         });
     
         const page = await browser.newPage();
