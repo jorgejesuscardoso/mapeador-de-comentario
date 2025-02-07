@@ -1,8 +1,11 @@
 # Use uma imagem base oficial do Node.js
-FROM node:18-slim
+FROM node:20
 
 # Instalar as dependências necessárias para o Playwright funcionar corretamente
 RUN apt-get update && apt-get install -y \
+wget \
+ca-certificates \
+fonts-liberation \
 libnss3 \
 libatk-bridge2.0-0 \
 libatk1.0-0 \
@@ -25,7 +28,13 @@ libxtst6 \
 xdg-utils \
 libxss1 \
 libnss3-dev \
+chromium \
+&& apt-get clean \
 && rm -rf /var/lib/apt/lists/*
+
+# Definir variáveis de ambiente para o Playwright e Chromium
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+ENV PLAYWRIGHT_BROWSERS_PATH=/usr/lib/chromium-browser/
 
 
 # Definir o diretório de trabalho dentro do container
