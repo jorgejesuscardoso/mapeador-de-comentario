@@ -96,7 +96,7 @@ export const CommentCard = styled.div`
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  background: #f8f9fa;
+  background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;

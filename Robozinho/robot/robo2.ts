@@ -1,4 +1,5 @@
 import { chromium } from 'playwright-chromium';
+import os from 'os';
 
 // Or import puppeteer from 'puppeteer-core';
 
@@ -6,7 +7,7 @@ const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     async function Robot() {
         const browser = await chromium.launch({
             headless: true,
-            executablePath: '/usr/bin/chromium',
+            executablePath: os.platform() === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/chromium',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
     
@@ -15,14 +16,19 @@ const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
         await page.goto(wUrl, { waitUntil: 'networkidle' });
     
         // **Rolagem até o fim da página**
-        console.log('Rolando até o fim...');
+        console.log('Rolando até achar o botão "Exibir mais"...');
         let previousHeight = 0;
         for (let i = 0; i < 100; i++) {  
             previousHeight = await page.evaluate(() => document.body.scrollHeight);
-            await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-            await page.waitForTimeout(3000); // Espera carregamento
-            let newHeight = await page.evaluate(() => document.body.scrollHeight);
-            if (newHeight === previousHeight) break;
+
+            await page.evaluate((selector) => {
+                const button = document.querySelector(selector);
+                if (button) button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, '.show-more-btn');
+            //await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+           // await page.waitForTimeout(3000); // Espera carregamento
+            //let newHeight = await page.evaluate(() => document.body.scrollHeight);
+           // if (newHeight === previousHeight) break;
         }
     
         // **Clicando no botão "Carregar mais comentários" se necessário**
