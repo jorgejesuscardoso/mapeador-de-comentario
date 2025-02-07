@@ -52,5 +52,7 @@ COPY . .
 # Expôr a porta em que o Express estará rodando
 EXPOSE 3000
 
+
+
 # Definir o comando para rodar o seu app Express
 CMD ["npm", "start"]
