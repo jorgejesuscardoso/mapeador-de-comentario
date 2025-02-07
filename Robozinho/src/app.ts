@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import Robozinho from '../robot/robot';
 import dotenv from 'dotenv';
+import Robozinho2 from '../robot/robo2';
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ app.use(express.json());
 
 app.post('/bot', async (req, res) => {
     try {
-        const url = req.body.wUrl as string || "https://www.wattpad.com/1501648271-darkbonds-cap%C3%ADtulo-2-o-ataque-ao-culto/page/10";
+        const url = req.body.wUrl as string;
         if(!url) {
             res.status(400).json({ error: 'URL não informada' })
             return;
@@ -19,7 +20,7 @@ app.post('/bot', async (req, res) => {
         const click = req.body.click as number || 15;
         console.log('Robô iniciado...');
         const wUser = req.body.wUser as string || 'JcBushido';
-        const resultado = await Robozinho(wUser, url, click); // O Robozinho deve retornar os dados coletados
+        const resultado = await Robozinho2(wUser, url, click); // O Robozinho deve retornar os dados coletados
         
         if (resultado && resultado.length > 0) {
             res.json(resultado);
