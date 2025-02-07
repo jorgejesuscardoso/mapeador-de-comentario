@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.post('/bot', async (req, res) => {
     try {
-        const url = req.body.wUrl as string;
+        const url = req.body.wUrl as string || "https://www.wattpad.com/1501648271-darkbonds-cap%C3%ADtulo-2-o-ataque-ao-culto/page/10";
         if(!url) {
             res.status(400).json({ error: 'URL não informada' })
             return;
