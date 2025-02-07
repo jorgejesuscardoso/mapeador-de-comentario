@@ -1,14 +1,24 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import Robozinho from '../robot/robot';
 import dotenv from 'dotenv';
 import { FindBook, Robozinho2 } from '../robot/robo2';
+import Routes from './routes';
+
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use(Routes);
+
+
+
+
+
+
+
 
 app.post('/bot', async (req, res) => {
     try {

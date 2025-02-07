@@ -3,46 +3,38 @@ import { Container, ContainerFormLogin, ContainerLogin, FormLogin, WelcomeBox } 
 import { useState } from "react";
 import AnimatedLogin from "../../component/animate/login/modal_login";
 import { SetTolocalStorage } from "../../utils/localstorage";
+import { LoginApi } from "../../API/APIRobozinho";
+import Swal from "sweetalert2";
 
 const Login = () => {
     const [user, setUser] = useState('');
     const [p, setP] = useState('');
     const [showModal, setShowModal] = useState(false);
 
-    const fakelogin = (e: React.FormEvent<HTMLFormElement> ) => {
+    const login = async (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
-        const fakeUsers = [
-            'Anna',
-            'Gley',
-            'Leh',
-            'Joao',
-            'Igor',
-            'Yu',
-            'Duda'
-        ];
-        const fakePasswords = [
-            '123',
-            '123',
-            '123',
-            '123',
-            '123',
-            '123',
-            '123'
-        ];
-        
-        const handleLogin = (user: string, p: string) => {
-            // Encontrar o índice do usuário
-            const userIndex = fakeUsers.indexOf(user);
-        
-            // Se encontrou o usuário e a senha no mesmo índice bate
-            if (userIndex !== -1 && fakePasswords[userIndex] === p) {
-                SetTolocalStorage('user', user);
-                setShowModal(true);
-            } else {
-                alert('Usuário ou senha incorretos!');
+        const data = await LoginApi(user, p);
+
+        if(data.erro === 'Usuário não encontrado!') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Usuário não encontrado!',
+                text: 'Verifique se o usuário e senha estão corretos.',
+            });
+            return;
         }
-    }
-        handleLogin(user, p);
+
+        if(data.erro === 'Dados Inválidos!') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Dados Inválidos!',
+                text: 'Verifique se o usuário e senha estão corretos.',
+            });
+            return;
+        }
+
+        SetTolocalStorage(data.user, 'user');
+        setShowModal(true);
     }
     return (
         <Container>
@@ -57,7 +49,7 @@ const Login = () => {
             <ContainerLogin>
                 <ContainerFormLogin>
                     <h1>Login</h1>
-                    <FormLogin onSubmit={(e) => fakelogin(e)}>
+                    <FormLogin onSubmit={(e) => login(e)}>
                         <input 
                             type="text"
                             placeholder="Usuário"

@@ -11,6 +11,7 @@ model Adm {
   id       Int      @id @default(autoincrement())
   name     String
   user     String   @unique
+  age      Int
   password String
   userWtp  String
   phone    String
@@ -28,6 +29,7 @@ model User {
   id       Int      @id @default(autoincrement())
   name     String
   user     String   @unique
+  age      Int
   password String
   userWtp  String
   phone    String
@@ -55,7 +57,7 @@ model Book {
 
 model Sub {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
 
   // Relacionamentos N:N com User e Adm
   users UserSub[]
