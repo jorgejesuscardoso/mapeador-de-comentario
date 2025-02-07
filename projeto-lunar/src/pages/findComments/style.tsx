@@ -188,3 +188,19 @@ export const Question = styled.img`
   width: 15px;
   cursor: pointer;
 `;
+
+export const Image = styled.img`
+  width: 50%;
+`;
+
+export const ImageRobo = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    width: 20%;
+  }
+`;

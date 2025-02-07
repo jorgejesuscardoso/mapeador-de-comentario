@@ -123,13 +123,17 @@ export const FindBook = async (book: string) => {
         // **Clinando em "Começar a ler"**
 
         console.log('Clicando em "Começar a ler"...');
-        await page.waitForSelector('.oMHIt', { timeout: 3000 });
-        const button = await page.$('.oMHIt');
-        if (!button) {
-            console.log('Botão não encontrado!');
+        try {
+            await page.waitForSelector('.oMHIt', { timeout: 3000 });
+            const button = await page.$('.oMHIt');
+            if (!button) {
+                console.log('Botão não encontrado!');
+            }
+            await button?.click();
+            await page.waitForTimeout(3000);
+        } catch (error) {
+            console.log('Erro ao clicar no botão!');            
         }
-        await button?.click();
-        await page.waitForTimeout(3000);
 
         // // **Verifica se url mudou**
         // const urlAtual = page.url();
