@@ -1,7 +1,8 @@
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-
+    const endPoint = 'https://mapeador-de-comentario.onrender.com/bot';
+    //const localEndPoint = 'http://localhost:3000/bot';
     try {
         const body = {
             wUser,
@@ -9,7 +10,7 @@ export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
             click
         }
 
-        const response = await fetch('http://localhost:3000/bot', {
+        const response = await fetch(endPoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
