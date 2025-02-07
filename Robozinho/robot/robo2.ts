@@ -17,19 +17,18 @@ const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     
         // **Rolagem até o fim da página**
         console.log('Rolando até achar o botão "Exibir mais"...');
-        let previousHeight = 0;
-        for (let i = 0; i < 100; i++) {  
-            previousHeight = await page.evaluate(() => document.body.scrollHeight);
+       
+        await page.evaluate(() => document.body.scrollHeight);
 
-            await page.evaluate((selector) => {
-                const button = document.querySelector(selector);
-                if (button) button.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, '.show-more-btn');
+        await page.evaluate((selector) => {
+            const button = document.querySelector(selector);
+            if (button) button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, '.show-more-btn');
             //await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
            // await page.waitForTimeout(3000); // Espera carregamento
             //let newHeight = await page.evaluate(() => document.body.scrollHeight);
            // if (newHeight === previousHeight) break;
-        }
+        
     
         // **Clicando no botão "Carregar mais comentários" se necessário**
         let clickCount = 0;
