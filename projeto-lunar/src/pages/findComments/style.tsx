@@ -28,6 +28,10 @@ export const Button = styled.button`
   font-size: 16px;
   transition: background 0.3s;
 
+  &.comentario {
+    background-color: #086830;
+  }
+
   &:hover {
     background-color: #0056b3;
   }

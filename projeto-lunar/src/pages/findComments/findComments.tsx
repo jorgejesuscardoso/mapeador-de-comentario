@@ -55,11 +55,37 @@ const FindComments = () => {
         }
     };
 
-    const getComments = async () => {
+    const handleSearch = () => {
         if (loading) return; // Impede chamadas simultâneas
 
         setLoading(true);
         setError(""); // Reseta erro antes de uma nova tentativa
+        
+
+        if (!capituloSelecionado) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro",
+                text: "Selecione um capítulo.",
+            });
+            setLoading(false);
+            return;
+        }
+
+        if (!user) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro",
+                text: "Insira um usuário do Wattpad.",
+            });
+            setLoading(false);
+            return;
+        }
+
+        getComments();
+    };
+
+    const getComments = async () => {
         const capUrl = "https://www.wattpad.com".concat(capituloSelecionado);
         try {
             const data = await Robozinho(user, capUrl, click);
@@ -72,6 +98,7 @@ const FindComments = () => {
                 throw new Error("Nenhum comentário encontrado.");
             }
             setComments(data);
+            console.log(data);
         } catch (error) {
             setError("Erro ao buscar comentários.");
             return error;
@@ -135,13 +162,13 @@ const FindComments = () => {
                             placeholder="Número de cliques"
                         />
                         </Labels>
-                   </div>                    
-                        
-                    <Button onClick={getComments} disabled={loading}>
-                        {loading ? "Carregando..." : "Buscar Comentários"}
-                    </Button>
+                   </div> 
                     <Button onClick={getBook} disabled={loading}>
                         {loading ? "Carregando..." : "Buscar Obra"}
+                    </Button>                   
+                        
+                    <Button className='comentario' onClick={handleSearch} disabled={loading}>
+                        {loading ? "Carregando..." : "Buscar Comentários"}
                     </Button>
 
                 </QtdeComments>

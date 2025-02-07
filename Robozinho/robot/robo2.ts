@@ -10,7 +10,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
             executablePath: os.platform() === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/chromium',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });        
-        
+
         console.log('URL:', wUrl);
         const page = await browser.newPage();
         console.log('Acessando a página...');
@@ -31,24 +31,25 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         let clickCount = 0;
         while (clickCount < click) {
 
-            await page.waitForSelector('.show-more-btn', { timeout: 3000 });
-            const button = await page.$('.show-more-btn');
+            try {
+                const button = await page.waitForSelector('.show-more-btn', { timeout: 3000 });
+                await button.$('.show-more-btn');
 
-            if (!button) {
-                console.log('Botão não encontrado!');
+                // **Se timeout, encerra o loop**
+                if (!button) {
+                    console.log('Botão não encontrado!');
+                    break;
+                }
+        
+                console.log('Carregando mais comentários...');
+                await button.click();
+                await page.waitForTimeout(3000);
+                clickCount++;
+            }  catch (error) {
+                console.log('Erro ao clicar no botão!');
                 break;
-            }
-            const isVisible = await button.isVisible();
-            if (!isVisible) {
-                console.log('Botão está oculto ou invisível!');
-                break;
-            }
-    
-            console.log('Carregando mais comentários...');
-            await button.click();
-            await page.waitForTimeout(3000);
-            clickCount++;
-        }
+             }          
+        } 
     
         // **Coletando comentários**
         console.log('Extraindo comentários...');
