@@ -23,7 +23,7 @@ export const Button = styled.button`
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
-  width: 30%;
+  width: 25%;
   cursor: pointer;
   font-size: 16px;
   transition: background 0.3s;
@@ -42,20 +42,18 @@ export const QtdeComments = styled.div`
   font-size: 1.2rem;
   font-weight: 700;
   color: #f5f5f5;
-  padding: 10px;
   border-radius: 5px;
   width: 22%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-left: 1.5%;
-  width: 60%;
+  width: 92%;
 
   div#comments {
     background-color: #f696ff45;
     padding: 10px;
     border-radius: 5px;
-    width: 50%;
+    width: 35%;
   }
 
   label {
@@ -95,15 +93,27 @@ export const CommentCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: start;
-  justify-content: center;
+  justify-content: space-between;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 12px;
   width: 100%;
-  gap: 5px;
+  height: 150px;
+  gap: 10px;
   max-width: 400px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+    height: 100%;
+    max-height: 100px;
+    width: 100%;
+    overflow: hidden;
+  }
 `;
 
 export const CommentUser = styled.p`
@@ -128,6 +138,8 @@ export const CommentText = styled.p`
 `;
 
 export const CommentDate = styled.p`
+  position: relative;
+  bottom: 0%;
   font-size: 12px;
   color: #777;
   font-weight: 700;

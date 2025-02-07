@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, DivInputs, Inputs, Labels, Message, QtdeComments, Question, SearchContainer } from "./style";
-import { Robozinho } from "../../API/APIRobozinho";
+import { FindBooks, Robozinho } from "../../API/APIRobozinho";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 type Commentss = {
     usuario: string;
@@ -15,15 +17,52 @@ const FindComments = () => {
     const [user, setUser] = useState("");          // Estado do usuário
     const [obra, setObra] = useState("");          // Estado da obra
     const [click, setClick] = useState(0);         // Estado do clique
+    const [capitulo, setCapitulo] = useState<[]>([]);  // Estado do capítulo
+    const [capituloSelecionado, setCapituloSelecionado] = useState(""); // Estado do capítulo selecionado
+
+    const getBook = async () => {
+        if (loading) return; // Impede chamadas simultâneas
+
+        setLoading(true);
+        setError(""); // Reseta erro antes de uma nova tentativa
+        if (!obra) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro",
+                text: "Insira uma URL de uma obra do Wattpad.",
+            });
+            setLoading(false);
+            return;
+        }
+        try {
+            const data = await FindBooks(obra);
+            console.log(data.status);
+            if (data.status === 404) {
+                throw new Error("Obra não encontrados.")
+                
+            };
+            if (!data || data.length === 0) {
+                throw new Error("Nenhuma obra  encontrado.");
+            }
+            console.log(data);
+
+            setCapitulo(data);
+        } catch (error) {
+            setError("Erro ao buscar obra.");
+            return error;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const getComments = async () => {
         if (loading) return; // Impede chamadas simultâneas
 
         setLoading(true);
         setError(""); // Reseta erro antes de uma nova tentativa
-
+        const capUrl = "https://www.wattpad.com".concat(capituloSelecionado);
         try {
-            const data = await Robozinho(user, obra, click);
+            const data = await Robozinho(user, capUrl, click);
             console.log(data.status);
             if (data.status === 404) {
                 throw new Error("Usuário ou obra não encontrados.")
@@ -58,8 +97,20 @@ const FindComments = () => {
                         <Inputs type="text"
                             value={obra}
                             onChange={(e) => setObra(e.target.value)}
-                            placeholder="URL da Obra Wattpad + Capítulo"
+                            placeholder="URL da Obra no Wattpad"
                         />
+                    </Labels>
+                    <Labels>
+                        Escolha um capítulo:
+                        <Inputs as="select"
+                            value={capituloSelecionado}
+                            onChange={(e) => setCapituloSelecionado(e.target.value)}
+                        >
+                            <option value="">Selecione um capítulo</option>
+                            {capitulo.map((capitulo: any, index: number) => (
+                                <option key={index} value={capitulo.href}>{capitulo.title}</option>
+                            ))}
+                        </Inputs>
                     </Labels>
                 </DivInputs>
                 <QtdeComments>
@@ -89,6 +140,10 @@ const FindComments = () => {
                     <Button onClick={getComments} disabled={loading}>
                         {loading ? "Carregando..." : "Buscar Comentários"}
                     </Button>
+                    <Button onClick={getBook} disabled={loading}>
+                        {loading ? "Carregando..." : "Buscar Obra"}
+                    </Button>
+
                 </QtdeComments>
 
                 <div>
@@ -101,8 +156,10 @@ const FindComments = () => {
                 {comments.length > 0 ? (
                 comments.map((comment: Commentss, index: number) => (
                     <CommentCard key={index}>
+                   <div>
                     <CommentUser><b>Usuário:</b> {comment.usuario}</CommentUser>
                     <CommentText><b>Comentário:</b> {comment.comentario}</CommentText>
+                   </div>
                     <CommentDate>Hora: {comment.dataFormatada}</CommentDate>
                     </CommentCard>
                 ))
