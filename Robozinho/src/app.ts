@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import Robozinho from '../robot/robot';
 import dotenv from 'dotenv';
-import Robozinho2 from '../robot/robo2';
+import { FindBook, Robozinho2 } from '../robot/robo2';
 
 dotenv.config();
 
@@ -37,6 +37,17 @@ app.post('/bot', async (req, res) => {
         res.status(500).json({ error: 'Erro ao executar o robô', details: error });
     }
 });
+
+app.post('/books', async (req, res) => {
+    try {
+        const book = req.body.book as string;
+        const resultado = await FindBook(book);
+        res.json(resultado);
+    } catch (error) {
+        console.error('Erro ao buscar livro:', error);
+    };
+});
+    
 
 app.get('/', (req, res) => {
     res.json({ status: 'ok' });
