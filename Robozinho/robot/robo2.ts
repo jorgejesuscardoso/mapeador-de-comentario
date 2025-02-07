@@ -3,14 +3,15 @@ import os from 'os';
 
 // Or import puppeteer from 'puppeteer-core';
 
-const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
+export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     async function Robot() {
         const browser = await chromium.launch({
             headless: true,
             executablePath: os.platform() === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/chromium',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
-    
+        });        
+        
+        console.log('URL:', wUrl);
         const page = await browser.newPage();
         console.log('Acessando a página...');
         await page.goto(wUrl, { waitUntil: 'networkidle' });
@@ -24,10 +25,6 @@ const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
             const button = document.querySelector(selector);
             if (button) button.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, '.show-more-btn');
-            //await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-           // await page.waitForTimeout(3000); // Espera carregamento
-            //let newHeight = await page.evaluate(() => document.body.scrollHeight);
-           // if (newHeight === previousHeight) break;
         
     
         // **Clicando no botão "Carregar mais comentários" se necessário**
@@ -110,4 +107,61 @@ const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     return Robot();
 };
 
-export default Robozinho2;
+export const FindBook = async (book: string) => {
+    async function Book() {
+        const browser = await chromium.launch({
+            headless: true,
+            executablePath: os.platform() === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/chromium',
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+    
+        const page = await browser.newPage();
+        console.log('Acessando a página...');
+        await page.goto(book, { waitUntil: 'networkidle' });
+
+        // **Clinando em "Começar a ler"**
+
+        console.log('Clicando em "Começar a ler"...');
+        await page.waitForSelector('.oMHIt', { timeout: 3000 });
+        const button = await page.$('.oMHIt');
+        if (!button) {
+            console.log('Botão não encontrado!');
+        }
+        await button?.click();
+        await page.waitForTimeout(3000);
+
+        // // **Verifica se url mudou**
+        // const urlAtual = page.url();
+        // if (urlAtual === book) {
+        //     console.log('URL não mudou!');
+        // } else {
+        //     return { url: urlAtual };
+        // }
+        // **Coletando quantidade de capítulos**
+
+        console.log('Extraindo quantidade de capítulos...');
+        await page.waitForSelector('.fa', { timeout: 3000 });
+        
+        console.log('Listando capítulos...');
+        
+
+        // **Capturar href e InnerText dos capítulos**
+        const capitulos = await page.evaluate(() => {
+            const chapters = Array.from(document.querySelectorAll('.table-of-contents li a')).map(a => {
+                const titleElement = a.querySelector('.part-title');
+                return {
+                    href: a.getAttribute('href'),
+                    title: titleElement && titleElement.textContent ? titleElement.textContent.trim() : "Título não encontrado"
+                };
+            });
+        
+            return chapters;
+        });
+
+        // **Retornar quantidade de capítulos e desliga o bot**
+
+        console.log(`Total de capítulos: ${capitulos.length}`);
+        return capitulos;
+    }
+    return Book();
+};
