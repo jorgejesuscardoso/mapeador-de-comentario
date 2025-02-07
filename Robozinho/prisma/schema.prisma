@@ -1,19 +1,85 @@
-// prisma/schema.prisma
-
 datasource db {
-  provider = "postgresql"  // Usando PostgreSQL
-  url      = env("DATABASE_URL") // Conexão no arquivo .env
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
-// Model exemplo de tabela User
 model Adm {
+  id       Int      @id @default(autoincrement())
+  name     String
+  user     String   @unique
+  password String
+  userWtp  String
+  phone    String
+  role     String
+  points   Int
+
+  // Relacionamento 1:N - Um Adm pode ter vários livros
+  books    Book[]  
+
+  // Relacionamento N:N com Subs (usando tabela intermediária AdmSub)
+  subs     AdmSub[]
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  user     String   @unique
+  password String
+  userWtp  String
+  phone    String
+  role     String
+  points   Int
+
+  // Relacionamento 1:N - Um User pode ter vários livros
+  books    Book[]
+
+  // Relacionamento N:N com Subs (usando tabela intermediária UserSub) opcional
+  subs     UserSub[]
+}
+
+model Book {
+  id       Int    @id @default(autoincrement())
+  title    String
+  authorId Int?
+  adminId  Int?
+  wUrl     String
+
+  // Relacionamentos
+  author   User? @relation(fields: [authorId], references: [id])
+  admin    Adm?  @relation(fields: [adminId], references: [id])
+}
+
+model Sub {
   id    Int    @id @default(autoincrement())
   name  String
-  user String @unique
-  password String
-  userWtp String
+
+  // Relacionamentos N:N com User e Adm
+  users UserSub[]
+  adms  AdmSub[]
+}
+
+// Tabela intermediária para relação N:N entre User e Sub
+model UserSub {
+  userId Int
+  subId  Int
+
+  user User @relation(fields: [userId], references: [id])
+  sub  Sub  @relation(fields: [subId], references: [id])
+
+  @@id([userId, subId]) // Chave composta
+}
+
+// Tabela intermediária para relação N:N entre Adm e Sub
+model AdmSub {
+  admId Int
+  subId Int
+
+  adm Adm @relation(fields: [admId], references: [id])
+  sub Sub @relation(fields: [subId], references: [id])
+
+  @@id([admId, subId]) // Chave composta
 }

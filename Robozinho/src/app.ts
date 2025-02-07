@@ -13,7 +13,8 @@ app.use(express.json());
 app.post('/bot', async (req, res) => {
     try {
         const url = req.body.wUrl as string;
-        if(!url) {
+        const baseUrl = "https://www.wattpad.com";
+        if(!url || !url.includes(baseUrl)) {
             res.status(400).json({ error: 'URL não informada' })
             return;
         };
@@ -26,10 +27,10 @@ app.post('/bot', async (req, res) => {
             res.json(resultado);
 
         } else if (resultado && resultado.length === 0) {
-            res.status(404).json({ 404: 'Nenhum comentário encontrado' });
+            res.status(200).json({ err: 'Nenhum comentário encontrado' });
 
         } else {
-            res.status(500).json({ error: 'Erro ao executar o robô' });
+            res.status(500).json({ err500: 'Erro ao executar o robô' });
         }
 
     } catch (error) {

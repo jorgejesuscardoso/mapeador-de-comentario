@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, DivInputs, Inputs, Labels, Message, QtdeComments, Question, SearchContainer } from "./style";
+import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, DivInputs, ImageRobo, Inputs, Labels, Message, QtdeComments, Question, SearchContainer } from "./style";
 import { FindBooks, Robozinho } from "../../API/APIRobozinho";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -19,12 +19,18 @@ const FindComments = () => {
     const [click, setClick] = useState(1);         // Estado do clique
     const [capitulo, setCapitulo] = useState<[]>([]);  // Estado do capítulo
     const [capituloSelecionado, setCapituloSelecionado] = useState(""); // Estado do capítulo selecionado
+    const [success, setSuccess] = useState("");     // Estado de sucesso
 
     const getBook = async () => {
         if (loading) return; // Impede chamadas simultâneas
 
+
         setLoading(true);
         setError(""); // Reseta erro antes de uma nova tentativa
+        setCapitulo([]); // Reseta capítulo antes de uma nova tentativa
+        setComments([]); // Reseta comentários antes de uma nova tentativa
+        setSuccess(""); // Reseta sucesso antes de uma nova tentativa
+        const baseUrl = "https://www.wattpad.com";
         if (!obra) {
             Swal.fire({
                 icon: "error",
@@ -33,20 +39,37 @@ const FindComments = () => {
             });
             setLoading(false);
             return;
+        } else if (!obra.includes(baseUrl)) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro",
+                text: "Insira uma URL válida do Wattpad.",
+            });
+            setLoading(false);
+            return;
         }
+        Swal.fire({
+            icon: "info",
+            title: "Aguarde",
+            text: "Estamos buscando a obra. Isso pode demorar um pouco.",
+        });
         try {
             const data = await FindBooks(obra);
-            console.log(data.status);
+            console.log(data);
             if (data.status === 404) {
-                throw new Error("Obra não encontrados.")
+                setError("Obra não encontrados.")
+                return;
                 
             };
             if (!data || data.length === 0) {
-                throw new Error("Nenhuma obra  encontrado.");
+                setError("Nenhuma obra  encontrado.");
+                return;
             }
             console.log(data);
 
             setCapitulo(data);
+            setError("");
+            setSuccess("Livro encontrado com sucesso.");
         } catch (error) {
             setError("Erro ao buscar obra.");
             return error;
@@ -87,12 +110,16 @@ const FindComments = () => {
 
     const getComments = async () => {
         const capUrl = "https://www.wattpad.com".concat(capituloSelecionado);
+        setSuccess("");
         try {
             const data = await Robozinho(user, capUrl, click);
             console.log(data.status);
-            if (data.status === 404) {
-                throw new Error("Usuário ou obra não encontrados.")
-                
+            if (data.err) {
+                setError("Usuário não encontrados.");
+                return;                
+            };
+            if (data.err500 === 500) {
+                throw new Error("Erro Servidor");
             };
             if (!data || data.length === 0) {
                 throw new Error("Nenhum comentário encontrado.");
@@ -173,10 +200,10 @@ const FindComments = () => {
 
                 </QtdeComments>
 
-                <div>
+                <ImageRobo>
                     {loading && <Message>Isso pode demorar um pouco.</Message>}
-                    {error && <Message>{error}</Message>}
-                </div>
+                    {error && <Message>{  error }</Message>}          
+                </ImageRobo>
             </SearchContainer>
 
             <CommentsContainer>
@@ -189,12 +216,13 @@ const FindComments = () => {
                    </div>
                     <CommentDate>Hora: {comment.dataFormatada}</CommentDate>
                     </CommentCard>
-                ))
+                )) ) : success ? (
+                    <Message>{success}</Message>
                 ) : !loading && !error ? (
-                <div>
-                    <Message>Robozinho econtrou um livro tão incrível que crashou.</Message>
-                    <img src="robozin-crasado-P.png" alt="" />
-                </div>
+                    <div>
+                        <Message>Robozinho econtrou um livro tão incrível que crashou.</Message>
+                        <img src="robozin-crasado-P.png" alt="" />
+                    </div>
                 ) : null}
             </CommentsContainer>
             </ContainerFindComments>
