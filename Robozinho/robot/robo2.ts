@@ -29,7 +29,15 @@ const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
         let clickCount = 0;
         while (clickCount < click) {
             const button = await page.$('.show-more-btn');
-            if (!button) break; 
+            if (!button) {
+                console.log('Botão não encontrado!');
+                break;
+            }
+            const isVisible = await button.isVisible();
+            if (!isVisible) {
+                console.log('Botão está oculto ou invisível!');
+                break;
+            }
     
             console.log('Carregando mais comentários...');
             await button.click();
