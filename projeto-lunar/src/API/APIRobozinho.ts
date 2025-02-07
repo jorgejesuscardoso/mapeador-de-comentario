@@ -64,7 +64,7 @@ export const FindBooks = async (book: string) => {
     }
 }
 
-export const LoginApi = async (user: string, p: string) => {
+export const LoginApi = async (user: string, pass: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
     const endPoint = 'https://mapeador-de-comentario.onrender.com/auth';
@@ -72,7 +72,7 @@ export const LoginApi = async (user: string, p: string) => {
     try {
         const body = {
             user,
-            p
+            pass
         }
 
         const response = await fetch(endPoint, {
