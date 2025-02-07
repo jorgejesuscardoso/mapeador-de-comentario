@@ -27,11 +27,6 @@ libxss1 \
 libnss3-dev \
 && rm -rf /var/lib/apt/lists/*
 
-# Instalar o Chromium (necessário para o Playwright)
-RUN apt-get install -y chromium
-
-# Definir variáveis de ambiente para o Playwright e o Chromium
-ENV CHROME_BIN=/usr/bin/chromium
 
 # Definir o diretório de trabalho dentro do container
 WORKDIR /app
