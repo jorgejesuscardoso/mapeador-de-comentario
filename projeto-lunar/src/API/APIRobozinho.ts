@@ -1,10 +1,21 @@
-export const Robozinho = async () => {
+export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
 
     try {
-        const response = await fetch("http://localhost:3000", {
-            signal: controller.signal,
+        const body = {
+            wUser,
+            wUrl,
+            click
+        }
+
+        const response = await fetch('http://localhost:3000/bot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body),
+            signal: controller.signal
         });
 
         if (!response.ok) {
