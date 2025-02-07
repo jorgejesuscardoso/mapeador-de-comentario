@@ -1,12 +1,14 @@
-import puppeteer from 'puppeteer';
-import fs from 'fs';
+import puppeteer from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
+
 // Or import puppeteer from 'puppeteer-core';
 
 const Robozinho = async (wUser: string, wUrl: string, click: number) => {
 async function Robot () {
     const browser = await puppeteer.launch({
-        headless: false, // Rodar sem abrir o navegador
-        executablePath: puppeteer.executablePath(), // Usa o caminho correto do Puppeteer
+        args: chromium.args,
+        executablePath: await chromium.executablePath || '/usr/bin/google-chrome-stable',
+        headless: chromium.headless
     });
     
         const page = await browser.newPage();
