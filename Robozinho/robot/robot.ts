@@ -5,11 +5,18 @@ import chromium from 'chrome-aws-lambda';
 
 const Robozinho = async (wUser: string, wUrl: string, click: number) => {
 async function Robot () {
-    const browser = await puppeteer.launch({
-        args: chromium.args,
-        executablePath: await chromium.executablePath || '/usr/bin/google-chrome-stable',
-        headless: chromium.headless
-    });
+    const executablePath = await chromium.executablePath;
+        
+        // Se não houver Chromium disponível, o Render não suporta Puppeteer
+        if (!executablePath) {
+            throw new Error("Nenhum Chrome disponível no ambiente! O Puppeteer pode não ser suportado.");
+        }
+
+        const browser = await puppeteer.launch({
+            args: chromium.args, // Argumentos otimizados para serverless
+            executablePath, // Usa o Chrome otimizado pelo chrome-aws-lambda
+            headless: chromium.headless, // Garantia de headless verdadeiro no serverless
+        });
     
         const page = await browser.newPage();
     
