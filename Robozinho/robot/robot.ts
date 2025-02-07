@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 import fs from 'fs';
 // Or import puppeteer from 'puppeteer-core';
 
-const Robozinho = async (wUrl: string, click: number) => {
+const Robozinho = async (wUser: string, wUrl: string, click: number) => {
 async function Robot () {
     const browser = await puppeteer.launch({
         headless: false, // Rodar sem abrir o navegador
@@ -54,7 +54,7 @@ async function Robot () {
         // Coletar comentários após carregamento
         if (loadMoreButtonVisible === false) {
             console.log('Carregamento de comentários finalizado.');
-            const comentariosNovos = await page.evaluate(() => {
+            const comentariosNovos = await page.evaluate((user: string) => {
                 let elements = document.querySelectorAll('.comment-card-container'); // Ajuste o seletor conforme necessário
                 let data = [] as any[];
                 elements.forEach(el => {
@@ -97,15 +97,21 @@ async function Robot () {
                     }
         
                     let dataFormatada = calcularHorario(postDate, new Date().toISOString());
-        
-                    data.push({ usuario, comentario, dataFormatada });
+                    
+                    if (usuario === user) {
+                        data.push({
+                            usuario,
+                            comentario,
+                            dataFormatada
+                        });
+                    };
                 });
                 return data;
-            });
+            }, wUser);
         
     
         let comentarios = []; // Array para armazenar os comentários
-        console.log('Comentários novos coletados com sucesso:', comentariosNovos.length);
+        console.log('Comentários novos coletados com sucesso! Total de: ', comentariosNovos.length, ' comentários.');
         comentarios.push(...comentariosNovos); // Adiciona os novos comentários ao array original
         
         // Não feche o browser ainda. Se você quiser continuar interagindo com o navegador ou fazer mais ações, deixe-o aberto.

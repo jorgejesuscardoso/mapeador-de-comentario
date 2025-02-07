@@ -1,0 +1,19 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"  // Usando PostgreSQL
+  url      = env("DATABASE_URL") // Conexão no arquivo .env
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Model exemplo de tabela User
+model Adm {
+  id    Int    @id @default(autoincrement())
+  name  String
+  user String @unique
+  password String
+  userWtp String
+}
