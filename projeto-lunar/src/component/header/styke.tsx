@@ -3,8 +3,9 @@ import { styled } from 'styled-components';
 export const HeaderContainer = styled.header`
     background-image: url('oficial-img.jpg');
     background-size: cover;
+    position: relative;
     display: flex;
-    position: absolute;
+    top: 0;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;

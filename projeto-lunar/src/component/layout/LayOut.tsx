@@ -5,8 +5,8 @@ import { LayOutContainer } from "./style"
 const LayOut = () => {
   return (
     <LayOutContainer>
-      <Outlet />
       <HeaderLunar />
+      <Outlet />
     </LayOutContainer>
   )
 }
