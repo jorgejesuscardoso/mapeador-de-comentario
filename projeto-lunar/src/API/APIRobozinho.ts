@@ -63,3 +63,36 @@ export const FindBooks = async (book: string) => {
         clearTimeout(timeout);
     }
 }
+
+export const LoginApi = async (user: string, p: string) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
+    //const endPoint = 'https://mapeador-de-comentario.onrender.com/auth';
+    const localEndPoint = 'http://localhost:3000/auth';
+    try {
+        const body = {
+            user,
+            p
+        }
+
+        const response = await fetch(localEndPoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body),
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        return (err || "Erro ao buscar livros.");
+    } finally {
+        clearTimeout(timeout);
+    }
+}
