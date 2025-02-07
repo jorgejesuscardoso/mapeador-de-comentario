@@ -67,15 +67,15 @@ export const FindBooks = async (book: string) => {
 export const LoginApi = async (user: string, p: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-    //const endPoint = 'https://mapeador-de-comentario.onrender.com/auth';
-    const localEndPoint = 'http://localhost:3000/auth';
+    const endPoint = 'https://mapeador-de-comentario.onrender.com/auth';
+    //const localEndPoint = 'http://localhost:3000/auth';
     try {
         const body = {
             user,
             p
         }
 
-        const response = await fetch(localEndPoint, {
+        const response = await fetch(endPoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
