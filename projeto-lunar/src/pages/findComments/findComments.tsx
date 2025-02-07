@@ -16,7 +16,7 @@ const FindComments = () => {
     const [error, setError] = useState("");        // Estado para erros
     const [user, setUser] = useState("");          // Estado do usuário
     const [obra, setObra] = useState("");          // Estado da obra
-    const [click, setClick] = useState(0);         // Estado do clique
+    const [click, setClick] = useState(1);         // Estado do clique
     const [capitulo, setCapitulo] = useState<[]>([]);  // Estado do capítulo
     const [capituloSelecionado, setCapituloSelecionado] = useState(""); // Estado do capítulo selecionado
 
