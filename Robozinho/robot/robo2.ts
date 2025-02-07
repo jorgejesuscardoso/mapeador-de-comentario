@@ -1,4 +1,4 @@
-import { chromium } from 'playwright-chromium';
+import { chromium } from 'playwright';
 import os from 'os';
 
 // Or import puppeteer from 'puppeteer-core';
@@ -33,7 +33,10 @@ const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
         // **Clicando no botão "Carregar mais comentários" se necessário**
         let clickCount = 0;
         while (clickCount < click) {
+
+            await page.waitForSelector('.show-more-btn', { timeout: 3000 });
             const button = await page.$('.show-more-btn');
+
             if (!button) {
                 console.log('Botão não encontrado!');
                 break;
