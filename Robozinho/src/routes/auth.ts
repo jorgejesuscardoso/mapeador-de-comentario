@@ -1,7 +1,7 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import Auth from '../auth/login';
 
-const Auths = express.Router();
+const Auths = Router();
 const Aut = new Auth();
 
 Auths.post('/auth', async (req: Request, res: Response) => {

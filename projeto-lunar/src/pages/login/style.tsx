@@ -109,3 +109,15 @@ export const WelcomeBox = styled.div`
         width: 100%;
     }
 `;
+
+export const SpanAuthenticating = styled.span`
+    font-size: 0.9rem !important;
+    color: red;    
+    margin-top: 10px;
+`;
+export const SpanLogging = styled.span`
+    font-size: 0.9rem !important;
+    color: green;    
+    margin-top: 10px;
+`;
+

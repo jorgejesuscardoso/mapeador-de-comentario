@@ -1,5 +1,5 @@
-export const SetTolocalStorage = (key: string, value: string) => {
-    localStorage.setItem(key, value);
+export const SetTolocalStorage = (key: string, value: object) => {
+    localStorage.setItem(key, JSON.stringify(value));
 }
 
 export const GetFromLocalStorage = (key: string) => {
