@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from "react-router-dom";
 import { HeaderContainer } from "./styke";
 import { RemoveFromLocalStorage } from "../../utils/localstorage";

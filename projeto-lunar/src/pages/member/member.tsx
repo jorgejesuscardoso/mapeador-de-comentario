@@ -32,9 +32,11 @@ const Members = () => {
         <Container>
             <ContainerD>
                 <SpanTotal>Total de membros: {members.length}</SpanTotal>
-                <SpanTotalpoints>
-                    Total de Pontos não utilizados: {members.reduce((total, s) => total + s.points, 0)}
-                </SpanTotalpoints>
+                {members.length > 0 && (
+                    <SpanTotalpoints>
+                        Total de Pontos não utilizados: {members.reduce((total, s) => total + s.points, 0)}
+                    </SpanTotalpoints>
+                )}
                 <h1>MEMBROS DO PROJETO</h1>
                 <Table>
                     <thead>
