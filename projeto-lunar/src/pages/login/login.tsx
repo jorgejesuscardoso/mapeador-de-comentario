@@ -1,5 +1,5 @@
 
-import { Container, ContainerFormLogin, ContainerLogin, FormLogin, WelcomeBox } from "./style";
+import { Container, ContainerFormLogin, ContainerLogin, FormLogin, SpanAuthenticating, SpanLogging, WelcomeBox } from "./style";
 import { useState } from "react";
 import AnimatedLogin from "../../component/animate/login/modal_login";
 import { SetTolocalStorage } from "../../utils/localstorage";
@@ -10,12 +10,22 @@ const Login = () => {
     const [user, setUser] = useState('');
     const [p, setP] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [authentic, setAuthentic] = useState(false);
+    const [logging, setLogging] = useState(false);
 
     const login = async (e: React.FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
+        if (user === '' || p === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Campos vazios!',
+                text: 'Por favor, preencha todos os campos.',
+            });
+            return;
+        }
+        setAuthentic(true);
         const data = await LoginApi(user, p);
-
-        if(data.erro === 'Usuário não encontrado!') {
+        if(data.error === 'Usuário não encontrado!') {
             Swal.fire({
                 icon: 'error',
                 title: 'Usuário não encontrado!',
@@ -24,7 +34,7 @@ const Login = () => {
             return;
         }
 
-        if(data.erro === 'Dados Inválidos!') {
+        if(data.error === 'Dados Inválidos!') {
             Swal.fire({
                 icon: 'error',
                 title: 'Dados Inválidos!',
@@ -32,9 +42,14 @@ const Login = () => {
             });
             return;
         }
-
-        SetTolocalStorage(data.user, 'user');
-        setShowModal(true);
+        setAuthentic(false);
+        setLogging(true);
+        console.log(data);
+        SetTolocalStorage('user', data);
+        setInterval(() => {
+            setAuthentic(false);
+            setShowModal(true);
+        }, 2000);
     }
     return (
         <Container>
@@ -67,6 +82,9 @@ const Login = () => {
                         >
                             Entrar
                         </button>
+
+                        {authentic && <SpanAuthenticating>Autenticando...</SpanAuthenticating>}
+                        {logging && <SpanLogging>Logando...</SpanLogging>}
                     </FormLogin>
                     <span>
                         Aréa reservada à administradores. <br/> Caso não seja um, por favor, retorne a página inicial.

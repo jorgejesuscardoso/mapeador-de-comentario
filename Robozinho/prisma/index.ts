@@ -52,8 +52,9 @@ async function main() {
       name: 'Anna França',
       password: '123',
       user: 'Anna',
-      userWtp: 'Anna_Fransa',
+      userWtp: '@Anna_Fransa',
       phone: '5585999999999',
+      age: 99,
       points: 0,
       role: 'adm',
     },
@@ -65,9 +66,10 @@ async function main() {
       password: 'Cruela',
       user: 'Gley',
       userWtp: '@GleyMessias',
+      age: 99,
       phone: '5585999999999',
       points: 0,
-      role: 'admin',      
+      role: 'adm',      
     },
   });
 
@@ -77,9 +79,10 @@ async function main() {
       password: '123',
       user: 'Leticia',
       userWtp: '@LehCorreia25',
+      age: 99,
       phone: '5585999999999',
       points: 0,
-      role: 'admin',
+      role: 'adm',
     },
   });
 
@@ -90,8 +93,9 @@ async function main() {
       user: 'Yu',
       userWtp: '@Yu_Suki',
       phone: '5585999999999',
+      age: 99,
       points: 0,
-      role: 'admin',
+      role: 'adm',
 
     },
   });
@@ -102,9 +106,10 @@ async function main() {
       password: '123',
       user: 'Joao',
       userWtp: '@JoaoPedroh19',
+      age: 99,
       phone: '5585999999999',
       points: 0,
-      role: 'admin',
+      role: 'adm',
     },
   });
 
@@ -114,9 +119,10 @@ async function main() {
       password: '123',
       user: 'JcBushido',
       userWtp: '@JcBushido',
-      phone: '5585999999999',
+      phone: '5585999999999',      
+      age: 99,
       points: 0,
-      role: 'admin',
+      role: 'adm',
     },
   });
 
@@ -127,6 +133,7 @@ async function main() {
       user: 'DVRodry',
       userWtp: '@DVRodry',
       phone: '5585999999999',
+      age: 99,
       points: 0,
       role: 'user',
     },
@@ -155,8 +162,29 @@ async function main() {
 
   await prisma.admSub.create({
     data: {
+      admId: user3.id,
+      subId: sub5.id,
+    },
+  });
+
+  await prisma.admSub.create({
+    data: {
+      admId: user3.id,
+      subId: sub6.id,
+    },
+  });
+
+  await prisma.admSub.create({
+    data: {
       admId: user4.id,
       subId: sub4.id,
+    },
+  });
+
+  await prisma.admSub.create({
+    data: {
+      admId: user4.id,
+      subId: sub7.id,
     },
   });
 
@@ -178,7 +206,7 @@ async function main() {
     data: {
       title: '𝑨 𝒗𝒆𝒓𝒅𝒂𝒅𝒆𝒊𝒓𝒂 𝒇𝒂𝒄𝒆 𝒅𝒐 𝒄𝒐𝒓𝒂𝒄̧𝒂̃𝒐',
       wUrl: 'https://www.wattpad.com/story/389352188-%F0%9D%91%A8-%F0%9D%92%97%F0%9D%92%86%F0%9D%92%93%F0%9D%92%85%F0%9D%92%82%F0%9D%92%85%F0%9D%92%86%F0%9D%92%8A%F0%9D%92%93%F0%9D%92%82-%F0%9D%92%87%F0%9D%92%82%F0%9D%92%84%F0%9D%92%86-%F0%9D%92%85%F0%9D%92%90-%F0%9D%92%84%F0%9D%92%90%F0%9D%92%93%F0%9D%92%82%F0%9D%92%84%CC%A7%F0%9D%92%82%CC%83%F0%9D%92%90',      
-      adminId: user6.id,
+      adminId: user.id,
     },
   });
 
@@ -186,7 +214,15 @@ async function main() {
     data: {
       title: 'Darkbonds',
       wUrl: 'https://www.wattpad.com/story/386224532-darkbonds',      
-      adminId: user.id,
+      adminId: user6.id,
+    },
+  });
+
+  await prisma.book.create({
+    data: {
+      title: 'Darkbonds 2 - O julgamento do homem corvo',
+      wUrl: 'https://www.wattpad.com/story/387855056-darkbonds-2-o-julgamento-do-corvo',      
+      adminId: user6.id,
     },
   });
 
@@ -196,6 +232,14 @@ async function main() {
       subId: sub1.id,
     },
   });
+
+  await prisma.userSub.create({
+    data: {
+      userId: user7.id,
+      subId: sub2.id,
+    },
+  });
+
 
 
 

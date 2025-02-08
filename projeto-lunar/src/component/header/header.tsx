@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { HeaderContainer } from "./styke";
+import { RemoveFromLocalStorage } from "../../utils/localstorage";
 
 const HeaderLunar = () => {
     return (
@@ -15,7 +16,9 @@ const HeaderLunar = () => {
                 </ul>
             </nav>
 
-            <button>
+            <button
+                onClick={() => RemoveFromLocalStorage("user")}
+            >
                 <a href="/">SAIR</a>
             </button>
 

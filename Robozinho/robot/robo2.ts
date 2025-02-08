@@ -91,10 +91,16 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
                 let comentario = (el.querySelector('.text-body-sm') as HTMLElement)?.innerText || "Sem texto";
                 let postDate = (el.querySelector('.postedDate__xcq5D') as HTMLElement)?.innerText || "Sem texto";
                 let dataFormatada = calcularHorario(postDate, new Date().toISOString());
-    
+                
+                if (wUser && !usuario.includes(wUser)) return;
+                
                 if (usuario === wUser) {
                     data.push({ usuario, comentario, dataFormatada });
-                }
+                    return;
+                } 
+                
+                data.push({ usuario, comentario, dataFormatada });
+                    
             });
     
             return data;
