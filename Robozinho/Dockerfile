@@ -50,9 +50,12 @@ RUN npm install
 COPY . .
 
 # Expôr a porta em que o Express estará rodando
+# Copiar o entrypoint e dar permissão de execução
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Expôr a porta do servidor
 EXPOSE 3000
 
-
-
-# Definir o comando para rodar o seu app Express
-CMD ["npm", "start"]
+# Definir o entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
