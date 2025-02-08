@@ -6,14 +6,6 @@ class Auth {
     constructor() {
         this.prisma = new PrismaClient();
   }
-    async getAllAdm() {
-        try {
-            return await this.prisma.adm.findMany();
-        } catch (error) {
-            throw new Error("Error to get all users");
-        }
-
-    }
 
     async auth(user: string, password: string) {
        try {
