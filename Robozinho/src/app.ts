@@ -1,27 +1,48 @@
-import express, { Request, Response } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import Routes from './routes';
 
-
 dotenv.config();
 
-const app = express();
-app.use(cors(
-    {
-        origin: '*',
-        methods: 'GET, POST, PUT, DELETE',
-        allowedHeaders: 'Content-Type, Authorization, Origin, X-Requested-With, Accept',
+class App {
+    public app: Application;
+
+    constructor() {
+        this.app = express();
+        this.middlewares();
+        this.routes();
     }
-));
-app.use(express.json());
 
-app.use(Routes);
+    // Configuração de middlewares (CORS, JSON, etc.)
+    private middlewares(): void {
+        this.app.use(cors({
+            origin: 'http://localhost:5173', // Substitua conforme necessário
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+            credentials: true,
+        }));
 
-    
+        this.app.options('*', cors()); // Permite preflight requests
 
-app.get('/', (req, res) => {
-    res.json({ status: 'ok' });
-});
+        this.app.use(express.json());
+    }
 
-export default app;
+    // Configuração de rotas
+    private routes(): void {
+        this.app.use(Routes);
+        this.app.get('/', (req, res) => {
+            res.json({ status: 'ok' });
+        });
+    }
+
+    // Método para iniciar o servidor
+    public start(port: number): void {
+        this.app.listen(port, () => {
+            console.log(`🚀 Servidor rodando na porta ${port}`);
+        });
+    }
+}
+
+// Exportando uma instância da classe
+export default new App().app;
