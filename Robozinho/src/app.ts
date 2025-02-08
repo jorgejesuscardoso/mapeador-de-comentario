@@ -17,7 +17,7 @@ class App {
     // Configuração de middlewares (CORS, JSON, etc.)
     private middlewares(): void {
         this.app.use(cors({
-            origin: 'http://localhost:5173', // Substitua conforme necessário
+            origin: '*', // Substitua conforme necessário
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
             allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
             credentials: true,
