@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const endPoint = 'https://mapeador-de-comentario.onrender.com';
 //const endPoint = 'http://localhost:3000';
@@ -153,3 +154,60 @@ export const GetUsers = async () => {
         clearTimeout(timeout);
     }
 }
+
+export const UpdateUser = async (id: number, body: any) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
+    const url = `${endPoint}/users/${id}`;
+
+    try {      
+
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body),
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        return (err || "Erro ao buscar livros.");
+    } finally {
+        clearTimeout(timeout);
+    }
+};
+
+export const UpdateAdm = async (id: number, body: any) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
+    const url = `${endPoint}/adms/${id}`;
+    try {      
+
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body),
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        return (err || "Erro ao buscar livros.");
+    } finally {
+        clearTimeout(timeout);
+    }
+};

@@ -11,7 +11,7 @@ class UsersServices {
   async getUsers() {
     try {
         const users = await this.model.getUsers() as unknown as [];
-        console.log(users);
+       
         return users;
     } catch (error) {
         console.log(error);
@@ -22,7 +22,45 @@ class UsersServices {
   async getAdms() {
     try {
         const users = await this.model.getAdms();
+        
         return users;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
+  async updateAdm(id: number, data: any) {
+    try {
+      
+      const sanitizedData = {
+        name: data.name,
+        phone: data.phone,
+        age: data.age && +data.age,
+        userWtp: data.userWtp,
+        user: data.user,
+      }
+        const user = await this.model.updateAdm(id, sanitizedData);
+        
+        return user;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
+  async updateUser(id: number, data: any) {
+    try {
+        const sanitizedData = {
+          name: data.name,
+          phone: data.phone,
+          age: data.age && +data.age,
+          userWtp: data.userWtp,
+          user: data.user,
+        }
+        const user = await this.model.updateUser(id, sanitizedData);
+        
+        return user;
     } catch (error) {
         console.log(error);
         return error;

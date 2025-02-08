@@ -18,7 +18,7 @@ class App {
     private middlewares(): void {
         this.app.use(cors({
             origin: '*', // Substitua conforme necessário
-            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
             allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
             credentials: true,
         }));

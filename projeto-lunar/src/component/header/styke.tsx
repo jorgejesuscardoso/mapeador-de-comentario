@@ -17,17 +17,18 @@ export const HeaderContainer = styled.header`
     }
 
     nav {
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: end;
     align-items: center;
     width: 100%;
-    height: 15vh;
+    height: 16vh;
     color: #fff;
 
     ul {
         display: flex;
         justify-content: space-around;
-        width: 67%;
+        width: 80%;
         list-style: none;
         padding: 0;
         gap: 1rem;

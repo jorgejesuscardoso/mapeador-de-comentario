@@ -4,6 +4,9 @@ import Home from "./pages/home/Home"
 import LayOut from "./component/layout/LayOut"
 import FindComments from "./pages/findComments/findComments"
 import Members from "./pages/member/member"
+import Shop from "./pages/shop/Shop"
+import Subs from "./pages/subs/Subs"
+import Dashboard from "./pages/dashboard/Dashboard"
 
 function App() {
 
@@ -14,6 +17,9 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/bot" element={<FindComments />} />
         <Route path="/member" element={<Members />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/subs" element={<Subs />} />
+        <Route path="/dash" element={<Dashboard />} />
       </Route>
     </Routes>
   )
