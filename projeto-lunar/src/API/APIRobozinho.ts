@@ -1,5 +1,5 @@
 
-const endPoint = 'https://mapeador-de-comentario.onrender.com';
+const endPoint = 'https://mapeadoreeee-de-comentario.onrender.com';
 //const endPoint = 'http://localhost:3000';
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
