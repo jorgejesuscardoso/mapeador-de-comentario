@@ -28,6 +28,27 @@ class UsersController {
     }
   }
 
+  async updateAdm(id: number, data: any) {
+    try {
+        const user = await this.service.updateAdm(id, data);
+        return user;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
+  async updateUser(id: number, data: any) {
+    try {
+        const user = await this.service.updateUser(id, data);
+        console.log(user);
+        return user;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
 }
 
 export default UsersController;
