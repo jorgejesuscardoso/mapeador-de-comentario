@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, ContainerD, SpanTotal, SpanTotalpoints, Table, TableHeader, TableRow } from "./style";
+import { Container, ContainerD, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow } from "./style";
 import { GetAdms } from "../../API/APIRobozinho";
 
 type PersonalData = {
@@ -68,9 +68,9 @@ const Members = () => {
                                 </TableRow>
                             ))
                         ) : (
-                            <tr>
-                                <td colSpan={6}>Nenhum membro encontrado</td>
-                            </tr>
+                            <StyledEmptyRow>
+                                <td colSpan={6} className='colspan'>Nenhum membro encontrado</td>
+                            </StyledEmptyRow>
                         )}
                     </tbody>
                 </Table>

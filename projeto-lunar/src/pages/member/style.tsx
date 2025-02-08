@@ -71,6 +71,13 @@ export const TableRow = styled.tr`
             margin: 1px 0;
             border-bottom: 1px solid #6d6d6d;
         }
+    }  
+`;
+
+export const StyledEmptyRow = styled.tr`
+    td {
+        text-align: center;
+        color: #572249;
     }
 `;
 
