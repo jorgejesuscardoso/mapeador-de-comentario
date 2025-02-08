@@ -25,6 +25,16 @@ const Login = () => {
         }
         setAuthentic(true);
         const data = await LoginApi(user, p);
+
+        if(!data.user || data.user.name === "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: 'Ocorreu um erro ao tentar logar, tente novamente em alguns instantes.',
+            });
+            setAuthentic(false);
+            return;
+        }
         if(data.error === 'Usuário não encontrado!') {
             Swal.fire({
                 icon: 'error',
