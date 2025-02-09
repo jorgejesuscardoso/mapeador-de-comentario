@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, ResumoContainer, MainSection } from "./style";
 import { GetAdms, GetUsers, UpdateAdm, UpdateUser } from "../../API/APIRobozinho";
 import { useNavigate } from "react-router-dom";
+import { SetTolocalStorage } from "../../utils/localstorage";
 
 type PersonalData = {
     id: number;
@@ -51,8 +52,14 @@ const Members = () => {
 
 
 
-    useEffect(() => {        
-        getMembers();
+    useEffect(() => {   
+        const members = localStorage.getItem('members');
+        if (members) {
+            setMembers(JSON.parse(members));
+            return;
+        } else {
+            getMembers();
+        }
     }, []);
 
     useEffect(() => {
@@ -70,6 +77,7 @@ const Members = () => {
 
         
     }, [loadEdit]);
+
     useEffect(() => {
         if (comfirmEdit) {   
                      
@@ -100,6 +108,8 @@ const Members = () => {
     const getMembers = async () => {
         const membersAdm = await GetAdms();
         const membersUser = await GetUsers();
+
+        SetTolocalStorage('members', membersAdm.concat(membersUser));
         
         const members = membersAdm.concat(membersUser);
         if (members.length > 0) {
@@ -411,7 +421,7 @@ const Members = () => {
                                                     setEditPhone(false);
                                                     setEditWtpd(false);
                                                     setEditUser(false);
-                                                    
+
                                                 }}
                                             >
                                             {member.points.toLocaleString('pt-BR')}
