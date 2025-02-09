@@ -72,6 +72,7 @@ class UsersModel {
 
     async updateUser(id: number, data: any) {
         try {
+            
             const user = await this.prisma.user.update({
                 where: {
                     id

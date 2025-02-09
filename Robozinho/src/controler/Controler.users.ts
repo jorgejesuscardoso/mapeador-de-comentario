@@ -40,8 +40,9 @@ class UsersController {
 
   async updateUser(id: number, data: any) {
     try {
-        const user = await this.service.updateUser(id, data);
-        console.log(user);
+        
+      const user = await this.service.updateUser(id, data);
+        
         return user;
     } catch (error) {
         console.log(error);

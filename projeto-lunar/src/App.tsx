@@ -7,6 +7,8 @@ import Members from "./pages/member/member"
 import Shop from "./pages/shop/Shop"
 import Subs from "./pages/subs/Subs"
 import Dashboard from "./pages/dashboard/Dashboard"
+import RegisterMember from "./pages/dashboard/register"
+import ManagerMember from "./pages/dashboard/Manager"
 
 function App() {
 
@@ -20,6 +22,9 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/subs" element={<Subs />} />
         <Route path="/dash" element={<Dashboard />} />
+        <Route path="/dash/register" element={<RegisterMember />} />
+        <Route path="/dash/manager" element={<ManagerMember />} />
+
       </Route>
     </Routes>
   )

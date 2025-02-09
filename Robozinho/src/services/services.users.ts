@@ -39,6 +39,7 @@ class UsersServices {
         age: data.age && +data.age,
         userWtp: data.userWtp,
         user: data.user,
+        points: data.points && +data.points,
       }
         const user = await this.model.updateAdm(id, sanitizedData);
         
@@ -57,6 +58,7 @@ class UsersServices {
           age: data.age && +data.age,
           userWtp: data.userWtp,
           user: data.user,
+          points: data.points && +data.points,
         }
         const user = await this.model.updateUser(id, sanitizedData);
         

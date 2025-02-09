@@ -4,7 +4,7 @@ export const Container = styled.div`
   background-image: url('lua-fantasia.webp');
   background-size: cover;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   width: 100%;
   min-height: 100vh;
   background-color: #000;
@@ -14,14 +14,12 @@ export const ContainerD = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     width: 100%;
     min-height: 100vh;
-    background-color: #0009;
-    z-index: 111;
+    background-color: #0007;
+    z-index: 1111;
     position: relative;
     top: 0;
-    left: 0;
 
     h1 {
         color: white;
@@ -30,13 +28,53 @@ export const ContainerD = styled.div`
     }
 `;
 
-export const Table = styled.table`
+export const ContainerE = styled.div`
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     width: 100%;
+    min-height: 45vh;
+    background-color: #00000077;
+    top: 0;
+`;
+
+export const ContainerResumo = styled.div`
+    background: #1e1e2f;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem;
+    width: 40%;
+    height: 34vh;
+    margin-bottom: 1rem;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+
+    strong {
+        font-size: 0.8rem;
+        color: #ffd700;
+    }
+`;
+
+export const SpanTotal = styled.span`
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #f5f5f5;
+`;
+
+export const SpanTotalpoints = styled.span`
+    font-size: 0.8rem;
+    color: #f5f5f5;
+`;
+
+export const Table = styled.table`
+    width: 73%;
     border-collapse: collapse;
     background: #ffffff;
     overflow: hidden;
-    margin-top: 12vh;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 3vh;
 `;
 
 export const TableHeader = styled.tr`
@@ -46,7 +84,7 @@ export const TableHeader = styled.tr`
     text-align: center;
     
     th {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         padding: 12px;
         overflow: hidden;
     }
@@ -63,14 +101,14 @@ export const TableRow = styled.tr`
 
     td {
         text-align: center;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         padding: 12px;
         overflow: hidden;
 
         li {
             list-style: none;
             margin: 1px 0;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             overflow: hidden;
         }
     }  
@@ -82,27 +120,6 @@ export const StyledEmptyRow = styled.tr`
         color: #632f2f;
         overflow: hidden;
     }
-`;
-
-export const SpanTotal = styled.span`
-    position: absolute;
-    top: 5%;
-    left: 0;
-    color: white;
-    font-size: 1rem;
-    margin: 20px 0;
-`;
-
-export const SpanTotalpoints = styled.span`
-    text-align: end;
-    position: absolute;
-    font-weight: bold;
-    top: 5%;
-    left: 0;
-    color: #ccc;
-    width: 98%;
-    font-size: 1rem;
-    margin: 20px 0;
 `;
 
 export const ModalContainer = styled.div`
@@ -120,9 +137,17 @@ export const ModalContainer = styled.div`
     z-index: 1000;
 
     h2 {
+        font-size: 0.8rem;
         text-align: center;
         margin-bottom: 20px;
-        color: #777;
+        color: #07801b;
+    }
+
+    h3 {
+        font-size: 0.8rem;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #967f01
     }
 
     span {
@@ -143,7 +168,7 @@ export const InputField = styled.input`
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 0.7rem !important;
   box-sizing: border-box;
 `;
 
@@ -153,17 +178,18 @@ export const Button = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.7rem !important;
   width: 40%;
   font-size: 16px;
   transition: background-color 0.3s;
 
   &:first-child {
-    background-color: #f44336; /* Red */
+    background-color: #4caf50; /* Red */
     color: white;
   }
 
   &:last-child {
-    background-color: #4caf50; /* Green */
+    background-color: #f44336; /* Green */
     color: white;
   }
 
@@ -220,7 +246,162 @@ export const TdEdit = styled.td`
     cursor: pointer;
 
     &:hover {
-        background-color: #a4c8fa;
         overflow: hidden;
     }
+`;
+
+export const DescriptionContainer = styled.div`
+background-color: #1e1e2f;
+color: #f5f5f5;
+padding: 20px;
+border-radius: 10px;
+box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+max-width: 800px;
+margin: 20px;
+text-align: center;
+font-family: "Arial", sans-serif;
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.highlight {
+  font-weight: bold;
+  color: #ffd700; /* Dourado para destaque */
+}
+`;
+
+export const Labels = styled.label`
+  font-size: 16px;
+  font-weight: bold;
+  color: #f5f5f5;
+  width: 45%;
+
+    select {
+      padding: 3px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      width: 100%;
+      margin-bottom: 10px;
+
+      option {
+        padding: 5px;
+        font-size: 0.7rem;
+      }
+    }
+`;
+
+export const SectionContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #ffffffbe;
+    padding: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 2.5rem;
+    width: 22%;
+
+    div {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        p {
+            font-size: 0.7rem !important;
+            color: #333;
+        }
+
+        h2, h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }        
+    }
+`;
+
+export const Title = styled.h3`
+    margin-bottom: 0.3rem !important;
+    color: #333;
+`;
+
+export const InfoText = styled.p`
+    color: #555;
+    margin-bottom: 0.1rem;
+`;
+
+export const ButtonContainer = styled.div`
+    display: flex;
+    flex-direction: row !important;
+    gap: 0.1rem !important;
+    justify-content: center;
+    width: 100%;
+`;
+
+export const ActionButton = styled.button`
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.2rem !important;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 50%;
+    font-size: 0.7rem;
+    transition: 0.3s ease;
+    
+    &:hover {
+        background: #0056b3;
+    }
+`;
+
+export const ResumoContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;        
+    }
+
+    p {
+        display: block;
+        width: 100%;
+        text-align: justify;
+        font-size: 0.8rem !important;
+        color: #333;
+    }
+
+    h3, h2 {
+        color: #333;
+        margin:0 !important;
+    }
+`;
+
+export const ImgDivisoria = styled.img`
+    width: 5%;
+    margin: 1rem;
+`;
+
+export const MainSection = styled.section`
+    display: flex;
+    justify-content: space-evenly;
+    align-items: start;
+    padding: 0.2rem;
+    width: 100%;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
 `;
