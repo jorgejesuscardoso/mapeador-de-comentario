@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-//const endPoint = 'https://mapeador-de-comentario.onrender.com';
-const endPoint = 'http://localhost:3000';
+const endPoint = 'https://mapeador-de-comentario.onrender.com';
+//const endPoint = 'http://localhost:3000';
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
     const controller = new AbortController();
