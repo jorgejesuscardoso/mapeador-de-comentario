@@ -160,7 +160,7 @@ const FindComments = () => {
                             value={capituloSelecionado}
                             onChange={(e) => setCapituloSelecionado(e.target.value)}
                         >
-                            <option value="">Selecione um capítulo</option>
+                            <option value="">Selecione um capítulo: ({capitulo.length})</option>
                             {capitulo.map((capitulo: any, index: number) => (
                                 <option key={index} value={capitulo.href}>{capitulo.title}</option>
                             ))}

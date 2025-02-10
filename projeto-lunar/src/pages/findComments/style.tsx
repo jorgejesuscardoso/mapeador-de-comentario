@@ -23,9 +23,9 @@ export const Button = styled.button`
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
-  width: 25%;
+  width: 20%;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 0.75rem;
   transition: background 0.3s;
 
   &.comentario {
@@ -43,7 +43,7 @@ export const Button = styled.button`
 `;
 
 export const QtdeComments = styled.div`
-  font-size: 1.2rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #f5f5f5;
   border-radius: 5px;
@@ -51,10 +51,16 @@ export const QtdeComments = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 92%;
+  width: 88%;
+
+  span {
+    width: 100%;
+    font-size: 0.8rem;
+  }
 
   div#comments {
     background-color: #f696ff45;
+    font-size: 0.75rem;
     padding: 10px;
     border-radius: 5px;
     width: 35%;
@@ -137,7 +143,7 @@ export const CommentText = styled.p`
   
   
   b {    
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 `;
 
@@ -172,12 +178,12 @@ export const Inputs = styled.input`
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
-  width: 100%;
+  font-size: 0.75rem;
+  width: 100%;  
 `;
 
 export const Labels = styled.label`
-  font-size: 16px;
+  font-size: 0.75rem;
   font-weight: bold;
   color: #f5f5f5;
   width: 45%;

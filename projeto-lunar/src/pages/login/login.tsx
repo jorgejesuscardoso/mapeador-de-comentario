@@ -93,7 +93,7 @@ const Login = () => {
                             Entrar
                         </button>
 
-                        {authentic && <SpanAuthenticating>Autenticando...</SpanAuthenticating>}
+                        {authentic && <SpanAuthenticating>Autenticando... pode levar até 1min.</SpanAuthenticating>}
                         {logging && <SpanLogging>Logando...</SpanLogging>}
                     </FormLogin>
                     <span>
