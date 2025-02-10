@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon src/main.ts",
-    "start": "nodemon src/main.ts",
+    "dev": "npx prisma generate",
+    "start": "nodemon src/main.ts && npx prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:reset": "prisma db push --force-reset && prisma migrate reset --force && prisma migrate deploy && prisma generate"
   },
