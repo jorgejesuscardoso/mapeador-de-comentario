@@ -19,12 +19,22 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         // **Rolagem até o fim da página**
         console.log('Rolando até achar o botão "Exibir mais"...');
        
-        await page.evaluate(() => document.body.scrollHeight);
-
-        await page.evaluate((selector) => {
-            const button = document.querySelector(selector);
-            if (button) button.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, '.show-more-btn');
+        await page.evaluate(async () => {
+            await new Promise(resolve => {
+                let totalHeight = 0;
+                let distance = 100;
+                let timer = setInterval(() => {
+                    let scrollHeight = document.body.scrollHeight;
+                    window.scrollBy(0, distance);
+                    totalHeight += distance;
+        
+                    if (totalHeight >= scrollHeight) {
+                        clearInterval(timer);
+                        resolve(true);
+                    }
+                }, 100);
+            });
+        });
         
     
         // **Clicando no botão "Carregar mais comentários" se necessário**
@@ -32,7 +42,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         while (clickCount < click) {
 
             try {
-                const button = await page.waitForSelector('.show-more-btn', { timeout: 3000 });
+                const button = await page.waitForSelector('.show-more-btn', { timeout: 5000 });
                 await button.$('.show-more-btn');
 
                 // **Se timeout, encerra o loop**

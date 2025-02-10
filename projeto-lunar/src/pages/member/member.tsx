@@ -55,8 +55,11 @@ const Members = () => {
     useEffect(() => {   
         const members = localStorage.getItem('members');
         if (members) {
+            // Se existir no localStorage, seta o estado com os dados
             setMembers(JSON.parse(members));
-            return;
+            //verifica se tem novos membros
+            getMembers();
+            
         } else {
             getMembers();
         }

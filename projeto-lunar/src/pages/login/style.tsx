@@ -111,12 +111,12 @@ export const WelcomeBox = styled.div`
 `;
 
 export const SpanAuthenticating = styled.span`
-    font-size: 0.9rem !important;
+    font-size: 0.7rem !important;
     color: red;    
     margin-top: 10px;
 `;
 export const SpanLogging = styled.span`
-    font-size: 0.9rem !important;
+    font-size: 0.7rem !important;
     color: green;    
     margin-top: 10px;
 `;
