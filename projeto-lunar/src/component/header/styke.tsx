@@ -14,12 +14,14 @@ export const HeaderContainer = styled.header`
     img {
         width: 9vw;
         height: 15.9vh;
+        z-index: 10;
     }
 
     nav {
     background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
     display: flex;
-    justify-content: end;
+    justify-content: center;
     align-items: center;
     width: 100%;
     height: 16vh;
@@ -28,7 +30,7 @@ export const HeaderContainer = styled.header`
     ul {
         display: flex;
         justify-content: space-around;
-        width: 80%;
+        width: 70%;
         list-style: none;
         padding: 0;
         gap: 1rem;
@@ -64,17 +66,29 @@ export const HeaderContainer = styled.header`
 
     
     button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        background: linear-gradient(45deg, #007bff, #ff00ff);
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 5px;
         width: 10vw;
-        height: 5vh;
-        color: #fff;
-        border: 1px solid dodgerblue;
-        background-color: transparent;
-        border-radius: 10px;
         cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+        z-index: 10;
 
+        &:hover {
+            background: linear-gradient(45deg, #ff00ff, #007bff);
+            box-shadow: 0px 0px 10px rgba(255, 0, 255, 0.8);
+        }
+
+        &:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
         a {
             display: inline-block;
             width: 100%;
@@ -84,15 +98,6 @@ export const HeaderContainer = styled.header`
             color: #fff;
             font-size: 0.7rem;
             text-decoration: none;
-        }
-
-        
-        
-        &:hover {
-            border: 1px solid red;
-            a {
-             color: red;
-            }
         }
     }
 `;

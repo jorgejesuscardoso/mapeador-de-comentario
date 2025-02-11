@@ -22,7 +22,7 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/subs" element={<Subs />} />
         <Route path="/dash" element={<Dashboard />} />
-        <Route path="/dash/register" element={<RegisterMember />} />
+        <Route path="/register" element={<RegisterMember />} />
         <Route path="/dash/manager" element={<ManagerMember />} />
 
       </Route>

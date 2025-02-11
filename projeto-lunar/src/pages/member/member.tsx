@@ -250,8 +250,8 @@ const Members = () => {
                                 Aqui você pode cadastrar novos usuários ou gerenciar os existentes.
                             </InfoText>
                             <ButtonContainer>
-                                <ActionButton onClick={() => navigate('/dash/register')}>➕ Cadastrar Novo Membro</ActionButton>
-                                <ActionButton onClick={() => navigate('/dash/manager')}>⚙️ Gerenciar Membros</ActionButton>
+                                <ActionButton onClick={() => navigate('/register')}>➕ Cadastrar Novo Membro</ActionButton>
+                                <ActionButton onClick={() => navigate('/manager')}>⚙️ Gerenciar Membros</ActionButton>
                             </ButtonContainer>
                         </div>
                     </SectionContainer>

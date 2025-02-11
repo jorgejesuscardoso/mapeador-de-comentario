@@ -7,7 +7,9 @@
 }
 
 body {
-  background-color: #000;
+  background-color: #0e063b;
+  background-image: url('star.png');
+  background-size: 65px;
   background-position: center;
 }
 
