@@ -18,6 +18,7 @@ const RegisterMember = () => {
     const [subgroup, setSubgroup] = useState("A1");
     const [viewPassword, setViewPassword] = useState(false);
     const [viewConfirmPassword, setViewConfirmPassword] = useState(false);
+    
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,14 +36,40 @@ const RegisterMember = () => {
             subgroup
         });
 
-        if (password !== confirmPassword) {
+        const noempty = 
+            !name.trim() || 
+            !username.trim() || 
+            !age ||  // Aqui age será considerado inválido se for 0, null ou undefined
+            !password.trim() || 
+            !confirmPassword.trim() || 
+            !wattpadUsername.trim() || 
+            !phone.trim() || 
+            !role.trim() || 
+            !work.trim() || 
+            !workLink.trim() || 
+            !subgroup.trim();
+
+
+        if (password !== confirmPassword || !password || !confirmPassword || password.length < 5) {
             Swal.fire({
                 icon: "error",
                 title: "Erro",
-                text: "As senhas não coincidem"
-            });        
+                text: "As senhas não coincidem ou são inválidas (menor que 5 caracteres)"
+            });                    
+            return;
+        } else if (noempty ) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro",
+                text: "Preencha todos os campos"
+            });
+
+            // seleciona o primeiro campo vazio
+
+
             return;
         }
+
 
         setName("");
         setUsername("");
