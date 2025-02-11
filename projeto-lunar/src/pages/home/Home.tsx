@@ -28,7 +28,6 @@ const Home = () => {
             setPersonalData(parsedPerson.user);
         }
     }, []);
-    console.log(personalData);
     return (
         <Container>
             <ContainerD>
