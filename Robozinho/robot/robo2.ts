@@ -127,7 +127,6 @@ export const FindBook = async (book: string) => {
     async function Book() {
         const browser = await chromium.launch({
             headless: true,
-            executablePath: os.platform() === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/chromium',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
     
@@ -160,7 +159,8 @@ export const FindBook = async (book: string) => {
         // **Coletando quantidade de capítulos**
 
         console.log('Extraindo quantidade de capítulos...');
-        await page.waitForSelector('.fa', { timeout: 30000 });
+        await page.waitForTimeout(5000);  // Espera 5 segundos a mais
+        await page.waitForSelector('.fa', { state: 'attached' });
 
         
         console.log('Listando capítulos...');
