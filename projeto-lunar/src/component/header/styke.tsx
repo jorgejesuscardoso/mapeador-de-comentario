@@ -10,6 +10,7 @@ export const HeaderContainer = styled.header`
     align-items: center;
     gap: 1rem;
     width: 100%;
+    padding-right: 1rem;
 
     img {
         width: 9vw;
