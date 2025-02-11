@@ -139,8 +139,8 @@ export const FindBook = async (book: string) => {
 
         console.log('Clicando em "Começar a ler"...');
         try {
-            await page.waitForSelector('.oMHIt', { timeout: 3000 });
-            const button = await page.$('.oMHIt');
+            await page.waitForSelector('.BSch2', { timeout: 3000 });
+            const button = await page.$('.BSch2');
             if (!button) {
                 console.log('Botão não encontrado!');
             }
