@@ -160,8 +160,8 @@ export const FindBook = async (book: string) => {
         // **Coletando quantidade de capítulos**
 
         console.log('Extraindo quantidade de capítulos...');
-        await page.waitForSelector('.fa', { timeout: 10000 });
-        
+        await page.waitForSelector('.fa', { timeout: 30000 });
+
         
         console.log('Listando capítulos...');
         
