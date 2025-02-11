@@ -2,17 +2,18 @@
 import styled from "styled-components";
 
 export const FooterContainer = styled.footer`
+    background-color: #0009;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #1e1e1e;
     color: #fff;
     padding: 20px;
+    width: 100%;
+    height: 100%;
     text-align: center;
     font-size: 0.7rem;
     height: 35vh;
-    border-top: 1px solid #4a4a4a;
 `;
 
 export const FooterText = styled.p`
