@@ -13,7 +13,7 @@ export const FooterContainer = styled.footer`
     height: 100%;
     text-align: center;
     font-size: 0.7rem;
-    height: 35vh;
+    height: 50vh;
 `;
 
 export const FooterText = styled.p`
