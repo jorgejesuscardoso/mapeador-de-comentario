@@ -18,18 +18,18 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         // **Rolagem até o fim da página**
         console.log('Rolando até achar o botão "Exibir mais"...');
        
-        await page.evaluate(async () => {
-            await new Promise(resolve => {
+        await page.evaluate(() => {
+            return new Promise<void>((resolve) => {
                 let totalHeight = 0;
-                let distance = 100;
-                let timer = setInterval(() => {
-                    let scrollHeight = document.body.scrollHeight;
+                const distance = 100;
+                const timer = setInterval(() => {
+                    const scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
         
                     if (totalHeight >= scrollHeight) {
                         clearInterval(timer);
-                        resolve(true);
+                        resolve();
                     }
                 }, 100);
             });
@@ -41,7 +41,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         while (clickCount < click) {
 
             try {
-                const button = await page.waitForSelector('.show-more-btn', { timeout: 5000 });
+                const button = await page.waitForSelector('.show-more-btn', { timeout: 7000 });
                 await button.$('.show-more-btn');
 
                 // **Se timeout, encerra o loop**
@@ -52,7 +52,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         
                 console.log('Carregando mais comentários...');
                 await button.click();
-                await page.waitForTimeout(3000);
+                await page.waitForTimeout(5000);
                 clickCount++;
             }  catch (error) {
                 console.log('Erro ao clicar no botão!');
@@ -160,7 +160,7 @@ export const FindBook = async (book: string) => {
         // **Coletando quantidade de capítulos**
 
         console.log('Extraindo quantidade de capítulos...');
-        await page.waitForSelector('.fa', { timeout: 3000 });
+        await page.waitForSelector('.author', { timeout: 10000 });
         
         console.log('Listando capítulos...');
         
