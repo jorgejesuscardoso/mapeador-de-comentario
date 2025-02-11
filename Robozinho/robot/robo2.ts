@@ -7,7 +7,6 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
     async function Robot() {
         const browser = await chromium.launch({
             headless: true,
-            executablePath: os.platform() === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/chromium',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });        
 
