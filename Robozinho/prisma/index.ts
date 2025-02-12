@@ -83,6 +83,7 @@ async function main() {
       phone: '5585999999999',
       points: 0,
       role: 'adm',
+      subRole: 'contadora',
     },
   });
 
@@ -123,6 +124,7 @@ async function main() {
       age: 99,
       points: 0,
       role: 'adm',
+      subRole: 'contadora',
     },
   });
 
