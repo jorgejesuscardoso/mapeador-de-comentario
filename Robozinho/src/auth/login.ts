@@ -32,6 +32,7 @@ class Auth {
                     age: exist.age,
                     phone: exist.phone,
                     points: exist.points,
+                    subRole: exist.subRole,
                 },
             };
        } catch (error) {

@@ -16,6 +16,7 @@ model Adm {
   userWtp  String
   phone    String
   role     String
+  subRole  String? 
   points   Int
 
   // Relacionamento 1:N - Um Adm pode ter vários livros
