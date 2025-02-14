@@ -33,7 +33,6 @@ chromium \
 && rm -rf /var/lib/apt/lists/*
 
 # Definir variáveis de ambiente para o Playwright e Chromium
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/lib/chromium-browser/
 
 
@@ -55,7 +54,7 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # Expôr a porta do servidor
-EXPOSE 3000
+EXPOSE 3060
 
 # Definir o entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
