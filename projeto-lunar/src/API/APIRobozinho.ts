@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-//const endPoint = 'https://mapeador-de-comentario.onrender.com';
-//const endPoint = 'http://localhost:3060';
-const endPoint = 'https://mapeador-de-comentario-production.up.railway.app';
+const endPoint = 'https://mapeador-de-comentario.onrender.com';
+const endPointRobozinho = 'https://4731-170-84-225-159.ngrok-free.app';
+//const endPoint = 'https://mapeador-de-comentario-production.up.railway.app';
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-    const url = `${endPoint}/bot`;
+    const url = `${endPointRobozinho}/bot`;
     try {
         const body = {
             wUser,
@@ -40,7 +40,7 @@ export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
 export const FindBooks = async (book: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout    
-    const url = `${endPoint}/books`;
+    const url = `${endPointRobozinho}/books`;
 
     try {
         const body = {

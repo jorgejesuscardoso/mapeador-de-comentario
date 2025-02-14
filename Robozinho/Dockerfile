@@ -55,7 +55,7 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # Expôr a porta do servidor
-EXPOSE 3060
+EXPOSE 3000
 
 # Definir o entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
