@@ -10,7 +10,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         console.log('URL:', wUrl);
         const page = await browser.newPage();
         console.log('Acessando a página...');
-        await page.goto(wUrl, { waitUntil: 'networkidle', timeout: 10000 }); 
+        await page.goto(wUrl, { waitUntil: 'load', timeout: 10000 }); 
     
         // **Rolagem até o fim da página**
         console.log('Rolando até achar o botão "Exibir mais"...');
