@@ -19,21 +19,27 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         const page = await browser.newPage();
         // Bloqueia requisições de anúncios e rastreadores
         await page.route('**/*', (route) => {
-            const blocked = ['ads', 'doubleclick', 'tracker', 'analytics', 'googlesyndication', 'adservice'];
-            if (blocked.some((url) => route.request().url().includes(url))) {
-                route.abort();
-            } else {
-                route.continue();
+            const url = route.request().url();
+            const resourceType = route.request().resourceType();
+        
+            // Lista de domínios bloqueados
+            const blockedDomains = ['ads', 'doubleclick', 'tracker', 'analytics', 'googlesyndication', 'adservice'];
+        
+            // Lista de tipos de arquivos a serem bloqueados
+            const blockedTypes = ['image', 'stylesheet', 'font', 'script'];
+        
+            // Bloqueia requisições de anúncios ou rastreadores
+            if (blockedDomains.some((blocked) => url.includes(blocked))) {
+                return route.abort();
             }
-
-            if (route.request().resourceType() === 'image' ||
-                route.request().resourceType() === 'stylesheet' ||
-                route.request().resourceType() === 'font' ||
-                route.request().resourceType() === 'script') {
-                route.abort();
-            } else {
-                route.continue();
+        
+            // Bloqueia imagens, fontes e scripts para economizar RAM
+            if (blockedTypes.includes(resourceType)) {
+                return route.abort();
             }
+        
+            // Permite outras requisições normalmente
+            route.continue();
         });
         
         console.log('Acessando a página...');
