@@ -1,7 +1,5 @@
 import { chromium } from 'playwright';
 
-// Or import puppeteer from 'puppeteer-core';
-
 export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     async function Robot() {
         const browser = await chromium.launch({
@@ -12,7 +10,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         console.log('URL:', wUrl);
         const page = await browser.newPage();
         console.log('Acessando a página...');
-        await page.goto(wUrl, { waitUntil: 'networkidle' });
+        await page.goto(wUrl, { waitUntil: 'load' });
     
         // **Rolagem até o fim da página**
         console.log('Rolando até achar o botão "Exibir mais"...');
