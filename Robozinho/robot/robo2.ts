@@ -3,7 +3,7 @@ import { chromium, firefox } from 'playwright';
 export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     async function Robot() {
         const browser = await firefox.launch({
-            headless: false,
+            headless: true,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox'
@@ -139,7 +139,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
 export const FindBook = async (book: string) => {
     async function Book() {
         const browser = await chromium.launch({
-            headless: false,
+            headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
     
