@@ -220,7 +220,9 @@ const FindComments = () => {
                     <Message>{success}</Message>
                 ) : !loading && !error ? (
                     <div>
-                        <Message>Fora de serviço.</Message>
+                        <Message>Parcialmente fora de serviço.</Message>
+                        <br />
+                        <Message style={{color: 'green'}}>Você já consegue encontrar livros.</Message>
                         <br />
                         <Message>Robozinho econtrou um livro tão incrível que crashou.</Message>
                         <img src="robozin-crasado-P.png" alt="" />
