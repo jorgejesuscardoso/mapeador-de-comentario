@@ -4,7 +4,15 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
     async function Robot() {
         const browser = await chromium.launch({
             headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage', // Evita problemas com pouca RAM
+                '--disable-gpu', // Remove renderização de GPU
+                '--single-process', // Usa apenas 1 processo para evitar estouro de RAM
+                '--no-zygote', // Reduz uso de processos
+                '--disable-software-rasterizer', // Reduz uso de CPU
+            ],
         });        
 
         console.log('URL:', wUrl);
@@ -17,10 +25,19 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
             } else {
                 route.continue();
             }
+
+            if (route.request().resourceType() === 'image' ||
+                route.request().resourceType() === 'stylesheet' ||
+                route.request().resourceType() === 'font' ||
+                route.request().resourceType() === 'script') {
+                route.abort();
+            } else {
+                route.continue();
+            }
         });
         
         console.log('Acessando a página...');
-        await page.goto(wUrl, { waitUntil: 'domcontentloaded'}); 
+        await page.goto(wUrl, { waitUntil: 'domcontentloaded', timeout: 30000 }); 
     
         // **Rolagem até o fim da página**
         console.log('Rolando até achar o botão "Exibir mais"...');
@@ -137,7 +154,6 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         await browser.close();
         return comentariosNovos;
     }
-
     return Robot();
 };
 
