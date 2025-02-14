@@ -9,6 +9,16 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
 
         console.log('URL:', wUrl);
         const page = await browser.newPage();
+        // Bloqueia requisições de anúncios e rastreadores
+        await page.route('**/*', (route) => {
+            const blocked = ['ads', 'doubleclick', 'tracker', 'analytics', 'googlesyndication', 'adservice'];
+            if (blocked.some((url) => route.request().url().includes(url))) {
+                console.log('❌ Bloqueando:', route.request().url());
+                route.abort();
+            } else {
+                route.continue();
+            }
+        });
         console.log('Acessando a página...');
         await page.goto(wUrl, { waitUntil: 'load'}); 
     
@@ -50,7 +60,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
 
             try {
                 const button = await page.waitForSelector('.show-more-btn', { timeout: 7000 });
-                await button.click();
+                await button.click({ force: true });
 
                 // **Se timeout, encerra o loop**
                 if (!button) {
