@@ -97,7 +97,7 @@ const Login = () => {
                         {logging && <SpanLogging>Logando...</SpanLogging>}
                     </FormLogin>
                     <span>
-                        Aréa reservada à administradores. <br/> Caso não seja um, por favor, retorne a página inicial.
+                        Aréa reservada à administradores. <br/> Caso não seja um, por favor, saia do aplicativo.
                     </span>
                 </ContainerFormLogin>
             </ContainerLogin>
