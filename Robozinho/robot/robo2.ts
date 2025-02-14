@@ -18,17 +18,28 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         await page.evaluate(() => {
             return new Promise<void>((resolve) => {
                 let totalHeight = 0;
-                const distance = 100;
-                const timer = setInterval(() => {
-                    const scrollHeight = document.body.scrollHeight;
+                const distance = 200; // Ajusta a distância de rolagem
+                const delay = 300; // Tempo de espera entre rolagens
+        
+                const scrollInterval = setInterval(() => {
                     window.scrollBy(0, distance);
                     totalHeight += distance;
         
-                    if (totalHeight >= scrollHeight) {
-                        clearInterval(timer);
+                    // Captura a altura máxima da página
+                    const scrollHeight = document.body.scrollHeight;
+        
+                    // Para se atingir o final da página
+                    if (totalHeight >= scrollHeight - window.innerHeight) {
+                        clearInterval(scrollInterval);
                         resolve();
                     }
-                }, 100);
+        
+                    // Para se encontrar o botão "Exibir mais"
+                    if (document.querySelector('.show-more-btn button')) {
+                        clearInterval(scrollInterval);
+                        resolve();
+                    }
+                }, delay);
             });
         });
         
