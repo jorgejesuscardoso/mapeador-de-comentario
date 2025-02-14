@@ -13,12 +13,12 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         await page.route('**/*', (route) => {
             const blocked = ['ads', 'doubleclick', 'tracker', 'analytics', 'googlesyndication', 'adservice'];
             if (blocked.some((url) => route.request().url().includes(url))) {
-                console.log('❌ Bloqueando:', route.request().url());
                 route.abort();
             } else {
                 route.continue();
             }
         });
+        
         console.log('Acessando a página...');
         await page.goto(wUrl, { waitUntil: 'load'}); 
     
