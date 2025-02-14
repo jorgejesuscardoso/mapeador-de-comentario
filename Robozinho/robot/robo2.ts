@@ -43,7 +43,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
             });
         });
         
-    
+        console.log('Rolagem finalizada!');
         // **Clicando no botão "Carregar mais comentários" se necessário**
         let clickCount = 0;
         while (clickCount < click) {
