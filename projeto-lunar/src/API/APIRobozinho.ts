@@ -72,7 +72,7 @@ export const FindBooks = async (book: string) => {
 export const LoginApi = async (user: string, password: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-    const url = `${endPoint}/auth`;
+    const url = `${endPointRobozinho}/auth`;
 
     try {
         const body = {
