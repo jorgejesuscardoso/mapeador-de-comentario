@@ -31,7 +31,6 @@ export const ContainerLogin = styled.div`
 `;
 
 export const ContainerFormLogin = styled.div`
-    background-image: url("oficial-img.jpg");
     background-size: cover;    
     display: flex;
     flex-direction: column;
@@ -42,16 +41,34 @@ export const ContainerFormLogin = styled.div`
     background-color: #f5f5f5;
 
     h1 {
+        text-align: center;
         font-size: 2rem;
-        margin-bottom: 10px;
     }
 
     span {
         text-align: center;
         font-size: 13px;
         width: 100%;
-        color: #f5f5f5;
-        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        background-image: url("oficial-img.jpg");
+
+        span {    
+            position: absolute;
+            bottom: 5vh;        
+            color: #f5f5f5;
+            margin-bottom: 1px;
+        }
+
+        h1 {
+            position: absolute;
+            top: 10vh;
+            width: 100%;            
+            color: #ffffff;
+            font-size: 3rem;
+            font-family: dancing script;
+        }
     }
 `;
 
@@ -85,8 +102,10 @@ export const FormLogin = styled.form`
   }
 
   @media (max-width: 768px) {
-    background: none;
-    width: 80%;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;   
+    padding: 2rem;
   }
 `;
 
