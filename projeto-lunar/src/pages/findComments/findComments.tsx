@@ -109,7 +109,7 @@ const FindComments = () => {
     };
 
     const getComments = async () => {
-        const capUrl = "https://www.wattpad.com".concat(capituloSelecionado);
+        const capUrl = capituloSelecionado;
         setSuccess("");
         try {
             const data = await Robozinho(user, capUrl, click);

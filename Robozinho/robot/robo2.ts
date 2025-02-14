@@ -136,18 +136,18 @@ export const FindBook = async (book: string) => {
 
         // **Clinando em "Começar a ler"**
 
-        console.log('Clicando em "Começar a ler"...');
-        try {
-            await page.waitForSelector('.BSch2', { timeout: 3000 });
-            const button = await page.$('.oMHIt');
-            if (!button) {
-                console.log('Botão não encontrado!');
-            }
-            await button?.click();
-            await page.waitForTimeout(3000);
-        } catch (error) {
-            console.log('Erro ao clicar no botão!');            
-        }
+        // console.log('Clicando em "Começar a ler"...');
+        // try {
+        //     await page.waitForSelector('.BSch2', { timeout: 3000 });
+        //     const button = await page.$('.oMHIt');
+        //     if (!button) {
+        //         console.log('Botão não encontrado!');
+        //     }
+        //     await button?.click();
+        //     await page.waitForTimeout(3000);
+        // } catch (error) {
+        //     console.log('Erro ao clicar no botão!');            
+        // }
 
         // // **Verifica se url mudou**
         // const urlAtual = page.url();
@@ -158,25 +158,26 @@ export const FindBook = async (book: string) => {
         // }
         // **Coletando quantidade de capítulos**
 
-        console.log('Extraindo quantidade de capítulos...');
-        await page.waitForSelector('.fa', { timeout: 30000 });
+        // console.log('Extraindo quantidade de capítulos...');
+        // await page.waitForSelector('.fa', { timeout: 30000 });
 
         
-        console.log('Listando capítulos...');
+        console.log('Livro encontrado!');
         
 
         // **Capturar href e InnerText dos capítulos**
         const capitulos = await page.evaluate(() => {
-            const chapters = Array.from(document.querySelectorAll('.table-of-contents li a')).map(a => {
-                const titleElement = a.querySelector('.part-title');
+            console.log('Listando capítulos...');
+            
+            return Array.from(document.querySelectorAll('li a.rXHC9')).map(a => {
+                const titleElement = a.querySelector('.if-sT'); // Pegando a div correta
                 return {
                     href: a.getAttribute('href'),
-                    title: titleElement && titleElement.textContent ? titleElement.textContent.trim() : "Título não encontrado"
+                    title: titleElement?.textContent?.trim() || "Título não encontrado"
                 };
             });
-        
-            return chapters;
         });
+        
 
         // **Retornar quantidade de capítulos e desliga o bot**
 
