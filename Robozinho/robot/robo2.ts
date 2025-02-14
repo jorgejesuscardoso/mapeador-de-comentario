@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     async function Robot() {
         const browser = await chromium.launch({
-            headless: false,
+            headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
         });        
 
