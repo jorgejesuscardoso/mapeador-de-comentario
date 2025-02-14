@@ -1,72 +1,44 @@
-import { chromium } from 'playwright';
+import { chromium, firefox } from 'playwright';
 
 export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     async function Robot() {
-        const browser = await chromium.launch({
-            headless: true,
+        const browser = await firefox.launch({
+            headless: false,
             args: [
                 '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage', // Evita problemas com pouca RAM
-                '--disable-gpu', // Remove renderização de GPU
-                '--single-process', // Usa apenas 1 processo para evitar estouro de RAM
-                '--no-zygote', // Reduz uso de processos
-                '--disable-software-rasterizer', // Reduz uso de CPU
+                '--disable-setuid-sandbox'
             ],
         });        
 
         console.log('URL:', wUrl);
         const page = await browser.newPage();
-        // Bloqueia requisições de anúncios e rastreadores
-        await page.route('**/*', (route) => {
-            const url = route.request().url();
-            const resourceType = route.request().resourceType();
-        
-            // Lista de domínios bloqueados
-            const blockedDomains = ['ads', 'doubleclick', 'tracker', 'analytics', 'googlesyndication', 'adservice'];
-        
-            // Lista de tipos de arquivos a serem bloqueados
-            const blockedTypes = ['image', 'stylesheet', 'font', 'script'];
-        
-            // Bloqueia requisições de anúncios ou rastreadores
-            if (blockedDomains.some((blocked) => url.includes(blocked))) {
-                return route.abort();
-            }
-        
-            // Bloqueia imagens, fontes e scripts para economizar RAM
-            if (blockedTypes.includes(resourceType)) {
-                return route.abort();
-            }
-        
-            // Permite outras requisições normalmente
-            route.continue();
-        });
+       
         
         console.log('Acessando a página...');
         await page.goto(wUrl, { waitUntil: 'domcontentloaded', timeout: 30000 }); 
     
         // **Rolagem até o fim da página**
         console.log('Rolando até achar o botão "Exibir mais"...');
-       
+        
         await page.evaluate(() => {
             return new Promise<void>((resolve) => {
                 let totalHeight = 0;
                 const distance = 200; // Ajusta a distância de rolagem
                 const delay = 300; // Tempo de espera entre rolagens
-        
+                
                 const scrollInterval = setInterval(() => {
                     window.scrollBy(0, distance);
                     totalHeight += distance;
-        
+                    
                     // Captura a altura máxima da página
                     const scrollHeight = document.body.scrollHeight;
-        
+                    
                     // Para se atingir o final da página
                     if (totalHeight >= scrollHeight - window.innerHeight) {
                         clearInterval(scrollInterval);
                         resolve();
                     }
-        
+                    
                     // Para se encontrar o botão "Exibir mais"
                     if (document.querySelector('.show-more-btn button')) {
                         clearInterval(scrollInterval);
@@ -78,6 +50,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
         
         console.log('Rolagem finalizada!');
         // **Clicando no botão "Carregar mais comentários" se necessário**
+        await page.waitForSelector('.show-more-btn', { timeout: 10000 });
         let clickCount = 0;
         while (clickCount < click) {
 
@@ -166,7 +139,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
 export const FindBook = async (book: string) => {
     async function Book() {
         const browser = await chromium.launch({
-            headless: true,
+            headless: false,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
     
@@ -221,6 +194,7 @@ export const FindBook = async (book: string) => {
 
         // **Retornar quantidade de capítulos e desliga o bot**
 
+        await browser.close();
         console.log(`Total de capítulos: ${capitulos.length}`);
         return capitulos;
     }
