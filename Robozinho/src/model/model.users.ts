@@ -9,7 +9,7 @@ class UsersModel {
    // Buscar usuários com livros e subs
    async getUsers() {
     try {
-        const users = await this.prisma.user.findMany({
+        const users = await this.prisma.member.findMany({
             include: {
                 books: true,  // Carrega os livros do usuário
                 subs: {
@@ -31,7 +31,7 @@ class UsersModel {
     async updateUser(id: number, data: any) {
         try {
             
-            const user = await this.prisma.user.update({
+            const user = await this.prisma.member.update({
                 where: {
                     id
                 },

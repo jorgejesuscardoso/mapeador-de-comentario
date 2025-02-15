@@ -9,7 +9,7 @@ class Auth {
 
     async auth(user: string, password: string) {
        try {
-            const exist = await this.prisma.adm.findFirst({
+            const exist = await this.prisma.member.findFirst({
                 where: {
                     user
                 },

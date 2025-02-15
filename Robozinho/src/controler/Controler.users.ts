@@ -10,9 +10,7 @@ class UsersController {
 
   async getUsers() {
     try {
-        console.log('controller');
         const users = await this.service.getUsers();
-        console.log(users);
         return users;
     } catch (error) {
         console.log(error);
