@@ -64,7 +64,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
                     break;
                 }
         
-                console.log('Carregando mais comentários...');
+                console.log('Carregando mais comentários. Número de clicks: ', clickCount + 1);
                 await button.click();
                 await page.waitForTimeout(5000);
                 clickCount++;

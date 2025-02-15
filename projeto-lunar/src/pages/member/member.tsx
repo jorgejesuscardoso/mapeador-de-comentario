@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, ResumoContainer, MainSection } from "./style";
-import { GetAdms, GetUsers, UpdateAdm, UpdateUser } from "../../API/APIRobozinho";
+import { GetUsers, UpdateUser } from "../../API/APIRobozinho";
 import { useNavigate } from "react-router-dom";
-import { SetTolocalStorage } from "../../utils/localstorage";
+import { GetFromLocalStorage, SetTolocalStorage } from "../../utils/localstorage";
 
 type PersonalData = {
     id: number;
@@ -54,21 +54,31 @@ const Members = () => {
 
     const [contadora, setContadora] = useState(false);
 
-    useEffect(() => {   
-        const members = localStorage.getItem('members');
-
-        if (members) {
-            // Se existir no localStorage, seta o estado com os dados
-            const data = JSON.parse(members);
-            setMembers(data);
-            //verifica se tem novos membros
-            getMembers();
-            if (data.subRole === 'contadora') {
-                setContadora(true);
-            }
-        } else {
-            getMembers();
+    useEffect(() => {
+        const getLocalStorage = GetFromLocalStorage('user');
+        if (getLocalStorage.subRole === 'counter') {
+            setContadora(true);
         }
+      async function handleMembers() {
+            const members = localStorage.getItem('members');
+            
+            if (members) {
+                const data = JSON.parse(members);
+                setMembers(data);
+                
+                const dataDb = await getMembers();
+
+                if (data !== dataDb) {
+                    getMembers();
+                }                
+                
+            } else {
+                getMembers();
+            }
+        }
+        
+        // Chamando a função
+        handleMembers();
     }, []);
 
     useEffect(() => {
@@ -97,14 +107,8 @@ const Members = () => {
                     points: clientToEdit.points + operate,
                 }
                 
-                if (clientToEdit.role === 'adm') {
-                    await UpdateAdm(clientToEdit.id, newPoints);
-
-                    getMembers();
-                } else {
-                    await UpdateUser(clientToEdit.id, newPoints);
-                    getMembers();
-                }
+                await UpdateUser(clientToEdit.id, newPoints);
+                getMembers();
                     
                 };
 
@@ -115,16 +119,10 @@ const Members = () => {
     }, [editPoints]);
 
     const getMembers = async () => {
-        const membersAdm = await GetAdms();
-        const membersUser = await GetUsers();
+        const members = await GetUsers();
 
-        SetTolocalStorage('members', membersAdm.concat(membersUser));
-        
-        const members = membersAdm.concat(membersUser);
-        if (members.subRole === 'contadora') {
-            console.log('contadora', members.subRole);  
-            setContadora(true);
-        }
+        SetTolocalStorage('members', members);
+    
         if (members.length > 0) {
             setMembers(members);
         }
@@ -135,65 +133,41 @@ const Members = () => {
             name: dataToEdit.name,
         }
         
-        if (clientToEdit.role === 'adm') {
-            await UpdateAdm(clientToEdit.id, data);
-            getMembers();
-        } else {
-            await UpdateUser(clientToEdit.id, data);
-            getMembers();
-        }
+        await UpdateUser(clientToEdit.id, data);
+        getMembers();
     }
 
     const handleEditPhone = async () => {
         const data = {
             phone: dataToEdit.phone,
         }
-        if (clientToEdit.role === 'adm') {
-            await UpdateAdm(clientToEdit.id, data);
-            getMembers();
-        } else {
-            await UpdateUser(clientToEdit.id, data);
-            getMembers();
-        }
+        await UpdateUser(clientToEdit.id, data);
+        getMembers();
     }
 
     const handleEditAge = async () => {
         const data = {
             age: dataToEdit.age,
         }
-        if (clientToEdit.role === 'adm') {
-            await UpdateAdm(clientToEdit.id, data);
-            getMembers();
-        } else {
-            await UpdateUser(clientToEdit.id, data);
-            getMembers();
-        }
+        
+        await UpdateUser(clientToEdit.id, data);
+        getMembers();
     }
 
     const handleEditWtpd = async () => {
         const data = {
             userWtp: dataToEdit.userWtp,
         }
-        if (clientToEdit.role === 'adm') {
-            await UpdateAdm(clientToEdit.id, data);
-            getMembers();
-        } else {
-            await UpdateUser(clientToEdit.id, data);
-            getMembers();
-        }
+        await UpdateUser(clientToEdit.id, data);
+        getMembers();
     }
 
     const handleEditUser = async () => {
         const data = {
             user: dataToEdit.user,
         }
-        if (clientToEdit.role === 'adm') {
-            await UpdateAdm(clientToEdit.id, data);
-            getMembers();
-        } else {
-            await UpdateUser(clientToEdit.id, data);
-            getMembers();
-        }
+        await UpdateUser(clientToEdit.id, data);
+        getMembers();
     }
 
     return (

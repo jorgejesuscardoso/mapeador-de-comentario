@@ -18,11 +18,6 @@ User.get("/users", async (req, res) => {
   res.json(users);
 });
 
-User.get("/adms", async (req, res) => {
-  const users = await controller.getAdms();
-  res.json(users);
-});
-
 User.patch("/users/:id", async (req, res) => {
   const { id } = req.params;
   const data = req.body;
@@ -30,11 +25,8 @@ User.patch("/users/:id", async (req, res) => {
   res.json(user);
 });
 
-User.patch("/adms/:id", async (req, res) => {
-  const { id } = req.params;
-  const data = req.body;
-  const user = await controller.updateAdm(Number(id), data);
-  res.json(user);
+User.get("/aaa/id", async (req, res) => {
+  res.json({ message: "Hello World" });
 });
 
 export default User;
