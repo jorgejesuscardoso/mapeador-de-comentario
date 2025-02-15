@@ -24,7 +24,7 @@ const Home = () => {
     useEffect(() => {
         const person = GetFromLocalStorage("user");
         if (person) {
-            const parsedPerson = JSON.parse(person);
+            const parsedPerson = person;
             setPersonalData(parsedPerson.user);
         }
     }, []);

@@ -10,28 +10,10 @@ class UsersController {
 
   async getUsers() {
     try {
+        console.log('controller');
         const users = await this.service.getUsers();
+        console.log(users);
         return users;
-    } catch (error) {
-        console.log(error);
-        return error;
-    }
-  }
-
-  async getAdms() {
-    try {
-        const users = await this.service.getAdms();
-        return users;
-    } catch (error) {
-        console.log(error);
-        return error;
-    }
-  }
-
-  async updateAdm(id: number, data: any) {
-    try {
-        const user = await this.service.updateAdm(id, data);
-        return user;
     } catch (error) {
         console.log(error);
         return error;
