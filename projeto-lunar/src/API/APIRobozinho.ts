@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-//const endPoint = 'https://mapeador-de-comentario.onrender.com';
-const endPoint = 'https://cfd0-170-84-225-159.ngrok-free.app';
+const endPoint = 'https://mapeador-de-comentario.onrender.com';
+//const endPoint = 'https://cfd0-170-84-225-159.ngrok-free.app';
 //const endPoint = 'https://mapeador-de-comentario-production.up.railway.app';
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
@@ -109,10 +109,11 @@ export const GetUsers = async () => {
 
     try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'GET',
+            mode: 'cors', // Importante para CORS
             headers: {
                 'Content-Type': 'application/json',
-                'ngrok-skip-browser-warning': 'true'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
             },
             signal: controller.signal
         });
