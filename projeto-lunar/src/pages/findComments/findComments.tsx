@@ -53,8 +53,8 @@ const FindComments = () => {
             title: "Aguarde",
             text: "Estamos buscando a obra. Isso pode demorar um pouco.",
         });
-        try {
-            const data = await FindBooks(obra);
+        try {            
+            const data = await FindBooks(obra.trim());
             console.log(data);
             if (data.status === 404) {
                 setError("Obra não encontrados.")
@@ -112,7 +112,7 @@ const FindComments = () => {
         const capUrl = capituloSelecionado;
         setSuccess("");
         try {
-            const data = await Robozinho(user, capUrl, click);
+            const data = await Robozinho(user.trim(), capUrl.trim(), click);
             console.log(data.status);
             if (data.err) {
                 setError("Usuário não encontrados.");
