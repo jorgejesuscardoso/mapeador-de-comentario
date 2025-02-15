@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const endPoint = 'https://mapeador-de-comentario.onrender.com';
-//const endPoint = 'https://cfd0-170-84-225-159.ngrok-free.app';
+//const endPoint = 'https://mapeador-de-comentario.onrender.com';
+const endPoint = 'https://cfd0-170-84-225-159.ngrok-free.app';
 //const endPoint = 'https://mapeador-de-comentario-production.up.railway.app';
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
@@ -109,23 +109,21 @@ export const GetUsers = async () => {
 
     try {
         const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors', // Importante para CORS
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+                'Content-Type': 'application/json'
             },
             signal: controller.signal
         });
         
 
+        console.log(response);
         if (!response.ok) {
             throw new Error(`Erro ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
 
-        console.log(data);
         return data;
     } catch (err) {
         return (err || "Erro ao buscar livros.");

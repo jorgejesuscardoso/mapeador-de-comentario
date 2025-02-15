@@ -28,6 +28,7 @@ class UsersServices {
           userWtp: data.userWtp,
           user: data.user,
           points: data.points && +data.points,
+          subRole: data.subRole,
         }
         const user = await this.model.updateUser(id, sanitizedData);
         

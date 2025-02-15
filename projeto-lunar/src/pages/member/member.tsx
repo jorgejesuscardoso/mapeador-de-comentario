@@ -56,29 +56,10 @@ const Members = () => {
 
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
-        if (getLocalStorage.subRole === 'counter') {
+        if (getLocalStorage.user.subRole === 'counter') {
             setContadora(true);
         }
-      async function handleMembers() {
-            const members = localStorage.getItem('members');
-            
-            if (members) {
-                const data = JSON.parse(members);
-                setMembers(data);
-                
-                const dataDb = await getMembers();
-
-                if (data !== dataDb) {
-                    getMembers();
-                }                
-                
-            } else {
-                getMembers();
-            }
-        }
-        
-        // Chamando a função
-        handleMembers();
+     getMembers();
     }, []);
 
     useEffect(() => {
@@ -263,7 +244,7 @@ const Members = () => {
                                         <TdEdit                                       
                                             
                                             onClick={() => {
-                                                if(member.role !== 'adm' || !contadora) return;
+                                                if(member.role !== 'admin' || !contadora) return;
                                                 setEditName(!editName);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -288,7 +269,7 @@ const Members = () => {
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'adm' || !contadora) return;
+                                                if(member.role !== 'admin' || !contadora) return;
                                                 setEditUser(!editUser);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -316,7 +297,7 @@ const Members = () => {
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'adm' || !contadora) return;
+                                                if(member.role !== 'admin' || !contadora) return;
                                                 setEditAge(!editAge);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -341,7 +322,7 @@ const Members = () => {
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'adm' || !contadora) return;
+                                                if(member.role !== 'admin' || !contadora) return;
                                                 setEditPhone(!editPhone);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -366,7 +347,7 @@ const Members = () => {
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'adm' || !contadora) return;
+                                                if(member.role !== 'admin' || !contadora) return;
                                                 setEditWtpd(!editWtpd);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -397,7 +378,7 @@ const Members = () => {
                                         <td>
                                             <ButtonAdd                                            
                                                 onClick={() => {
-                                                    if(member.role !== 'adm' || !contadora) return;
+                                                    if(member.role !== 'admin' || !contadora) return;
                                                     setEditPoints(!editPoints);
                                                     setClientToEdit({
                                                         id: member.id,

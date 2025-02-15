@@ -7,7 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Adm {
+model Member {
   id       Int      @id @default(autoincrement())
   name     String
   user     String   @unique
@@ -15,74 +15,42 @@ model Adm {
   password String
   userWtp  String
   phone    String
-  role     String
-  subRole  String? 
+  role     String   // Define se é "admin" ou "user"
+  subRole  String?  // Caso necessário para admins
   points   Int
 
-  // Relacionamento 1:N - Um Adm pode ter vários livros
-  books    Book[]  
-
-  // Relacionamento N:N com Subs (usando tabela intermediária AdmSub)
-  subs     AdmSub[]
-}
-
-model User {
-  id       Int      @id @default(autoincrement())
-  name     String
-  user     String   @unique
-  age      Int
-  password String
-  userWtp  String
-  phone    String
-  role     String
-  points   Int
-
-  // Relacionamento 1:N - Um User pode ter vários livros
+  // Relacionamento 1:N - Um membro pode ter vários livros
   books    Book[]
 
-  // Relacionamento N:N com Subs (usando tabela intermediária UserSub) opcional
-  subs     UserSub[]
+  // Relacionamento N:N com Subs (usando tabela intermediária MemberSub)
+  subs     MemberSub[]
 }
 
 model Book {
-  id       Int    @id @default(autoincrement())
-  title    String
-  authorId Int?
-  adminId  Int?
-  wUrl     String
+  id        Int     @id @default(autoincrement())
+  title     String
+  memberId  Int?
+  wUrl      String
 
-  // Relacionamentos
-  author   User? @relation(fields: [authorId], references: [id])
-  admin    Adm?  @relation(fields: [adminId], references: [id])
+  // Relacionamento com Member (substitui Admin e User)
+  member    Member? @relation(fields: [memberId], references: [id])
 }
 
 model Sub {
   id    Int    @id @default(autoincrement())
   name  String @unique
 
-  // Relacionamentos N:N com User e Adm
-  users UserSub[]
-  adms  AdmSub[]
+  // Relacionamento N:N com Member
+  members MemberSub[]
 }
 
-// Tabela intermediária para relação N:N entre User e Sub
-model UserSub {
-  userId Int
-  subId  Int
+// Tabela intermediária para relação N:N entre Member e Sub
+model MemberSub {
+  memberId Int
+  subId    Int
 
-  user User @relation(fields: [userId], references: [id])
-  sub  Sub  @relation(fields: [subId], references: [id])
+  member Member @relation(fields: [memberId], references: [id])
+  sub    Sub    @relation(fields: [subId], references: [id])
 
-  @@id([userId, subId]) // Chave composta
-}
-
-// Tabela intermediária para relação N:N entre Adm e Sub
-model AdmSub {
-  admId Int
-  subId Int
-
-  adm Adm @relation(fields: [admId], references: [id])
-  sub Sub @relation(fields: [subId], references: [id])
-
-  @@id([admId, subId]) // Chave composta
+  @@id([memberId, subId]) // Chave composta
 }
