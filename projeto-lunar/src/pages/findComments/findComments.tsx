@@ -1,106 +1,83 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, DivInputs, ImageRobo, Inputs, Labels, Message, QtdeComments, Question, SearchContainer } from "./style";
 import { FindBooks, Robozinho } from "../../API/APIRobozinho";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
-type Commentss = {
+type Comment = {
     usuario: string;
     comentario: string;
     dataFormatada: string;
 };
 
+type Chapter = {
+    href: string;
+    title: string;
+};
+
 const FindComments = () => {
-    const [comments, setComments] = useState([]);  // Estado dos comentários
-    const [loading, setLoading] = useState(false); // Estado de carregamento
-    const [error, setError] = useState("");        // Estado para erros
-    const [user, setUser] = useState("");          // Estado do usuário
-    const [obra, setObra] = useState("");          // Estado da obra
-    const [click, setClick] = useState(1);         // Estado do clique
-    const [capitulo, setCapitulo] = useState<[]>([]);  // Estado do capítulo
-    const [capituloSelecionado, setCapituloSelecionado] = useState(""); // Estado do capítulo selecionado
-    const [success, setSuccess] = useState("");     // Estado de sucesso
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [user, setUser] = useState("");
+    const [obra, setObra] = useState("");
+    const [clicks, setClicks] = useState(15);
+    const [chapters, setChapters] = useState<Chapter[]>([]);
+    const [selectedChapter, setSelectedChapter] = useState<string>("");
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     const getBook = async () => {
-        if (loading) return; // Impede chamadas simultâneas
-
+        if (loading) return;
 
         setLoading(true);
-        setError(""); // Reseta erro antes de uma nova tentativa
-        setCapitulo([]); // Reseta capítulo antes de uma nova tentativa
-        setComments([]); // Reseta comentários antes de uma nova tentativa
-        setSuccess(""); // Reseta sucesso antes de uma nova tentativa
-        const baseUrl = "https://www.wattpad.com";
+        setError(null);
+        setChapters([]);
+        setComments([]);
+        setSuccessMessage(null);
+
         if (!obra) {
-            Swal.fire({
-                icon: "error",
-                title: "Erro",
-                text: "Insira uma URL de uma obra do Wattpad.",
-            });
-            setLoading(false);
-            return;
-        } else if (!obra.includes(baseUrl)) {
-            Swal.fire({
-                icon: "error",
-                title: "Erro",
-                text: "Insira uma URL válida do Wattpad.",
-            });
+            Swal.fire({ icon: "error", title: "Erro", text: "Insira uma URL de uma obra do Wattpad." });
             setLoading(false);
             return;
         }
-        Swal.fire({
-            icon: "info",
-            title: "Aguarde",
-            text: "Estamos buscando a obra. Isso pode demorar um pouco.",
-        });
+
+        if (!obra.includes("https://www.wattpad.com")) {
+            Swal.fire({ icon: "error", title: "Erro", text: "Insira uma URL válida do Wattpad." });
+            setLoading(false);
+            return;
+        }
+
+        Swal.fire({ icon: "info", title: "Aguarde", text: "Estamos buscando a obra. Isso pode demorar um pouco." });
+
         try {            
             const data = await FindBooks(obra.trim());
-            console.log(data);
-            if (data.status === 404) {
-                setError("Obra não encontrados.")
-                return;
-                
-            };
             if (!data || data.length === 0) {
-                setError("Nenhuma obra  encontrado.");
+                setError("Nenhuma obra encontrada.");
                 return;
             }
-            console.log(data);
-
-            setCapitulo(data);
-            setError("");
-            setSuccess("Livro encontrado com sucesso.");
+            setChapters(data);
+            setSuccessMessage("Livro encontrado com sucesso.");
         } catch (error) {
             setError("Erro ao buscar obra.");
-            return error;
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
 
     const handleSearch = () => {
-        if (loading) return; // Impede chamadas simultâneas
+        if (loading) return;
 
         setLoading(true);
-        setError(""); // Reseta erro antes de uma nova tentativa
-        
+        setError(null);
 
-        if (!capituloSelecionado) {
-            Swal.fire({
-                icon: "error",
-                title: "Erro",
-                text: "Selecione um capítulo.",
-            });
+        if (!selectedChapter) {
+            Swal.fire({ icon: "error", title: "Erro", text: "Selecione um capítulo." });
             setLoading(false);
             return;
         }
 
         if (!user) {
-            Swal.fire({
-                icon: "error",
-                title: "Erro",
-                text: "Insira um usuário do Wattpad.",
-            });
+            Swal.fire({ icon: "error", title: "Erro", text: "Insira um usuário do Wattpad." });
             setLoading(false);
             return;
         }
@@ -109,26 +86,16 @@ const FindComments = () => {
     };
 
     const getComments = async () => {
-        const capUrl = capituloSelecionado;
-        setSuccess("");
+        setSuccessMessage(null);
         try {
-            const data = await Robozinho(user.trim(), capUrl.trim(), click);
-            console.log(data.status);
-            if (data.err) {
-                setError("Usuário não encontrados.");
-                return;                
-            };
-            if (data.err500 === 500) {
-                throw new Error("Erro Servidor");
-            };
+            const data = await Robozinho(user.trim(), selectedChapter.trim(), clicks);
             if (!data || data.length === 0) {
                 throw new Error("Nenhum comentário encontrado.");
             }
             setComments(data);
-            console.log(data);
         } catch (error) {
+            console.error(error);
             setError("Erro ao buscar comentários.");
-            return error;
         } finally {
             setLoading(false);
         }
@@ -140,7 +107,8 @@ const FindComments = () => {
                 <DivInputs>
                     <Labels>
                         Insira um usuário:
-                        <Inputs type="text"
+                        <Inputs 
+                            type="text"
                             value={user}
                             onChange={(e) => setUser(e.target.value)}
                             placeholder="Usuário Wattpad"
@@ -148,7 +116,8 @@ const FindComments = () => {
                     </Labels> 
                     <Labels>
                         Insira uma obra:
-                        <Inputs type="text"
+                        <Inputs 
+                            type="text"
                             value={obra}
                             onChange={(e) => setObra(e.target.value)}
                             placeholder="URL da Obra no Wattpad"
@@ -156,40 +125,40 @@ const FindComments = () => {
                     </Labels>
                     <Labels>
                         Escolha um capítulo:
-                        <Inputs as="select"
-                            value={capituloSelecionado}
-                            onChange={(e) => setCapituloSelecionado(e.target.value)}
+                        <Inputs 
+                            as="select"
+                            value={selectedChapter}
+                            onChange={(e) => setSelectedChapter(e.target.value)}
                         >
-                            <option value="">Selecione um capítulo: ({capitulo.length})</option>
-                            {capitulo.map((capitulo: any, index: number) => (
-                                <option key={index} value={capitulo.href}>{capitulo.title}</option>
+                            <option value="">Selecione um capítulo ({chapters.length})</option>
+                            {chapters.map((chapter, index) => (
+                                <option key={index} value={chapter.href}>{chapter.title}</option>
                             ))}
                         </Inputs>
                     </Labels>
                 </DivInputs>
-                <QtdeComments>
-                   <div id="comments">
-                        
 
-                        <span>
-                            QTD de Comentários encontrados: <strong>{comments.length || 0 }</strong>
-                        </span>
+                <QtdeComments>
+                    <div id="comments">
+                        <span>QTD de Comentários encontrados: <strong>{comments.length}</strong></span>
                         <br />
                         <Labels id="click">
-                         
-                        Insira a quantidade de cliques para carregar mais comentários:   
-                        <Question 
-                            src="question.png"
-                            alt="Pergunta"
-                            title="Aqui você pode definir quantos cliques o robô fará para carregar mais comentários. Ajuste conforme necessário. Por padrão, o robô fará 15 cliques. Então, se você deixar em branco ou 0, ele fará 15 cliques."
-                        />
-                        <Inputs type="number"
-                            value={click}
-                            onChange={(e) => setClick(Number(e.target.value))}
-                            placeholder="Número de cliques"
-                        />
+                            Insira a quantidade de cliques para carregar mais comentários:   
+                            <Question 
+                                src="question.png"
+                                alt="Pergunta"
+                                title="Aqui você pode definir quantos cliques o robô fará para carregar mais comentários. Ajuste conforme necessário. Por padrão, o robô fará 15 cliques."
+                            />
+                            <Inputs 
+                                type="number"
+                                value={clicks}
+                                onChange={(e) => setClicks(Number(e.target.value))}
+                                placeholder="Número de cliques"
+                                min={1}
+                            />
                         </Labels>
-                   </div> 
+                    </div> 
+                    
                     <Button onClick={getBook} disabled={loading}>
                         {loading ? "Carregando..." : "Buscar Obra"}
                     </Button>                   
@@ -197,39 +166,38 @@ const FindComments = () => {
                     <Button className='comentario' onClick={handleSearch} disabled={loading}>
                         {loading ? "Carregando..." : "Buscar Comentários"}
                     </Button>
-
                 </QtdeComments>
 
                 <ImageRobo>
                     {loading && <Message>Isso pode demorar um pouco.</Message>}
-                    {error && <Message>{  error }</Message>}          
+                    {error && <Message>{error}</Message>}          
                 </ImageRobo>
             </SearchContainer>
 
             <CommentsContainer>
                 {comments.length > 0 ? (
-                comments.map((comment: Commentss, index: number) => (
-                    <CommentCard key={index}>
-                   <div>
-                    <CommentUser><b>Usuário:</b> {comment.usuario}</CommentUser>
-                    <CommentText><b>Comentário:</b> {comment.comentario}</CommentText>
-                   </div>
-                    <CommentDate>Hora: {comment.dataFormatada}</CommentDate>
-                    </CommentCard>
-                )) ) : success ? (
-                    <Message>{success}</Message>
+                    comments.map((comment, index) => (
+                        <CommentCard key={index}>
+                            <div>
+                                <CommentUser><b>Usuário:</b> {comment.usuario}</CommentUser>
+                                <CommentText><b>Comentário:</b> {comment.comentario}</CommentText>
+                            </div>
+                            <CommentDate>Hora: {comment.dataFormatada}</CommentDate>
+                        </CommentCard>
+                    ))
+                ) : successMessage ? (
+                    <Message>{successMessage}</Message>
                 ) : !loading && !error ? (
                     <div>
-                        <Message>Parcialmente fora de serviço.</Message>
                         <br />
-                        <Message style={{color: 'green'}}>Você já consegue encontrar livros.</Message>
+                        <Message style={{color: 'green'}}></Message>
                         <br />
-                        <Message>Robozinho econtrou um livro tão incrível que crashou.</Message>
-                        <img src="robozin-crasado-P.png" alt="" />
+                        <Message>Robozinho encontrou um livro tão incrível que crashou. </Message>
+                        <img src="robozin-crasado-P.png" alt="Robo crashado" />
                     </div>
                 ) : null}
             </CommentsContainer>
-            </ContainerFindComments>
+        </ContainerFindComments>
     );
 };
 
