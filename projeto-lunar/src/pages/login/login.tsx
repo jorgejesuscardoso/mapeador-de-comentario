@@ -25,7 +25,6 @@ const Login = () => {
         }
         setAuthentic(true);
         const data = await LoginApi(user, p);
-
         if(!data.user || data.user.name === "") {
             Swal.fire({
                 icon: 'error',
