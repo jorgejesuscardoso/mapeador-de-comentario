@@ -14,9 +14,9 @@ type PersonalData = {
     age: number;
     role: string;
     user: string;
-    books: [{ title: string }];
+    books: [{ title: string, wUrl: string }];
     userWtp: string;
-    subs: [{ sub: { name: string } }];
+    subs: [];
     subRole?: string;
 };
 
@@ -34,7 +34,6 @@ const Members = () => {
         userWtp: '',
         user: '',
         points: 0,
-
     });
     const [points, setPoints] = useState<string | null>(null);
     const [comfirmEdit, setComfirmEdit] = useState(false);
@@ -53,6 +52,15 @@ const Members = () => {
     } as any);
 
     const [contadora, setContadora] = useState(false);
+    const [addSubs, setAddSubs] = useState(false);
+    const [membersSubs, setMembersSubs] = useState('Luna A-1');
+    const [membersBooks, setMembersBooks] = useState({
+        title: '',
+        wUrl: '',
+    });
+    const [changeBook, setChangeBook] = useState(false);
+    const [changeRole, setChangeRole] = useState(false);
+    const [role, setRole] = useState('member');
 
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
@@ -151,6 +159,25 @@ const Members = () => {
         getMembers();
     }
 
+    const handleEditSubs = async () => {
+        const data = {
+            subs: [membersSubs],
+        };
+    
+        await UpdateUser(clientToEdit.id, data);
+        getMembers();
+    };
+
+    const hanbleChangeRole = async () => {
+        const data = {
+            role
+        };
+    
+        await UpdateUser(clientToEdit.id, data);
+        getMembers();
+    }
+        
+
     return (
         <Container>
             <ContainerD>
@@ -162,7 +189,10 @@ const Members = () => {
                             <>
                                 <SpanTotalpoints>🏆 Pontos não utilizados: <strong>{members.reduce((total, s) => total + s.points, 0).toLocaleString('pt-BR')}</strong></SpanTotalpoints>
 
-                                <SpanTotalpoints>📊 Média de pontos por membro: <strong>{(members.reduce((total, s) => total + s.points, 0) / members.length).toLocaleString()}</strong></SpanTotalpoints>
+                                <SpanTotalpoints>📊 Média de pontos por membro: <strong>{(members.reduce((total, s) => total + s.points, 0) / members.length).toLocaleString('pt-BR', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}</strong></SpanTotalpoints>
 
                                 <SpanTotalpoints>🥇 Membro com mais pontos: <strong>{members.reduce((top, s) => (s.points > top.points ? s : top), members[0]).name}</strong></SpanTotalpoints>
 
@@ -186,10 +216,11 @@ const Members = () => {
                                 <span className="highlight"> Nome de Usuário (Wattpad)</span>,  
                                 <span className="highlight"> Idade</span>,  
                                 <span className="highlight"> Telefone</span> e  
-                                <span className="highlight"> Pontos</span> ⭐.  
+                                <span className="highlight"> Pontos</span>,
+                                <span className="highlight"> ETC...</span>  ⭐.  
                             </p>
                             <p>
-                                🔒 <span className="highlight">Atenção:</span> Apenas administradores podem acessar esse painel!  
+                                🔒 <span className="highlight">Atenção:</span> Apenas administradores com permissão especial, podem usar esse painel!  
                             </p>
                             <p>🖱️ Para editar, basta clicar no campo desejado e um popup será aberto! 🎯</p>
                         </DescriptionContainer>
@@ -204,7 +235,7 @@ const Members = () => {
 
                            <div>
                                 <p>
-                                    O painel de membros do Projeto Lunar é uma ferramenta que permite a visualização e edição de informações dos membros cadastrados no sistema. </p><p> Aqui você pode visualizar dados como nome, idade, telefone, usuário do Wattpad, obras cadastradas, pontos e subs.</p><p> Além disso, é possível editar informações como nome, idade, telefone, usuário do Wattpad, usuário do sistema e pontos. Para editar, basta clicar no campo desejado e um popup será aberto. 📝✨
+                                    O painel de membros do Projeto Lunar é uma ferramenta que permite a visualização e edição de informações dos membros cadastrados no sistema. </p><p> Aqui você pode visualizar dados como nome, idade, telefone, usuário do Wattpad, obras cadastradas, pontos e subs.</p><p> Além disso, é possível editar informações. Para editar, basta clicar no campo desejado e um popup será aberto. 📝✨
                                 </p>
                            </div>
 
@@ -244,7 +275,7 @@ const Members = () => {
                                         <TdEdit                                       
                                             
                                             onClick={() => {
-                                                if(member.role !== 'admin' || !contadora) return;
+                                                if(!contadora) return;
                                                 setEditName(!editName);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -262,6 +293,9 @@ const Members = () => {
                                                 setEditWtpd(false);
                                                 setEditUser(false);
                                                 setEditPoints(false);
+                                                setAddSubs(false);
+                                                setChangeRole(false);
+                                                setChangeBook(false);
                                             }}                                    
                                         >
                                             {member.name}
@@ -269,7 +303,7 @@ const Members = () => {
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'admin' || !contadora) return;
+                                                if(!contadora) return;
                                                 setEditUser(!editUser);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -286,18 +320,44 @@ const Members = () => {
                                                 setEditPhone(false);
                                                 setEditWtpd(false);
                                                 setEditPoints(false);
-
+                                                setAddSubs(false);
+                                                setChangeRole(false);
+                                                setChangeBook(false);
                                             }}
                                         >
                                             {member.user}
                                         </TdEdit>
-                                        <td>
+                                        <td
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => {
+                                                if(!contadora) return;
+                                                setChangeRole(!changeRole);
+                                                setClientToEdit({
+                                                    id: member.id,
+                                                    role: member.role,
+                                                    name: member.name,
+                                                    age: member.age,
+                                                    phone: member.phone,
+                                                    userWtp: member.userWtp,
+                                                    user: member.user,                                                
+                                                    points: member.points,
+                                                });
+                                                setEditName(false);
+                                                setEditAge(false);
+                                                setEditPhone(false);
+                                                setEditWtpd(false);
+                                                setEditUser(false);
+                                                setEditPoints(false);
+                                                setAddSubs(false);
+                                                setChangeBook(false);
+                                            }}
+                                        >
                                             {member.role.toUpperCase()}
                                         </td>
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'admin' || !contadora) return;
+                                                if(!contadora) return;
                                                 setEditAge(!editAge);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -314,7 +374,9 @@ const Members = () => {
                                                 setEditWtpd(false);
                                                 setEditUser(false);
                                                 setEditPoints(false);
-
+                                                setAddSubs(false);
+                                                setChangeRole(false);
+                                                setChangeBook(false);
                                             }}
                                         >
                                             {member.age}
@@ -322,7 +384,7 @@ const Members = () => {
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'admin' || !contadora) return;
+                                                if(!contadora) return;
                                                 setEditPhone(!editPhone);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -339,7 +401,9 @@ const Members = () => {
                                                 setEditWtpd(false);
                                                 setEditUser(false);
                                                 setEditPoints(false);
-
+                                                setAddSubs(false);
+                                                setChangeRole(false);
+                                                setChangeBook(false);
                                             }}
                                         >
                                             {member.phone}
@@ -347,7 +411,7 @@ const Members = () => {
                                         <TdEdit
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => {
-                                                if(member.role !== 'admin' || !contadora) return;
+                                                if(!contadora) return;
                                                 setEditWtpd(!editWtpd);
                                                 setClientToEdit({
                                                     id: member.id,
@@ -364,11 +428,42 @@ const Members = () => {
                                                 setEditPhone(false);
                                                 setEditUser(false);
                                                 setEditPoints(false);
+                                                setAddSubs(false);
+                                                setChangeRole(false);
+                                                setChangeBook(false);
                                             }}
                                         >                            
                                             {member.userWtp}
                                         </TdEdit>
-                                        <td>{
+                                        <td
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => {
+                                                if(!contadora) return;
+                                                setMembersBooks({
+                                                    title: member.books[0].title,
+                                                    wUrl: member.books[0].wUrl,
+                                                });
+                                                setChangeBook(true);
+                                                setClientToEdit({
+                                                    id: member.id,
+                                                    role: member.role,
+                                                    name: member.name,
+                                                    age: member.age,
+                                                    phone: member.phone,
+                                                    userWtp: member.userWtp,
+                                                    user: member.user,                                                
+                                                    points: member.points,
+                                                });
+                                                setEditName(false);
+                                                setEditAge(false);
+                                                setEditPhone(false);
+                                                setEditWtpd(false);
+                                                setEditUser(false);
+                                                setEditPoints(false);
+                                                setChangeRole(false);
+                                                setAddSubs(false);
+                                            }}
+                                        >{
                                             member.books
                                                 .slice() // Cria uma cópia do array para evitar mutação
                                                 .sort((a, b) => a.title.localeCompare(b.title)) // Ordena alfabeticamente
@@ -378,7 +473,7 @@ const Members = () => {
                                         <td>
                                             <ButtonAdd                                            
                                                 onClick={() => {
-                                                    if(member.role !== 'admin' || !contadora) return;
+                                                    if(!contadora) return;
                                                     setEditPoints(!editPoints);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -395,18 +490,44 @@ const Members = () => {
                                                     setEditPhone(false);
                                                     setEditWtpd(false);
                                                     setEditUser(false);
-
+                                                    setChangeRole(false);
+                                                    setAddSubs(false);
+                                                    setChangeBook(false);
                                                 }}
                                             >
                                             {member.points.toLocaleString('pt-BR')}
                                             </ButtonAdd>
                                         </td>
 
-                                        <td>{
+                                        <td
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => {
+                                                if(!contadora) return;
+                                                setAddSubs(!addSubs);
+                                                setClientToEdit({
+                                                    id: member.id,
+                                                    role: member.role,
+                                                    name: member.name,
+                                                    age: member.age,
+                                                    phone: member.phone,
+                                                    userWtp: member.userWtp,
+                                                    user: member.user,                                                    
+                                                    points: member.points,
+                                                });
+                                                setEditName(false);
+                                                setEditAge(false);
+                                                setEditPhone(false);
+                                                setEditWtpd(false);
+                                                setEditUser(false);
+                                                setEditPoints(false);
+                                                setChangeRole(false);
+                                                setChangeBook(false);
+                                            }}                                        
+                                        >{
                                             member.subs
                                             .slice() // Cria uma cópia do array para evitar mutação
-                                            .sort((a, b) => a.sub.name.localeCompare(b.sub.name)) // Ordena alfabeticamente
-                                            .map((s, index) => (<li key={index}>{s.sub.name}</li>))
+                                            .sort((a, b) => a + b) // Ordena alfabeticamente
+                                            .map((s, index) => (<li key={index}>{s}</li>))
                                         }</td>
                                     </TableRow>
                                 ))
@@ -571,6 +692,98 @@ const Members = () => {
                             </div>
                         </ModalEditContainer>
                     )}
+
+                    {addSubs && (
+                        <ModalContainer>
+                            <h2>Adicionando Subs para:</h2>
+                            <h3>{clientToEdit.name}</h3>
+                            <InputField
+                                as='select'
+                                placeholder="Sub"
+                                onChange={(e) => setMembersSubs(e.target.value)}
+                            >
+                                <option value="Luna A-1">Luna A-1</option>
+                                <option value="Luna A-2">Luna A-2</option>
+                                <option value="Luna A-3">Luna A-3</option>
+                                <option value="Luna A-4">Luna A-4</option>
+                                <option value="Luna A-5">Luna A-5</option>
+                                <option value="Luna A-6">Luna A-6</option>
+                                <option value="Luna A-7">Luna A-7</option>
+                                <option value="Luna A-8">Luna A-8</option>
+                                <option value="Luna A-9">Luna A-9</option>
+                                <option value="Luna A-10">Luna A-10</option>
+                            </InputField>
+                            <div>
+                                <Button onClick={
+                                    () => {
+                                        handleEditSubs();
+                                        setAddSubs(false);
+                                        setLoadEdit(true);
+
+                                    }
+                                }>Salvar</Button>
+                                <Button onClick={() => setAddSubs(false)}>Cancelar</Button>
+                            </div>
+                        </ModalContainer>
+                    )}
+
+                    {changeRole && (
+                        <ModalContainer>
+                            <h2>Alterando a função de:</h2>
+                            <h3>{clientToEdit.name}</h3>
+                            <InputField
+                                as='select'
+                                placeholder="Função"
+                                onChange={(e) => setRole(e.target.value)}
+                            >
+                                <option value="member">Membro</option>
+                                <option value="adm">Administrador</option>
+                            </InputField>
+                            <div>
+                                <Button onClick={
+                                    () => {
+                                        hanbleChangeRole();
+                                        setChangeRole(false);
+                                        setLoadEdit(true);
+
+                                    }
+                                }>Salvar</Button>
+                                <Button onClick={() => setChangeRole(false)}>Cancelar</Button>
+                            </div>
+                        </ModalContainer>
+                    )}
+
+                    {changeBook && (
+                        <ModalContainer>
+                            <h2>Alterando a obra de:</h2>
+                            <h3>{clientToEdit.name}</h3>
+                            <h2>Obra atual é:</h2>
+                            <h3>{membersBooks.title}</h3>
+                            <InputField
+                                type="text"
+                                placeholder="Alterar o nome da obra"
+                                onChange={(e) => setMembersBooks({ title: e.target.value, wUrl: membersBooks.wUrl })}
+                            />
+                            <InputField
+                                type="text"
+                                placeholder="Alterar o link da obra"
+                                onChange={(e) => setMembersBooks({ title: membersBooks.title, wUrl: e.target.value })}
+                            />
+                            <span>
+                                Se desejar adicionar uma obra diferente, preencha os campos acima e clique em salvar. A obra será alterada.
+                            </span>
+                            <div>
+                                <Button onClick={
+                                    () => {
+                                        setChangeBook(false);
+                                    }
+                                }>Salvar</Button>
+                                <Button onClick={() => setChangeBook(false)}>Cancelar</Button>
+                            </div>
+                        </ModalContainer>
+                    )}
+                    
+                    
             </ContainerD>
         </Container>
     );

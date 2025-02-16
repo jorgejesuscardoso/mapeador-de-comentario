@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Container, Form, Inputs, Labels, Button, Select, Fade, Button2, Section, ViewPassword, ViewConfirmPassword } from "./style";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { CreateUser } from "../../API/APIRobozinho";
 
 const RegisterMember = () => {
     const Navigate = useNavigate();
@@ -15,75 +16,97 @@ const RegisterMember = () => {
     const [role, setRole] = useState("Admin");
     const [work, setWork] = useState("");
     const [workLink, setWorkLink] = useState("");
-    const [subgroup, setSubgroup] = useState("A1");
     const [viewPassword, setViewPassword] = useState(false);
     const [viewConfirmPassword, setViewConfirmPassword] = useState(false);
     
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({
-            name,
-            username,
-            age,
-            password,
-            confirmPassword,
-            wattpadUsername,
-            phone,
-            role,
-            work,
-            workLink,
-            subgroup
-        });
-
-        const noempty = 
+    
+        // Validação para evitar campos vazios
+        const noEmpty = 
             !name.trim() || 
             !username.trim() || 
-            !age ||  // Aqui age será considerado inválido se for 0, null ou undefined
+            !age || // Evita idades inválidas (0, null ou undefined)
             !password.trim() || 
             !confirmPassword.trim() || 
             !wattpadUsername.trim() || 
             !phone.trim() || 
             !role.trim() || 
             !work.trim() || 
-            !workLink.trim() || 
-            !subgroup.trim();
-
-
-        if (password !== confirmPassword || !password || !confirmPassword || password.length < 5) {
-            Swal.fire({
-                icon: "error",
-                title: "Erro",
-                text: "As senhas não coincidem ou são inválidas (menor que 5 caracteres)"
-            });                    
-            return;
-        } else if (noempty ) {
+            !workLink.trim();
+    
+        if (noEmpty) {
             Swal.fire({
                 icon: "error",
                 title: "Erro",
                 text: "Preencha todos os campos"
             });
-
-            // seleciona o primeiro campo vazio
-
-
             return;
         }
-
-
-        setName("");
-        setUsername("");
-        setAge(0);
-        setPassword("");
-        setConfirmPassword("");
-        setWattpadUsername("");
-        setPhone("");
-        setRole("Admin");
-        setWork("");
-        setWorkLink("");
-        setSubgroup("A1");
-
-    }
+    
+        // Validação de senha
+        if (password !== confirmPassword || password.length < 5) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro",
+                text: "As senhas não coincidem ou são inválidas (menor que 5 caracteres)"
+            });
+            return;
+        }
+    
+        // Preparação dos dados para o backend
+        const userData = {
+            name,
+            user: username,
+            age,
+            password,
+            userWtp: wattpadUsername,
+            phone,
+            role,
+            points: 0, // Define um valor inicial de pontos
+            books: work ? [{ title: work, wUrl: workLink }] : [], // Se houver obra, adiciona ao array
+        };
+        try {
+            const response = await CreateUser(userData);
+    
+            if (response.id) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Sucesso",
+                    text: "Usuário registrado com sucesso!"
+                });
+    
+                // Limpar o formulário
+                setName("");
+                setUsername("");
+                setAge(0);
+                setPassword("");
+                setConfirmPassword("");
+                setWattpadUsername("");
+                setPhone("");
+                setRole("Admin");
+                setWork("");
+                setWorkLink("");
+    
+                // Redireciona após o sucesso
+                Navigate("/dash");
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Erro",
+                    text: "Falha ao registrar usuário!"
+                });
+            }
+        } catch (error) {
+            console.error("Erro ao registrar usuário:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Erro",
+                text: "Ocorreu um erro inesperado. Tente novamente."
+            });
+        }
+    };
 
 
     return (
@@ -220,25 +243,7 @@ const RegisterMember = () => {
                         value={workLink}
                         onChange={(e) => setWorkLink(e.target.value)}
                     />
-                </Labels>
-                <Labels>
-                    Subgrupo:
-                    <Select
-                        value={subgroup}
-                        onChange={(e) => setSubgroup(e.target.value)}
-                    >
-                        <option value="A1">A-1</option>
-                        <option value="A2">A-2</option>
-                        <option value="A3">A-3</option>
-                        <option value="A4">A-4</option>
-                        <option value="A5">A-5</option>
-                        <option value="A6">A-6</option>
-                        <option value="A7">A-7</option>
-                        <option value="A8">A-8</option>
-                        <option value="A9">A-9</option>
-                        <option value="A10">A-10</option>
-                    </Select>
-                </Labels>
+                </Labels>                
                 <Button
                     onClick={handleSubmit}
                 >

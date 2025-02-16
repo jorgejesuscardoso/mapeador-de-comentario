@@ -22,8 +22,8 @@ model Member {
   // Relacionamento 1:N - Um membro pode ter vários livros
   books    Book[]
 
-  // Relacionamento N:N com Subs (usando tabela intermediária MemberSub)
-  subs     MemberSub[]
+  // Subs armazenados como array
+  subs     String[] @default([])
 }
 
 model Book {
@@ -34,23 +34,4 @@ model Book {
 
   // Relacionamento com Member (substitui Admin e User)
   member    Member? @relation(fields: [memberId], references: [id])
-}
-
-model Sub {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
-
-  // Relacionamento N:N com Member
-  members MemberSub[]
-}
-
-// Tabela intermediária para relação N:N entre Member e Sub
-model MemberSub {
-  memberId Int
-  subId    Int
-
-  member Member @relation(fields: [memberId], references: [id])
-  sub    Sub    @relation(fields: [subId], references: [id])
-
-  @@id([memberId, subId]) // Chave composta
 }

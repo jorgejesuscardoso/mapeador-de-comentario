@@ -13,6 +13,12 @@ const service = new UsersServices(model);
 const User = Router();
 const controller = new UsersController(service);
 
+User.post("/create/users", async (req, res) => {
+  const data = req.body;
+  const user = await controller.createUser(data);
+  res.json(user);
+});
+
 User.post("/users", async (req, res) => {
   const users = await controller.getUsers();
   res.json(users);
@@ -24,6 +30,5 @@ User.patch("/users/:id", async (req, res) => {
   const user = await controller.updateUser(Number(id), data);
   res.json(user);
 });
-
 
 export default User;
