@@ -2,55 +2,26 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+function getRandomPoints() {
+  return Math.floor(Math.random() * (4000000 - 10000 + 1)) + 10000;
+}
+
 async function main() {
-  // Criando Subs
-  const subs = await prisma.sub.createMany({
-    data: [
-      { name: 'Luna-A1' },
-      { name: 'Luna-A2' },
-      { name: 'Luna-A3' },
-      { name: 'Luna-A4' },
-      { name: 'Luna-A5' },
-      { name: 'Luna-A6' },
-      { name: 'Luna-A7' },
-    ],
-  });
-
-  // Buscando Subs
-  const allSubs = await prisma.sub.findMany();
-
   // Criando Membros (Admins e Usuários)
   const members = await prisma.member.createMany({
     data: [
-      { name: 'Anna França', user: 'Anna', password: '123', userWtp: '@Anna_Fransa', phone: '5585999999999', age: 99, points: 120, role: 'admin' },
-      { name: 'Gleyce Messias', user: 'Gley', password: '123', userWtp: '@GleyMessias', phone: '5585999999999', age: 99, points: 250, role: 'admin' },
-      { name: 'Leticia', user: 'Leticia', password: '123', userWtp: '@LehCorreia25', phone: '5585999999999', age: 99, points: 310, role: 'admin', subRole: 'counter' },
-      { name: 'Katley', user: 'Yu', password: '123', userWtp: '@Yu_Suki', phone: '5585999999999', age: 99, points: 95, role: 'admin' },
-      { name: 'João Pedro', user: 'Joao', password: '123', userWtp: '@JoaoPedroh19', phone: '5585999999999', age: 99, points: 180, role: 'admin' },
-      { name: 'Jorge', user: 'JcBushido', password: '123', userWtp: '@JcBushido', phone: '5585999999999', age: 99, points: 210, role: 'admin', subRole: 'counter' },
-      { name: 'DVRodry', user: 'DVRodry', password: '123', userWtp: '@DVRodry', phone: '5585999999999', age: 99, points: 45, role: 'user' },
+      { name: 'Anna França', user: 'Anna', password: '123', userWtp: '@Anna_Fransa', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A1'] },
+      { name: 'Gleyce Messias', user: 'Gley', password: '123', userWtp: '@GleyMessias', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A2'] },
+      { name: 'Leticia', user: 'Leticia', password: '123', userWtp: '@LehCorreia25', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'counter', subs: ['Luna-A3', 'Luna-A5', 'Luna-A6'] },
+      { name: 'Katley', user: 'Yu', password: '123', userWtp: '@Yu_Suki', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A4', 'Luna-A7'] },
+      { name: 'João Pedro', user: 'Joao', password: '123', userWtp: '@JoaoPedroh19', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A5'] },
+      { name: 'Jorge', user: 'JcBushido', password: '123', userWtp: '@JcBushido', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'counter', subs: ['Luna-A6'] },
+      { name: 'DVRodry', user: 'DVRodry', password: '123', userWtp: '@DVRodry', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'member', subs: ['Luna-A2', 'Luna-A3'] },
     ],
   });
 
   // Buscando os membros criados
   const allMembers = await prisma.member.findMany();
-
-  // Associando membros a Subs
-  await prisma.memberSub.createMany({
-    data: [
-      { memberId: allMembers[0].id, subId: allSubs[0].id },
-      { memberId: allMembers[1].id, subId: allSubs[1].id },
-      { memberId: allMembers[2].id, subId: allSubs[2].id },
-      { memberId: allMembers[2].id, subId: allSubs[4].id },
-      { memberId: allMembers[2].id, subId: allSubs[5].id },
-      { memberId: allMembers[3].id, subId: allSubs[3].id },
-      { memberId: allMembers[3].id, subId: allSubs[6].id },
-      { memberId: allMembers[4].id, subId: allSubs[4].id },
-      { memberId: allMembers[5].id, subId: allSubs[5].id },
-      { memberId: allMembers[6].id, subId: allSubs[1].id },
-      { memberId: allMembers[6].id, subId: allSubs[2].id },
-    ],
-  });
 
   // Criando Livros
   await prisma.book.createMany({

@@ -8,6 +8,16 @@ class UsersController {
     this.service = service
   }
 
+  async createUser(data: any) {
+    try {
+        const user = await this.service.createUser(data);
+        return user;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
   async getUsers() {
     try {
         const users = await this.service.getUsers();
@@ -20,9 +30,7 @@ class UsersController {
 
   async updateUser(id: number, data: any) {
     try {
-        
       const user = await this.service.updateUser(id, data);
-        
         return user;
     } catch (error) {
         console.log(error);
