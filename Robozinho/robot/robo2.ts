@@ -8,38 +8,31 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
                 '--no-sandbox',
                 '--disable-setuid-sandbox'
             ],
-        });        
+        });
 
         console.log('URL:', wUrl);
         const page = await browser.newPage();
-       
-        
+
         console.log('Acessando a página...');
-        await page.goto(wUrl, { waitUntil: 'domcontentloaded', timeout: 30000 }); 
-    
-        // **Rolagem até o fim da página**
+        await page.goto(wUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+
         console.log('Rolando até achar o botão "Exibir mais"...');
-        
         await page.evaluate(() => {
             return new Promise<void>((resolve) => {
                 let totalHeight = 0;
-                const distance = 200; // Ajusta a distância de rolagem
-                const delay = 300; // Tempo de espera entre rolagens
-                
+                const distance = 200;
+                const delay = 300;
+
                 const scrollInterval = setInterval(() => {
                     window.scrollBy(0, distance);
                     totalHeight += distance;
-                    
-                    // Captura a altura máxima da página
                     const scrollHeight = document.body.scrollHeight;
-                    
-                    // Para se atingir o final da página
+
                     if (totalHeight >= scrollHeight - window.innerHeight) {
                         clearInterval(scrollInterval);
                         resolve();
                     }
-                    
-                    // Para se encontrar o botão "Exibir mais"
+
                     if (document.querySelector('.show-more-btn button')) {
                         clearInterval(scrollInterval);
                         resolve();
@@ -47,39 +40,34 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
                 }, delay);
             });
         });
-        
+
         console.log('Rolagem finalizada!');
-        // **Clicando no botão "Carregar mais comentários" se necessário**
-        await page.waitForSelector('.show-more-btn', { timeout: 10000 });
+        
         let clickCount = 0;
         while (clickCount < click) {
-
             try {
-                const button = await page.waitForSelector('.show-more-btn', { timeout: 7000 });
-                await button.click({ force: true });
+                const button = await page.waitForSelector('.show-more-btn', { timeout: 7000 }).catch(() => null);
 
-                // **Se timeout, encerra o loop**
                 if (!button) {
-                    console.log('Botão não encontrado!');
+                    console.log('Botão "Exibir mais" não encontrado. Prosseguindo...');
                     break;
                 }
-        
+
                 console.log('Carregando mais comentários. Número de clicks: ', clickCount + 1);
-                await button.click();
+                await button.click({ force: true });
                 await page.waitForTimeout(5000);
                 clickCount++;
-            }  catch (error) {
-                console.log('Erro ao clicar no botão!');
+            } catch (error) {
+                console.log('Erro ao clicar no botão! Prosseguindo com a coleta dos comentários...');
                 break;
-             }          
-        } 
-    
-        // **Coletando comentários**
+            }
+        }
+
         console.log('Extraindo comentários...');
         const comentariosNovos = await page.evaluate((wUser: string) => {
             let elements = document.querySelectorAll('.comment-card-container');
             let data = [] as any[];
-    
+
             function calcularHorario(tempoRelativo: string, horaAtual: string) {
                 let data = new Date(horaAtual);
                 if (tempoRelativo.includes("Agora")) {
@@ -108,27 +96,27 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
                 }
                 return `${data.getHours().toString().padStart(2, '0')}:${data.getMinutes().toString().padStart(2, '0')}`;
             }
-    
+
             elements.forEach(el => {
                 let usuario = (el.querySelector('.title-action') as HTMLElement)?.innerText || "Desconhecido";
                 let comentario = (el.querySelector('.text-body-sm') as HTMLElement)?.innerText || "Sem texto";
                 let postDate = (el.querySelector('.postedDate__xcq5D') as HTMLElement)?.innerText || "Sem texto";
                 let dataFormatada = calcularHorario(postDate, new Date().toISOString());
-                
+
                 if (wUser && !usuario.includes(wUser)) return;
-                
+
                 if (usuario === wUser) {
                     data.push({ usuario, comentario, dataFormatada });
                     return;
-                } 
-                
+                }
+
                 data.push({ usuario, comentario, dataFormatada });
-                    
+
             });
-    
+
             return data;
         }, wUser);
-    
+
         console.log(`Total de comentários extraídos: ${comentariosNovos.length}`);
         await browser.close();
         return comentariosNovos;
@@ -136,12 +124,15 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
     return Robot();
 };
 
+
 export const FindBook = async (book: string) => {
     async function Book() {
         const browser = await chromium.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
+
+        console.log(book);
     
         const page = await browser.newPage();
         console.log('Acessando a página...');
@@ -178,11 +169,10 @@ export const FindBook = async (book: string) => {
         console.log('Livro encontrado!');
         
 
-        // **Capturar href e InnerText dos capítulos**
         const capitulos = await page.evaluate(() => {
             console.log('Listando capítulos...');
             
-            return Array.from(document.querySelectorAll('li a.rXHC9')).map(a => {
+            return Array.from(document.querySelectorAll('li a.wNkBw')).map(a => {
                 const titleElement = a.querySelector('.if-sT'); // Pegando a div correta
                 return {
                     href: a.getAttribute('href'),
