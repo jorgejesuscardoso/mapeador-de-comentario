@@ -53,7 +53,7 @@ const Login = () => {
         }
         setAuthentic(false);
         setLogging(true);
-        console.log(data);
+        
         SetTolocalStorage('user', data);
         setInterval(() => {
             setAuthentic(false);

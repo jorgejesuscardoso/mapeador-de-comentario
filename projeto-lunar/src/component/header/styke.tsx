@@ -97,7 +97,10 @@ export const HeaderContainer = styled.header`
 
     /* Media Query para dispositivos móveis */
     @media (max-width: 768px) {
-        background: linear-gradient(135deg, #151a61, #490e75);
+        //background: linear-gradient(135deg, #151a61, #490e75);        
+        background-image: url('bg-star.webp');
+        background-size: cover;        
+        background-position: center;
         padding: 0;
         color: #fff;
         box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
@@ -143,12 +146,12 @@ export const HeaderContainer = styled.header`
         }
 
         nav.active {            
-            background: linear-gradient(135deg, #0b0e41, #40096b);
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;            
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
             margin: -10px 0;
             padding: 10px;
             z-index: 9999;
-            color: #aaa !important;
 
             ul {
                 flex-direction: column;
@@ -158,21 +161,15 @@ export const HeaderContainer = styled.header`
 
             li {
                 width: 100%;
-                border-bottom: 1px solid #aaa5;
-                height: 40px !important;
-
+                height: 45px !important;
 
                 a {
                     height: 100%;
                     width: 100%;
-                    color: #f5f5f5;
-                    font-size: 0.75rem;
+                    color: #e7e7e7;
+                    font-size: 0.8rem;
                 }
             }
-        }
-
-        nav.active {
-            display: flex;
         }
 
         ul {

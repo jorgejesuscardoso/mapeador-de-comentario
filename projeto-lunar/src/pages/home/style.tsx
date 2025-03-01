@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  background-image: url('lua-fantasia.webp');
+  background-image: url('fav1000px.png');
   background-size: cover;
   display: flex;
   align-items: flex-start;
@@ -17,7 +17,6 @@ export const ContainerD = styled.div`
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  background-color: #0009;
   z-index: 111;
   position: relative;
   top: 0;
