@@ -51,9 +51,17 @@ const Login = () => {
             }
     
             setLogging(true);
-            SetTolocalStorage('user', data);    
+            SetTolocalStorage('user', data);
             setAuthentic(false);
-            navigate('/home');
+    
+            // Redirecionamento usando setTimeout ao invés de setInterval
+            const redirectTimeout = setTimeout(() => {
+                navigate('/home');
+                setLogging(false);
+            }, 2000);
+    
+            // Limpeza para evitar múltiplas execuções inesperadas
+            return () => clearTimeout(redirectTimeout);
     
         } catch {
             Swal.fire({
@@ -62,8 +70,9 @@ const Login = () => {
                 text: 'Ocorreu um erro ao tentar logar. Tente novamente mais tarde.',
             });
             setAuthentic(false);
-        }        
+        }
     };
+    
     
     return (
         <Container>
