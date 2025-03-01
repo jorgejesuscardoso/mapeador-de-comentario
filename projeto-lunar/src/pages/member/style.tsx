@@ -98,7 +98,7 @@ export const SpanTotalpoints = styled.span`
 `;
 
 export const Table = styled.table`
-    width: 73%;
+    width: 100%;
     border-collapse: collapse;
     background: #ffffff;
     overflow: hidden;
@@ -116,6 +116,14 @@ export const TableHeader = styled.tr`
         font-size: 0.7rem;
         padding: 12px;
         overflow: hidden;
+    }
+    
+    @media (max-width: 768px) {
+        th {
+            font-size: 0.5rem;
+            padding: 6px;
+            overflow: hidden;
+         }
     }
 `;
 
@@ -141,6 +149,18 @@ export const TableRow = styled.tr`
             overflow: hidden;
         }
     }  
+
+    @media (max-width: 768px) {
+       td {
+            font-size: 0.5rem;
+            padding: 6px;
+            overflow: hidden;
+
+            li {
+                font-size: 0.5rem;
+            }
+       }
+    }
 `;
 
 export const StyledEmptyRow = styled.tr`
@@ -225,7 +245,7 @@ export const Button = styled.button`
   &:hover {
     opacity: 0.8;
   }
-`
+`;
 
 export const ButtonAdd = styled.button`
     padding: 10px 15px;
@@ -246,7 +266,7 @@ export const ButtonAdd = styled.button`
         opacity: 1;
         background-color: #07ac0d; /* Green */
     }
-    `
+`;
 
 export const ModalEditContainer = styled.div`
     background-color: rgba(0, 0, 0, 0.5);
@@ -471,4 +491,9 @@ export const MainSection = styled.section`
         flex-direction: column;
         align-items: center;
     }
+`;
+
+export const DivToScrollTable = styled.div`
+    overflow-x: auto;
+    width: 100%;
 `;

@@ -4,8 +4,10 @@ import { useState } from "react";
 import { SetTolocalStorage } from "../../utils/localstorage";
 import { LoginApi } from "../../API/APIRobozinho";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    const navigate = useNavigate();
     const [user, setUser] = useState('');
     const [p, setP] = useState('');
     const [authentic, setAuthentic] = useState(false);
@@ -55,6 +57,7 @@ const Login = () => {
         SetTolocalStorage('user', data);
         setInterval(() => {
             setAuthentic(false);
+            navigate('/home');
         }, 2000);
     }
     return (
