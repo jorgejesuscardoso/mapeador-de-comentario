@@ -254,7 +254,11 @@ const Members = () => {
                                     >
                                         Função
                                     </th>
-                                    <th>Idade</th>
+                                    <th
+                                        className="hide-on-mobile"
+                                    >
+                                        Idade
+                                    </th>
                                     <th>Telefone</th>
                                     <th>Wattpad</th>
                                     <th>Obras</th>
@@ -354,6 +358,7 @@ const Members = () => {
                                                 {member.role.toUpperCase()}
                                             </td>
                                             <TdEdit
+                                                className="hide-on-mobile"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
                                                     if(!contadora) return;
@@ -380,7 +385,7 @@ const Members = () => {
                                             >
                                                 {member.age}
                                             </TdEdit>
-                                            <TdEdit
+                                            <TdEdit                                                
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
                                                     if(!contadora) return;
@@ -407,7 +412,8 @@ const Members = () => {
                                             >
                                                 {member.phone}
                                             </TdEdit>
-                                            <TdEdit
+                                            <TdEdit      
+                                                                                          
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
                                                     if(!contadora) return;
@@ -434,7 +440,8 @@ const Members = () => {
                                             >                            
                                                 {member.userWtp}
                                             </TdEdit>
-                                            <td
+                                            <td                                                
+                                                className="column-scroll"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
                                                     if(!contadora) return;
