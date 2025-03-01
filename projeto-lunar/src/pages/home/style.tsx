@@ -70,9 +70,7 @@ export const AsideLeft = styled.aside`
       font-size: 1.1rem;
   }
 
-
   p {
-      
       font-size: 0.8rem;
       color: #ccc;
       margin-bottom: 8px;
@@ -84,5 +82,9 @@ export const AsideLeft = styled.aside`
       font-size: 1.2rem;
       font-weight: bold;
       color: #ccc;
+  }
+
+  @media (max-width: 768px) {
+      display: none;
   }
 `;
