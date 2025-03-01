@@ -23,7 +23,7 @@ export const ContainerD = styled.div`
   left: 0;
 `;
 
-export const AsideLeft = styled.aside`
+export const AsideLeft = styled.section`
   background-color: #14141499;
   position: absolute;
   left: 0;
@@ -84,6 +84,6 @@ export const AsideLeft = styled.aside`
   }
 
   @media (max-width: 768px) {
-      display: none;
+        width: 100%;
   }
 `;

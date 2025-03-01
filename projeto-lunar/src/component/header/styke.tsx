@@ -116,6 +116,8 @@ export const HeaderContainer = styled.header`
 
         button.logout-button {
             margin: 0 10px;                 
+            opacity: 0.7;
+            transition: 0.3s;
 
             img {
                 width: 25px;
@@ -146,7 +148,7 @@ export const HeaderContainer = styled.header`
         }
 
         nav.active {            
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;            
             box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
             margin: -10px 0;
