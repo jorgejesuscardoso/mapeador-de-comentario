@@ -44,7 +44,6 @@ const Home = () => {
                 </AsideLeft>
 
                 <div>
-                    <h1><strong>EM CONSTRUÇÂO!</strong></h1>
                 </div>
             </ContainerD>
         </Container>

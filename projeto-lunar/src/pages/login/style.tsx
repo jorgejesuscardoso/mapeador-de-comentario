@@ -72,6 +72,7 @@ export const ContainerFormLogin = styled.div`
     }
 `;
 
+
 export const FormLogin = styled.form`
   display: flex;
   flex-direction: column;
@@ -155,12 +156,29 @@ export const WelcomeBox = styled.div`
 
 export const SpanAuthenticating = styled.span`
   font-size: 0.7rem !important;
-  color: red;    
+  color: red !important;    
   margin-top: 10px;
+
+
+  @media (max-width: 768px) {
+    position: absolute;
+    top: 75vh;
+    font-size: 0.8rem !important;
+    height: 25px;
+    background-color: #fff;
+  }
 `;
 
 export const SpanLogging = styled.span`
   font-size: 0.7rem !important;
-  color: green;    
+  color: green !important;    
   margin-top: 10px;
+
+  @media (max-width: 768px) {
+    position: absolute;
+    top: 75vh;
+    font-size: 0.8rem !important;
+    height: 25px;
+    background-color: #fff;
+  }
 `;

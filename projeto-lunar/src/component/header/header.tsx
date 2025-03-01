@@ -78,12 +78,54 @@ const HeaderLunar = () => {
                         ref={ref}
                     >
                         <ul>
-                            <li><Link to="/home">Home</Link></li>
-                            <li><Link to="/bot">Robozinho</Link></li>
-                            <li><Link to="/member">Lista de membros</Link></li>
-                            <li><Link to="/subs">Subs</Link></li>
-                            <li><Link to="/shop">Lojinha Lunar</Link></li>
-                            <li><Link to="/dash">Painel de Controle</Link></li>
+                            <li>
+                                <Link 
+                                    to="/home"
+                                    onClick={() => setFloatMenu(false)}
+                                >
+                                    Home
+                                </Link>                                
+                            </li>
+                            <li>
+                                <Link 
+                                    to="/bot"
+                                    onClick={() => setFloatMenu(false)}
+                                >
+                                    Robozinho
+                                </Link>
+                            </li>
+                            <li>
+                                <Link 
+                                    to="/member"
+                                    onClick={() => setFloatMenu(false)}
+                                >
+                                    Lista de membros
+                                </Link>
+                            </li>
+                            <li>
+                                <Link 
+                                    to="/subs"
+                                    onClick={() => setFloatMenu(false)}
+                                >
+                                    Subs
+                                </Link>
+                            </li>
+                            <li>
+                                <Link 
+                                    to="/shop"
+                                    onClick={() => setFloatMenu(false)}
+                                >
+                                    Lojinha Lunar
+                                </Link>
+                            </li>
+                            <li>
+                                <Link 
+                                    to="/dash"
+                                    onClick={() => setFloatMenu(false)}
+                                >
+                                    Painel de Controle
+                                </Link>
+                            </li>
                         </ul>
                     </nav>
                 )
