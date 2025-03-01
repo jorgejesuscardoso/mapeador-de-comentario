@@ -137,7 +137,7 @@ const RegisterMember = () => {
                             Navigate("/home");
                         }}
                     >
-                        inicio
+                        início
                     </Button2>
                 </div>
             </Section>

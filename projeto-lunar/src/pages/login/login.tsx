@@ -29,7 +29,6 @@ const Login = () => {
     
         try {
             const data = await LoginApi(user, p);
-            console.log(data);
             if (!data.user || data.user.name === "") {
                 Swal.fire({
                     icon: 'error',
