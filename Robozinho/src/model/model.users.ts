@@ -97,39 +97,72 @@ class UsersModel {
     
         try {
             const searchTerm = String(search || ''); 
-
+        
+            // Contar o total de registros que correspondem ao filtro
+            const totalUsers = await this.prisma.member.count({
+                where: {
+                    OR: [
+                        {
+                            name: {
+                                contains: searchTerm,
+                                mode: "insensitive"
+                            }
+                        },
+                        {
+                            user: {
+                                contains: searchTerm,
+                                mode: "insensitive"
+                            }
+                        },
+                        {
+                            userWtp: {
+                                contains: searchTerm,
+                                mode: "insensitive"
+                            }
+                        }
+                    ]
+                }
+            });
+        
+            // Calcular o total de páginas (arredondando para cima)
+            const totalPages = Math.ceil(totalUsers / take);
+        
             const skip = (page - 1) * take;
             const users = await this.prisma.member.findMany({
-              where: {
-                OR: [
-                  {
-                    name: {
-                      contains: searchTerm, // Passando a string de forma correta
-                      mode: "insensitive"
-                    }
-                  },
-                  {
-                    user: {
-                      contains: searchTerm, // Passando a string de forma correta
-                      mode: "insensitive"
-                    }
-                  },
-                  {
-                    userWtp: {
-                      contains: searchTerm, // Passando a string de forma correta
-                      mode: "insensitive"
-                    }
-                  }
-                ]
-              },
-              take: take,
-              skip: skip
+                where: {
+                    OR: [
+                        {
+                            name: {
+                                contains: searchTerm,
+                                mode: "insensitive"
+                            }
+                        },
+                        {
+                            user: {
+                                contains: searchTerm,
+                                mode: "insensitive"
+                            }
+                        },
+                        {
+                            userWtp: {
+                                contains: searchTerm,
+                                mode: "insensitive"
+                            }
+                        }
+                    ]
+                },
+                take: take,
+                skip: skip
             });
-            return users;
+        
+            return {
+                users,
+                totalPages // Retorne o total de páginas para usar no front-end
+            };
         } catch (error) {
             console.log(error);
             return error;
-        }
+        }        
     }
     
     
