@@ -68,7 +68,7 @@ export const SpanTotal = styled.span`
     font-size: 0.8rem;
     font-weight: bold;
     color: #f5f5f5;
-    
+
     @media (max-width: 768px) {
         font-size: 0.65rem;
 
@@ -353,6 +353,11 @@ export const SectionContainer = styled.div`
             color: #333;
         }        
     }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
 `;
 
 export const Title = styled.h3`
@@ -432,4 +437,10 @@ export const MainSection = styled.section`
     width: 100%;
     gap: 0.5rem;
     margin-bottom: 1rem;
+
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+    }
 `;
