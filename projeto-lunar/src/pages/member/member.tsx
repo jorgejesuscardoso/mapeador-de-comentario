@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, MainSection } from "./style";
+import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, MainSection, DivToScrollTable } from "./style";
 import { GetUsers, UpdateUser } from "../../API/APIRobozinho";
 import { useNavigate } from "react-router-dom";
 import { GetFromLocalStorage, SetTolocalStorage } from "../../utils/localstorage";
@@ -239,230 +239,260 @@ const Members = () => {
                             </ButtonContainer>
                         </div>
                     </SectionContainer>
-                    <Table>
-                        <thead>
-                            <TableHeader>
-                                <th>Nome</th>
-                                <th>Usuário</th>
-                                <th>Função</th>
-                                <th>Idade</th>
-                                <th>Telefone</th>
-                                <th>Wattpad</th>
-                                <th>Obras</th>
-                                <th>Pontos</th>
-                                <th>Sub</th>
-                            </TableHeader>
-                        </thead>
-                        <tbody>
-                            {members.length > 0 ? (
-                                members
-                                .slice() // Cria uma cópia do array para evitar mutação
-                                .sort((a, b) => a.name.localeCompare(b.name)) // Ordena alfabeticamente pela coluna name
-                                .map((member, index) => (
-                                    <TableRow key={index}>
-                                        <TdEdit                                       
-                                            
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setEditName(!editName);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                
-                                                    points: member.points,
-                                                });
-                                                // fechar todas as abas de edição
-                                                setEditAge(false);
-                                                setEditPhone(false);
-                                                setEditWtpd(false);
-                                                setEditUser(false);
-                                                setEditPoints(false);
-                                                setAddSubs(false);
-                                                setChangeRole(false);
-                                                setChangeBook(false);
-                                            }}                                    
-                                        >
-                                            {member.name}
-                                        </TdEdit>
-                                        <TdEdit
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setEditUser(!editUser);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                
-                                                    points: member.points,
-                                                });
-                                                setEditName(false);
-                                                setEditAge(false);
-                                                setEditPhone(false);
-                                                setEditWtpd(false);
-                                                setEditPoints(false);
-                                                setAddSubs(false);
-                                                setChangeRole(false);
-                                                setChangeBook(false);
-                                            }}
-                                        >
-                                            {member.user}
-                                        </TdEdit>
-                                        <td
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setChangeRole(!changeRole);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                
-                                                    points: member.points,
-                                                });
-                                                setEditName(false);
-                                                setEditAge(false);
-                                                setEditPhone(false);
-                                                setEditWtpd(false);
-                                                setEditUser(false);
-                                                setEditPoints(false);
-                                                setAddSubs(false);
-                                                setChangeBook(false);
-                                            }}
-                                        >
-                                            {member.role.toUpperCase()}
-                                        </td>
-                                        <TdEdit
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setEditAge(!editAge);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                
-                                                    points: member.points,
-                                                });
-                                                setEditName(false);
-                                                setEditPhone(false);
-                                                setEditWtpd(false);
-                                                setEditUser(false);
-                                                setEditPoints(false);
-                                                setAddSubs(false);
-                                                setChangeRole(false);
-                                                setChangeBook(false);
-                                            }}
-                                        >
-                                            {member.age}
-                                        </TdEdit>
-                                        <TdEdit
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setEditPhone(!editPhone);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                
-                                                    points: member.points,
-                                                });
-                                                setEditName(false);
-                                                setEditAge(false);
-                                                setEditWtpd(false);
-                                                setEditUser(false);
-                                                setEditPoints(false);
-                                                setAddSubs(false);
-                                                setChangeRole(false);
-                                                setChangeBook(false);
-                                            }}
-                                        >
-                                            {member.phone}
-                                        </TdEdit>
-                                        <TdEdit
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setEditWtpd(!editWtpd);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                
-                                                    points: member.points,
-                                                });
-                                                setEditName(false);
-                                                setEditAge(false);
-                                                setEditPhone(false);
-                                                setEditUser(false);
-                                                setEditPoints(false);
-                                                setAddSubs(false);
-                                                setChangeRole(false);
-                                                setChangeBook(false);
-                                            }}
-                                        >                            
-                                            {member.userWtp}
-                                        </TdEdit>
-                                        <td
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setMembersBooks({
-                                                    title: member.books[0].title,
-                                                    wUrl: member.books[0].wUrl,
-                                                });
-                                                setChangeBook(true);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                
-                                                    points: member.points,
-                                                });
-                                                setEditName(false);
-                                                setEditAge(false);
-                                                setEditPhone(false);
-                                                setEditWtpd(false);
-                                                setEditUser(false);
-                                                setEditPoints(false);
-                                                setChangeRole(false);
-                                                setAddSubs(false);
-                                            }}
-                                        >{
-                                            member.books
-                                                .slice() // Cria uma cópia do array para evitar mutação
-                                                .sort((a, b) => a.title.localeCompare(b.title)) // Ordena alfabeticamente
-                                                .map((s, index) => (<li key={index}>{s.title}</li>))
-                                            }
-                                        </td>
-                                        <td>
-                                            <ButtonAdd                                            
+                    <DivToScrollTable>
+                        <Table>
+                            <thead>
+                                <TableHeader>
+                                    <th>Nome</th>
+                                    <th>Usuário</th>
+                                    <th>Função</th>
+                                    <th>Idade</th>
+                                    <th>Telefone</th>
+                                    <th>Wattpad</th>
+                                    <th>Obras</th>
+                                    <th>Pontos</th>
+                                    <th>Sub</th>
+                                </TableHeader>
+                            </thead>
+                            <tbody>
+                                {members.length > 0 ? (
+                                    members
+                                    .slice() // Cria uma cópia do array para evitar mutação
+                                    .sort((a, b) => a.name.localeCompare(b.name)) // Ordena alfabeticamente pela coluna name
+                                    .map((member, index) => (
+                                        <TableRow key={index}>
+                                            <TdEdit                                       
+                                                
                                                 onClick={() => {
                                                     if(!contadora) return;
-                                                    setEditPoints(!editPoints);
+                                                    setEditName(!editName);
+                                                    setClientToEdit({
+                                                        id: member.id,
+                                                        role: member.role,
+                                                        name: member.name,
+                                                        age: member.age,
+                                                        phone: member.phone,
+                                                        userWtp: member.userWtp,
+                                                        user: member.user,                                                
+                                                        points: member.points,
+                                                    });
+                                                    // fechar todas as abas de edição
+                                                    setEditAge(false);
+                                                    setEditPhone(false);
+                                                    setEditWtpd(false);
+                                                    setEditUser(false);
+                                                    setEditPoints(false);
+                                                    setAddSubs(false);
+                                                    setChangeRole(false);
+                                                    setChangeBook(false);
+                                                }}                                    
+                                            >
+                                                {member.name}
+                                            </TdEdit>
+                                            <TdEdit
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    if(!contadora) return;
+                                                    setEditUser(!editUser);
+                                                    setClientToEdit({
+                                                        id: member.id,
+                                                        role: member.role,
+                                                        name: member.name,
+                                                        age: member.age,
+                                                        phone: member.phone,
+                                                        userWtp: member.userWtp,
+                                                        user: member.user,                                                
+                                                        points: member.points,
+                                                    });
+                                                    setEditName(false);
+                                                    setEditAge(false);
+                                                    setEditPhone(false);
+                                                    setEditWtpd(false);
+                                                    setEditPoints(false);
+                                                    setAddSubs(false);
+                                                    setChangeRole(false);
+                                                    setChangeBook(false);
+                                                }}
+                                            >
+                                                {member.user}
+                                            </TdEdit>
+                                            <td
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    if(!contadora) return;
+                                                    setChangeRole(!changeRole);
+                                                    setClientToEdit({
+                                                        id: member.id,
+                                                        role: member.role,
+                                                        name: member.name,
+                                                        age: member.age,
+                                                        phone: member.phone,
+                                                        userWtp: member.userWtp,
+                                                        user: member.user,                                                
+                                                        points: member.points,
+                                                    });
+                                                    setEditName(false);
+                                                    setEditAge(false);
+                                                    setEditPhone(false);
+                                                    setEditWtpd(false);
+                                                    setEditUser(false);
+                                                    setEditPoints(false);
+                                                    setAddSubs(false);
+                                                    setChangeBook(false);
+                                                }}
+                                            >
+                                                {member.role.toUpperCase()}
+                                            </td>
+                                            <TdEdit
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    if(!contadora) return;
+                                                    setEditAge(!editAge);
+                                                    setClientToEdit({
+                                                        id: member.id,
+                                                        role: member.role,
+                                                        name: member.name,
+                                                        age: member.age,
+                                                        phone: member.phone,
+                                                        userWtp: member.userWtp,
+                                                        user: member.user,                                                
+                                                        points: member.points,
+                                                    });
+                                                    setEditName(false);
+                                                    setEditPhone(false);
+                                                    setEditWtpd(false);
+                                                    setEditUser(false);
+                                                    setEditPoints(false);
+                                                    setAddSubs(false);
+                                                    setChangeRole(false);
+                                                    setChangeBook(false);
+                                                }}
+                                            >
+                                                {member.age}
+                                            </TdEdit>
+                                            <TdEdit
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    if(!contadora) return;
+                                                    setEditPhone(!editPhone);
+                                                    setClientToEdit({
+                                                        id: member.id,
+                                                        role: member.role,
+                                                        name: member.name,
+                                                        age: member.age,
+                                                        phone: member.phone,
+                                                        userWtp: member.userWtp,
+                                                        user: member.user,                                                
+                                                        points: member.points,
+                                                    });
+                                                    setEditName(false);
+                                                    setEditAge(false);
+                                                    setEditWtpd(false);
+                                                    setEditUser(false);
+                                                    setEditPoints(false);
+                                                    setAddSubs(false);
+                                                    setChangeRole(false);
+                                                    setChangeBook(false);
+                                                }}
+                                            >
+                                                {member.phone}
+                                            </TdEdit>
+                                            <TdEdit
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    if(!contadora) return;
+                                                    setEditWtpd(!editWtpd);
+                                                    setClientToEdit({
+                                                        id: member.id,
+                                                        role: member.role,
+                                                        name: member.name,
+                                                        age: member.age,
+                                                        phone: member.phone,
+                                                        userWtp: member.userWtp,
+                                                        user: member.user,                                                
+                                                        points: member.points,
+                                                    });
+                                                    setEditName(false);
+                                                    setEditAge(false);
+                                                    setEditPhone(false);
+                                                    setEditUser(false);
+                                                    setEditPoints(false);
+                                                    setAddSubs(false);
+                                                    setChangeRole(false);
+                                                    setChangeBook(false);
+                                                }}
+                                            >                            
+                                                {member.userWtp}
+                                            </TdEdit>
+                                            <td
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    if(!contadora) return;
+                                                    setMembersBooks({
+                                                        title: member.books[0].title,
+                                                        wUrl: member.books[0].wUrl,
+                                                    });
+                                                    setChangeBook(true);
+                                                    setClientToEdit({
+                                                        id: member.id,
+                                                        role: member.role,
+                                                        name: member.name,
+                                                        age: member.age,
+                                                        phone: member.phone,
+                                                        userWtp: member.userWtp,
+                                                        user: member.user,                                                
+                                                        points: member.points,
+                                                    });
+                                                    setEditName(false);
+                                                    setEditAge(false);
+                                                    setEditPhone(false);
+                                                    setEditWtpd(false);
+                                                    setEditUser(false);
+                                                    setEditPoints(false);
+                                                    setChangeRole(false);
+                                                    setAddSubs(false);
+                                                }}
+                                            >{
+                                                member.books
+                                                    .slice() // Cria uma cópia do array para evitar mutação
+                                                    .sort((a, b) => a.title.localeCompare(b.title)) // Ordena alfabeticamente
+                                                    .map((s, index) => (<li key={index}>{s.title}</li>))
+                                                }
+                                            </td>
+                                            <td>
+                                                <ButtonAdd                                            
+                                                    onClick={() => {
+                                                        if(!contadora) return;
+                                                        setEditPoints(!editPoints);
+                                                        setClientToEdit({
+                                                            id: member.id,
+                                                            role: member.role,
+                                                            name: member.name,
+                                                            age: member.age,
+                                                            phone: member.phone,
+                                                            userWtp: member.userWtp,
+                                                            user: member.user,                                                    
+                                                            points: member.points,
+                                                        });
+                                                        setEditName(false);
+                                                        setEditAge(false);
+                                                        setEditPhone(false);
+                                                        setEditWtpd(false);
+                                                        setEditUser(false);
+                                                        setChangeRole(false);
+                                                        setAddSubs(false);
+                                                        setChangeBook(false);
+                                                    }}
+                                                >
+                                                {member.points.toLocaleString('pt-BR')}
+                                                </ButtonAdd>
+                                            </td>
+
+                                            <td
+                                                style={{ cursor: 'pointer' }}
+                                                onClick={() => {
+                                                    if(!contadora) return;
+                                                    setAddSubs(!addSubs);
                                                     setClientToEdit({
                                                         id: member.id,
                                                         role: member.role,
@@ -478,54 +508,26 @@ const Members = () => {
                                                     setEditPhone(false);
                                                     setEditWtpd(false);
                                                     setEditUser(false);
+                                                    setEditPoints(false);
                                                     setChangeRole(false);
-                                                    setAddSubs(false);
                                                     setChangeBook(false);
-                                                }}
-                                            >
-                                            {member.points.toLocaleString('pt-BR')}
-                                            </ButtonAdd>
-                                        </td>
-
-                                        <td
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if(!contadora) return;
-                                                setAddSubs(!addSubs);
-                                                setClientToEdit({
-                                                    id: member.id,
-                                                    role: member.role,
-                                                    name: member.name,
-                                                    age: member.age,
-                                                    phone: member.phone,
-                                                    userWtp: member.userWtp,
-                                                    user: member.user,                                                    
-                                                    points: member.points,
-                                                });
-                                                setEditName(false);
-                                                setEditAge(false);
-                                                setEditPhone(false);
-                                                setEditWtpd(false);
-                                                setEditUser(false);
-                                                setEditPoints(false);
-                                                setChangeRole(false);
-                                                setChangeBook(false);
-                                            }}                                        
-                                        >{
-                                            member.subs
-                                            .slice() // Cria uma cópia do array para evitar mutação
-                                            .sort((a, b) => a + b) // Ordena alfabeticamente
-                                            .map((s, index) => (<li key={index}>{s}</li>))
-                                        }</td>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <StyledEmptyRow>
-                                    <td colSpan={6} className='colspan'>Nenhum membro encontrado</td>
-                                </StyledEmptyRow>
-                            )}
-                        </tbody>
-                    </Table>
+                                                }}                                        
+                                            >{
+                                                member.subs
+                                                .slice() // Cria uma cópia do array para evitar mutação
+                                                .sort((a, b) => a + b) // Ordena alfabeticamente
+                                                .map((s, index) => (<li key={index}>{s}</li>))
+                                            }</td>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <StyledEmptyRow>
+                                        <td colSpan={6} className='colspan'>Nenhum membro encontrado</td>
+                                    </StyledEmptyRow>
+                                )}
+                            </tbody>
+                        </Table>
+                    </DivToScrollTable>
                 </MainSection>    
                     {editPoints && (
                     <ModalContainer>
