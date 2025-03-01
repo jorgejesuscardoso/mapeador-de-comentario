@@ -34,9 +34,7 @@ const RegisterMember = () => {
             !confirmPassword.trim() || 
             !wattpadUsername.trim() || 
             !phone.trim() || 
-            !role.trim() || 
-            !work.trim() || 
-            !workLink.trim();
+            !role.trim();
     
         if (noEmpty) {
             Swal.fire({
