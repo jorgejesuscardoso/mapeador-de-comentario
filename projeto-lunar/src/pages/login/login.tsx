@@ -13,8 +13,9 @@ const Login = () => {
     const [authentic, setAuthentic] = useState(false);
     const [logging, setLogging] = useState(false);
 
-    const login = async (e: React.FormEvent<HTMLFormElement> ) => {
+    const login = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        
         if (user === '' || p === '') {
             Swal.fire({
                 icon: 'error',
@@ -23,43 +24,50 @@ const Login = () => {
             });
             return;
         }
+    
         setAuthentic(true);
-        const data = await LoginApi(user, p);
-        if(!data.user || data.user.name === "") {
+    
+        try {
+            const data = await LoginApi(user, p);
+    
+            if (!data.user || data.user.name === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro!',
+                    text: 'Ocorreu um erro ao tentar logar, tente novamente em alguns instantes.',
+                });
+                setAuthentic(false);
+                return;
+            }
+    
+            if (data.error === 'Usuário não encontrado!' || data.error === 'Dados Inválidos!') {
+                Swal.fire({
+                    icon: 'error',
+                    title: data.error,
+                    text: 'Verifique se o usuário e senha estão corretos.',
+                });
+                setAuthentic(false);
+                return;
+            }
+    
+            setLogging(true);
+            SetTolocalStorage('user', data);
+    
+            setTimeout(() => {
+                setAuthentic(false);
+                navigate('/home');
+            }, 2000);
+    
+        } catch {
             Swal.fire({
                 icon: 'error',
-                title: 'Erro!',
-                text: 'Ocorreu um erro ao tentar logar, tente novamente em alguns instantes.',
+                title: 'Erro inesperado',
+                text: 'Ocorreu um erro ao tentar logar. Tente novamente mais tarde.',
             });
             setAuthentic(false);
-            return;
-        }
-        if(data.error === 'Usuário não encontrado!') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Usuário não encontrado!',
-                text: 'Verifique se o usuário e senha estão corretos.',
-            });
-            return;
-        }
-
-        if(data.error === 'Dados Inválidos!') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Dados Inválidos!',
-                text: 'Verifique se o usuário e senha estão corretos.',
-            });
-            return;
-        }
-        setAuthentic(false);
-        setLogging(true);
-        
-        SetTolocalStorage('user', data);
-        setInterval(() => {
-            setAuthentic(false);
-            navigate('/home');
-        }, 2000);
-    }
+        }        
+    };
+    
     return (
         <Container>
             <WelcomeBox>
