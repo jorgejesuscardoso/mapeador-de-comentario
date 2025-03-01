@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, MainSection, DivToScrollTable } from "./style";
 import { GetUsers, UpdateUser } from "../../API/APIRobozinho";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ type PersonalData = {
 };
 
 const Members = () => {
+    const ref = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
     const [members, setMembers] = useState<PersonalData[]>([]);
     const [editPoints, setEditPoints] = useState(false);
@@ -54,7 +55,7 @@ const Members = () => {
         user: '',
     } as any);
 
-    const [contadora, setContadora] = useState(false);
+    const [superAdm, setSuperAdm] = useState(false);
     const [addSubs, setAddSubs] = useState(false);
     const [membersSubs, setMembersSubs] = useState('Luna A-1');
     const [membersBooks, setMembersBooks] = useState({
@@ -71,8 +72,8 @@ const Members = () => {
             navigate('/');
             return;
         }
-        if (getLocalStorage.user.subRole === 'superadm') {
-            setContadora(true);
+        if (getLocalStorage.user.role === 'superadm') {
+            setSuperAdm(true);
         }
      getMembers();
     }, []);
@@ -182,7 +183,7 @@ const Members = () => {
     
         await UpdateUser(clientToEdit.id, data);
         getMembers();
-    }
+    };
 
     const generatePDF = (members: any[]) => {
         const doc = new jsPDF();
@@ -233,9 +234,32 @@ const Members = () => {
         doc.save('Membros Projeto Lunar.pdf');
     };
         
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) {
+                setAddSubs(false);
+                setChangeRole(false);
+                setChangeBook(false);
+                setEditAge(false);
+                setEditName(false);
+                setEditPhone(false);
+                setEditPoints(false);
+                setEditUser(false);
+                setEditWtpd(false);
+                setLoadEdit(false);
+            }
+        };
+
+        document.addEventListener("click", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
+
 
     return (
-        <Container>
+        <Container ref={ref}>
             <ContainerD>
                 <ContainerE>
                 <ContainerResumo>
@@ -345,7 +369,7 @@ const Members = () => {
                                             <TdEdit                                       
                                                 
                                                 onClick={() => {
-                                                    if(!contadora) return;
+                                                    if(!superAdm) return;
                                                     setEditName(!editName);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -374,7 +398,7 @@ const Members = () => {
                                                 className="hide-on-mobile"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    if(!contadora) return;
+                                                    if(!superAdm) return;
                                                     setEditUser(!editUser);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -402,7 +426,7 @@ const Members = () => {
                                                 className="hide-on-mobile"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    if(!contadora) return;
+                                                    if(!superAdm) return;
                                                     setChangeRole(!changeRole);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -430,7 +454,7 @@ const Members = () => {
                                                 className="hide-on-mobile"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    if(!contadora) return;
+                                                    if(!superAdm) return;
                                                     setEditAge(!editAge);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -457,7 +481,7 @@ const Members = () => {
                                             <TdEdit                                                
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    if(!contadora) return;
+                                                    if(!superAdm) return;
                                                     setEditPhone(!editPhone);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -485,7 +509,7 @@ const Members = () => {
                                                                                           
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    if(!contadora) return;
+                                                    if(!superAdm) return;
                                                     setEditWtpd(!editWtpd);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -513,22 +537,6 @@ const Members = () => {
                                                 className="column-scroll"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    if(!contadora) return;
-                                                    setMembersBooks({
-                                                        title: member.books[0].title,
-                                                        wUrl: member.books[0].wUrl,
-                                                    });
-                                                    setChangeBook(true);
-                                                    setClientToEdit({
-                                                        id: member.id,
-                                                        role: member.role,
-                                                        name: member.name,
-                                                        age: member.age,
-                                                        phone: member.phone,
-                                                        userWtp: member.userWtp,
-                                                        user: member.user,                                                
-                                                        points: member.points,
-                                                    });
                                                     setEditName(false);
                                                     setEditAge(false);
                                                     setEditPhone(false);
@@ -548,7 +556,7 @@ const Members = () => {
                                             <td>
                                                 <ButtonAdd                                            
                                                     onClick={() => {
-                                                        if(!contadora) return;
+                                                        if(!superAdm) return;
                                                         setEditPoints(!editPoints);
                                                         setClientToEdit({
                                                             id: member.id,
@@ -577,7 +585,7 @@ const Members = () => {
                                             <td
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
-                                                    if(!contadora) return;
+                                                    if(!superAdm) return;
                                                     setAddSubs(!addSubs);
                                                     setClientToEdit({
                                                         id: member.id,
@@ -814,7 +822,7 @@ const Members = () => {
                             >
                                 <option value="member">Membro</option>
                                 <option value="adm">Administrador</option>
-                                <option value="superadm">Super Administrador</option>
+                                <option value="superAdm">Super Administrador</option>
                             </InputField>
                             <div>
                                 <Button onClick={

@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate } from "react-router-dom";
 import { Container, Form, Inputs, Labels, Button, Select, Fade, Button2, Section, ViewPassword, ViewConfirmPassword } from "./style";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { CreateUser } from "../../API/APIRobozinho";
+import { GetFromLocalStorage } from "../../utils/localstorage";
 
 const RegisterMember = () => {
     const Navigate = useNavigate();
@@ -108,6 +110,13 @@ const RegisterMember = () => {
         }
     };
 
+    useEffect(() => {
+        const getLocalStorage = GetFromLocalStorage('user');
+        if (getLocalStorage === null) {
+            Navigate('/');
+            return;
+        }
+    }, []);
 
     return (
         <Container>
@@ -222,6 +231,7 @@ const RegisterMember = () => {
                             onChange={(e) => setRole(e.target.value)}                            
                         >
                             <option value="admin">Admin</option>
+                            <option value="superadm">SuperAdmin</option>
                             <option value="member">Membro</option>
                         </Select>
                     </Labels>
