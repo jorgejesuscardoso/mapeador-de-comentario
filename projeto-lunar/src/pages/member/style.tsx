@@ -55,17 +55,40 @@ export const ContainerResumo = styled.div`
         font-size: 0.8rem;
         color: #ffd700;
     }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        height: 100%;
+
+
+    }
 `;
 
 export const SpanTotal = styled.span`
     font-size: 0.8rem;
     font-weight: bold;
     color: #f5f5f5;
+    
+    @media (max-width: 768px) {
+        font-size: 0.65rem;
+
+        strong {
+            font-size: 0.60rem;
+        }
+    }
 `;
 
 export const SpanTotalpoints = styled.span`
     font-size: 0.8rem;
     color: #f5f5f5;
+    
+    @media (max-width: 768px) {
+        font-size: 0.65rem;
+
+        strong {
+            font-size: 0.60rem;
+        }
+    }
 `;
 
 export const Table = styled.table`
@@ -275,6 +298,11 @@ p {
   font-weight: bold;
   color: #ffd700; /* Dourado para destaque */
 }
+
+
+    @media (max-width: 768px) {
+            display: none;
+        }
 `;
 
 export const Labels = styled.label`

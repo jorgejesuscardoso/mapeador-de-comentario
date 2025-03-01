@@ -223,23 +223,11 @@ const Members = () => {
                                 🔒 <span className="highlight">Atenção:</span> Apenas administradores com permissão especial, podem usar esse painel!  
                             </p>
                             <p>🖱️ Para editar, basta clicar no campo desejado e um popup será aberto! 🎯</p>
-                        </DescriptionContainer>
+                    </DescriptionContainer>
                     </ContainerE> 
                 <MainSection>              
                     <SectionContainer>                    
-                        <ResumoContainer>
-                            
-                            <h3>
-                                Breve resumo do painel de membros
-                            </h3>
-
-                           <div>
-                                <p>
-                                    O painel de membros do Projeto Lunar é uma ferramenta que permite a visualização e edição de informações dos membros cadastrados no sistema. </p><p> Aqui você pode visualizar dados como nome, idade, telefone, usuário do Wattpad, obras cadastradas, pontos e subs.</p><p> Além disso, é possível editar informações. Para editar, basta clicar no campo desejado e um popup será aberto. 📝✨
-                                </p>
-                           </div>
-
-                        </ResumoContainer>
+                        
                         <div>
                             <Title>👥 Gerenciamento de Membros</Title>
                             <InfoText>
