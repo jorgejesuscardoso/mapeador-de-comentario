@@ -5,6 +5,9 @@ import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputFi
 import { GetUsers, UpdateUser } from "../../API/APIRobozinho";
 import { useNavigate } from "react-router-dom";
 import { GetFromLocalStorage, SetTolocalStorage } from "../../utils/localstorage";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 type PersonalData = {
     id: number;
@@ -176,6 +179,55 @@ const Members = () => {
         await UpdateUser(clientToEdit.id, data);
         getMembers();
     }
+
+    const generatePDF = (members: any[]) => {
+        const doc = new jsPDF();
+    
+        // Centraliza o título
+        const title = "Lista de Membros";
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const titleX = pageWidth / 2;
+
+        doc.setFontSize(16);
+        doc.text(title, titleX, 10, { align: "center" });
+    
+        const tableColumn = ["Nome", "Wattpad", "Pontos", "Subs"];
+        const tableRows: any[] = [];
+    
+        members.forEach(member => {
+            const memberData = [
+                member.name,
+                member.userWtp,
+                member.points,
+                member.subs.join(', ')
+            ];
+            tableRows.push(memberData);
+        });
+    
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20,
+            styles: { 
+                halign: 'center', // Centraliza todas as células
+                valign: 'middle', // Centraliza verticalmente
+            },
+            headStyles: {
+                halign: 'center', // Centraliza os cabeçalhos
+                fillColor: [0, 102, 204], // Azul escuro para o cabeçalho
+                textColor: [255, 255, 255], // Texto branco
+                fontStyle: 'bold'
+            },
+            columnStyles: {
+                0: { halign: 'center' }, // ID centralizado
+                1: { halign: 'center' }, // Nome centralizado
+                2: { halign: 'center' }, // Email centralizado
+                3: { halign: 'center' }, // Cargo centralizado
+            }
+        });
+    
+        doc.save('Membros Projeto Lunar.pdf');
+    };
         
 
     return (
@@ -237,6 +289,12 @@ const Members = () => {
                         </div>
                     </SectionContainer>
                     <DivToScrollTable>
+                        <Button
+                            className="download-pdf"
+                            onClick={() => generatePDF(members)}
+                        >
+                            Baixar PDF
+                        </Button>
                         <Table>
                             <thead>
                                 <TableHeader>
