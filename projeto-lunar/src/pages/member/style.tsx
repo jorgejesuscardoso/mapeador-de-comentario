@@ -103,7 +103,6 @@ export const Table = styled.table`
     background: #ffffff;
     overflow: hidden;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 3vh;
 `;
 
 export const TableHeader = styled.tr`

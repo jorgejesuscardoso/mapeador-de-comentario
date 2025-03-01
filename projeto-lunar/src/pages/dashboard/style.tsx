@@ -10,7 +10,13 @@ export const Container = styled.div`
   align-items: center;
   width: 100%;
   backdrop-filter: blur(5px);
+
+  @media (max-width: 768px) {
+    backdrop-filter: blur(3px);
+    padding: 10px;
+  }
 `;
+
 
 export const Form = styled.form`
   margin: 5%;
@@ -41,6 +47,17 @@ export const Form = styled.form`
     width: 100%;
     display: flex;
     gap: 15px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 99%;
+    padding: 15px;
+    gap: 10px;
   }
 `;
 
@@ -58,6 +75,11 @@ export const Inputs = styled.input`
   &:focus {
     border-color: #ff00ff;
     box-shadow: 0px 0px 10px rgba(255, 0, 255, 0.8);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 8px;
   }
 `;
 
@@ -111,6 +133,12 @@ export const Button = styled.button`
     background-color: #ccc;
     cursor: not-allowed;
   }
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 10px;
+    width: 50%;
+  }
 `;
 
 export const ViewPassword = styled.img`
@@ -135,6 +163,11 @@ export const ViewConfirmPassword = styled.img`
   cursor: pointer;
   border-radius: 50%;
   z-index: 999;
+
+  @media (max-width: 768px) {
+      top: 54%;
+      left: 87%;
+    }
 `;
 
 export const Fade = styled.div`
@@ -182,6 +215,12 @@ export const Button2 = styled.button`
     background-color: #ccc;
     cursor: not-allowed;
   }
+
+  @media (max-width: 768px) {
+    width: 47%;
+    font-size: 0.8rem;
+    padding: 8px;
+  }
 `;
 
 export const Section = styled.section`
@@ -200,4 +239,9 @@ export const Section = styled.section`
     width: 100%;
     gap: 15px;
   }
+
+  @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 10px;
+    }
 `;
