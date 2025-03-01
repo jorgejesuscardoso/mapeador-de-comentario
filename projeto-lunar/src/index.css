@@ -19,3 +19,10 @@ input {
 input:focus {
   outline: 1px solid pink;
 }
+
+.hide-on-mobile {
+  
+  @media (max-width: 600px) {
+    display: none;
+  }
+}

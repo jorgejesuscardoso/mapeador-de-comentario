@@ -244,8 +244,16 @@ const Members = () => {
                             <thead>
                                 <TableHeader>
                                     <th>Nome</th>
-                                    <th>Usuário</th>
-                                    <th>Função</th>
+                                    <th
+                                        className="hide-on-mobile"
+                                    >
+                                        Usuário
+                                    </th>
+                                    <th
+                                        className="hide-on-mobile"
+                                    >
+                                        Função
+                                    </th>
                                     <th>Idade</th>
                                     <th>Telefone</th>
                                     <th>Wattpad</th>
@@ -290,6 +298,7 @@ const Members = () => {
                                                 {member.name}
                                             </TdEdit>
                                             <TdEdit
+                                                className="hide-on-mobile"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
                                                     if(!contadora) return;
@@ -317,6 +326,7 @@ const Members = () => {
                                                 {member.user}
                                             </TdEdit>
                                             <td
+                                                className="hide-on-mobile"
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
                                                     if(!contadora) return;

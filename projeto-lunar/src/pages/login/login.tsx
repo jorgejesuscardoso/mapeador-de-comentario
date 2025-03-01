@@ -51,12 +51,9 @@ const Login = () => {
             }
     
             setLogging(true);
-            SetTolocalStorage('user', data);
-    
-            setTimeout(() => {
-                setAuthentic(false);
-                navigate('/home');
-            }, 2000);
+            SetTolocalStorage('user', data);    
+            setAuthentic(false);
+            navigate('/home');
     
         } catch {
             Swal.fire({
