@@ -1,7 +1,6 @@
 
 import { Container, ContainerFormLogin, ContainerLogin, FormLogin, SpanAuthenticating, SpanLogging, WelcomeBox } from "./style";
 import { useState } from "react";
-import AnimatedLogin from "../../component/animate/login/modal_login";
 import { SetTolocalStorage } from "../../utils/localstorage";
 import { LoginApi } from "../../API/APIRobozinho";
 import Swal from "sweetalert2";
@@ -9,7 +8,6 @@ import Swal from "sweetalert2";
 const Login = () => {
     const [user, setUser] = useState('');
     const [p, setP] = useState('');
-    const [showModal, setShowModal] = useState(false);
     const [authentic, setAuthentic] = useState(false);
     const [logging, setLogging] = useState(false);
 
@@ -57,12 +55,10 @@ const Login = () => {
         SetTolocalStorage('user', data);
         setInterval(() => {
             setAuthentic(false);
-            setShowModal(true);
         }, 2000);
     }
     return (
         <Container>
-            {showModal && <AnimatedLogin />}
             <WelcomeBox>
                 <div>
                 <h1>Seja bem-vindo ao projeto Lunar!</h1>

@@ -64,7 +64,7 @@ const Members = () => {
 
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
-        if (getLocalStorage.user.subRole === 'counter') {
+        if (getLocalStorage.user.subRole === 'superadm') {
             setContadora(true);
         }
      getMembers();
@@ -738,6 +738,7 @@ const Members = () => {
                             >
                                 <option value="member">Membro</option>
                                 <option value="adm">Administrador</option>
+                                <option value="superadm">Super Administrador</option>
                             </InputField>
                             <div>
                                 <Button onClick={
