@@ -10,12 +10,12 @@ async function main() {
   // Criando Membros (Admins e Usuários)
   const members = await prisma.member.createMany({
     data: [
-      { name: 'Anna França', user: 'Anna', password: '123', userWtp: '@Anna_Fransa', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'superadm', subs: ['Luna-A1'] },
-      { name: 'Gleyciane Messias', user: 'Gley', password: '123', userWtp: '@GleyMessias', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A2'] },
-      { name: 'Leticia', user: 'Leticia', password: '123', userWtp: '@LehCorreia25', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'superadm', subs: ['Luna-A3', 'Luna-A5', 'Luna-A6'] },
-      { name: 'Katley', user: 'Yu', password: '123', userWtp: '@Yu_Suki', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A4', 'Luna-A7'] },
-      { name: 'Jorge', user: 'JcBushido', password: '123', userWtp: '@JcBushido', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'superadm', subs: ['Luna-A6'] },
-      { name: 'DVRodry', user: 'DVRodry', password: '123', userWtp: '@DVRodry', phone: '5585999999999', age: 99, points: getRandomPoints(), role: 'member', subs: ['Luna-A2', 'Luna-A3'] },
+      { name: 'Anna França', user: 'Anna', password: '123', userWtp: '@Anna_Fransa', phone: '85999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'superadm', subs: ['Luna-A1'] },
+      { name: 'Gleyciane Messias', user: 'Gley', password: '123', userWtp: '@GleyMessias', phone: '85999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A2'] },
+      { name: 'Leticia', user: 'Leticia', password: '123', userWtp: '@LehCorreia25', phone: '85999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'superadm', subs: ['Luna-A3', 'Luna-A5', 'Luna-A6'] },
+      { name: 'Katley', user: 'Yu', password: '123', userWtp: '@Yu_Suki', phone: '85999999999', age: 99, points: getRandomPoints(), role: 'adm', subs: ['Luna-A4', 'Luna-A7'] },
+      { name: 'Jorge', user: 'JcBushido', password: '123', userWtp: '@JcBushido', phone: '85999999999', age: 99, points: getRandomPoints(), role: 'adm', subRole: 'superadm', subs: ['Luna-A6'] },
+      { name: 'DVRodry', user: 'DVRodry', password: '123', userWtp: '@DVRodry', phone: '85999999999', age: 99, points: getRandomPoints(), role: 'member', subs: ['Luna-A2', 'Luna-A3'] },
     ],
   });
 

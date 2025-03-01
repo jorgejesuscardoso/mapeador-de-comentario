@@ -154,12 +154,13 @@ export const TableRow = styled.tr`
        td {
             font-size: 0.5rem;
             padding: 6px;
-            overflow: hidden;
+            overflow: scroll;
 
             li {
                 font-size: 0.5rem;
             }
-       }
+       }      
+       
     }
 `;
 
@@ -271,6 +272,7 @@ export const ButtonAdd = styled.button`
         font-size: 0.5rem;
         width: 100%;
         padding: 5px;
+        max-width: 40px;
     }
 `;
 
@@ -301,7 +303,11 @@ export const TdEdit = styled.td`
     cursor: pointer;
 
     &:hover {
-        overflow: hidden;
+        overflow-x: scroll;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 0.45rem !important;
     }
 `;
 
