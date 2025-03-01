@@ -1,7 +1,9 @@
 import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, DivInputs, ImageRobo, Inputs, Labels, Message, QtdeComments, Question, SearchContainer } from "./style";
 import { FindBooks, Robozinho } from "../../API/APIRobozinho";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { GetFromLocalStorage } from "../../utils/localstorage";
 
 type Comment = {
     usuario: string;
@@ -15,6 +17,7 @@ type Chapter = {
 };
 
 const FindComments = () => {
+    const navigate = useNavigate();
     const [comments, setComments] = useState<Comment[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -100,6 +103,14 @@ const FindComments = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const getLocalStorage = GetFromLocalStorage('user');
+        if (getLocalStorage === null) {
+            navigate('/');
+            return;
+        }
+    }, []);
 
     return (
         <ContainerFindComments>

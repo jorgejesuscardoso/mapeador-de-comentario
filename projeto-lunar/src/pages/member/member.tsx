@@ -67,6 +67,10 @@ const Members = () => {
 
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
+        if (getLocalStorage === null) {
+            navigate('/');
+            return;
+        }
         if (getLocalStorage.user.subRole === 'superadm') {
             setContadora(true);
         }
@@ -281,6 +285,16 @@ const Members = () => {
                             <Title>👥 Gerenciamento de Membros</Title>
                             <InfoText>
                                 Aqui você pode cadastrar novos usuários ou gerenciar os existentes.
+                            </InfoText>
+                            <h2>OBS: GERENCIAMENTO AINDA EM CONSTRUÇÂO</h2>
+                            <InfoText>
+                                Faça as alterações necessárias diretamente na tabela abaixo.
+                            </InfoText>
+                            <InfoText>
+                                Para baixar um PDF com a lista de membros, clique no botão abaixo.
+                            </InfoText>
+                            <InfoText>
+                                Para cadastrar um novo membro, clique no botão abaixo.
                             </InfoText>
                             <ButtonContainer>
                                 <ActionButton onClick={() => navigate('/register')}>➕ Cadastrar Novo Membro</ActionButton>

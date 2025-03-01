@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AsideLeft, Container, ContainerD } from "./style";
 import { GetFromLocalStorage } from "../../utils/localstorage";
+import { useNavigate } from "react-router-dom";
 
 type PersonalData = {
     name: string;
@@ -12,6 +13,7 @@ type PersonalData = {
 };
 
 const Home = () => {
+    const navigate = useNavigate();
     const [personalData, setPersonalData] = useState<PersonalData>({
         name: "",
         phone: "",
@@ -22,12 +24,17 @@ const Home = () => {
     });
 
     useEffect(() => {
-        const person = GetFromLocalStorage("user");
-        if (person) {
-            const parsedPerson = person;
+        const getLocalStorage = GetFromLocalStorage('user');
+        if (getLocalStorage === null) {
+            navigate('/');
+            return;
+        }
+        if (getLocalStorage) {
+            const parsedPerson = getLocalStorage;
             setPersonalData(parsedPerson.user);
         }
     }, []);
+    
     return (
         <Container>
             <ContainerD>
