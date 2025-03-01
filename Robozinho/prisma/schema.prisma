@@ -24,6 +24,9 @@ model Member {
 
   // Subs armazenados como array
   subs     String[] @default([])
+
+  // Define se o membro foi deletado soft delete
+  isDeleted Boolean @default(false)
 }
 
 model Book {

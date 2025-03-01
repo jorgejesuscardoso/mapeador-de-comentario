@@ -26,35 +26,54 @@ class UsersModel {
                         wUrl: book.wUrl,
                     })),
                 },
-            },
-            include: {
-                books: true, // Para incluir os livros criados na resposta
-            },
-        });
+                isDeleted: false,
+              },
+                include: {
+                    books: true, // Para incluir os livros criados na resposta
+                },
+            });
 
-        return user;
-    } catch (error) {
-        console.log(error);
-        return error;
+            return user;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
     }
-}
    // Buscar usuários com livros e subs
    async getUsers() {
-    try {
-        const users = await this.prisma.member.findMany({
-            include: {
-                books: true,
-            }
-        });
+        try {
+            const users = await this.prisma.member.findMany({
+                include: {
+                    books: true,
+                }
+            });
 
-        return users;
-    } catch (error) {
-        console.log(error);
-        return error;
+            return users;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }    
     }
-}
-    // Atualizar usuário
 
+    // Buscar usuário por ID
+    async getUserById(id: number) {
+        try {
+            const user = await this.prisma.member.findUnique({
+                where: {
+                    id
+                },
+                include: {
+                    books: true,
+                }
+            });
+
+            return user;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+    // Atualizar usuário
     async updateUser(id: number, data: any) {
         try {
             
@@ -66,6 +85,80 @@ class UsersModel {
             });
             
             return user;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
+    // Pesquisar usuário por nome ou user (case insensitive) que tenha partes do texto
+    async searchUser(search: string, take: number = 10, page: number = 1) {
+        const skip = (page - 1) * take; // Define quantos itens pular
+    
+        try {
+            const searchTerm = String(search || ''); 
+
+            const skip = (page - 1) * take;
+            const users = await this.prisma.member.findMany({
+              where: {
+                OR: [
+                  {
+                    name: {
+                      contains: searchTerm, // Passando a string de forma correta
+                      mode: "insensitive"
+                    }
+                  },
+                  {
+                    user: {
+                      contains: searchTerm, // Passando a string de forma correta
+                      mode: "insensitive"
+                    }
+                  },
+                  {
+                    userWtp: {
+                      contains: searchTerm, // Passando a string de forma correta
+                      mode: "insensitive"
+                    }
+                  }
+                ]
+              },
+              take: take,
+              skip: skip
+            });
+            return users;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+    
+    
+
+    // Deletar usuário (soft delete)
+    async deleteUser(id: number) {
+        try {
+            const user = await this.prisma.member.update({
+                where: {
+                    id
+                },
+                data: {
+                    isDeleted: true
+                }
+            });
+            
+            if (!user) {
+                return "Usuário não encontrado.";
+            }
+
+            const msg = `Usuário marcado como deletado as ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`;
+
+            const dataFormatted = {
+                id: user.id,
+                name: user.name,
+                user: user.user,
+                isDeleted: user.isDeleted,
+            };
+            return { msg, data: dataFormatted };
         } catch (error) {
             console.log(error);
             return error;
