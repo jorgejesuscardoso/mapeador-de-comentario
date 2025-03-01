@@ -245,3 +245,175 @@ export const Section = styled.section`
       gap: 10px;
     }
 `;
+
+
+export const ContainerM = styled.div`
+    width: 100%;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+`;
+
+export const Title = styled.h1`
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #6cb6ff;
+
+    @media (max-width: 768px) {
+        font-size: 1rem;
+    }    
+`;
+
+export const SearchContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+        gap: 5px;
+
+        label {
+            font-size: 0.8rem;
+        }
+    }
+`;
+
+export const Input = styled.input`
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+
+    @media (max-width: 768px) {
+        padding: 7px;
+        font-size: 0.6rem;
+    }
+`;
+
+export const SelectM = styled.select`
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+
+    @media (max-width: 768px) {
+        padding: 7px;
+        font-size: 0.6rem;
+    }
+`;
+
+export const ButtonM = styled.button`
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+
+    &:hover {
+        background-color: #2980b9;
+    }
+
+    &:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+        padding: 7px 15px;
+        font-size: 0.6rem;
+    }
+`;
+
+export const PaginationContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 10vh;
+
+    button {
+      width: 100%;
+      background-color: #3498db !important;
+    }
+
+    input {
+      width: 40px;
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 5px;
+
+        .paginationBtn {      
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          gap: 10px;
+      }
+
+      .paginationInfo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        background-color: #cccccc25;
+        width: 100%;
+        top: 56vh;        
+        left: 0;
+        padding: 5px;
+
+        span {
+          font-size: 0.8rem;
+        }
+      }
+
+      .paginationInfo-2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #cccccc25;
+        width: 100%;
+        padding: 5px;
+
+        span {
+          font-size: 0.8rem;
+        }
+      }
+      
+    }
+
+    
+`;
+
+export const CardContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    margin-top: 20px;
+
+    div {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`;
+
+export const ErrorMessage = styled.p`
+    color: red;
+    font-weight: bold;
+`;
+
+export const LoadingMessage = styled.p`
+    color: #3498db;
+    font-weight: bold;
+`;
