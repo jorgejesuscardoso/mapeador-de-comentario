@@ -36,6 +36,13 @@ export const ContainerE = styled.div`
     min-height: 45vh;
     background-color: #00000077;
     top: 0;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+        min-height: 25vh;
+        padding: 0.5rem;
+    }
 `;
 
 export const ContainerResumo = styled.div`
@@ -59,8 +66,7 @@ export const ContainerResumo = styled.div`
     @media (max-width: 768px) {
         width: 100%;
         height: 100%;
-
-
+        margin: 0;
     }
 `;
 
@@ -356,7 +362,29 @@ export const SectionContainer = styled.div`
 
     @media (max-width: 768px) {
         width: 100%;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
+
+        div {
+            gap: 0.5rem;
+        }
+
+        h2 {
+            font-size: 0.8rem !important;
+        }
+
+        h3 {
+            font-size: 0.7rem !important;
+        }
+
+        p {
+            font-size: 0.6rem !important;
+        }
+
+        button {
+            font-size: 0.6rem !important;
+            height: 1.6rem;
+        }
+
     }
 `;
 
