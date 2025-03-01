@@ -30,6 +30,32 @@ class UsersServices {
     }
   }
 
+  async getUserById(id: number) {
+    try {
+        const user = await this.model.getUserById(id);
+        
+        return user;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
+  async searchUser(search: string, take: number, page: number) {
+    try {
+
+        const user = await this.model.searchUser(search, take, page);
+        if (!user) {
+            return { message: "User not found" };
+        }
+        
+        return user;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
   async updateUser(id: number, data: any) {
     try {
         const sanitizedData = {
@@ -43,8 +69,22 @@ class UsersServices {
           role: data.role,
           password: data.password,
           subs: data.subs,
+          isDeleted: data.isDeleted,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
         }
         const user = await this.model.updateUser(id, sanitizedData);
+        
+        return user;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
+  async deleteUser(id: number) {
+    try {
+        const user = await this.model.deleteUser(id);
         
         return user;
     } catch (error) {
