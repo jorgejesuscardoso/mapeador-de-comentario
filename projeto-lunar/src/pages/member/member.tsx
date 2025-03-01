@@ -196,11 +196,12 @@ const Members = () => {
         doc.setFontSize(16);
         doc.text(title, titleX, 10, { align: "center" });
     
-        const tableColumn = ["Nome", "Wattpad", "Pontos", "Subs"];
+        const tableColumn = ["ID", "Nome", "Wattpad", "Pontos", "Subs"];
         const tableRows: any[] = [];
     
         members.forEach(member => {
             const memberData = [
+                member.id,
                 member.name,
                 member.userWtp,
                 member.points,
