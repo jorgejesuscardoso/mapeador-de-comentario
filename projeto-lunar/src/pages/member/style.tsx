@@ -266,6 +266,12 @@ export const ButtonAdd = styled.button`
         opacity: 1;
         background-color: #07ac0d; /* Green */
     }
+
+    @media (max-width: 768px) {
+        font-size: 0.5rem;
+        width: 100%;
+        padding: 5px;
+    }
 `;
 
 export const ModalEditContainer = styled.div`
