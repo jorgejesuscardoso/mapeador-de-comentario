@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 //const endPoint = 'https://mapeador-de-comentario.onrender.com';
-//const endPoint = 'https://7935-170-84-225-159.ngrok-free.app';
-const endPoint = 'http://localhost:6060';
+const endPoint = 'https://0a20-170-84-225-220.ngrok-free.app';
+//const endPoint = 'http://localhost:6060';
 //const endPoint = 'https://mapeador-de-comentario-production.up.railway.app';
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
