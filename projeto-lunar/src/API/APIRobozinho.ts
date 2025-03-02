@@ -186,6 +186,60 @@ export const GetUsersById = async (id: number) => {
     }
 }
 
+export const GetALlUsersNoPagination = async () => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
+    const url = `${endPoint}/users/all`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        return (err || "Erro ao buscar usuário.");
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
+export const GetDeletedUsers = async (qtdItens: number, pagination: number) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
+    const url = `${endPoint}/users/deleted?take=${qtdItens}&page=${pagination}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (err) {
+        return (err || "Erro ao buscar usuário.");
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
 export const SearchUser = async (search: string, take: number, page: number) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout

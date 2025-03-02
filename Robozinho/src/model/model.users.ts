@@ -86,7 +86,60 @@ class UsersModel {
         console.log(error);
         return error;
     }    
-}
+    }
+
+    // Busca usuários deletados
+    async getDeletedUsers(take: number, page: number) {
+        try {
+            const pagination = (page - 1) * take; // Define quantos itens pular
+
+            // Contar o total de usuários deletados
+            const totalUsers = await this.prisma.member.count({
+                where: {
+                    isDeleted: true
+                }
+            });
+
+            // Calcular o total de páginas (arredondando para cima)
+            const totalPages = Math.ceil(totalUsers / take);
+
+            // Buscar os usuários deletados com base na paginação
+            const users = await this.prisma.member.findMany({
+                where: {
+                    isDeleted: true
+                },
+                take: take,
+                skip: pagination,
+            });
+
+            return {
+                users,
+                totalPages // Retorna o total de páginas
+            };
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
+
+    // Busca todos os usuários sem paginação
+    async getAllUsers() {
+        try {
+            const users = await this.prisma.member.findMany({
+                where: {
+                    isDeleted: false
+                },
+                include: {
+                    books: true,
+                }
+            });
+
+            return users;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
+    }
 
 
     // Buscar usuário por ID
