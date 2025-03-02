@@ -575,6 +575,7 @@ export const PaginationContainer = styled.div`
             border: none;
             width: 20px;
             height: 20px;
+            cursor: pointer;
 
 
             img {
