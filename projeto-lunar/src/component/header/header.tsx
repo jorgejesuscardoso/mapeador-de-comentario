@@ -57,6 +57,7 @@ const HeaderLunar = () => {
                     <li><Link to="/member">Lista de membros</Link></li>
                     <li><Link to="/subs">Subs</Link></li>
                     <li><Link to="/shop">Lojinha Lunar</Link></li>
+                    <li><Link to="/manager">Gerenciar Membros</Link></li>
                     <li><Link to="/dash">Painel de Controle</Link></li>
                 </ul>
             </nav>
