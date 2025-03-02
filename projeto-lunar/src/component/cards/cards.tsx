@@ -1,10 +1,65 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 //import { useState } from "react";
+import Swal from "sweetalert2";
+import { ButtonDelete, DeleteContainer } from "../../pages/dashboard/style";
 import { Card, Info, Name, Points, Role, SubItem, SubRole, SubsList } from "./styles";
+import { DeleteUser } from "../../API/APIRobozinho";
 
 const UserCard = ({ user }: { user: any }) => {
+
+    const handleDelete = async () => {
+        try {
+            const deleteUser = await DeleteUser(user.id);
+            if (!deleteUser) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Erro ao deletar!',
+                });
+            };
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Deletado!',
+                text: 'O usuário foi deletado com sucesso!',
+            });
+            window.location.reload();
+        } catch {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Erro ao deletar!',
+            });
+        }
+    };
+
+
     return (
         <Card>
+            <DeleteContainer
+                className="delete"
+            >
+                <ButtonDelete 
+                    onClick={() => {
+                        Swal.fire({
+                            title: 'Você tem certeza?',
+                            text: "Você não poderá reverter isso!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Sim, deletar!',
+                            cancelButtonText: 'Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                handleDelete();
+                            }
+                        });
+                    }}
+                >
+                    ❌
+                </ButtonDelete>
+            </DeleteContainer>
             <Name>{user.name}</Name>
             <Role role={user.role} className="role">
                 {user.role === 'adm' ? 'Adm' : user.role === 'member' ? 'Membro' : 'SuperAdmin'}

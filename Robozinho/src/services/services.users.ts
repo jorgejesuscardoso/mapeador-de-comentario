@@ -19,9 +19,10 @@ class UsersServices {
     }
   }
 
-  async getUsers() {
+  async getUsers(take: number, page: number) {
     try {
-        const users = await this.model.getUsers() as unknown as [];
+        
+        const users = await this.model.getUsers(take, page) as unknown as [];
        
         return users;
     } catch (error) {

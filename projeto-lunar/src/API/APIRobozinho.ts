@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const endPoint = 'https://projlunar.onrender.com';
+//const endPoint = 'https://projlunar.onrender.com';
 //const endPoint = 'https://0a20-170-84-225-220.ngrok-free.app';
-//const endPoint = 'http://localhost:6060';
+const endPoint = 'http://localhost:6060';
 //const endPoint = 'https://mapeador-de-comentario-production.up.railway.app';
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
@@ -130,10 +130,10 @@ export const CreateUser = async (body: any) => {
     }
 }
 
-export const GetUsers = async () => {
+export const GetUsers = async (qtdItens: number, pagination: number) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-    const url = `${endPoint}/users`;
+    const url = `${endPoint}/users?take=${qtdItens}&page=${pagination}`;
 
     try {
         const response = await fetch(url, {

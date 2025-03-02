@@ -417,3 +417,24 @@ export const LoadingMessage = styled.p`
     color: #3498db;
     font-weight: bold;
 `;
+
+export const DeleteContainer = styled.div`
+    display: flex;
+    justify-content: end !important;
+    align-items: end !important;
+    width: 100%;
+`;
+
+export const ButtonDelete = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 0 !important;
+    height: 0 !important;
+`;

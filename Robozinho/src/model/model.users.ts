@@ -8,6 +8,18 @@ class UsersModel {
 
   async createUser(data: any) {
     try {
+        const isUser = await this.prisma.member.findUnique({
+            where: {
+                user: data.user
+            }
+        }) as any;
+
+        if (isUser) {
+            if (isUser.isDeleted) {
+                return { msg: "Este usuário foi deletado e não pode ser recriado." };
+            }
+            return { msg: "User already exists" };
+        }
 
         const user = await this.prisma.member.create({
             data: {
@@ -40,42 +52,88 @@ class UsersModel {
         }
     }
    // Buscar usuários com livros e subs
-   async getUsers() {
-        try {
-            const users = await this.prisma.member.findMany({
-                include: {
-                    books: true,
-                }
-            });
+   async getUsers(take: number, page: number) {
+    try {
+        const pagination = (page - 1) * take; // Define quantos itens pular
 
-            return users;
-        } catch (error) {
-            console.log(error);
-            return error;
-        }    
-    }
+        // Contar o total de usuários que atendem ao critério
+        const totalUsers = await this.prisma.member.count({
+            where: {
+                isDeleted: false
+            }
+        });
+
+        // Calcular o total de páginas (arredondando para cima)
+        const totalPages = Math.ceil(totalUsers / take);
+
+        // Buscar os usuários com base na paginação
+        const users = await this.prisma.member.findMany({
+            include: {
+                books: true,
+            },
+            where: {
+                isDeleted: false
+            },
+            take: take,
+            skip: pagination,
+        });
+
+        return {
+            users,
+            totalPages // Retorna o total de páginas
+        };
+    } catch (error) {
+        console.log(error);
+        return error;
+    }    
+}
+
 
     // Buscar usuário por ID
     async getUserById(id: number) {
         try {
+            if (!id || typeof id !== "number") {
+                throw new Error("ID inválido");
+            }
+    
             const user = await this.prisma.member.findUnique({
                 where: {
-                    id
+                    id,
+                    isDeleted: false,
                 },
                 include: {
                     books: true,
-                }
+                },
             });
-
+    
+            if (!user) {
+                throw new Error("Usuário não encontrado");
+            }
+    
             return user;
         } catch (error) {
-            console.log(error);
-            return error;
+            console.error("Erro ao buscar usuário:", error);
+            return null; // Evita retornar o erro diretamente
         }
     }
+    
     // Atualizar usuário
     async updateUser(id: number, data: any) {
         try {
+
+            if (!id || typeof id !== "number") {
+                throw new Error("ID inválido");
+            }
+
+            const isDeleted = await this.prisma.member.findUnique({
+                where: {
+                    id
+                }
+            });
+
+            if (isDeleted?.isDeleted) {
+                return "Usuário deletado, não é possível atualizar.";
+            }
             
             const user = await this.prisma.member.update({
                 where: {
@@ -149,7 +207,10 @@ class UsersModel {
                                 mode: "insensitive"
                             }
                         }
-                    ]
+                    ],
+                    AND: {
+                        isDeleted: false
+                    }
                 },
                 take: take,
                 skip: skip

@@ -508,3 +508,96 @@ export const DivToScrollTable = styled.div`
     overflow-x: auto;
     width: 100%;
 `;
+
+export const PaginationContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+
+    .paginationContent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .paginationInfo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        margin: 0.3rem 0 0 0;
+        
+
+        label {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        input {
+            color: #fff;
+            background: none;
+            width: 30px;
+            padding: 0.1rem;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+        span {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+    }
+
+    .paginationBtn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.5rem;
+        width: 80%;     
+        margin: 1rem 0 0 0;   
+
+        button {
+            background: none;
+            border: none;
+            width: 20px;
+            height: 20px;
+
+
+            img {
+                width: 100%;
+                height: 100%;
+                opacity: 0.7;
+            }
+        }
+    }
+
+    .paginationInput {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        
+        input, b {
+            color: #fff;
+            background: none;
+            width: 30px;
+            padding: 0.1rem;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.8rem;
+        }
+    }
+`;
