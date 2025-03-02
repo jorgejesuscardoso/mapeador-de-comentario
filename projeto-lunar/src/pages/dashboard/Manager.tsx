@@ -52,6 +52,7 @@ const ManagerMember = () => {
                     setLoading(false);
                     return;
                 }
+
                 foundMember = await GetUsersById(+searchValue);
                 if (foundMember) {
                     setMemberById(foundMember);
@@ -111,7 +112,7 @@ const ManagerMember = () => {
 
                 {/* Input de Busca */}
                 <Input
-                    type="text"
+                    type={searchType === "ID" ? "number" : "text"}
                     placeholder={searchType === "ID" ? "Digite um ID" : "Digite a palavra inteira ou uma parte. (Ex: 'Anna', 'An', 'nna')"}
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
