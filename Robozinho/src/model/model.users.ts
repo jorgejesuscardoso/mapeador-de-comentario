@@ -148,7 +148,7 @@ class UsersModel {
             if (!id || typeof id !== "number") {
                 throw new Error("ID inválido");
             }
-    
+
             const user = await this.prisma.member.findUnique({
                 where: {
                     id,
@@ -205,7 +205,6 @@ class UsersModel {
     // Pesquisar usuário por nome ou user (case insensitive) que tenha partes do texto
     async searchUser(search: string, take: number = 10, page: number = 1) {
         const skip = (page - 1) * take; // Define quantos itens pular
-    
         try {
             const searchTerm = String(search || ''); 
         
@@ -234,6 +233,7 @@ class UsersModel {
                     ]
                 }
             });
+            
         
             // Calcular o total de páginas (arredondando para cima)
             const totalPages = Math.ceil(totalUsers / take);
@@ -264,6 +264,9 @@ class UsersModel {
                     AND: {
                         isDeleted: false
                     }
+                },
+                include: {
+                    books: true
                 },
                 take: take,
                 skip: skip
