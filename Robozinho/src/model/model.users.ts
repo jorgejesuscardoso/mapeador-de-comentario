@@ -277,9 +277,7 @@ class UsersModel {
             console.log(error);
             return error;
         }        
-    }
-    
-    
+    }   
 
     // Deletar usuário (soft delete)
     async deleteUser(id: number) {

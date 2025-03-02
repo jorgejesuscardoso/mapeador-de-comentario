@@ -2,12 +2,9 @@ import { chromium, firefox } from 'playwright';
 
 export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => {
     async function Robot() {
-        const browser = await firefox.launch({
+        const browser = await chromium.launch({
             headless: true,
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox'
-            ],
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
 
         console.log('URL:', wUrl);
