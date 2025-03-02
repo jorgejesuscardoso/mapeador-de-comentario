@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import Routes from './routes';
@@ -17,13 +17,26 @@ class App {
     // Configuração de middlewares (CORS, JSON, etc.)
     private middlewares(): void {
         this.app.use(cors({
-            origin: '*', // Substitua conforme necessário
-            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+            origin: ['https://projetolunar.netlify.app', 'http://localhost:5173'], // REMOVA as barras finais "/"
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
             allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
             credentials: true,
         }));
 
-        this.app.options('*', cors()); // Permite preflight requests
+        // Middleware para tratar preflight requests
+        this.app.use((req: Request, res: Response, next: NextFunction): void => {
+            res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+            res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+            res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, X-Requested-With, Accept');
+            res.header('Access-Control-Allow-Credentials', 'true');
+        
+            if (req.method === 'OPTIONS') {
+                res.sendStatus(204); // Retorna OK para preflight requests
+                return;
+            }
+        
+            next();
+        });
 
         this.app.use(express.json());
     }
