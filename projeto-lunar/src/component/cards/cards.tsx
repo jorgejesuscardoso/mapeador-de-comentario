@@ -243,9 +243,9 @@ const UserCard = ({ user }: { user: any }) => {
                 >
                     Obras:                     
                 </InfoBtn>
-                { user.books.map((book: any) => (
+                { user.books? user.books.map((book: any) => (
                         <li key={book.id}>{book.title}</li>
-                    ))}
+                    )): <p style={{width: '100%', textAlign: 'center'}}>Nenhuma obra cadastrada ainda.</p>}
             </InfoBtnContainer>
 
             {user.subs.length > 0 && (
@@ -269,7 +269,10 @@ const UserCard = ({ user }: { user: any }) => {
                             X
                         </button>
                         <span>Cadastrar, editar ou remover obras?</span>
-                        <div>
+                        <div
+                        
+                            className="buttonsContainer-2"
+                        >
                             <button
                                 onClick={
                                     () => {

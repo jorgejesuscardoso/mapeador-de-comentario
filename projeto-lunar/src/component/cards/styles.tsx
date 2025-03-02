@@ -146,6 +146,15 @@ export const ModalEditBookContainer = styled.div`
     min-height: 100%;
     text-align: center;
 
+    div.buttonsContainer-2 {
+        background-color: #000000  !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        height: 20vh;
+    }
+
     button {
         font-size: 0.7rem;
         color: #ffffff;
