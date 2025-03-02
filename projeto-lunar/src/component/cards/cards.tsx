@@ -42,8 +42,8 @@ const UserCard = ({ user }: { user: any }) => {
                 <ButtonDelete 
                     onClick={() => {
                         Swal.fire({
-                            title: 'Você tem certeza?',
-                            text: "Você não poderá reverter isso!",
+                            title: 'Você quer deletar esse usuário?',
+                            text: "Está é uma ação difícil de reverter!",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',
@@ -52,12 +52,31 @@ const UserCard = ({ user }: { user: any }) => {
                             cancelButtonText: 'Cancelar'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                handleDelete();
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Tem certeza?',
+                                    text: 'O membro será marcado como deletado!',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Sim, deletar!',
+                                    cancelButtonText: 'Cancelar',
+                                    confirmButtonColor: '#d33',
+                                    cancelButtonColor: '#3085d6',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        handleDelete();
+                                    }
+                                }).finally(() => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deletado!',
+                                        text: 'O usuário foi deletado com sucesso!',
+                                    });
+                                });
                             }
                         });
                     }}
                 >
-                    ❌
+                    <img src="trash.png" alt="lixeira" />
                 </ButtonDelete>
             </DeleteContainer>
             <Name>{user.name}</Name>

@@ -183,26 +183,24 @@ export const ModalContainer = styled.div`
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 300px;
-    z-index: 1000;
+    z-index: 100000;
 
     h2 {
         font-size: 0.8rem;
         text-align: center;
-        margin-bottom: 20px;
         color: #07801b;
     }
 
     h3 {
         font-size: 0.8rem;
         text-align: center;
-        margin-bottom: 20px;
-        color: #967f01
+        color: #967f01;
     }
 
     span {
         font-size: 0.8rem;
         color: #777;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     div {
         display: flex;
@@ -214,7 +212,7 @@ export const ModalContainer = styled.div`
 export const InputField = styled.input`
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.7rem !important;
@@ -222,14 +220,13 @@ export const InputField = styled.input`
 `;
 
 export const Button = styled.button`
-  padding: 10px 15px;
+  padding: 8px 10px;
   margin: 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.7rem !important;
-  width: 40%;
-  font-size: 16px;
+  font-size: 0.6rem !important;
+  width: 50%;
   transition: background-color 0.3s;
 
   &:first-child {
@@ -244,6 +241,12 @@ export const Button = styled.button`
 
   &:hover {
     opacity: 0.8;
+  }
+
+  &.download-pdf {
+    background-color: #4caf50 !important;
+    color: white;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -354,7 +357,7 @@ export const Labels = styled.label`
       border-radius: 5px;
       font-size: 0.7rem;
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
 
       option {
         padding: 5px;

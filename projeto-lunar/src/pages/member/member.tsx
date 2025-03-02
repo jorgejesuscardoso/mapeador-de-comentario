@@ -2,11 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
 import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, MainSection, DivToScrollTable, PaginationContainer } from "./style";
-import { GetUsers, UpdateUser } from "../../API/APIRobozinho";
+import { GetALlUsersNoPagination, GetUsers, UpdateUser } from "../../API/APIRobozinho";
 import { useNavigate } from "react-router-dom";
 import { GetFromLocalStorage, SetTolocalStorage } from "../../utils/localstorage";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import Swal from "sweetalert2";
 
 
 type PersonalData = {
@@ -68,6 +69,7 @@ const Members = () => {
     const [pagination, setPagination] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [itens, setItens] = useState(10);
+    const [allMembers, setAllMembers] = useState<PersonalData[]>([]);
 
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
@@ -78,22 +80,28 @@ const Members = () => {
         if (getLocalStorage.user.role === 'superadm') {
             setSuperAdm(true);
         }
-     getMembers();
+
+        
+        AllUsers();
+        getMembers();
     }, []);
 
     useEffect(() => {
-        if (loadEdit) {
-            const intervalId = setInterval(() => {
-                setLoadEdit(false);
-                setComfirmEdit(false);
-                setEditPoints(false);
-            }, 5000);
+        if (loadEdit) {            
+            setLoadEdit(false);
+            setComfirmEdit(false);
+            setEditPoints(false);
             
-            return () => {
-              clearInterval(intervalId);
-            }
+            Swal.fire({
+                icon: 'warning',
+                title: 'Aguarde!',
+                text: 'Salvando as alterações...',
+                showConfirmButton: false,
+                timer: 1500,
+            });
         }
 
+        
         
     }, [loadEdit]);
 
@@ -123,17 +131,57 @@ const Members = () => {
             getMembers();
         }
     }, [pagination, itens]);
+        
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) {
+                setAddSubs(false);
+                setChangeRole(false);
+                setChangeBook(false);
+                setEditAge(false);
+                setEditName(false);
+                setEditPhone(false);
+                setEditPoints(false);
+                setEditUser(false);
+                setEditWtpd(false);
+                setLoadEdit(false);
+            }
+        };
+
+        document.addEventListener("click", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
 
     const getMembers = async () => {
         const members = await GetUsers(itens, pagination);
 
         SetTolocalStorage('members', members.users);
-        console.log(members);
         if (members.users.length > 0) {
             setMembers(members.users);
             setTotalPages(members.totalPages);
         }
-    };   
+    }; 
+
+    const AllUsers = async () => {
+        try {
+            const users = await GetALlUsersNoPagination();
+            if (users.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ops...',
+                    text: 'Nenhum usuário encontrado!',
+                });
+                return;
+            }
+            setAllMembers(users);
+            return users;
+        } catch (error) {
+            console.log(error);
+        }
+    };
     
     const handleEditName = async () => {
         const data = {
@@ -142,6 +190,7 @@ const Members = () => {
         
         await UpdateUser(clientToEdit.id, data);
         getMembers();
+        
     }
 
     const handleEditPhone = async () => {
@@ -244,51 +293,35 @@ const Members = () => {
     
         doc.save('Membros Projeto Lunar.pdf');
     };
-        
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) {
-                setAddSubs(false);
-                setChangeRole(false);
-                setChangeBook(false);
-                setEditAge(false);
-                setEditName(false);
-                setEditPhone(false);
-                setEditPoints(false);
-                setEditUser(false);
-                setEditWtpd(false);
-                setLoadEdit(false);
-            }
-        };
 
-        document.addEventListener("click", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("click", handleClickOutside);
-        };
-    }, []);
-
-    console.log(totalPages);
     return (
         <Container ref={ref}>
             <ContainerD>
                 <ContainerE>
                 <ContainerResumo>
-                        <SpanTotal>👥 Total de membros: <strong>{members.length}</strong></SpanTotal>
+                        <SpanTotal>👥 Total de membros: <strong>{allMembers.length}</strong></SpanTotal>
                         
-                        {members.length > 0 && (
+                        {allMembers.length > 0 && (
                             <>
-                                <SpanTotalpoints>🏆 Pontos não utilizados: <strong>{members.reduce((total, s) => total + s.points, 0).toLocaleString('pt-BR')}</strong></SpanTotalpoints>
+                                <SpanTotalpoints>🏆 Pontos não utilizados: <strong>{allMembers.reduce((total, s) => total + s.points, 0).toLocaleString('pt-BR')}</strong></SpanTotalpoints>
 
-                                <SpanTotalpoints>📊 Média de pontos por membro: <strong>{(members.reduce((total, s) => total + s.points, 0) / members.length).toLocaleString('pt-BR', {})}</strong></SpanTotalpoints>
+                                <SpanTotalpoints>📊 Média de pontos por membro: <strong>{(allMembers.reduce((total, s) => total + s.points, 0) / allMembers.length).toLocaleString('pt-BR', {})}</strong></SpanTotalpoints>
 
-                                <SpanTotalpoints>🥇 Membro com mais pontos: <strong>{members.reduce((top, s) => (s.points > top.points ? s : top), members[0]).name}</strong></SpanTotalpoints>
+                                <SpanTotalpoints>
+                                🥇 Membro com mais pontos: <strong>
+                                {allMembers.reduce((top, s) => (s.points > top.points ? s : top), allMembers[0]).name}
+                                </strong>
+                            </SpanTotalpoints>
 
-                                <SpanTotalpoints>🥈 Membro com menos pontos: <strong>{members.reduce((top, s) => (s.points < top.points ? s : top), members[0]).name}</strong></SpanTotalpoints >
+                            <SpanTotalpoints>
+                                🚫 Membro com menos pontos: <strong>
+                                {allMembers.reduce((low, s) => (s.points < low.points ? s : low), allMembers[0]).name} 
+                                </strong>
+                            </SpanTotalpoints>
 
-                                <SpanTotalpoints>📚 Total de obras cadastradas: <strong>{members.reduce((total, s) => total + s.books.length, 0)}</strong></SpanTotalpoints >
+                                <SpanTotalpoints>📚 Total de obras cadastradas: <strong>{allMembers.reduce((total, s) => total + s.books.length, 0)}</strong></SpanTotalpoints >
 
-                                <SpanTotalpoints>👑 🛠️   Total de Administradores: <strong>{members.filter((s) => s.role === 'adm').length}</strong></SpanTotalpoints>
+                                <SpanTotalpoints>👑 🛠️   Total de Administradores: <strong>{allMembers.filter((s) => s.role === 'adm' || s.role === 'superadm').length}</strong></SpanTotalpoints>
                             </>
                         )}
                     </ContainerResumo>
@@ -318,18 +351,11 @@ const Members = () => {
                         
                         <div>
                             <Title>👥 Gerenciamento de Membros</Title>
+                            
                             <InfoText>
-                                Aqui você pode cadastrar novos usuários ou gerenciar os existentes.
-                            </InfoText>
-                            <h2>OBS: GERENCIAMENTO AINDA EM CONSTRUÇÂO</h2>
+                                Para editar um membro, clique no campo desejado na tabela abaixo. </InfoText>
                             <InfoText>
-                                Faça as alterações necessárias diretamente na tabela abaixo.
-                            </InfoText>
-                            <InfoText>
-                                Para baixar um PDF com a lista de membros, clique no botão abaixo.
-                            </InfoText>
-                            <InfoText>
-                                Para cadastrar um novo membro, clique no botão abaixo.
+                                Para deletar um membro, clique no botão 'Gerenciar Membros'. Lá você poderá pesquiar e deletar.
                             </InfoText>
                             <ButtonContainer>
                                 <ActionButton onClick={() => navigate('/register')}>➕ Cadastrar Novo Membro</ActionButton>
@@ -345,36 +371,11 @@ const Members = () => {
                             > 
                                 <Button
                                     className="download-pdf"
-                                    onClick={() => generatePDF(members)}
+                                    onClick={() => generatePDF(allMembers)}
                                 >
                                     Baixar PDF
-                                </Button>                                
+                                </Button>  
                                 
-                                <div
-                                    className="paginationBtn"
-                                >
-                                    <button
-                                        onClick={() => {
-                                            if (pagination > 1) {
-                                                setPagination(pagination - 1);
-                                            }
-                                        }}
-                                        disabled={pagination <= 1}
-                                    >
-                                        <img src="prev.png" alt="Tabela anterior" />
-                                    </button>
-
-                                    <button
-                                        onClick={() => {
-                                            if (pagination < totalPages) {
-                                                setPagination(pagination + 1);
-                                            }
-                                        }}
-                                        disabled={pagination >= totalPages}
-                                    >
-                                        <img src="next.png" alt="Própxima tabela" />
-                                    </button>
-                                </div>
                             </div>
                             <div
                                 className="paginationInfo"

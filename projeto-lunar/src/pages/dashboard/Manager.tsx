@@ -17,7 +17,7 @@ type UserTypes = {
 const ManagerMember = () => {
     const navigate = useNavigate();
 
-    const [searchType, setSearchType] = useState("id");
+    const [searchType, setSearchType] = useState("ID");
     const [searchValue, setSearchValue] = useState("");
     const [member, setMember] = useState<UserTypes[]>([]);
     const [memberById, setMemberById] = useState({} as UserTypes);
@@ -43,6 +43,15 @@ const ManagerMember = () => {
             let foundMember = null;
 
             if (searchType === "id") {
+                if (typeof searchValue !== "number") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'ID inválido! Digite um número.',
+                    });
+                    setLoading(false);
+                    return;
+                }
                 foundMember = await GetUsersById(+searchValue);
                 if (foundMember) {
                     setMemberById(foundMember);
@@ -59,7 +68,7 @@ const ManagerMember = () => {
                 if (foundMember) {
                     setMember(foundMember.users);
                     setTotalPages(foundMember.totalPages);
-                    console.log(foundMember);
+                    
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -103,7 +112,7 @@ const ManagerMember = () => {
                 {/* Input de Busca */}
                 <Input
                     type="text"
-                    placeholder={`Digite o ${searchType}`}
+                    placeholder={searchType === "ID" ? "Digite um ID" : "Digite a palavra inteira ou uma parte. (Ex: 'Anna', 'An', 'nna')"}
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                 />

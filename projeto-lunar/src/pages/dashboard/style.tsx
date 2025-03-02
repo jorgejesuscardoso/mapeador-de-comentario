@@ -437,4 +437,9 @@ export const ButtonDelete = styled.button`
     font-size: 1rem;
     width: 0 !important;
     height: 0 !important;
+
+    img {
+        width: 25x;
+        height: 25px;
+    }
 `;

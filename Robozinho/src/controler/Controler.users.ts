@@ -38,6 +38,26 @@ class UsersController {
     }
   }
 
+  async getDeletedUsers(take: number = 10, page: number = 1) {
+    try {
+        const users = await this.service.getDeletedUsers(take, page);
+        return users;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
+  async getAllUsers() {
+    try {
+        const users = await this.service.getAllUsers();
+        return users;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
   async searchUser(data: any) {    
     try {
         // Desestruturando os parâmetros da query
@@ -56,8 +76,6 @@ class UsersController {
         return { error: "Ocorreu um erro ao buscar os usuários" }; // Retornando um erro mais amigável
     }
   }
-
-
 
   async updateUser(id: number, data: any) {
     try {

@@ -27,6 +27,19 @@ User.get("/users", async (req, res) => {
   res.json(users);
 });
 
+User.get("/users/all", async (req, res) => {
+  const users = await controller.getAllUsers();
+  res.json(users);
+});
+
+User.get("/users/deleted", async (req, res) => {
+  const { take, page } = req.query;
+  const takeNumber = take !== undefined && +take > 0 ? +take : 10;
+  const pageNumber = page !== undefined && +page > 0 ? +page : 1;
+  const users = await controller.getDeletedUsers(takeNumber, pageNumber);
+  res.json(users);
+});
+
 User.get("/users/:id", async (req, res) => {
   const { id } = req.params;
   const user = await controller.getUserById(Number(id));

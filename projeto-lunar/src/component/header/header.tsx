@@ -9,6 +9,7 @@ const HeaderLunar = () => {
 
     const navigate = useNavigate();
     const [floatMenu, setFloatMenu] = useState(false);
+    const [hover, setHover] = useState(false);
 
     useEffect(() => {
         const user = localStorage.getItem("user");
@@ -33,6 +34,14 @@ const HeaderLunar = () => {
         };
     }, [floatMenu]); // Esse efeito só roda quando floatMenu muda
         
+    useEffect(() => {
+        // Obtem media query
+        const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+        if (mediaQuery.matches) {
+            setHover(true);
+        }
+    }, []);
 
     return (
         <HeaderContainer>
@@ -66,8 +75,14 @@ const HeaderLunar = () => {
                 className="logout-button"
                 onClick={() => RemoveFromLocalStorage("user")}
             >
-                <Link to="/">
-                    <img src="sair.png" alt="Logout" />
+                <Link to="/"
+                    onMouseEnter={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}
+                >
+                    <img 
+                        src={hover ? 'sair.png' : 'sair-b.png'}
+                        alt="Logout"
+                    />
                 </Link>
             </button>
 

@@ -42,6 +42,28 @@ class UsersServices {
     }
   }
 
+  async getDeletedUsers(take: number, page: number) {
+    try {
+        const users = await this.model.getDeletedUsers(take, page) as unknown as [];
+        
+        return users;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async getAllUsers() {
+    try {
+        const users = await this.model.getAllUsers() as unknown as [];
+        
+        return users;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+  }
+
   async searchUser(search: string, take: number, page: number) {
     try {
 

@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 function getRandomPoints() {
-  return Math.floor(Math.random() * (40000 - 100 + 1)) + 10000;
+  return 0;
 }
 
 async function main() {
