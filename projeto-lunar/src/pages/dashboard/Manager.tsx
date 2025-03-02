@@ -43,7 +43,7 @@ const ManagerMember = () => {
             let foundMember = null;
 
             if (searchType === "ID") {
-                if (typeof searchValue !== "number") {
+                if (typeof +searchValue !== "number") {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
