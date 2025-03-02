@@ -87,4 +87,5 @@ export const DeleteBook = async (id: number) => {
     } finally {
         clearTimeout(timeout);
     }
-}
+};
+    

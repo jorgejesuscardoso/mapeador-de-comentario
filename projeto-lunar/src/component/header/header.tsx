@@ -136,6 +136,14 @@ const HeaderLunar = () => {
                             </li>
                             <li>
                                 <Link 
+                                    to="/manager"
+                                    onClick={() => setFloatMenu(false)}
+                                >
+                                    Gerenciar Membros
+                                </Link>
+                            </li>
+                            <li>
+                                <Link 
                                     to="/dash"
                                     onClick={() => setFloatMenu(false)}
                                 >
