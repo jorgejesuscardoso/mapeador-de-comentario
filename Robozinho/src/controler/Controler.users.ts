@@ -18,9 +18,9 @@ class UsersController {
     }
   }
 
-  async getUsers() {
+  async getUsers(take: number = 10, page: number = 1) {
     try {
-        const users = await this.service.getUsers();
+        const users = await this.service.getUsers(take, page);
         return users;
     } catch (error) {
         console.log(error);

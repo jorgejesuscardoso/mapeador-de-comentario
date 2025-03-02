@@ -46,7 +46,6 @@ const ManagerMember = () => {
                 foundMember = await GetUsersById(+searchValue);
                 if (foundMember) {
                     setMemberById(foundMember);
-                    console.log(foundMember);
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -60,6 +59,7 @@ const ManagerMember = () => {
                 if (foundMember) {
                     setMember(foundMember.users);
                     setTotalPages(foundMember.totalPages);
+                    console.log(foundMember);
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -166,7 +166,7 @@ const ManagerMember = () => {
            <CardContainer>
             {member.length > 0 ? (
                 member.map((user: any) => (
-                    <div key={user.id} className="card">
+                    <div key={user.id} className="card">                            
                         <UserCard user={user} />
                     </div>
                 ))

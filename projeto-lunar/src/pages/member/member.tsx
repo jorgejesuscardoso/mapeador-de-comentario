@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
-import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, MainSection, DivToScrollTable } from "./style";
+import { Button, ButtonAdd, Container, ContainerD, DescriptionContainer, InputField, ModalContainer, ModalEditContainer, SpanTotal, SpanTotalpoints, StyledEmptyRow, Table, TableHeader, TableRow, TdEdit, Labels, ContainerE, ContainerResumo, SectionContainer, Title, InfoText, ButtonContainer, ActionButton, MainSection, DivToScrollTable, PaginationContainer } from "./style";
 import { GetUsers, UpdateUser } from "../../API/APIRobozinho";
 import { useNavigate } from "react-router-dom";
 import { GetFromLocalStorage, SetTolocalStorage } from "../../utils/localstorage";
@@ -65,6 +65,9 @@ const Members = () => {
     const [changeBook, setChangeBook] = useState(false);
     const [changeRole, setChangeRole] = useState(false);
     const [role, setRole] = useState('member');
+    const [pagination, setPagination] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [itens, setItens] = useState(10);
 
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
@@ -115,13 +118,20 @@ const Members = () => {
         }
     }, [editPoints]);
 
-    const getMembers = async () => {
-        const members = await GetUsers();
+    useEffect(() => {
+        if (pagination < totalPages) {
+            getMembers();
+        }
+    }, [pagination, itens]);
 
-        SetTolocalStorage('members', members);
-    
-        if (members.length > 0) {
-            setMembers(members);
+    const getMembers = async () => {
+        const members = await GetUsers(itens, pagination);
+
+        SetTolocalStorage('members', members.users);
+        console.log(members);
+        if (members.users.length > 0) {
+            setMembers(members.users);
+            setTotalPages(members.totalPages);
         }
     };   
     
@@ -258,7 +268,7 @@ const Members = () => {
         };
     }, []);
 
-
+    console.log(totalPages);
     return (
         <Container ref={ref}>
             <ContainerD>
@@ -328,12 +338,60 @@ const Members = () => {
                         </div>
                     </SectionContainer>
                     <DivToScrollTable>
-                        <Button
-                            className="download-pdf"
-                            onClick={() => generatePDF(members)}
-                        >
-                            Baixar PDF
-                        </Button>
+                       
+                        <PaginationContainer>
+                            <div
+                                className="paginationContent"
+                            > 
+                                <Button
+                                    className="download-pdf"
+                                    onClick={() => generatePDF(members)}
+                                >
+                                    Baixar PDF
+                                </Button>                                
+                                
+                                <div
+                                    className="paginationBtn"
+                                >
+                                    <button
+                                        onClick={() => {
+                                            if (pagination > 1) {
+                                                setPagination(pagination - 1);
+                                            }
+                                        }}
+                                        disabled={pagination <= 1}
+                                    >
+                                        <img src="prev.png" alt="Tabela anterior" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            if (pagination < totalPages) {
+                                                setPagination(pagination + 1);
+                                            }
+                                        }}
+                                        disabled={pagination >= totalPages}
+                                    >
+                                        <img src="next.png" alt="Própxima tabela" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                className="paginationInfo"
+                            >
+                                <div>
+                                    <label htmlFor="itens">Itens por tabela:</label>
+                                    <input
+                                        type="number"
+                                        id="itens"
+                                        min="1"
+                                        value={itens}
+                                        onChange={(e) => setItens(+e.target.value)}
+                                    />
+                                </div>
+                                <span>Tabela {pagination} de {totalPages}</span>
+                            </div>
+                        </PaginationContainer>
                         <Table>
                             <thead>
                                 <TableHeader>
@@ -353,7 +411,11 @@ const Members = () => {
                                     >
                                         Idade
                                     </th>
-                                    <th>Telefone</th>
+                                    <th
+                                        className="hide-on-mobile"
+                                    >
+                                        Telefone
+                                    </th>
                                     <th>Wattpad</th>
                                     <th>Obras</th>
                                     <th>Pontos</th>
@@ -479,7 +541,8 @@ const Members = () => {
                                             >
                                                 {member.age}
                                             </TdEdit>
-                                            <TdEdit                                                
+                                            <TdEdit                 
+                                                className="hide-on-mobile"                               
                                                 style={{ cursor: 'pointer' }}
                                                 onClick={() => {
                                                     if(!superAdm) return;
@@ -622,6 +685,55 @@ const Members = () => {
                                 )}
                             </tbody>
                         </Table>
+                        <PaginationContainer>
+                            <div
+                                className="paginationContent"
+                            > 
+                               
+                                <div
+                                    className="paginationBtn"
+                                >
+                                    <button
+                                        onClick={() => {
+                                            if (pagination > 1) {
+                                                setPagination(pagination - 1);
+                                            }
+                                        }}
+                                        disabled={pagination <= 1}
+                                    >
+                                        <img src="prev.png" alt="Tabela anterior" />
+                                    </button>
+
+                                    <div                                    
+                                        className="paginationInput"
+                                    >
+                                        Tabela <input 
+                                            type="text"
+                                            value={pagination}
+                                            onChange={(e) => setPagination(+e.target.value)}
+                                         /> 
+                                        de <b>{totalPages}</b>
+                                        
+                                    </div>
+
+
+                                    <button
+                                        onClick={() => {
+                                            if (pagination < totalPages) {
+                                                setPagination(pagination + 1);
+                                            }
+                                        }}
+                                        disabled={pagination >= totalPages}
+                                    >
+                                        <img src="next.png" alt="Própxima tabela" />
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                className="paginationInfo"
+                            >
+                            </div>
+                        </PaginationContainer>
                     </DivToScrollTable>
                 </MainSection>    
                     {editPoints && (

@@ -20,7 +20,10 @@ User.post("/create/users", async (req, res) => {
 });
 
 User.get("/users", async (req, res) => {
-  const users = await controller.getUsers();
+  const { take, page } = req.query;
+  const takeNumber = take !== undefined && +take > 0 ? +take : 10;
+  const pageNumber = page !== undefined && +page > 0 ? +page : 1;
+  const users = await controller.getUsers(takeNumber, pageNumber);
   res.json(users);
 });
 

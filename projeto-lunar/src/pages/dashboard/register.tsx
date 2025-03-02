@@ -69,6 +69,15 @@ const RegisterMember = () => {
         };
         try {
             const response = await CreateUser(userData);
+
+            if (response.msg === "User already exists") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Erro",
+                    text: "Usuário já existe!"
+                });
+                return;
+            }
     
             if (response.id) {
                 Swal.fire({
@@ -228,7 +237,7 @@ const RegisterMember = () => {
                             value={role}
                             onChange={(e) => setRole(e.target.value)}                            
                         >
-                            <option value="admin">Admin</option>
+                            <option value="adm">Admin</option>
                             <option value="superadm">SuperAdmin</option>
                             <option value="member">Membro</option>
                         </Select>
