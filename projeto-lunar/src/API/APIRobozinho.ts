@@ -2,7 +2,7 @@
 
 import { UrlBase } from "./UrlBase";
 
-const endPoint = UrlBase.dev;
+const endPoint = UrlBase.prod;
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
     const controller = new AbortController();
