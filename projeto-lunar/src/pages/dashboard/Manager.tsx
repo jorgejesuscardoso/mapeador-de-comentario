@@ -26,6 +26,7 @@ const ManagerMember = () => {
     const [qtdCards, setQtdCards] = useState(1);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [research, setResearch] = useState(false);
 
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
@@ -177,12 +178,18 @@ const ManagerMember = () => {
             {member.length > 0 ? (
                 member.map((user: any) => (
                     <div key={user.id} className="card">                            
-                        <UserCard user={user} />
+                        <UserCard
+                            user={user}
+                            setResearch={() => setResearch(true)}
+                    />
                     </div>
                 ))
             ) : memberById.id ? (
                 <div key={memberById.id} className="card">
-                    <UserCard user={memberById} />
+                    <UserCard
+                        user={memberById}
+                        setResearch={() => setResearch(true)}
+                    />
                 </div>
             ) : (
                 <span>Nenhum membro encontrado</span>

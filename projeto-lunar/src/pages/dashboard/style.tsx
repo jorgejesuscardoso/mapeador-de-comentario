@@ -418,11 +418,30 @@ export const LoadingMessage = styled.p`
     font-weight: bold;
 `;
 
-export const DeleteContainer = styled.div`
+export const ConfigContainer = styled.div`
     display: flex;
-    justify-content: end !important;
+    justify-content: space-between !important;
     align-items: end !important;
     width: 100%;
+`;
+
+export const ButtonConfig = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 0 !important;
+    height: 0 !important;
+
+    img {
+        width: 25x;
+        height: 25px;
+    }
 `;
 
 export const ButtonDelete = styled.button`
