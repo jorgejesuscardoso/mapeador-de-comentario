@@ -900,6 +900,7 @@ const Members = () => {
                                 placeholder="Sub"
                                 onChange={(e) => setMembersSubs(e.target.value)}
                             >
+                                <option value="Sem Sub">Sem sub</option>
                                 <option value="Luna A-1">Luna A-1</option>
                                 <option value="Luna A-2">Luna A-2</option>
                                 <option value="Luna A-3">Luna A-3</option>
