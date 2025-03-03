@@ -173,7 +173,6 @@ class UsersModel {
     // Atualizar usuário
     async updateUser(id: number, data: any) {
         try {
-
             if (!id || typeof id !== "number") {
                 throw new Error("ID inválido");
             }
