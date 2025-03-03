@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 //import { useState } from "react";
 import Swal from "sweetalert2";
-import { ButtonDelete, DeleteContainer } from "../../pages/dashboard/style";
+import { ButtonConfig, ButtonDelete, ConfigContainer } from "../../pages/dashboard/style";
 import { Card, Info, InfoBtn, InfoBtnContainer, ModalEditBookContainer, Name, Points, Role, SelectedWorkContainer, SubItem, SubRole, SubsList, WorkSelectedContainer } from "./styles";
-import { DeleteUser } from "../../API/APIRobozinho";
+import { DeleteUser, UpdateUser } from "../../API/APIRobozinho";
 import { useState } from "react";
 import { CreateBook, DeleteBook, UpdateBook } from "../../API/Api.Books";
 
 
-const UserCard = ({ user }: { user: any }) => {
+const UserCard = ({ user, setResearch }: { user: any, setResearch: () => void }) => {
 
     const [newBook, setNewBook] = useState({
         id: 0,
@@ -22,6 +22,20 @@ const UserCard = ({ user }: { user: any }) => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [workList] = useState(user.books);
     const [workSelected, setWorkSelected] = useState(false);
+    const [updateMember, setUpdateMember] = useState(false);
+    const [updateMemberData, setUpdateMemberData] = useState({
+        name: user.name,
+        user: user.user,
+        userWtp: user.userWtp,
+        phone: user.phone,
+        age: user.age,
+        role: user.role,
+        subRole: user.subRole,
+        points: user.points,
+        subs: user.subs,        
+    });
+
+    
 
     const handleDelete = async () => {
         try {
@@ -179,11 +193,66 @@ const UserCard = ({ user }: { user: any }) => {
         }
     };
 
+    const UpDateMember = async () => {
+        try {
+            const response = await UpdateUser(user.id, updateMemberData);
+            if (!response.id) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Erro ao atualizar!',
+                });
+            };
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Atualizado!',
+                text: 'O usuário foi atualizado com sucesso!',
+            });
+
+            return response;
+        } catch {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Erro ao atualizar!',
+            });
+        }
+    };
+
+
+    const handleAddSub = (newSub: any) => {
+        // Verifica se o item já existe no array
+        if (updateMemberData.subs.includes(newSub)) {
+            return;
+        }
+        setUpdateMemberData((prevData) => ({
+            ...prevData,
+            subs: [...prevData.subs, newSub], // Adiciona o novo item ao array existente
+        }));
+    };
+
+    const handleRemoveSub = (subToRemove: any) => {
+        setUpdateMemberData((prevData) => ({
+            ...prevData,
+            subs: prevData.subs.filter((sub: any) => sub !== subToRemove), // Remove o item específico
+        }));
+    };
+    
+
     return (
-        <Card>
-            <DeleteContainer
+        <Card>            
+            <ConfigContainer
                 className="delete"
             >
+                <ButtonConfig
+                    onClick={() => {
+                        setUpdateMember(!updateMember);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                >
+                    <img src="config.png" alt="configuração" />
+                </ButtonConfig>
                 <ButtonDelete 
                     onClick={() => {
                         Swal.fire({
@@ -223,7 +292,7 @@ const UserCard = ({ user }: { user: any }) => {
                 >
                     <img src="trash.png" alt="lixeira" />
                 </ButtonDelete>
-            </DeleteContainer>
+            </ConfigContainer>
             <Name>{user.name}</Name>
             <Role role={user.role} className="role">
                 {user.role === 'adm' ? 'Adm' : user.role === 'member' ? 'Membro' : 'SuperAdmin'}
@@ -318,23 +387,40 @@ const UserCard = ({ user }: { user: any }) => {
 
                         <span> Escolha qual obra quer Editar</span>
 
-                        <select
-                            onChange={(e) => {
-                                const book = workList.find((book: any) => book.title === e.target.value);
-                                setNewBook({
-                                    id: book.id,
-                                    title: book.title,
-                                    wUrl: book.wUrl,
-                                    memberId: user.id,
-                                });
-                                setWorkSelected(true);
-                            }}
+                        <div
+                            className="selectBookContainer"
                         >
-                            <option value="Select">Selecione</option>
-                            { workList.map((book: any) => (                               
-                                <option key={book.id}>{book.title}</option>
-                            ))}
-                        </select>
+                            <select
+                                onChange={(e) => {
+                                    const book = workList.find((book: any) => book.title === e.target.value);
+                                    setNewBook({
+                                        id: book.id,
+                                        title: book.title,
+                                        wUrl: book.wUrl,
+                                        memberId: user.id,
+                                    });
+                                    setWorkSelected(true);
+                                }}
+                            >
+                                <option value="Select">Selecione</option>
+                                { workList.map((book: any) => (                               
+                                    <option key={book.id}>{book.title}</option>
+                                ))}
+                            </select>
+                        </div>
+                        
+
+                        <button
+                            onClick={() => {
+                                setUpdateBook(true);
+                                setIsUpdate(false);
+                                setWorkSelected(false);
+                            }}
+                            
+                            className={workSelected ? 'subActive' : ''}
+                        >
+                            Cancelar
+                        </button>
                         {workSelected && (
                             <SelectedWorkContainer>
                                 <WorkSelectedContainer>
@@ -390,6 +476,14 @@ const UserCard = ({ user }: { user: any }) => {
                                     >
                                         Atualizar
                                     </button>
+
+                                    <button
+                                        onClick={() => {
+                                            setWorkSelected(false);
+                                        }}
+                                    >
+                                        Cancelar
+                                    </button>
                                 </div>
 
                             </SelectedWorkContainer>
@@ -426,15 +520,44 @@ const UserCard = ({ user }: { user: any }) => {
                                     onChange={(e) => setNewBook({...newBook, wUrl: e.target.value})}
                                 />
                             </div>
-                            <button
-                                onClick={() => {
-                                    createBooks();
-                                    setUpdateBook(false);
-                                    setIsCreateBook(false);
-                                }}
-                            >
-                                Cadastrar
-                            </button>
+                            <div>
+                                <button
+                                    onClick={() => {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'Criando...',
+                                            text: 'Aguarde um momento!',
+                                            showConfirmButton: false,
+                                            timer: 1500,
+                                        }).then(() => {
+                                            if (!newBook.title || !newBook.wUrl) {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Oops...',
+                                                    text: 'Preencha todos os campos!',
+                                                });
+                                            } else {
+                                                createBooks();
+                                                setUpdateBook(!updateBook);
+                                                setIsCreateBook(false);
+                                                setResearch();
+                                            }
+                                        });
+
+                                    }}
+                                >
+                                    Cadastrar
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        setUpdateBook(!updateBook);
+                                        setIsCreateBook(false);
+                                    }}
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
                         </div>
                     </ModalEditBookContainer>
                 )
@@ -467,6 +590,15 @@ const UserCard = ({ user }: { user: any }) => {
                                 <option key={book.id}>{book.title}</option>
                             ))}
                         </select>
+                        <button
+                            onClick={() => {
+                                setUpdateBook(!updateBook);
+                                setIsDelete(false);
+                            }}
+                            className={workSelected ? 'subActive' : ''}
+                        >
+                            Cancelar
+                        </button>
                         {workSelected && (
                             <SelectedWorkContainer>
                                 <WorkSelectedContainer>
@@ -515,6 +647,13 @@ const UserCard = ({ user }: { user: any }) => {
                                     >
                                         Deletar
                                     </button>
+                                    <button
+                                        onClick={() => {
+                                            setWorkSelected(false);
+                                        }}
+                                    >
+                                        Cancelar
+                                    </button>
                                 </div>
                             </SelectedWorkContainer>
                         )}
@@ -522,6 +661,136 @@ const UserCard = ({ user }: { user: any }) => {
                 )
             }
 
+            {
+                updateMember && (
+                    <ModalEditBookContainer
+                        className="updateMember"
+                    >
+                        <button
+                            className="closeBookModal"
+                            onClick={() => setUpdateMember(false)}
+                        >
+                            X
+                        </button>
+                        <span>Atualize os dados do membro</span>
+                        <div
+                            className="createBookContainer"
+                        >
+                            <div className="inputCreateContent">
+                                <input 
+                                    type="text"
+                                    placeholder="Nome"
+                                    value={updateMemberData.name}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, name: e.target.value})}
+                                />
+                                <input 
+                                    type="text"
+                                    placeholder="User"
+                                    value={updateMemberData.user}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, user: e.target.value})}
+                                />
+                                <input 
+                                    type="text"
+                                    placeholder="User Wattpad"
+                                    value={updateMemberData.userWtp}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, userWtp: e.target.value})}
+                                />
+                                <input 
+                                    type="text"
+                                    placeholder="Telefone"
+                                    value={updateMemberData.phone}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, phone: e.target.value})}
+                                />
+                                <input 
+                                    type="number"
+                                    placeholder="Idade"
+                                    value={updateMemberData.age}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, age: Number(e.target.value)})
+                                    }
+                                />
+                                <input 
+                                    type="text"
+                                    placeholder="Role"
+                                    value={updateMemberData.role}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, role: e.target.value})}
+                                />
+                                <input 
+                                    type="text"
+                                    placeholder="SubRole"
+                                    value={updateMemberData.subRole}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, subRole: e.target.value})}
+                                />
+                                <input 
+                                    type="number"
+                                    placeholder="Pontos"
+                                    value={updateMemberData.points}
+                                    onChange={(e) => setUpdateMemberData({...updateMemberData, points: Number(e.target.value)})
+                                    }
+                                />
+                            </div>
+
+                            <div className="subsContainer">
+                                <h3>Adicionar Sub:</h3>
+                                <div
+                                    className="subsList"
+                                >
+                                    {updateMemberData.subs.map((sub: string, index: number) => (
+                                        <SubItem key={index}>{sub}</SubItem>
+                                    ))}
+                                </div>
+                                <select 
+                                    value={updateMemberData.subs}
+                                    onChange={(e) => handleAddSub(e.target.value)}
+                                >
+                                    <option value="Select">Selecione</option>
+                                    <option value="Sem Sub">Sem sub</option>
+                                    <option value="Luna A-1">Luna A-1</option>
+                                    <option value="Luna A-2">Luna A-2</option>
+                                    <option value="Luna A-3">Luna A-3</option>
+                                    <option value="Luna A-4">Luna A-4</option>
+                                    <option value="Luna A-5">Luna A-5</option>
+                                    <option value="Luna A-6">Luna A-6</option>
+                                    <option value="Luna A-7">Luna A-7</option>
+                                    <option value="Luna A-8">Luna A-8</option>
+                                    <option value="Luna A-9">Luna A-9</option>
+                                    <option value="Luna A-10">Luna A-10</option>
+                                </select>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    UpDateMember();
+                                    setUpdateMember(false);
+                                }}
+                            >
+                                Atualizar
+                            </button>
+                        </div>
+                        <div className="subsContainer">
+                            <h3>Remover Sub</h3>
+
+                            <div
+                                className="subsList"
+                            >
+                                {updateMemberData.subs.map((sub: string, index: number) => (
+                                    <SubItem key={index}>{sub}</SubItem>
+                                ))}
+                                
+                            </div>
+
+                            <select 
+                                value={updateMemberData.subs}
+                                onChange={(e) => handleRemoveSub(e.target.value)}
+                            >
+                                <option value="Select">Selecione</option>
+                                {updateMemberData.subs.map((sub: string, index: number) => (
+                                    <option key={index}>{sub}</option>
+                                ))}
+                            </select>
+
+                        </div>
+                    </ModalEditBookContainer>
+                )
+            }
 
 
                 

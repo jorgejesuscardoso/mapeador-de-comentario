@@ -201,6 +201,15 @@ export const ModalEditBookContainer = styled.div`
         padding: 10px;
     }
 
+    div.subsList {
+        display: flex !important;
+        flex-wrap: wrap;
+
+        li {
+            width: 30%;
+        }
+    }
+
     select {
         font-size: 0.7rem;
         color: #ffffff;
@@ -271,6 +280,35 @@ export const ModalEditBookContainer = styled.div`
             border-radius: 5px;
             padding: 10px;
             gap: 10px;
+        }
+    }
+
+    &.updateMember {
+        display: flex;
+        align-items: start !important;
+        justify-content: start !important;
+        position: absolute;
+        min-height: 200vh !important;
+        overflow-y: auto;
+    }
+
+    div.selectBookContainer {
+        height: 10vh;
+        background-color: #121212  !important;
+    }
+
+    div.subsContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background: #00000099;
+        border-radius: 0 0 5px 5px;
+        padding: 10px;
+
+        li {
+            list-style: none;
         }
     }
 `;
