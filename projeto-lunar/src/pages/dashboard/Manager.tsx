@@ -99,7 +99,7 @@ const ManagerMember = () => {
 
     return (
         <ContainerM className="container">
-            <Title>Gerenciar Funcionário</Title>
+            <Title>Gerenciar Membros</Title>
 
             {/* Seletor de Tipo de Busca */}
             <SearchContainer>
