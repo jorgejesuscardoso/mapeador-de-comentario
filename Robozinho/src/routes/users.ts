@@ -27,7 +27,7 @@ User.post("/create/users", async (req, res) => {
   res.json(user);
 });
 
-User.get("/users", authMiddleware.verifyToken, async (req, res) => {
+User.get("/users", async (req, res) => {
   const { take, page } = req.query;
   const takeNumber = take !== undefined && +take > 0 ? +take : 10;
   const pageNumber = page !== undefined && +page > 0 ? +page : 1;
