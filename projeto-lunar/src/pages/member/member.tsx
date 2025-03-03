@@ -58,7 +58,7 @@ const Members = () => {
 
     const [superAdm, setSuperAdm] = useState(false);
     const [addSubs, setAddSubs] = useState(false);
-    const [membersSubs, setMembersSubs] = useState('Luna A-1');
+    const [membersSubs, setMembersSubs] = useState('Sem Sub');
     const [membersBooks, setMembersBooks] = useState({
         title: '',
         wUrl: '',
