@@ -3,15 +3,23 @@ import UsersController from "../controler/Controler.users";
 import UsersServices from "../services/services.users";
 import { PrismaClient } from "@prisma/client";
 import UsersModel from "../model/model.users";
+import AuthMiddleware from "../middleware/auth.middlewate";
+import Jwt from "../auth/jwt";
+import Bcrypt from "../auth/bcrypt";
 
+const secret = process.env.SECRET_JWT as string;
+const expiresIn = process.env.EXPIRES_IN_JWT ? Number(process.env.EXPIRES_IN_JWT) : 86400;
 
 const prisma = new PrismaClient();
 const model = new UsersModel(prisma);
 const service = new UsersServices(model);
+const jwt = new Jwt(secret, expiresIn);
+const authMiddleware = new AuthMiddleware(jwt);
+const bcrypt = new Bcrypt();
 
 
 const User = Router();
-const controller = new UsersController(service);
+const controller = new UsersController(service, bcrypt);
 
 User.post("/create/users", async (req, res) => {
   const data = req.body;
@@ -19,7 +27,7 @@ User.post("/create/users", async (req, res) => {
   res.json(user);
 });
 
-User.get("/users", async (req, res) => {
+User.get("/users", authMiddleware.verifyToken, async (req, res) => {
   const { take, page } = req.query;
   const takeNumber = take !== undefined && +take > 0 ? +take : 10;
   const pageNumber = page !== undefined && +page > 0 ? +page : 1;
