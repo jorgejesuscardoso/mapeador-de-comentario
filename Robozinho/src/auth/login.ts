@@ -1,10 +1,20 @@
 import { PrismaClient } from "@prisma/client";
+import Jwt from "./jwt";
 
 class Auth {
     prisma: PrismaClient;
+    jwt: Jwt
+    secret: string
+    expiresIn: number
   
     constructor() {
+        this.secret = process.env.SECRET_JWT || 'secret';
+        this.expiresIn = process.env.EXPIRES_IN ? parseInt(process.env.EXPIRES_IN) : 86400; 
         this.prisma = new PrismaClient();
+        this.jwt = new Jwt(
+            this.secret,
+            this.expiresIn
+        );
   }
 
     async auth(user: string, password: string) {
@@ -21,8 +31,10 @@ class Auth {
             if (exist.password !== password) {
             return { error: "Dados Inválidos!" };
             }
-        
-            return {
+
+            const token = this.jwt.sign({ id: exist.id });
+
+            const data = {
                 user: {
                     id: exist.id,
                     user: exist.user,
@@ -34,7 +46,10 @@ class Auth {
                     points: exist.points,
                     subRole: exist.subRole,
                 },
+                token,
             };
+
+            return data;
        } catch (error) {
             console.error("Erro ao buscar usuários:", error);
             return {error: "Error to get all users"};	
