@@ -209,7 +209,7 @@ const UserCard = ({ user, setResearch }: { user: any, setResearch: () => void })
                 title: 'Atualizado!',
                 text: 'O usuário foi atualizado com sucesso!',
             });
-
+            setResearch();
             return response;
         } catch {
             Swal.fire({
@@ -730,7 +730,8 @@ const UserCard = ({ user, setResearch }: { user: any, setResearch: () => void })
                             </div>
 
                             <div className="subsContainer">
-                                <h3>Adicionar Sub:</h3>
+                                <h3>Adicionar Sub.</h3>
+                                <h2>Sub já adicionado.</h2>
                                 <div
                                     className="subsList"
                                 >
@@ -762,23 +763,14 @@ const UserCard = ({ user, setResearch }: { user: any, setResearch: () => void })
                                     setUpdateMember(false);
                                 }}
                             >
-                                Atualizar
+                                Adicionar
                             </button>
                         </div>
                         <div className="subsContainer">
-                            <h3>Remover Sub</h3>
-
-                            <div
-                                className="subsList"
-                            >
-                                {updateMemberData.subs.map((sub: string, index: number) => (
-                                    <SubItem key={index}>{sub}</SubItem>
-                                ))}
-                                
-                            </div>
+                            <h3>Remover Sub</h3> 
 
                             <select 
-                                value={updateMemberData.subs}
+                                
                                 onChange={(e) => handleRemoveSub(e.target.value)}
                             >
                                 <option value="Select">Selecione</option>
@@ -787,12 +779,19 @@ const UserCard = ({ user, setResearch }: { user: any, setResearch: () => void })
                                 ))}
                             </select>
 
+                            <button
+                                onClick={() => {
+                                    UpDateMember();
+                                    setUpdateMember(false);
+                                }}
+                            >
+                                Remover
+                            </button>
+
                         </div>
                     </ModalEditBookContainer>
                 )
             }
-
-
                 
         </Card>
     );
