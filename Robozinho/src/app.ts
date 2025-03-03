@@ -17,7 +17,7 @@ class App {
     // Configuração de middlewares (CORS, JSON, etc.)
     private middlewares(): void {
         this.app.use(cors({
-            origin: ['https://projetolunar.netlify.app', 'http://localhost:5173'], // REMOVA as barras finais "/"
+            origin: '*', // REMOVA as barras finais "/"
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
             allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
             credentials: true,
