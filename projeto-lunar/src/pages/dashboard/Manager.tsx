@@ -28,12 +28,20 @@ const ManagerMember = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [research, setResearch] = useState(false);
 
+
     useEffect(() => {
         const getLocalStorage = GetFromLocalStorage('user');
         if (getLocalStorage === null) {
             navigate('/');
         }
     }, []);
+
+    useEffect(() => {
+        if (research) {
+            handleSearch();
+            setResearch(false);
+        }
+    }, [research]);
 
     // 🔍 Função para buscar um membro
     const handleSearch = async () => {
