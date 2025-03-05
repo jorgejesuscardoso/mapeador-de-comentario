@@ -51,6 +51,7 @@ const Login = () => {
     
             setLogging(true);
             SetTolocalStorage('user', data);
+            SetTolocalStorage('token', data.token);
             setAuthentic(false);
     
             // Redirecionamento usando setTimeout ao invés de setInterval

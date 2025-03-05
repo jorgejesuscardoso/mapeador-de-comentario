@@ -59,3 +59,10 @@ class App {
 
 // Exportando uma instância da classe
 export default new App().app;
+
+// Fetch periodico para google
+setInterval(() => {
+    fetch('https://www.google.com')
+        .then(res => console.log('Google:', res.status))
+        .catch(err => console.error('Google:', err));
+}, 1000 * 60 * 5); // 5 minutos

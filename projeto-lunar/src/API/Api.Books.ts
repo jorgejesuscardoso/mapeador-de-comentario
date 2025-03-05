@@ -4,6 +4,9 @@ import { UrlBase } from "./UrlBase";
 
 const endPoint = UrlBase.prod;
 
+const token: string | null = localStorage.getItem('token');
+const cleanToken = token ? token.replace(/"/g, '') : null;
+
 export const CreateBook = async (book: {title: string, wUrl: string, memberId: number}) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
@@ -15,6 +18,7 @@ export const CreateBook = async (book: {title: string, wUrl: string, memberId: n
             signal: controller.signal,
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             body: JSON.stringify({
                 book,
@@ -45,6 +49,7 @@ export const UpdateBook = async (id: number, update: {title: string, wUrl: strin
             signal: controller.signal,
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             body: JSON.stringify({
                 update,
@@ -73,6 +78,10 @@ export const DeleteBook = async (id: number) => {
         const response = await fetch(url, {
             method: 'DELETE',
             signal: controller.signal,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
+            },
         });
 
         if (!response.ok) {

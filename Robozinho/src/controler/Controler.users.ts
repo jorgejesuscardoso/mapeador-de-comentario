@@ -1,26 +1,17 @@
 import UsersServices from "../services/services.users";
-import Bcrypt from "../auth/bcrypt";
 
 
 class UsersController {
     private service: UsersServices;
-    private bcrypt: Bcrypt;
 
   constructor(
       service: UsersServices,
-      bcrypt: Bcrypt
     ) {
-      this.bcrypt = bcrypt;
       this.service = service
     }
 
-  async createUser(data: any) {
+    async createUser(data: any) {
     try {
-        const passWord = data.password;
-        const hash =  this.bcrypt.hashPassword(passWord);
-
-        console.log(hash);
-        data.password = hash;
         const user = await this.service.createUser(data);
         return user;
     } catch (error) {

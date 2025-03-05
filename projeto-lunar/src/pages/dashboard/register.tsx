@@ -20,6 +20,7 @@ const RegisterMember = () => {
     const [workLink, setWorkLink] = useState("");
     const [viewPassword, setViewPassword] = useState(false);
     const [viewConfirmPassword, setViewConfirmPassword] = useState(false);
+    const [sub, setSub] = useState('Selecione');
     
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -34,6 +35,7 @@ const RegisterMember = () => {
             !confirmPassword.trim() || 
             !wattpadUsername.trim() || 
             !phone.trim() || 
+            !sub.trim() ||
             !role.trim();
     
         if (noEmpty) {
@@ -54,7 +56,9 @@ const RegisterMember = () => {
             });
             return;
         }
-    
+
+        const subs =[];
+        subs.push(sub);
         // Preparação dos dados para o backend
         const userData = {
             name,
@@ -66,7 +70,9 @@ const RegisterMember = () => {
             role,
             points: 0, // Define um valor inicial de pontos
             books: work ? [{ title: work, wUrl: workLink }] : [], // Se houver obra, adiciona ao array
+            subs: subs
         };
+        console.log(userData);
         try {
             const response = await CreateUser(userData);
 
@@ -252,6 +258,32 @@ const RegisterMember = () => {
                         />
                     </Labels>
                 </div>
+
+                {
+                    role === 'member' &&
+                    <Labels>
+                        Esolha um Sub:
+                        <Select
+                            value={sub}
+                            onChange={(e) => setSub(e.target.value)}
+                        >  
+                            <option value="Select">Selecione</option>
+                            <option value="Sem Sub">Sem sub</option>
+                            <option value="Luna A-1">Luna A-1</option>
+                            <option value="Luna A-2">Luna A-2</option>
+                            <option value="Luna A-3">Luna A-3</option>
+                            <option value="Luna A-4">Luna A-4</option>
+                            <option value="Luna A-5">Luna A-5</option>
+                            <option value="Luna A-6">Luna A-6</option>
+                            <option value="Luna A-7">Luna A-7</option>
+                            <option value="Luna A-8">Luna A-8</option>
+                            <option value="Luna A-9">Luna A-9</option>
+                            <option value="Luna A-10">Luna A-10</option>
+                        </Select>
+                    </Labels>
+
+                }
+
                 <Labels>
                     Link da Obra:
                     <Inputs

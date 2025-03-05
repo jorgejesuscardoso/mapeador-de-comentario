@@ -1,16 +1,27 @@
 import UsersModel from "../model/model.users";
+import Bcrypt from "../auth/bcrypt";
 
 
 class UsersServices {    
   private model: UsersModel;
+  bcrypt: Bcrypt
 
-  constructor(model: UsersModel) {
+  constructor(
+    model: UsersModel,
+    bcrypt: Bcrypt
+  ) {
     this.model = model;
+    this.bcrypt = bcrypt;
   }
 
   async createUser(data: any) {
     try {
-        const user = await this.model.createUser(data);
+        
+      const passWord = data.password;
+      const hash = await  this.bcrypt.hashPassword(passWord);
+
+      data.password = hash;
+      const user = await this.model.createUser(data);
         
         return user;
     } catch (error) {
