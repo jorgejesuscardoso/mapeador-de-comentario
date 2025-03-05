@@ -10,6 +10,7 @@ class BookServices {
 
     async CreateBook(memberId: number, title: string, wUrl: string) {
         try {
+            
             const newBook = await this.model.createBook(memberId, title, wUrl);
             return newBook;
         } catch (error) {

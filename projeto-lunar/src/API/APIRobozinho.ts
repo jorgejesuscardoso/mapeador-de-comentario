@@ -2,7 +2,10 @@
 
 import { UrlBase } from "./UrlBase";
 
-const endPoint = UrlBase.prod;
+const endPoint = UrlBase.dev;
+const token: string | null = localStorage.getItem('token');
+const cleanToken = token ? token.replace(/"/g, '') : null;
+
 
 export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
     const controller = new AbortController();
@@ -50,7 +53,8 @@ export const FindBooks = async (book: string) => {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             body: JSON.stringify(body),
             signal: controller.signal
@@ -110,7 +114,8 @@ export const CreateUser = async (body: any) => {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             body: JSON.stringify(body),
             signal: controller.signal
@@ -138,7 +143,8 @@ export const GetUsers = async (qtdItens: number, pagination: number) => {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             signal: controller.signal
         });
@@ -194,10 +200,15 @@ export const GetALlUsersNoPagination = async () => {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             signal: controller.signal
         });
+
+        if (response.status === 401) {
+            return response;
+        }
 
         if (!response.ok) {
             throw new Error(`Erro ${response.status}: ${response.statusText}`);
@@ -221,7 +232,8 @@ export const GetDeletedUsers = async (qtdItens: number, pagination: number) => {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             signal: controller.signal
         });
@@ -249,7 +261,8 @@ export const SearchUser = async (search: string, take: number, page: number) => 
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
         });
 
@@ -276,7 +289,8 @@ export const UpdateUser = async (id: number, body: any) => {
         const response = await fetch(url, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             body: JSON.stringify(body),
             signal: controller.signal
@@ -304,7 +318,8 @@ export const DeleteUser = async (id: number) => {
         const response = await fetch(url, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cleanToken}`
             },
             signal: controller.signal
         });

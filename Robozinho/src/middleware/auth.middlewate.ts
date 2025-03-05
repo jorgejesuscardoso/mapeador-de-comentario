@@ -10,12 +10,15 @@ class AuthMiddleware {
 
     public verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const token = req.headers['authorization'] as string;
+        
         if (!token) {
             res.status(401).json({ message: 'Token not provided' });
             return;
+            
         }
 
         const tokenValue = token.split(' ')[1];
+        
         if (!tokenValue) {
             res.status(401).json({ message: 'Token format invalid' });
             return;

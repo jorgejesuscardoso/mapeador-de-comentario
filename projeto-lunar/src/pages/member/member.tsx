@@ -168,6 +168,15 @@ const Members = () => {
     const AllUsers = async () => {
         try {
             const users = await GetALlUsersNoPagination();
+            if (users.status === 401) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ops...',
+                    text: 'Suas credenciais expiraram! Faça login novamente.',
+                });
+                navigate('/');
+                return;
+            }
             if (users.length === 0) {
                 Swal.fire({
                     icon: 'error',
@@ -981,8 +990,7 @@ const Members = () => {
                                 <Button onClick={() => setChangeBook(false)}>Cancelar</Button>
                             </div>
                         </ModalContainer>
-                    )}
-                    
+                    )}                    
                     
             </ContainerD>
         </Container>
