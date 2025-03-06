@@ -92,12 +92,13 @@ class UsersServices {
 
   async updateUser(id: number, data: any) {
     try {
+      
         const sanitizedData = {
           name: data.name,
           phone: data.phone,
           age: data.age && +data.age,
           userWtp: data.userWtp,
-          user: data.user,
+          user: typeof(data.user) === 'string' ? data.user : undefined,
           points: data.points && +data.points,
           subRole: data.subRole,
           role: data.role,
@@ -107,6 +108,7 @@ class UsersServices {
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
         }
+        
         const user = await this.model.updateUser(id, sanitizedData);
         
         return user;

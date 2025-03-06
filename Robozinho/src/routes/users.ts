@@ -65,6 +65,7 @@ User.patch("/users/:id", authMiddleware.verifyToken, async (req, res) => {
   const data = req.body;
   const user = await controller.updateUser(Number(id), data);
   res.json(user);
+
 });
 
 User.delete("/users/:id", authMiddleware.verifyToken, async (req, res) => {
