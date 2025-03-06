@@ -12,7 +12,7 @@ const HeaderLunar = () => {
     const [hover, setHover] = useState(false);
 
     useEffect(() => {
-        const user = localStorage.getItem("user");
+        const user = localStorage.getItem("token");
         if (!user) {
             navigate("/");
         }
@@ -74,7 +74,10 @@ const HeaderLunar = () => {
 
             <button
                 className="logout-button"
-                onClick={() => RemoveFromLocalStorage("user")}
+                onClick={() => {
+                    RemoveFromLocalStorage("user");
+                    RemoveFromLocalStorage("token");
+                }}
             >
                 <Link to="/"
                     onMouseEnter={() => setHover(true)}

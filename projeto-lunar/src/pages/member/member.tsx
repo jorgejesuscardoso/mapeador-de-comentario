@@ -749,6 +749,7 @@ const Members = () => {
                     {editPoints && (
                     <ModalContainer>
                         <h2>{clientToEdit.name}</h2>
+                        <h3>Possui: {clientToEdit.points}</h3>
                         <Labels>
                             Escolha a operação:
                             <select value={operation} onChange={(e) => setOperation(e.target.value)}>

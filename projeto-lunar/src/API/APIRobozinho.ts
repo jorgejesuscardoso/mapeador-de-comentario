@@ -2,7 +2,7 @@
 
 import { UrlBase } from "./UrlBase";
 
-const endPoint = UrlBase.dev;
+const endPoint = UrlBase.prod;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
@@ -286,6 +286,7 @@ export const UpdateUser = async (id: number, body: any) => {
 
     try {      
        
+      console.log(body);
         const response = await fetch(url, {
             method: 'PATCH',
             headers: {
