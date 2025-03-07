@@ -17,6 +17,8 @@ class AuthMiddleware {
             
         }
 
+        console.log(token);
+
         const tokenValue = token.split(' ')[1];
         
         if (!tokenValue) {
@@ -26,6 +28,7 @@ class AuthMiddleware {
 
         try {
             const decoded = this.jwt.verify(tokenValue);
+            console.log(decoded);
             req.body.user = decoded;
             next();
         } catch (error) {
