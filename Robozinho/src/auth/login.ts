@@ -48,7 +48,6 @@ class Auth {
                 },
                 token,
             };
-
             return data;
        } catch (error) {
             console.error("Erro ao buscar usuários:", error);
