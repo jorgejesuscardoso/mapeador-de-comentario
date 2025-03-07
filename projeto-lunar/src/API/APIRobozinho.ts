@@ -2,7 +2,7 @@
 
 import { UrlBase } from "./UrlBase";
 
-const endPoint = UrlBase.dev;
+const endPoint = UrlBase.prod;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
@@ -138,7 +138,7 @@ export const GetUsers = async (qtdItens: number, pagination: number) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
     const url = `${endPoint}/users?take=${qtdItens}&page=${pagination}`;
-    console.log(cleanToken)
+    
     try {
         const response = await fetch(url, {
             method: 'GET',
