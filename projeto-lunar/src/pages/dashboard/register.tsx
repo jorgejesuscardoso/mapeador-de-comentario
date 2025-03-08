@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { CreateUser } from "../../API/APIRobozinho";
 import { GetFromLocalStorage } from "../../utils/localstorage";
+import Sublist from "../../component/subsList/subsList";
 
 const RegisterMember = () => {
     const Navigate = useNavigate();
@@ -263,23 +264,10 @@ const RegisterMember = () => {
                     role === 'member' &&
                     <Labels>
                         Esolha um Sub:
-                        <Select
-                            value={sub}
-                            onChange={(e) => setSub(e.target.value)}
-                        >  
-                            <option value="Select">Selecione</option>
-                            <option value="Sem Sub">Sem sub</option>
-                            <option value="Luna A-1">Luna A-1</option>
-                            <option value="Luna A-2">Luna A-2</option>
-                            <option value="Luna A-3">Luna A-3</option>
-                            <option value="Luna A-4">Luna A-4</option>
-                            <option value="Luna A-5">Luna A-5</option>
-                            <option value="Luna A-6">Luna A-6</option>
-                            <option value="Luna A-7">Luna A-7</option>
-                            <option value="Luna A-8">Luna A-8</option>
-                            <option value="Luna A-9">Luna A-9</option>
-                            <option value="Luna A-10">Luna A-10</option>
-                        </Select>
+                        <Sublist
+                            setSub={setSub}
+                            sub={sub}
+                        />
                     </Labels>
 
                 }
