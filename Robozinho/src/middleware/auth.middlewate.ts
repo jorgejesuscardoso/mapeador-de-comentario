@@ -29,7 +29,7 @@ class AuthMiddleware {
         try {
             const decoded = this.jwt.verify(tokenValue);
             console.log(decoded);
-            req.body.user = decoded;
+            req.body.decoded = decoded;
             next();
         } catch (error) {
             res.status(401).json({ message: 'Token invalid' });
