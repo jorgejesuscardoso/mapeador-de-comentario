@@ -2,7 +2,7 @@
 
 import { UrlBase } from "./UrlBase";
 
-const endPoint = UrlBase.prod;
+const endPoint = UrlBase.dev;
 
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
