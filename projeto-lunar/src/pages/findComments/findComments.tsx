@@ -2,8 +2,8 @@ import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, Comme
 import { FindBooks, Robozinho } from "../../API/APIRobozinho";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
-import { GetFromLocalStorage } from "../../utils/localstorage";
+// import { useNavigate } from "react-router-dom";
+// import { GetFromLocalStorage } from "../../utils/localstorage";
 
 type Comment = {
     usuario: string;
@@ -17,7 +17,7 @@ type Chapter = {
 };
 
 const FindComments = () => {
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const [comments, setComments] = useState<Comment[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -72,6 +72,7 @@ const FindComments = () => {
 
         setLoading(true);
         setError(null);
+        setComments([])
 
         if (!selectedChapter) {
             Swal.fire({ icon: "error", title: "Erro", text: "Selecione um capítulo." });
@@ -105,11 +106,11 @@ const FindComments = () => {
     };
 
     useEffect(() => {
-        const getLocalStorage = GetFromLocalStorage('user');
-        if (getLocalStorage === null) {
-            navigate('/');
-            return;
-        }
+        //const getLocalStorage = GetFromLocalStorage('user');
+        // if (getLocalStorage === null) {
+        //     navigate('/');
+        //     return;
+        // }
     }, []);
 
     return (

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { HeaderContainer } from "./styke";
 import { RemoveFromLocalStorage } from "../../utils/localstorage";
 import { useEffect, useRef, useState } from "react";
@@ -7,15 +7,15 @@ import { useEffect, useRef, useState } from "react";
 const HeaderLunar = () => {
     const ref = useRef<HTMLDivElement>(null);
 
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const [floatMenu, setFloatMenu] = useState(false);
     const [hover, setHover] = useState(false);
 
     useEffect(() => {
-        const user = localStorage.getItem("token");
-        if (!user) {
-            navigate("/");
-        }
+        //const user = localStorage.getItem("token");
+        // if (!user) {
+        //     navigate("/");
+        // }
     }, []);
 
     // Fecha o menu flutuante ao clicar fora dele
