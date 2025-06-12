@@ -21,16 +21,21 @@ export const DivBtn = styled.div`
 export const Button = styled.button`
   background-color: #007bff;
   color: white;
-  padding: 5px;
+  padding: 10px;
   border: none;
   border-radius: 5px;
-  width: 15%;
+  width: 25%;
   cursor: pointer;
+  margin-left: 50px;
   font-size: 0.75rem;
   transition: background 0.3s;
 
   &.comentario {
-    background-color: #086830;
+    background-color: #0e8a41;
+    width: 65%;
+    padding: 5px;
+    font-weight: 550;
+    margin: 15px auto;
   }
    &.comentario:hover {
     background-color: #01491f;
@@ -52,7 +57,6 @@ export const QtdeComments = styled.div`
   color: #f5f5f5;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   width: 90%;
 
@@ -69,7 +73,7 @@ export const QtdeComments = styled.div`
     display: flex;
     flex-direction: column;
     gap: 5px;
-    width: 22%;
+    width: 310px;
   }
 `;
 
@@ -210,8 +214,6 @@ export const Labels = styled.label`
   gap: 10px;
   width: 100%;
 
-
-
   input {
     height: 30px;
   }
@@ -220,6 +222,10 @@ export const Labels = styled.label`
     height: 12px;
     width: 40px;
     text-align: center;
+  }
+
+  &#click {    
+    flex-direction: row;
   }
 `;
 
