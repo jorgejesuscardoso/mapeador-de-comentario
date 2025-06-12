@@ -1,4 +1,4 @@
-import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, DivInputs, ImageRobo, Inputs, Labels, Message, QtdeComments, Question, SearchContainer } from "./style";
+import { Button, CommentCard, CommentDate, CommentsContainer, CommentText, CommentUser, ContainerFindComments, DivInputs, ImageRobo, Inputs, Labels, Message, QtdeComments, SearchContainer } from "./style";
 import { FindBooks, Robozinho } from "../../API/APIRobozinho";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -23,7 +23,7 @@ const FindComments = () => {
     const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState("");
     const [obra, setObra] = useState("");
-    const [clicks, setClicks] = useState(15);
+    const [clicks, setClicks] = useState(5);
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [selectedChapter, setSelectedChapter] = useState<string>("");
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -138,6 +138,7 @@ const FindComments = () => {
                     <Labels>
                         Escolha um capítulo:
                         <Inputs 
+                            id="select"
                             as="select"
                             value={selectedChapter}
                             onChange={(e) => setSelectedChapter(e.target.value)}
@@ -155,18 +156,14 @@ const FindComments = () => {
                         <span>QTD de Comentários encontrados: <strong>{comments.length}</strong></span>
                         <br />
                         <Labels id="click">
-                            Insira a quantidade de cliques para carregar mais comentários:   
-                            <Question 
-                                src="question.png"
-                                alt="Pergunta"
-                                title="Aqui você pode definir quantos cliques o robô fará para carregar mais comentários. Ajuste conforme necessário. Por padrão, o robô fará 15 cliques."
-                            />
+                            Insira a quantidade de tentativas:
                             <Inputs 
                                 type="number"
                                 value={clicks}
                                 onChange={(e) => setClicks(Number(e.target.value))}
                                 placeholder="Número de cliques"
                                 min={1}
+                                id="co"
                             />
                         </Labels>
                     </div> 
@@ -202,9 +199,9 @@ const FindComments = () => {
                 ) : !loading && !error ? (
                     <div>
                         <br />
-                        <Message style={{color: 'green'}}>EM MANUNTENÇÂO</Message>
+                        {/* <Message style={{color: 'green'}}>EM MANUNTENÇÂO</Message> */}
                         <br />
-                        <Message>Robozinho encontrou um livro tão incrível que crashou. </Message>
+                        {/* <Message>Robozinho encontrou um livro tão incrível que crashou. </Message> */}
                         <img src="robozin-crasado-P.png" alt="Robo crashado" />
                     </div>
                 ) : null}
