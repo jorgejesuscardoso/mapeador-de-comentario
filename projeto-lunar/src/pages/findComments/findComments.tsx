@@ -166,15 +166,14 @@ const FindComments = () => {
                                 id="co"
                             />
                         </Labels>
+                        <Button className='comentario' onClick={handleSearch} disabled={loading}>
+                            {loading ? "Carregando..." : "Buscar Comentários"}
+                        </Button>
                     </div> 
                     
                     <Button onClick={getBook} disabled={loading}>
                         {loading ? "Carregando..." : "Buscar Obra"}
-                    </Button>                   
-                        
-                    <Button className='comentario' onClick={handleSearch} disabled={loading}>
-                        {loading ? "Carregando..." : "Buscar Comentários"}
-                    </Button>
+                    </Button>  
                 </QtdeComments>
 
                 <ImageRobo>
