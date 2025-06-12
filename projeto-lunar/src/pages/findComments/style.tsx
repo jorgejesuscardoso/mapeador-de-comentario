@@ -218,14 +218,9 @@ export const Labels = styled.label`
 
   input#co {
     height: 12px;
-    width: 12%;
+    width: 15%;
     text-align: center;
   }
-   
-   &#click {
-    flex-direction: row;
-    width: 100%;
-   }
 `;
 
 export const Question = styled.img`
