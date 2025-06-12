@@ -218,7 +218,7 @@ export const Labels = styled.label`
 
   input#co {
     height: 12px;
-    width: 15%;
+    width: 40px;
     text-align: center;
   }
 `;
