@@ -9,6 +9,7 @@ export const ContainerFindComments = styled.div`
   width: 100%;
   min-height: 100vh;
   border: 1px solid #000;
+  padding: 5vh 1vw
 `;
 
 export const DivBtn = styled.div`
@@ -20,16 +21,19 @@ export const DivBtn = styled.div`
 export const Button = styled.button`
   background-color: #007bff;
   color: white;
-  padding: 10px 15px;
+  padding: 5px;
   border: none;
   border-radius: 5px;
-  width: 20%;
+  width: 15%;
   cursor: pointer;
   font-size: 0.75rem;
   transition: background 0.3s;
 
   &.comentario {
     background-color: #086830;
+  }
+   &.comentario:hover {
+    background-color: #01491f;
   }
 
   &:hover {
@@ -47,11 +51,10 @@ export const QtdeComments = styled.div`
   font-weight: 700;
   color: #f5f5f5;
   border-radius: 5px;
-  width: 22%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 88%;
+  width: 90%;
 
   span {
     width: 100%;
@@ -63,12 +66,10 @@ export const QtdeComments = styled.div`
     font-size: 0.75rem;
     padding: 10px;
     border-radius: 5px;
-    width: 35%;
-  }
-
-  label {
-    color: #f8f0f0;
-    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 22%;
   }
 `;
 
@@ -180,13 +181,51 @@ export const Inputs = styled.input`
   border-radius: 5px;
   font-size: 0.75rem;
   width: 100%;  
+  
+  &[type='number']::-webkit-outer-spin-button,
+  &[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  &#select {
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px; 
+  font-size: 0.8rem;
+  color: #555;
+}
 `;
 
 export const Labels = styled.label`
   font-size: 0.75rem;
   font-weight: bold;
   color: #f5f5f5;
-  width: 45%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+
+
+
+  input {
+    height: 30px;
+  }
+
+  input#co {
+    height: 12px;
+    width: 12%;
+    text-align: center;
+  }
+   
+   &#click {
+    flex-direction: row;
+    width: 100%;
+   }
 `;
 
 export const Question = styled.img`
