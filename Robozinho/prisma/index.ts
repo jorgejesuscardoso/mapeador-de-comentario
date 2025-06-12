@@ -67,7 +67,7 @@ async function main() {
         { name: 'Nolan', user: 'NolanX', password: '!@#@!#!@#', userWtp: '@oznolanryder', phone: '85999999999', age: 25, points: getRandomPoints(), role: 'member', subs: ['Luna-B39'] },
         { name: 'Samuel Assunção', user: 'SamuelA', password: '!@#@!#!@#', userWtp: '@Pandaba2417S', phone: '85999999999', age: 22, points: getRandomPoints(), role: 'member', subs: ['Luna-B40'] },
         { name: 'Maycon Silva', user: 'MayconS', password: '!@#@!#!@#', userWtp: '@NeideSilva793', phone: '85999999999', age: 30, points: getRandomPoints(), role: 'member', subs: ['Luna-B41'] },
-        { name: 'Suki Yu', user: 'SukiY', password: '123', userWtp: '@Yu_Suki', phone: '85999999999', age: 22, points: getRandomPoints(), role: 'adm', subs: ['Luna-B42'] },
+        { name: 'Suki Yu', user: 'Yu', password: '123', userWtp: '@Yu_Suki', phone: '85999999999', age: 22, points: getRandomPoints(), role: 'adm', subs: ['Luna-B42'] },
         { name: 'Wiliane', user: 'WilianeX', password: '!@#@!#!@#', userWtp: '@WlliiyyGabriellW', phone: '85999999999', age: 22, points: getRandomPoints(), role: 'member', subs: ['Luna-B43'] },
         { name: 'José Emanuel', user: 'JoseE', password: '!@#@!#!@#', userWtp: '@JosEmanuelpereira1', phone: '85999999999', age: 25, points: getRandomPoints(), role: 'member', subs: ['Luna-B44'] },
         { name: 'Daniel', user: 'DanielR', password: '!@#@!#!@#', userWtp: '@DVRodry', phone: '85999999999', age: 24, points: getRandomPoints(), role: 'member', subs: ['Luna-B45'] },
