@@ -60,7 +60,7 @@ export const Robozinho2 = async (wUser: string, wUrl: string, click: number) => 
             }
         }
 
-        console.log('Extraindo comentários...');
+        console.log(`Extraindo comentários do usuário ${wUser}`);
         const comentariosNovos = await page.evaluate((wUser: string) => {
             let elements = document.querySelectorAll('.comment-card-container');
             let data = [] as any[];
@@ -129,13 +129,13 @@ export const FindBook = async (book: string) => {
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
 
-        console.log(book);
+        console.log('Buscando o livro no endereço: ',book);
     
         const page = await browser.newPage();
         console.log('Acessando a página...');
         await page.goto(book, { waitUntil: 'networkidle' });
 
-        // **Clinando em "Começar a ler"**
+        // **Clicando em "Começar a ler"**
 
         // console.log('Clicando em "Começar a ler"...');
         // try {
@@ -169,8 +169,8 @@ export const FindBook = async (book: string) => {
         const capitulos = await page.evaluate(() => {
             console.log('Listando capítulos...');
             
-            return Array.from(document.querySelectorAll('li a.wNkBw')).map(a => {
-                const titleElement = a.querySelector('.if-sT'); // Pegando a div correta
+            return Array.from(document.querySelectorAll('li a._6qJpE')).map(a => {
+                const titleElement = a.querySelector('.wpYp-'); // Pegando a div correta
                 return {
                     href: a.getAttribute('href'),
                     title: titleElement?.textContent?.trim() || "Título não encontrado"
