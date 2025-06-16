@@ -1,6 +1,6 @@
 export const UrlBase = {
     prod: 'https://projlunar.onrender.com',
     dev: 'http://localhost:6060',
-    ngrok: 'https://6640-170-84-225-203.ngrok-free.app',
+    ngrok: 'https://2693-170-84-225-203.ngrok-free.app',
     rail: 'https://mapeador-de-comentario-production.up.railway.app',
 };
