@@ -7,15 +7,14 @@ const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
 
-export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
+export const Robozinho = async (wUser: string, wUrl: string) => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
+    //const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
     const url = `${endPoint}/bot`;
     try {
         const body = {
             wUser,
-            wUrl,
-            click
+            wUrl
         }
 
         const response = await fetch(url, {
@@ -35,8 +34,6 @@ export const Robozinho = async (wUser: string, wUrl: string, click: number) => {
         return data;
     } catch (err) {
         return (err || "Erro ao buscar comentários.");
-    } finally {
-        clearTimeout(timeout);
     }
 }
 
