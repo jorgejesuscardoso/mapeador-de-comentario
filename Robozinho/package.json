@@ -28,6 +28,7 @@
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.9",
     "pg": "^8.13.1",
+    "php-array-parser": "^1.0.1",
     "playwright": "^1.50.1",
     "playwright-chromium": "^1.50.1",
     "playwright-core": "^1.50.1",
