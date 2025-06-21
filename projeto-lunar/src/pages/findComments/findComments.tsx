@@ -31,18 +31,6 @@ const FindComments = () => {
         setComments([]);
         setSuccessMessage(null);
 
-        if (!obra) {
-            Swal.fire({ icon: "error", title: "Erro", text: "Insira uma URL de uma obra do Wattpad." });
-            setLoading(false);
-            return;
-        }
-
-        if (!obra.includes("https://www.wattpad.com")) {
-            Swal.fire({ icon: "error", title: "Erro", text: "Insira uma URL válida do Wattpad." });
-            setLoading(false);
-            return;
-        }
-
         Swal.fire({ icon: "info", title: "Aguarde", text: "Estamos buscando a obra. Isso pode demorar um pouco." });
 
         try {            
@@ -162,9 +150,9 @@ const FindComments = () => {
                             onChange={(e) => setSelectedChapter(e.target.value)}
                         >
                             <option value="">Selecione um capítulo ({chapters.length})</option>
-                            {chapters.map((chapter, index) => (
+                            {chapters.length > 0 ? chapters.map((chapter, index) => (
                                 <option key={index} value={chapter.href}>{chapter.title}</option>
-                            ))}
+                            )): ''}
                         </Inputs>
                     </Labels>
                 </DivInputs>

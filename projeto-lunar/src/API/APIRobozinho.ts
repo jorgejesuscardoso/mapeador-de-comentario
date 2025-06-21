@@ -2,7 +2,7 @@
 
 import { UrlBase } from "./UrlBase";
 
-const endPoint = UrlBase.ngrok;
+const endPoint = UrlBase.dev;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
@@ -10,7 +10,7 @@ const cleanToken = token ? token.replace(/"/g, '') : null;
 export const Robozinho = async (wUser: string, wUrl: string) => {
     const controller = new AbortController();
     //const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-    const url = `${endPoint}/bot`;
+    const url = `${endPoint}/getComments`;
     try {
         const body = {
             wUser,
@@ -37,24 +37,14 @@ export const Robozinho = async (wUser: string, wUrl: string) => {
     }
 }
 
-export const FindBooks = async (book: string) => {
+export const FindBooks = async (id: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout    
-    const url = `${endPoint}/books`;
+    const url = `${endPoint}/getBooks/${id}`;
 
     try {
-        const body = {
-            book
-        }
-
         const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cleanToken}`
-            },
-            body: JSON.stringify(body),
-            signal: controller.signal
+            method: 'GET',
         });
 
         if (!response.ok) {

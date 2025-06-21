@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --text-dark: #e2e8f0;
+    --text-dark-send: #054e11;
+    --text-dark-cancel: #9b0000;
+    --text-dark-hover: #9051c4;
+    --bg-dark: #0b0f14;
+    --border-dark: #2d3748;
+    --bg-dark-2: #0f1218;
+    --shadow-theme-dark: 0 0 10px 0 rgba(0, 0, 0, 0.9);
+    --shadow-theme-light: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    --dark-mode-btn-border: #d4d4d4;
+    --dark-mode-btn-bg: #f3f3f3;
+    --bg-dark-hover-cancel: #6b0000;
+}
