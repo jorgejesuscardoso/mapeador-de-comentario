@@ -91,7 +91,6 @@ function formatDate(dateStr: string) {
 					</p>
 					<div class="mt-3 flex items-center justify-between text-xs text-gray-400">
 						<span>📚 {{ book.numCaps }} caps</span>
-						<span>❤️ {{ book.votes }} votos</span>
 						<span>💬 {{ book.comments }} comentários</span>
 					</div>
 					<div class="mt-3 text-xs text-gray-500">
