@@ -6,6 +6,9 @@ import { mockUser } from './mock';
 import LoadCard from '../loading/LoadCard.vue';
 
 const router = useRouter();
+const emit = defineEmits<{
+  (e: 'update-length', length: number): void;
+}>();
 
 interface booksData {
   caps: [];
@@ -36,6 +39,7 @@ onMounted(async () => {
     data.value.push(result);
   }
 	isLoading.value = false
+	emit('update-length', data.value.length)
 });
 
 function formatDate(dateStr: string) {
