@@ -116,10 +116,6 @@ function formatDate(dateStr: string) {
               {{ book.numCaps }} capítulos
             </span>
 
-            <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-semibold">
-              {{ book.votes }} votos
-            </span>
-
             <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full font-semibold">
               {{ book.comments }} comentários
             </span>
@@ -167,7 +163,6 @@ function formatDate(dateStr: string) {
               </div>
               <div class="flex items-center justify-between gap-4 text-xs text-gray-500 text-right">
                 <p>👁 {{ cap.reads }} leituras</p>
-                <p>❤️ {{ cap.votes }} votos</p>
                 <p>💬 {{ cap.comments }} comentários</p>
               </div>
             </div>            
