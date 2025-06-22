@@ -2,7 +2,7 @@
 
 import { UrlBase } from './Base.url'
 
-const endPoint = UrlBase.ngrok;
+const endPoint = UrlBase.prod;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
