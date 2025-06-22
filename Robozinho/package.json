@@ -27,12 +27,12 @@
     "pg": "^8.13.1",
     "php-array-parser": "^1.0.1",
     "sweet-alert": "^2.0.5",
-    "sweetalert2": "^11.15.10"
+    "sweetalert2": "^11.15.10",
+    "@types/express": "^4.17.17",
+    "@types/axios": "^0.14.4",
+    "@types/dotenv": "^8.2.3"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.4",
-    "@types/dotenv": "^8.2.3",
-    "@types/express": "^4.17.17",
     "@types/node": "^22.13.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
