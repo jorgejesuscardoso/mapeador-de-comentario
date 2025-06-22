@@ -10,7 +10,7 @@ const cleanToken = token ? token.replace(/"/g, '') : null;
 export const getComments = async (wUser: string, wUrl: string) => {
     const controller = new AbortController();
     //const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-    const url = `${endPoint}/getComments`;
+    const url = `${endPoint}/books`;
     try {
         const body = {
             wUser,
@@ -40,7 +40,7 @@ export const getComments = async (wUser: string, wUrl: string) => {
 export const getBooks = async (id: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout    
-    const url = `${endPoint}/getBooks/${id}`;
+    const url = `${endPoint}/books/${id}`;
 
     try {
         const response = await fetch(url, {

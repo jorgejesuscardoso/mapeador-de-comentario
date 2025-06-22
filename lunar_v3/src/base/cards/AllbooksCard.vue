@@ -32,6 +32,23 @@ const isLoading = ref(false)
 
 const data = ref<booksData[]>([]);
 
+setInterval(async () => {
+  for (const book of mockUser) {
+    const result = await getBooks(book.id);
+
+    const index = data.value.findIndex((item) => item.id === result.id);
+
+    if (index !== -1) {
+      
+      data.value.splice(index, 1, result);
+    } else {
+      
+      data.value.push(result);
+    }
+  }
+}, 60 * 10 * 1000); 
+
+
 onMounted(async () => {
 	isLoading.value = true
   for (const book of mockUser) {
