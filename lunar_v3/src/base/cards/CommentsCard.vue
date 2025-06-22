@@ -38,13 +38,27 @@ onMounted(async () => {
 	isLoading.value = false
 });
 
-function formatDate(dateStr: string) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
+
+function formatDate(dataISO: string): string {
+  const dataComentario = new Date(dataISO);
+  const agora = new Date();
+
+  const diffMs = agora.getTime() - dataComentario.getTime(); // <- getTime() retorna number
+  const diffHoras = diffMs / (1000 * 60 * 60);
+
+  const hora = String(dataComentario.getHours()).padStart(2, '0');
+  const minuto = String(dataComentario.getMinutes()).padStart(2, '0');
+
+  if (diffHoras < 24) {
+    return `Hoje às ${hora}:${minuto}`;
+  } else if (diffHoras < 48 && agora.getDate() !== dataComentario.getDate()) {
+    return `Ontem às ${hora}:${minuto}`;
+  } else {
+    const dia = String(dataComentario.getDate()).padStart(2, '0');
+    const mes = String(dataComentario.getMonth() + 1).padStart(2, '0');
+    const ano = dataComentario.getFullYear();
+    return `${dia}/${mes}/${ano} às ${hora}:${minuto}`;
+  }
 }
 </script>
 
