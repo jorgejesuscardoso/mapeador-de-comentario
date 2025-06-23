@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { UrlBase } from './Base.url'
+import axios from 'axios';
 
-const endPoint = UrlBase.prod;
+const endPoint = UrlBase.render;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
@@ -43,15 +44,19 @@ export const getBooks = async (id: string) => {
     const url = `${endPoint}/books/${id}`;
 
     try {
-        const response = await fetch(url, {
-            method: 'GET'
+        const response = await axios(url, {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+            }
         });
 
-        if (!response.ok) {
+        if (!response) {
             throw new Error(`Erro ${response.status}: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const data = await response.data;
         return data;
     } catch (err) {
         return (err || "Erro ao buscar livros.");
