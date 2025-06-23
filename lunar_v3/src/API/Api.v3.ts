@@ -3,7 +3,7 @@
 import { UrlBase } from './Base.url'
 import axios from 'axios';
 
-const endPoint = UrlBase.dev;
+const endPoint = UrlBase.render;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
