@@ -3,7 +3,7 @@
 import { UrlBase } from './Base.url'
 import axios from 'axios';
 
-const endPoint = UrlBase.render;
+const endPoint = UrlBase.dev;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 
@@ -11,7 +11,7 @@ const cleanToken = token ? token.replace(/"/g, '') : null;
 export const getComments = async (wUser: string, wUrl: string) => {
     const controller = new AbortController();
     //const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout
-    const url = `${endPoint}/books`;
+    const url = `${endPoint}/getComments`;
     try {
         const body = {
             wUser,
@@ -41,7 +41,7 @@ export const getComments = async (wUser: string, wUrl: string) => {
 export const getBooks = async (id: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout    
-    const url = `${endPoint}/books/${id}`;
+    const url = `${endPoint}/getBooks/${id}`;
 
     try {
         const response = await axios(url, {
