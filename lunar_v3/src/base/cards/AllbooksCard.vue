@@ -24,7 +24,10 @@ interface booksData {
   tags: [];
   title: string;
   url: string;
-  user: {};
+  user: {
+		name: string,
+		userName: string
+	};
   votes: number;
 }
 const isAdm = ref()
@@ -56,6 +59,7 @@ onMounted(async () => {
     data.value.push(result);
   }
 	isLoading.value = false
+	console.log(data.value)
 	emit('update-length', data.value.length)
 });
 
@@ -107,6 +111,7 @@ function formatDate(dateStr: string) {
 					<h2 class="text-xl font-semibold text-gray-800 line-clamp-1">
 						{{ book.title }}
 					</h2>
+					<span class="text-xs font-semibold text-gray-800 line-clamp-1">Autor(a): <span>@{{ book.user.userName }}</span></span>
 					<p class="text-sm text-gray-500 line-clamp-2 mt-1">
 						{{ book.describe }}
 					</p>
