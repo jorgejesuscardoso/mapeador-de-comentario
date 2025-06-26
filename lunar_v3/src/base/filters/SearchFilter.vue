@@ -4,7 +4,8 @@ import Lucide from '../lucide/Lucide.vue';
 
 const emit = defineEmits<{
   (e: 'filter', filter: string): void;
-  (e: 'genre', genre: string): void;
+  (e: 'genre', genre: string): void;  
+  (e: 'clear'): void;
 }>();
 
 const filters = [
@@ -16,7 +17,7 @@ const filters = [
   { label: 'Menos views', icon: 'EyeOff', value: 'views_asc' },
 ];
 
-const clearFilters = { label: 'Limpar Filtros', icon: 'Trash2', value: 'views_asc' }
+const clearFilters = { label: 'Limpar Filtros', icon: 'Trash2', value: 'clear' }
 
 const genres = [
   'Fantasia', 'Romance', 'Mistério', 'Ação', 'Aventura', 'Drama', 'Comédia',
@@ -24,10 +25,32 @@ const genres = [
 
 const selectedGenre = ref('');
 const selectedFilter = ref('');
+
+const handleClearFilter = () => {
+  selectedFilter.value = '';
+  selectedGenre.value = '';
+  emit('clear');
+  
+}
 </script>
 
 <template>
-  <div class="w-full bg-white rounded-lg shadow p-4 border border-violet-200">
+  <div class="w-full bg-white rounded-lg shadow p-4 border border-violet-200 relative">
+    <!--Limpar filtros-->
+    <div
+      class="absolute top-4 right-4"
+    >
+      <button
+        @click="handleClearFilter"
+        :class="[
+          'flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all',
+          selectedFilter === clearFilters.value ? 'bg-violet-500 text-white' : 'hover:bg-violet-100 text-violet-800',
+        ]"
+      >
+        <Lucide :icon="clearFilters.icon" class="w-4 h-4" />
+        <span>{{ clearFilters.label }}</span>
+      </button>
+    </div>
     <!-- Filtros principais -->
     <div class="grid grid-cols-2 grid-rows-3 gap-2 mb-4">
       <button

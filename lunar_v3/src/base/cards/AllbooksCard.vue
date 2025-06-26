@@ -17,7 +17,7 @@ interface booksData {
   mature: boolean;
   numCaps: number;
   readTotal: number;
-  tags: [string];
+  tags: string[];
   title: string;
   url: string;
   user: {
@@ -27,11 +27,20 @@ interface booksData {
   votes: number;
 }
 
+const filtersValue = [
+  'votes_desc',
+  'votes_asc' ,
+  'comments_desc',
+  'comments_asc',
+  'views_desc',
+  'views_asc'
+];
+
 const searchFilter = reactive({
   search: '',
   genre: ''
 })
-
+const sortType = ref('');
 
 const router = useRouter();
 const emit = defineEmits<{
@@ -62,12 +71,12 @@ setInterval(async () => {
 }, 60 * 10 * 1000); 
 
 watch(
-  () => [searchFilter.search, searchFilter.genre],
+  () => [searchFilter.search, searchFilter.genre, sortType.value],
   ([search, genre]) => {
     const query = search.toLocaleLowerCase().trim();
     const genreQuery = genre.toLocaleLowerCase().trim();
 
-    filteredData.value = data.value.filter((book) => {
+    let result = data.value.filter((book) => {
       const completed = book.completed ? 'completo' : 'andamento';
       const mature = book.mature ? 'adulto' : 'geral';
 
@@ -87,23 +96,37 @@ watch(
       return matchesSearch && matchesGenre;
     });
 
-    emit('update-length', filteredData.value.length);
-		console.log(filteredData.value)
+    // Aplica ordenação aqui
+    if (sortType.value === 'votes_desc') result.sort((a, b) => b.votes - a.votes);
+    if (sortType.value === 'votes_asc') result.sort((a, b) => a.votes - b.votes);
+    if (sortType.value === 'comments_desc') result.sort((a, b) => b.comments - a.comments);
+    if (sortType.value === 'comments_asc') result.sort((a, b) => a.comments - b.comments);
+    if (sortType.value === 'views_desc') result.sort((a, b) => b.readTotal - a.readTotal);
+    if (sortType.value === 'views_asc') result.sort((a, b) => a.readTotal - b.readTotal);
+
+    filteredData.value = result;
+    emit('update-length', result.length);
   },
   { immediate: true }
 );
 
 
-
-onMounted(async () => {
-	isLoading.value = true
+async function fetchBooks() {
+  const books: booksData[] = [];
   for (const book of mockUser) {
     const result = await getBooks(book.id);
-    data.value.push(result);
+    books.push(result);
   }
-	isLoading.value = false
-	emit('update-length', data.value.length)	
-  filteredData.value = [...data.value];
+  return books;
+}
+
+onMounted(async () => {
+  isLoading.value = true;
+  const books = await fetchBooks();
+  data.value = books;
+  filteredData.value = [...books];
+  isLoading.value = false;
+  emit('update-length', books.length);
 });
 
 
@@ -119,8 +142,19 @@ function formatDate(dateStr: string) {
 const handleSearch = (s: string) => {
   searchFilter.search = s;
 };
+
 const handleGenreFilter = (genre: string) => {
   searchFilter.genre = genre;
+};
+
+const handleClearFilter = () => {
+  searchFilter.genre = '';
+  searchFilter.search = '';
+	sortType.value = '';
+};
+
+const handelSortBooks = (s: string) => {
+  sortType.value = s;
 };
 </script>
 
@@ -130,8 +164,10 @@ const handleGenreFilter = (genre: string) => {
 		class="mb-1"
 	>
 		<Sort 
+			@clear="handleClearFilter"
 			@search:books="handleSearch"			
   		@filters:genre="handleGenreFilter"
+			@filters:sort="handelSortBooks"
 		/>
 	</div>
   <div class="border-t-2 border-purple-400 rounded-2xl">
