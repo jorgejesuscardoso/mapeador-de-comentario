@@ -11,6 +11,7 @@ const emit = defineEmits<{
   (e: 'search:books', value: string): void;
   (e: 'filters:sort', value: string): void;
   (e: 'filters:genre', value: string): void;
+  (e: 'clear'): void;  
 }>();
 
 // Emite sempre que o valor do input mudar
@@ -24,6 +25,10 @@ const handleSortFilter = (filter: string) => {
 
 const handleGenreFilter = (genre: string) => {
   emit('filters:genre', genre);
+};
+
+const handleClearFilter = () => {
+  emit('clear');
 };
 
 </script>
@@ -58,6 +63,7 @@ const handleGenreFilter = (genre: string) => {
     <SearchFilter    
       @filter="handleSortFilter"
       @genre="handleGenreFilter"
+      @clear="handleClearFilter"
     />
   </div>
   
