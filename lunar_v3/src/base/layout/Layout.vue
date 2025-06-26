@@ -21,7 +21,7 @@ const handleToTop = () => {
 	<div
 		class="min-h-screen min-w-screen bg-fuchsia-200"
 	>
-		<header class="w-full bg-slate-900 text-gray-50 overflow-hidden p-1">
+		<header class="w-full bg-slate-900 text-gray-50 overflow-hidden p-1 fixed z-10">
 			<div class="whitespace-nowrap text-center">
 				<h1 class="inline-block px-4 text-lg">
 					🌙✨ Seja muito bem-vindo ao Projeto Lunar ✨🌙
@@ -37,10 +37,10 @@ const handleToTop = () => {
 
 
 		<div
-			class="grid grid-cols-[9fr_34fr]"
+			class="flex items-center justify-end"
 		>
 			<div
-				class="w-11/12 h-full mt-1"
+				class="w-2/12 h-full mt-1 fixed top-10 left-0"
 			>
 				<nav
 					class="rounded-2xl bg-white p-4 h-[90vh]"
@@ -150,7 +150,7 @@ const handleToTop = () => {
 			</div>
 
 			<main
-				class="min-h-full"
+				class="w-10/12 z-0"
 			>
 				<router-view />
 			</main>
