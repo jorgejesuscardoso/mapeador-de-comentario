@@ -19,18 +19,18 @@ const handleToTop = () => {
 
 <template>
 	<div
-		class="min-h-screen min-w-screen bg-fuchsia-300"
+		class="min-h-screen min-w-screen bg-fuchsia-200"
 	>
 		<header class="w-full bg-slate-900 text-gray-50 overflow-hidden p-1">
 			<div class="whitespace-nowrap text-center">
 				<h1 class="inline-block px-4 text-lg">
-					Seja muito bem vindo ao Projeto Lunar
+					🌙✨ Seja muito bem-vindo ao Projeto Lunar ✨🌙
 				</h1>
 				<span>
 					-
 				</span>
 				<h1 class="inline-block px-4 text-lg">
-					Onde a lua ilumina os livros
+					📚 Onde a lua ilumina os livros 🌌📖
 				</h1>
 			</div>
 		</header>
@@ -46,14 +46,14 @@ const handleToTop = () => {
 					class="rounded-2xl bg-white p-4 h-[90vh]"
 				>
 					<ul
-						class="flex flex-col w-full gap-1 text-gray-700 text-sm font-semibold"
+						class="flex flex-col w-full gap-1 text-violet-700 text-sm font-semibold"
 					>
 						<li>
 							<RouterLink 
 								to="/"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 								:class="{
-									'bg-gray-300 text-black': route.path === '/',
+									'bg-violet-200 text-violet-800': route.path === '/',
 									'hover:bg-gray-100': route.path !== '/'
 								}"
 							>
@@ -69,7 +69,7 @@ const handleToTop = () => {
 								to="/bot"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 								:class="{
-									'bg-gray-300 text-black': route.path === '/bot',
+									'bg-violet-200 text-violet-800': route.path === '/bot',
 									'hover:bg-gray-100': route.path !== '/bot'
 								}"
 							>
@@ -86,7 +86,7 @@ const handleToTop = () => {
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
 								:class="{
-									'bg-gray-300 text-black': route.path === '/members',
+									'bg-violet-200 text-violet-800': route.path === '/members',
 									'hover:bg-gray-100': route.path !== '/members'
 								}"
 							>
@@ -102,7 +102,7 @@ const handleToTop = () => {
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
 								:class="{
-									'bg-gray-300 text-black': route.path === '/subs',
+									'bg-violet-200 text-violet-800': route.path === '/subs',
 									'hover:bg-gray-100': route.path !== '/subs'
 								}"
 							>
@@ -118,7 +118,7 @@ const handleToTop = () => {
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
 								:class="{
-									'bg-gray-300 text-black': route.path === '/shop',
+									'bg-violet-200 text-violet-800': route.path === '/shop',
 									'hover:bg-gray-100': route.path !== '/shop'
 								}"
 							>
@@ -134,7 +134,7 @@ const handleToTop = () => {
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
 								:class="{
-									'bg-gray-300 text-black': route.path === '/profile',
+									'bg-violet-200 text-violet-800': route.path === '/profile',
 									'hover:bg-gray-100': route.path !== '/profile'
 								}"
 							>
