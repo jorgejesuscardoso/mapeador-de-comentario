@@ -18,7 +18,6 @@ const scrollToTop = () => {
 		class="mt-6 p-4 relative"
 	>
 		<Header>
-			Obras dos Membros Lunar: <span>({{ totalBooks }} obra{{ totalBooks === 1 ? '' : 's' }} encontradas)</span>
 		</Header>
 
 

@@ -166,14 +166,15 @@ onMounted(async () => {
 
 
 <template>
-	<transition name="filter-transition">
+	<div class="mb-0.5 relative">
     <Sort 
       @clear="handleClearFilter"
       @search:books="handleSearch"			
       @filters:genre="handleGenreFilter"
       @filters:sort="handelSortBooks"
+      :total="filteredData.length"
     />
-</transition>
+</div>
   <div class="border-t-2 border-purple-400 rounded-2xl">
 		<div>
 			<div 

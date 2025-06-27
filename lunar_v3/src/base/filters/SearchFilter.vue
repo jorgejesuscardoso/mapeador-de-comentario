@@ -5,6 +5,7 @@ import Lucide from '../lucide/Lucide.vue';
 const emit = defineEmits<{
   (e: 'filter', filter: string): void;
   (e: 'genre', genre: string): void;  
+  (e: 'style', style: string): void;
   (e: 'clear'): void;
 }>();
 
@@ -20,22 +21,30 @@ const filters = [
 const clearFilters = { label: 'Limpar Filtros', icon: 'Trash2', value: 'clear' }
 
 const genres = [
-  'Fantasia', 'Romance', 'Mistério', 'Ação', 'Aventura', 'Drama', 'Comédia',
+  'Fantasia', 'Romance', 'Mistério', 'Ação', 'Aventura', 'Drama', 'Comédia', 
+  'DarkRomance', 'Terror', 'Gore', 'Slice of Life', 'Histórico', 'Ficção Científica', 'Sobrenatural', 'Thriller',
+  'Apocalipse', 'Magia', 'Espiritual', 'Cultivo', 'Reencarnação',
+  'Isekai', 'LGBT', 'Psicológico', 'Policial', 'Steampunk', 'Mitologia', 'Cyberpunk', 'Tragédia', 'Escolar', 'Distopia'
+];
+
+const styles = [
+  'Novel','Light Novel','Web Novel','Prosa', 'Conto', 'Crônica', 'Poesia', 'Cartas', 'Diário', 'Narrativa Fragmentada', 'One-shot'
 ];
 
 const selectedGenre = ref('');
 const selectedFilter = ref('');
+const selectedStyle = ref('');
 
 const handleClearFilter = () => {
   selectedFilter.value = '';
   selectedGenre.value = '';
+  selectedStyle.value = '';
   emit('clear');
-  
-}
+};
 </script>
 
 <template>
-  <div class="w-full bg-white rounded-lg shadow p-4 border border-violet-200 relative">
+  <div class="w-full bg-white rounded-lg shadow p-4 border border-violet-200">
     <!--Limpar filtros-->
     <div
       class="absolute top-4 right-4"
@@ -86,5 +95,26 @@ const handleClearFilter = () => {
         </button>
       </div>
     </div>
+
+    <!-- Estilo de Escrita -->
+    <div class="mt-8">
+      <h4 class="text-xs font-semibold text-violet-600 mb-2">Filtrar por Estilo de Escrita - <span class="bg-gray-300 px-1.5 py-0.5 rounded-full">Em breve</span></h4>
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-for="style in styles"
+          :key="style"
+          @click="() => { selectedStyle = style; emit('style', style); }"
+          :class="[
+            'px-3 py-1 text-sm rounded-full border transition-all',
+            selectedStyle === style
+              ? 'bg-violet-500 text-white border-violet-500'
+              : 'bg-white text-violet-800 hover:bg-violet-100 border-violet-200',
+          ]"
+        >
+          {{ style }}
+        </button>
+      </div>
+    </div>
+
   </div>
 </template>

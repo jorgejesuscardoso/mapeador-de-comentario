@@ -25,7 +25,7 @@ const onInput = (e: Event) => {
       :placeholder="props.placeholder"
       :value="props.modelValue"
       @input="onInput"
-      class="w-full bg-transparent border border-violet-400 rounded-lg pl-8 py-0.5 focus:outline-none focus:ring-0 text-violet-700"
+      class="w-full bg-transparent border border-violet-400 rounded-lg pl-8 py-1 focus:outline-none focus:ring-0 text-violet-700 placeholder-violet-400"
     />
     <Lucide
       icon="Search"
