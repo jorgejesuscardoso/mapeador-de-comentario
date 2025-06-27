@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { mockUser } from './mock';
 import LoadCard from '../loading/LoadCard.vue';
 import Sort from '../filters/Sort.vue';
+import { bookCache } from './BookCache';
 
 interface booksData {
   caps: [];
@@ -27,14 +28,6 @@ interface booksData {
   votes: number;
 }
 
-const filtersValue = [
-  'votes_desc',
-  'votes_asc' ,
-  'comments_desc',
-  'comments_asc',
-  'views_desc',
-  'views_asc'
-];
 
 const searchFilter = reactive({
   search: '',
@@ -110,7 +103,6 @@ watch(
   { immediate: true }
 );
 
-
 async function fetchBooks() {
   const books: booksData[] = [];
   for (const book of mockUser) {
@@ -119,15 +111,6 @@ async function fetchBooks() {
   }
   return books;
 }
-
-onMounted(async () => {
-  isLoading.value = true;
-  const books = await fetchBooks();
-  data.value = books;
-  filteredData.value = [...books];
-  isLoading.value = false;
-  emit('update-length', books.length);
-});
 
 
 function formatDate(dateStr: string) {
@@ -156,20 +139,41 @@ const handleClearFilter = () => {
 const handelSortBooks = (s: string) => {
   sortType.value = s;
 };
+
+onMounted(async () => {
+  isLoading.value = true;
+
+  // Se já houver cache, usa ele
+  if (bookCache.books && bookCache.books.length > 0) {
+		data.value = bookCache.books;
+		filteredData.value = [...bookCache.books];
+		isLoading.value = false;
+		emit('update-length', bookCache.books.length);
+		return;
+	}
+
+
+  // Senão, busca os dados e salva no cache
+  const books = await fetchBooks();
+  data.value = books;
+  filteredData.value = [...books];  
+	bookCache.books = books; // ✅ salva no cache
+  isLoading.value = false;
+  emit('update-length', books.length);
+});
+
 </script>
 
 
 <template>
-	<div
-		class="mb-1"
-	>
-		<Sort 
-			@clear="handleClearFilter"
-			@search:books="handleSearch"			
-  		@filters:genre="handleGenreFilter"
-			@filters:sort="handelSortBooks"
-		/>
-	</div>
+	<transition name="filter-transition">
+    <Sort 
+      @clear="handleClearFilter"
+      @search:books="handleSearch"			
+      @filters:genre="handleGenreFilter"
+      @filters:sort="handelSortBooks"
+    />
+</transition>
   <div class="border-t-2 border-purple-400 rounded-2xl">
 		<div>
 			<div 
