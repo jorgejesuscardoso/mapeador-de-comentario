@@ -18,7 +18,7 @@ interface booksData {
   tags: string[];
   title: string;
   url: string;
-  user: { name?: string }; // você pode adaptar melhor isso
+  user: { name?: string, userName?: string }; // você pode adaptar melhor isso
   votes: number;
 }
 
@@ -116,7 +116,17 @@ function formatDate(dateStr: string) {
               {{ book.numCaps }} capítulos
             </span>
 
-            <span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full font-semibold">
+            <span 
+              v-if="book.user.userName != '3ricautora'"
+              class="bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-semibold"
+            >
+              {{  book.votes }} votos
+            </span>
+
+            <span 
+              v-if="book.user.userName != '3ricautora'"
+              class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full font-semibold"
+            >
               {{ book.comments }} comentários
             </span>
           </div>

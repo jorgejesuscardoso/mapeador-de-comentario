@@ -213,7 +213,8 @@ const handelSortBooks = (s: string) => {
 						</p>
 						<div class="mt-2 w-full flex items-center justify-between text-[10px] text-gray-400">
 							<span>📚 {{ book.numCaps }} caps</span>
-							<span>💬 {{ book.comments }} comentários</span>
+							<span v-if="book.user.userName != '3ricautora'">⭐ {{ book.votes }} votos</span>
+							<span v-if="book.user.userName != '3ricautora'">💬 {{ book.comments }} comentários</span>
 						</div>
 						<div class="mt-1 text-[10px] text-gray-500">
 							Criado em: {{ formatDate(book.createdAt) }}
