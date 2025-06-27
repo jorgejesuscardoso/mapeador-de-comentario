@@ -191,7 +191,7 @@ onMounted(async () => {
       :total="filteredData.length"
     />
 </div>
-  <div class="border-t-2 border-purple-400 rounded-2xl">
+  <div class="rounded-2xl">
 		<div>
 			<div 
 				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-1"
