@@ -44,7 +44,7 @@ const handleClearFilter = () => {
 </script>
 
 <template>
-  <div class="w-full bg-white rounded-lg shadow p-4 border border-violet-200">
+  <div class="w-full bg-white rounded-xl shadow p-4 border border-violet-200 mt-4">
     <!--Limpar filtros-->
     <div
       class="absolute top-4 right-4"

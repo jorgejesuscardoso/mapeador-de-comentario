@@ -63,37 +63,37 @@ onMounted(async () => {
       class="w-full"
     >
       <div
-        class="flex flex-col bg-white mx-4 my-1 py-4 px-2 rounded-2xl shadow-lg"
+        class="flex flex-col bg-white mx-4 my-1 py-4 px-2 rounded-xl shadow-lg"
       > 
         <div
           class="flex flex-col"
         >
           <span
-            class="mx-4 font-semibold text-indigo-700 text-sm"
+            class="mx-4 font-semibold text-indigo-800 text-sm"
           >
-            User: <span class="font-bold text-violet-700 ml-2 text-sm">{{ wUser }}</span>
+            User: <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ wUser }}</span>
           </span>
           <span
-            class="mx-4 font-semibold text-indigo-700 text-sm"
+            class="mx-4 font-semibold text-indigo-800 text-sm"
           >
-            Capitulo: <span class="font-bold text-violet-700 ml-2 text-sm">{{ title }}</span>
+            Capitulo: <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ title }}</span>
           </span>
           
           <span
-            class="mx-4 font-semibold text-indigo-700 text-sm"
+            class="mx-4 font-semibold text-indigo-800 text-sm"
           >
-            Livro: <span class="font-bold text-violet-700 ml-2 text-sm">{{ bookName }}</span>
+            Livro: <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ bookName }}</span>
           </span>        
           <h3
-            class="mx-4  font-semibold text-indigo-700 text-sm"
+            class="mx-4  font-semibold text-indigo-800 text-sm"
           >
             Comentários: 
-            <span class="font-bold text-violet-700 ml-2 text-sm">{{ data.length }}</span>
+            <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ data.length }}</span>
           </h3>
         </div>
         <span
           @click="goBack"
-          class="flex items-center justify-start ml-4 mt-6 text-xs text-violet-700 cursor-pointer"
+          class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer"
         >
           <Lucide
             icon="ArrowLeft"
@@ -110,7 +110,7 @@ onMounted(async () => {
         v-if="!isLoading"
         v-for="(comment, index) in data"
         :key="index"
-        class="bg-white rounded-2xl shadow-lg p-4 flex flex-col gap-2 hover:shadow-xl transition duration-300"
+        class="bg-white rounded-xl shadow-lg p-4 flex flex-col gap-2 hover:shadow-xl transition duration-300"
       >
         <!-- Header do usuário -->
         <div class="flex items-center gap-3">
