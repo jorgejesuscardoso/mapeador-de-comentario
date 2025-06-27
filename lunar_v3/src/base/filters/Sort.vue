@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import SearchInput from '../Inputs.vue/SearchInput.vue';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import Lucide from '../lucide/Lucide.vue';
 import SearchFilter from './SearchFilter.vue';
 
 const search = ref('');
-const showFilterMenu = ref(false)
+const showFilterMenu = ref(false);
+const filterMenuRef = ref<HTMLElement | null>(null);
+const filterMenuRef2 = ref<HTMLElement | null>(null);
 
 const emit = defineEmits<{
   (e: 'search:books', value: string): void;
@@ -14,29 +16,33 @@ const emit = defineEmits<{
   (e: 'clear'): void;  
 }>();
 
-// Emite sempre que o valor do input mudar
 watch(search, (val) => {
   emit('search:books', val);
 });
 
-const handleSortFilter = (filter: string) => {
-  emit('filters:sort', filter);
-};
+const handleSortFilter = (filter: string) => emit('filters:sort', filter);
+const handleGenreFilter = (genre: string) => emit('filters:genre', genre);
+const handleClearFilter = () => emit('clear');
 
-const handleGenreFilter = (genre: string) => {
-  emit('filters:genre', genre);
-};
+// Detecta clique fora
+function handleClickOutside(event: MouseEvent) {
+  if ((filterMenuRef.value && filterMenuRef2) && (!filterMenuRef.value.contains(event.target as Node) && !filterMenuRef2.value.contains(event.target as Node))) {
+    showFilterMenu.value = false;
+  }
+}
 
-const handleClearFilter = () => {
-  emit('clear');
-};
+onMounted(() => {
+  document.addEventListener('mousedown', handleClickOutside);
+});
 
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', handleClickOutside);
+});
 </script>
 
+
 <template>
-  <div
-    class="flex items-center justify-between gap-3"
-  >
+  <div class="flex items-center justify-between gap-3">
     <div class="w-11/12 my-3">
       <SearchInput
         v-model="search"
@@ -44,7 +50,8 @@ const handleClearFilter = () => {
       />
     </div>
 
-    <div
+    <div    
+      ref="filterMenuRef2"
       class="flex items-center justify-end mr-2 cursor-pointer"
       @click="showFilterMenu = !showFilterMenu"
     >
@@ -53,18 +60,39 @@ const handleClearFilter = () => {
         class="text-violet-800"
       />
     </div>
-
   </div>
 
-  <!-- filtros -->
-  <div
-    v-if="showFilterMenu"
-  >
-    <SearchFilter    
-      @filter="handleSortFilter"
-      @genre="handleGenreFilter"
-      @clear="handleClearFilter"
-    />
-  </div>
-  
-</template> 
+  <!-- Filtros com animação -->
+  <transition name="fade-slide">
+    <div
+      v-show="showFilterMenu"
+      ref="filterMenuRef"
+    >
+      <SearchFilter    
+        @filter="handleSortFilter"
+        @genre="handleGenreFilter"
+        @clear="handleClearFilter"
+      />
+    </div>
+  </transition>
+</template>
+
+<style scoped>
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-slide-enter-from,
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.fade-slide-enter-to,
+.fade-slide-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+</style>
