@@ -181,7 +181,7 @@ onMounted(async () => {
 
 
 <template>
-	<div class="mb-0.5 relative">
+	<div class="mb-2 relative bg-white px-4 py-3 rounded-2xl">
     <Sort 
       @clear="handleClearFilter"
       @search:books="handleSearch"			
