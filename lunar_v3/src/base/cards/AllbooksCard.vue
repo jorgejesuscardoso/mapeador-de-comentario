@@ -31,7 +31,8 @@ interface booksData {
 
 const searchFilter = reactive({
   search: '',
-  genre: ''
+  genre: '',
+  style: ''
 })
 const sortType = ref('');
 
@@ -64,10 +65,11 @@ setInterval(async () => {
 }, 60 * 10 * 1000); 
 
 watch(
-  () => [searchFilter.search, searchFilter.genre, sortType.value],
-  ([search, genre]) => {
+  () => [searchFilter.search, searchFilter.genre, searchFilter.style, sortType.value],
+  ([search, genre, style]) => {
     const query = search.toLocaleLowerCase().trim();
     const genreQuery = genre.toLocaleLowerCase().trim();
+    const styleQuery = style.toLocaleLowerCase().trim();
 
     let result = data.value.filter((book) => {
       const completed = book.completed ? 'completo' : 'andamento';
@@ -86,10 +88,14 @@ watch(
         tag.toLowerCase().includes(genreQuery)
       );
 
-      return matchesSearch && matchesGenre;
+      const matchesStyle = !styleQuery || book.tags.some((tag) =>
+        tag.toLowerCase().includes(styleQuery)
+      );
+
+      return matchesSearch && matchesGenre && matchesStyle;
     });
 
-    // Aplica ordenação aqui
+    // Ordenação (mantida igual)
     if (sortType.value === 'votes_desc') result.sort((a, b) => b.votes - a.votes);
     if (sortType.value === 'votes_asc') result.sort((a, b) => a.votes - b.votes);
     if (sortType.value === 'comments_desc') result.sort((a, b) => b.comments - a.comments);
@@ -102,6 +108,7 @@ watch(
   },
   { immediate: true }
 );
+
 
 async function fetchBooks() {
   const books: booksData[] = [];
@@ -133,12 +140,20 @@ const handleGenreFilter = (genre: string) => {
 const handleClearFilter = () => {
   searchFilter.genre = '';
   searchFilter.search = '';
-	sortType.value = '';
+  searchFilter.style = '';
+  sortType.value = '';
 };
 
 const handelSortBooks = (s: string) => {
   sortType.value = s;
 };
+
+
+/// Falta implementar a Logica - Ainda nao existe separação por estilo //////
+const handleStyleFilter = (s: string) => {
+  searchFilter.style = s
+};
+/// Falta implementar a Logica - Ainda nao existe separação por estilo //////
 
 onMounted(async () => {
   isLoading.value = true;
@@ -172,6 +187,7 @@ onMounted(async () => {
       @search:books="handleSearch"			
       @filters:genre="handleGenreFilter"
       @filters:sort="handelSortBooks"
+      @filters:style="handleStyleFilter"
       :total="filteredData.length"
     />
 </div>

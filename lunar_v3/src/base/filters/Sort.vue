@@ -13,6 +13,7 @@ const emit = defineEmits<{
   (e: 'search:books', value: string): void;
   (e: 'filters:sort', value: string): void;
   (e: 'filters:genre', value: string): void;
+  (e: 'filters:style', value: string): void;
   (e: 'clear'): void;  
 }>();
 
@@ -26,6 +27,7 @@ watch(search, (val) => {
 
 const handleSortFilter = (filter: string) => emit('filters:sort', filter);
 const handleGenreFilter = (genre: string) => emit('filters:genre', genre);
+const handelStyleFilter = (style: string) => emit('filters:style', style)
 const handleClearFilter = () => emit('clear');
 
 // Detecta clique fora
@@ -81,6 +83,7 @@ onBeforeUnmount(() => {
         @filter="handleSortFilter"
         @genre="handleGenreFilter"
         @clear="handleClearFilter"
+        @style="handelStyleFilter"
       />
     </div>
   </transition>

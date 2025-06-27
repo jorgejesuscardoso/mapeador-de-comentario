@@ -29,10 +29,10 @@ const scrollToTop = () => {
 			/>
 		</div>
 		<div
-			class="fixed bottom-4 right-2 "
+			class="fixed bottom-16 right-2 "
 		>
 			<button
-				class="bg-purple-300 rounded-full p-1"
+				class="bg-indigo-300 rounded-full p-1"
 			
 			>
 				<Lucide
