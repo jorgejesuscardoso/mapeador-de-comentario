@@ -4,6 +4,7 @@ import Layout from '@/base/layout/Layout.vue';
 import Home from '@/pages/home/Home.vue';
 import Robot from '@/pages/robot/Robot.vue';
 import WorkDetails from '@/pages/works/WorkDetails.vue';
+import CommentsCard from '@/base/cards/CommentsCard.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -29,6 +30,12 @@ const routes: RouteRecordRaw[] = [
         path: '/work/:id', 
         name: 'workDetail',
         component: WorkDetails,
+      },
+
+      { 
+        path: '/comments', 
+        name: 'comments',
+        component: CommentsCard,
       }
     ]
   }

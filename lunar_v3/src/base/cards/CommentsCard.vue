@@ -1,42 +1,24 @@
 <script setup lang="ts">
-import { getBooks, getComments } from '@/API/Api.v3';
+import { getComments } from '@/API/Api.v3';
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute} from 'vue-router';
 import LoadCard from '../loading/LoadCard.vue';
-import { defineProps } from 'vue';
+import Lucide from '../lucide/Lucide.vue';
 
-const props = defineProps<{
-  propId: string;
-  propUser: string;
-  propTitle: string;
-}>();
+const route = useRoute();
+const id = route.query.id as string;
+const wUser = route.query.user as string;
+const title = route.query.title as string;
+const bookName = route.query.bookName as string;
 
-
-const router = useRouter();
-
-interface commentsData {
-  commentId: {
-    resourceId: string
-  };
-  created: string;
-  text: string;
-  user: {
-    avatar: string;
-    name: string
-  }
-}
 const isAdm = ref()
 const isLoading = ref(false)
-const wUser = ref('')
 const data = ref<any[]>([]);
+const router = useRouter();
 
-onMounted(async () => {
-	isLoading.value = true
-  const result = await getComments(props.propUser,props.propId);
-  data.value = result;
-  
-	isLoading.value = false
-});
+function goBack() {
+  router.back();
+}
 
 
 function formatDate(dataISO: string): string {
@@ -60,34 +42,69 @@ function formatDate(dataISO: string): string {
     return `${dia}/${mes}/${ano} às ${hora}:${minuto}`;
   }
 }
+
+onMounted(async () => {
+	isLoading.value = true
+  const result = await getComments(wUser, id);
+  data.value = result;
+  window.scrollTo({top: 0})
+	isLoading.value = false
+});
+
+
 </script>
 
 
 <template>
-  <div>
-    <header>
+  <div
+    class="flex flex-col items-center justify-center mt-10"
+  >
+    <header
+      class="w-full"
+    >
       <div
-        class="flex flex-col"
-      >
-        <h3
-          class="mx-4 mt-4 font-semibold text-gray-800"
+        class="flex flex-col bg-white mx-4 my-1 py-4 px-2 rounded-2xl shadow-lg"
+      > 
+        <div
+          class="flex flex-col"
         >
-          Quantidade de comentários encontrados: {{ data.length }}
-        </h3>
+          <span
+            class="mx-4 font-semibold text-indigo-700 text-sm"
+          >
+            User: <span class="font-bold text-violet-700 ml-2 text-sm">{{ wUser }}</span>
+          </span>
+          <span
+            class="mx-4 font-semibold text-indigo-700 text-sm"
+          >
+            Capitulo: <span class="font-bold text-violet-700 ml-2 text-sm">{{ title }}</span>
+          </span>
+          
+          <span
+            class="mx-4 font-semibold text-indigo-700 text-sm"
+          >
+            Livro: <span class="font-bold text-violet-700 ml-2 text-sm">{{ bookName }}</span>
+          </span>        
+          <h3
+            class="mx-4  font-semibold text-indigo-700 text-sm"
+          >
+            Comentários: 
+            <span class="font-bold text-violet-700 ml-2 text-sm">{{ data.length }}</span>
+          </h3>
+        </div>
         <span
-          class="mx-4 font-semibold text-gray-800 text-sm"
+          @click="goBack"
+          class="flex items-center justify-start ml-4 mt-6 text-xs text-violet-700 cursor-pointer"
         >
-          Buscou por: <span class="font-bold text-purple-700 ml-2 text-base">{{ propUser ? propUser : wUser }}</span>
-        </span>
-        <span
-          class="mx-4 font-semibold text-gray-800 text-sm"
-        >
-          No capitulo: <span class="font-bold text-purple-700 ml-2 text-base">{{ propTitle }}</span>
+          <Lucide
+            icon="ArrowLeft"
+            class="w-4 h-4"
+          />
+          Voltar para todos capítulos
         </span>
       </div>
     </header>
     <div 
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 p-4"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 p-4"
     >
       <div
         v-if="!isLoading"
@@ -103,17 +120,17 @@ function formatDate(dataISO: string): string {
             class="w-10 h-10 rounded-full object-cover"
           />
           <div>
-            <p class="text-sm font-semibold text-gray-800">
+            <p class="text-sm font-semibold text-fuchsia-800">
               {{ comment.user.name }}
             </p>
-            <p class="text-xs text-gray-500">
+            <p class="text-xs text-violet-800">
               {{ formatDate(comment.created) }}
             </p>
           </div>
         </div>
 
         <!-- Corpo do comentário -->
-        <div class="text-gray-700 text-sm mt-1">
+        <div class="text-gray-600 text-sm mt-1">
           {{ comment.text }}
         </div>
       </div>

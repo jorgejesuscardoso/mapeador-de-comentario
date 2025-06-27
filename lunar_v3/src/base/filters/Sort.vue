@@ -16,6 +16,10 @@ const emit = defineEmits<{
   (e: 'clear'): void;  
 }>();
 
+const props = defineProps<{
+  total: number
+}>();
+
 watch(search, (val) => {
   emit('search:books', val);
 });
@@ -43,13 +47,12 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex items-center justify-between gap-3">
-    <div class="w-11/12 my-3">
+    <div class="w-11/12 mt-3 mb-1">
       <SearchInput
         v-model="search"
-        placeholder="Busque por nome do autor ou livro!"
+        placeholder="Busque por gênero, nome do autor ou livro!"
       />
     </div>
-
     <div    
       ref="filterMenuRef2"
       class="flex items-center justify-end mr-2 cursor-pointer"
@@ -60,13 +63,19 @@ onBeforeUnmount(() => {
         class="text-violet-800"
       />
     </div>
-  </div>
+  </div>  
+	<span
+    class="text-xs text-indigo-700"
+  >
+    Obras encontradas: {{ props.total }}
+  </span>
 
   <!-- Filtros com animação -->
   <transition name="fade-slide">
     <div
       v-show="showFilterMenu"
       ref="filterMenuRef"
+      class="absolute z-50"
     >
       <SearchFilter    
         @filter="handleSortFilter"

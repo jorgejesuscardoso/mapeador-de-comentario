@@ -61,7 +61,7 @@ function handleCapsId(cap: any) {
 
 function handleSearchComments() {
   if (!wUser.value) return alert('Informe o nome do usuário do Wattpad!');
-  router.push({ path: '/bot', query: { id: capsId.value, user: wUser.value, title: capToSearch.value } });
+  router.push({ path: '/comments', query: { id: capsId.value, user: wUser.value, title: capToSearch.value, bookName: book.value.title } });
   showModal.value = false;
 }
 
