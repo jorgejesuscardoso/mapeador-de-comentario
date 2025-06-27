@@ -49,7 +49,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex items-center justify-between gap-3">
-    <div class="w-11/12 mt-3 mb-1">
+    <div class="w-11/12 mt-3 mb-4">
       <SearchInput
         v-model="search"
         placeholder="Busque por gênero, nome do autor ou livro!"
@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
     <div
       v-show="showFilterMenu"
       ref="filterMenuRef"
-      class="absolute z-50"
+      class="absolute z-50 w-full left-0"
     >
       <SearchFilter    
         @filter="handleSortFilter"

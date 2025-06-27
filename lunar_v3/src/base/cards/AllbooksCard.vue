@@ -181,7 +181,7 @@ onMounted(async () => {
 
 
 <template>
-	<div class="mb-2 relative bg-white px-4 py-3 rounded-2xl">
+	<div class="mb-2 relative bg-white px-4 pt-5 pb-3 shadow-lg rounded-xl">
     <Sort 
       @clear="handleClearFilter"
       @search:books="handleSearch"			
@@ -191,7 +191,7 @@ onMounted(async () => {
       :total="filteredData.length"
     />
 </div>
-  <div class="rounded-2xl">
+  <div class="rounded-lg">
 		<div>
 			<div 
 				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-1"
@@ -200,7 +200,7 @@ onMounted(async () => {
 					v-if="!isLoading"
 					v-for="book in filteredData"
 					:key="book.id"
-					class="flex items-center flex-col bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 pt-2 cursor-pointer relative"
+					class="flex items-center flex-col bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 pt-2 cursor-pointer relative"
 					@click="router.push(`/work/${book.id}`)"
 				>
 					<span
