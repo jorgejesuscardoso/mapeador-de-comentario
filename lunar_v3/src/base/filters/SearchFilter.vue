@@ -98,7 +98,7 @@ const handleClearFilter = () => {
 
     <!-- Estilo de Escrita -->
     <div class="mt-8">
-      <h4 class="text-xs font-semibold text-violet-600 mb-2">Filtrar por Estilo de Escrita - <span class="bg-gray-300 px-1.5 py-0.5 rounded-full">Em breve</span></h4>
+      <h4 class="text-xs font-semibold text-violet-600 mb-2">Filtrar por Estilo de Escrita</h4>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="style in styles"
