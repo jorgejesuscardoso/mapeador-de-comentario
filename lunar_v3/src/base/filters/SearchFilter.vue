@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Lucide from '../lucide/Lucide.vue';
 
 const emit = defineEmits<{
@@ -8,6 +8,7 @@ const emit = defineEmits<{
   (e: 'style', style: string): void;
   (e: 'clear'): void;
 }>();
+
 
 const filters = [
   { label: 'Mais votados', icon: 'ThumbsUp', value: 'votes_desc' },
@@ -41,6 +42,7 @@ const handleClearFilter = () => {
   selectedStyle.value = '';
   emit('clear');
 };
+
 </script>
 
 <template>

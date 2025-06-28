@@ -66,30 +66,46 @@ onMounted(async () => {
         class="flex flex-col bg-white mx-4 my-1 py-4 px-2 rounded-xl shadow-lg"
       > 
         <div
-          class="flex flex-col"
+          class="flex flex-col gap-1.5"
         >
           <span
-            class="mx-4 font-semibold text-indigo-800 text-sm"
+            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
           >
-            User: <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ wUser }}</span>
+            <Lucide
+              icon="User"
+              class="mr-1 w-4 h-4"
+            />
+            User: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ wUser }}</span>
           </span>
-          <span
-            class="mx-4 font-semibold text-indigo-800 text-sm"
+           <span
+            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
           >
-            Capitulo: <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ title }}</span>
+            <Lucide
+              icon="File"
+              class="mr-1 w-4 h-4"
+            />
+            Capitulo: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ title }}</span>
           </span>
           
-          <span
-            class="mx-4 font-semibold text-indigo-800 text-sm"
+           <span
+            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
           >
-            Livro: <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ bookName }}</span>
+            <Lucide
+              icon="BookOpen"
+              class="mr-1 w-4 h-4"
+            />
+            Livro: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ bookName }}</span>
           </span>        
-          <h3
-            class="mx-4  font-semibold text-indigo-800 text-sm"
+           <span
+            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
           >
+            <Lucide
+              icon="MessageSquareMore"
+              class="mr-1 w-4 h-4"
+            />
             Comentários: 
-            <span class="font-bold text-fuchsia-600 ml-2 text-sm">{{ data.length }}</span>
-          </h3>
+            <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ data.length }}</span>
+          </span>
         </div>
         <span
           @click="goBack"
