@@ -2,7 +2,7 @@
 import AllbooksCard from '@/base/cards/AllbooksCard.vue';
 import { ref, watch } from 'vue';
 import Header from '@/base/header/Header.vue';
-import Sort from '@/base/filters/Sort.vue';
+import Sort from '@/base/filters/FilterBar.vue';
 import Lucide from '@/base/lucide/Lucide.vue';
 
 const totalBooks = ref(0);
@@ -15,7 +15,7 @@ const scrollToTop = () => {
 
 <template>	
 	<div
-		class="mt-6 p-4 relative"
+		class="mt-1.5 p-4 relative"
 	>
 		<Header>
 		</Header>

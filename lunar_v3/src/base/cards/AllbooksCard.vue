@@ -4,8 +4,9 @@ import { ref, onMounted, watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { mockUser } from './mock';
 import LoadCard from '../loading/LoadCard.vue';
-import Sort from '../filters/Sort.vue';
+import FilterBar from '../filters/FilterBar.vue';
 import { bookCache } from './BookCache';
+import Lucide from '../lucide/Lucide.vue';
 
 interface booksData {
   caps: [];
@@ -34,7 +35,9 @@ const searchFilter = reactive({
   genre: '',
   style: ''
 })
+
 const sortType = ref('');
+const showFilterBar = ref(false)
 
 const router = useRouter();
 const emit = defineEmits<{
@@ -181,8 +184,26 @@ onMounted(async () => {
 
 
 <template>
-	<div class="mb-2 relative bg-white px-4 pt-5 pb-3 shadow-lg rounded-xl">
-    <Sort 
+  <div
+    
+    class="flex bg-white w-fit p-2 mb-2 shadow-xl rounded-lg"
+  >
+    <Lucide 
+      icon="ListFilter"
+      class="cursor-pointer text-violet-700 w-5 h-5"
+      @click="showFilterBar = !showFilterBar"
+    />
+    <Lucide 
+      :icon="showFilterBar ? 'ChevronDown' : 'ChevronUp'"
+      class="cursor-pointer text-violet-700 w-5 h-5"
+      @click="showFilterBar = !showFilterBar"
+    />
+  </div>
+	<div
+    v-if="showFilterBar"
+    class="mb-2 relative bg-white px-4 pt-5 pb-3 shadow-lg rounded-xl"
+  >
+    <FilterBar 
       @clear="handleClearFilter"
       @search:books="handleSearch"			
       @filters:genre="handleGenreFilter"
@@ -190,6 +211,7 @@ onMounted(async () => {
       @filters:style="handleStyleFilter"
       :total="filteredData.length"
     />
+
 </div>
   <div class="rounded-lg">
 		<div>
