@@ -22,7 +22,7 @@ const scrollToTop = () => {
 
 
 		<div
-			class="pb-6 w-full"
+			class="lg:mt-10 pb-6 w-full"
 		>
 			<AllbooksCard
 				@update-length="totalBooks = $event"
