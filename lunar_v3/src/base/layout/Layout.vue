@@ -163,7 +163,9 @@ onUnmounted(() => {
 			</div>
 
 			<!-- Mobile Nav -->
-			<div class="lg:hidden w-full bg-slate-900 text-white fixed top-0 left-0 z-20 border-b-2 border-fuchsia-300">
+			<div class="lg:hidden w-full bg-slate-900 text-white fixed top-0 left-0 z-20"
+				:class="{'border-b-2 border-fuchsia-300': menuOpen, 'border-0':!menuOpen}"
+			>
 				<div class="flex items-center justify-between p-4">
 					<h1 class="text-base font-semibold whitespace-nowrap">
 						Projeto Lunar
