@@ -185,18 +185,16 @@ onMounted(async () => {
 
 <template>
   <div
-    
-    class="flex bg-white w-fit p-2 mb-2 shadow-xl rounded-lg"
+    @click="showFilterBar = !showFilterBar"    
+    class="flex bg-white w-fit p-2 mb-2 shadow-xl rounded-lg cursor-pointer"
   >
     <Lucide 
       icon="ListFilter"
-      class="cursor-pointer text-violet-700 w-5 h-5"
-      @click="showFilterBar = !showFilterBar"
+      class="text-violet-700 w-3 h-3"
     />
     <Lucide 
-      :icon="showFilterBar ? 'ChevronDown' : 'ChevronUp'"
-      class="cursor-pointer text-violet-700 w-5 h-5"
-      @click="showFilterBar = !showFilterBar"
+      :icon="!showFilterBar ? 'ChevronDown' : 'ChevronUp'"
+      class="text-violet-700 w-3 h-3"
     />
   </div>
 	<div

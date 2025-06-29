@@ -151,7 +151,7 @@ function getFilterLabel(filter: any): string {
         >
           <Lucide 
             icon="ListFilterPlus"
-            class="text-violet-800"
+            class="text-violet-800 w-5 h-5"
           />
         </div>
       </div>
@@ -185,7 +185,7 @@ function getFilterLabel(filter: any): string {
     class="flex item items-center justify-start gap-1 text-xs text-indigo-700"
   >
     <Lucide
-      icon="BookOpen"
+      icon="BookOpenText"
       class="w-3 h-3"
     />
     Obras encontradas: {{ props.total }}
