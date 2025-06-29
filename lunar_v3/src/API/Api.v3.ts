@@ -40,7 +40,7 @@ export const getComments = async (wUser: string, wUrl: string) => {
 
 export const getBooks = async (id: string) => {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 40000); // 40 segundos
+  const timeout = setTimeout(() => controller.abort(), 15000); // 40 segundos
 
   const url = `${endPoint}/getBooks/${id}`;
 
