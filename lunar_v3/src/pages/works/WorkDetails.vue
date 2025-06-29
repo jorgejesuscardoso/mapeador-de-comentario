@@ -77,7 +77,7 @@ function formatDate(dateStr: string) {
 </script>
 
 <template>
-  <div class="lg:p-6 mx-auto">
+  <div class="lg:p-6 mx-auto mt-3">
     <LoadCard v-if="isLoading" />
 
     <div v-else-if="book" class="bg-white rounded">
