@@ -47,6 +47,7 @@ onMounted(async () => {
   isLoading.value = true;
   book.value = await getBooks(id);
   isLoading.value = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 });
 
 
@@ -87,8 +88,8 @@ function formatDate(dateStr: string) {
           alt="Capa do livro"
           class="lg:w-60 h-2/3"
         />
-        <div class="lg:px-6 flex-1">
-          <div class="flex justify-between items-start">
+        <div class="lg:px-6 flex-1 my-4">
+          <div class="flex justify-between items-center">
             <h1 class="text-3xl font-bold text-gray-800">
               {{ book.title }}
             </h1>
@@ -131,7 +132,7 @@ function formatDate(dateStr: string) {
             </span>
           </div>
 
-          <div class="mt-6 text-sm text-gray-500">
+          <div class="mt-6 text-sm font-semibold text-fuchsia-500">
             Criado em: {{ formatDate(book.createdAt) }}<br />
             Leitura total: {{ book.readTotal }}<br />
             Autor: {{ book.user?.name || 'Desconhecido' }}
@@ -156,7 +157,7 @@ function formatDate(dateStr: string) {
       <div v-if="book?.caps?.length" class="p-2 lg:px-10 pb-5">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Capítulos</h2>
 
-        <ul class="divide-y divide-gray-200 rounded-lg overflow-hidden shadow-md border border-gray-300">
+        <ul class="divide-y divide-gray-300 rounded overflow-hidden shadow-md border border-gray-300">
           <li
             v-for="cap in book.caps as capsData[]"
             :key="cap.url"
