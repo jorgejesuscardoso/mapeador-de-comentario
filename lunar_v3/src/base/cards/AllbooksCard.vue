@@ -210,7 +210,7 @@ onMounted(async () => {
       :total="filteredData.length"
     />
   </div>
-  <div class="flex items-center justify-center bg-white w-full rounded-lg">
+  <div class="flex items-center justify-center w-full rounded-lg">
 		<div>
 			<div 
 				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-1"
