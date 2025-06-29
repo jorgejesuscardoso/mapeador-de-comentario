@@ -77,7 +77,7 @@ function formatDate(dateStr: string) {
 </script>
 
 <template>
-  <div class="p-6 mx-auto">
+  <div class="lg:p-6 mx-auto">
     <LoadCard v-if="isLoading" />
 
     <div v-else-if="book" class="bg-white rounded">
@@ -85,9 +85,9 @@ function formatDate(dateStr: string) {
         <img
           :src="book.cover"
           alt="Capa do livro"
-          class="w-60 h-2/3"
+          class="lg:w-60 h-2/3"
         />
-        <div class="p-6 flex-1">
+        <div class="lg:p-6 flex-1">
           <div class="flex justify-between items-start">
             <h1 class="text-3xl font-bold text-gray-800">
               {{ book.title }}
@@ -104,7 +104,7 @@ function formatDate(dateStr: string) {
             {{ book.describe }}
           </p>
 
-          <div class="mt-4 flex gap-2 text-sm">
+          <div class="mt-4 flex flex-wrap gap-2 text-sm">
             <span
               :class="book.mature ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'"
               class="px-2 py-1 rounded-full font-semibold"
@@ -153,7 +153,7 @@ function formatDate(dateStr: string) {
         </div>
       </div>
 
-      <div v-if="book?.caps?.length" class="px-10 pb-5">
+      <div v-if="book?.caps?.length" class="p-2 lg:px-10 pb-5">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Capítulos</h2>
 
         <ul class="divide-y divide-gray-200 rounded-lg overflow-hidden shadow-md border border-gray-300">
