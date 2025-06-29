@@ -64,7 +64,7 @@ const handleToTop = () => {
 								Home
 							</RouterLink>
 						</li>
-						<li>
+						<!-- <li>
 							<RouterLink 
 								to="/bot"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
@@ -80,7 +80,7 @@ const handleToTop = () => {
 								/>
 								Robozinho
 							</RouterLink>
-						</li>
+						</li> -->
 						<li>
 							<RouterLink 
 								to=""
