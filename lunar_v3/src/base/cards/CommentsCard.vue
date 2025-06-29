@@ -72,7 +72,7 @@ onMounted(async () => {
             class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
           >
             <Lucide
-              icon="User"
+              icon="UserCircle"
               class="mr-1 w-4 h-4"
             />
             User: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ wUser }}</span>
@@ -81,7 +81,7 @@ onMounted(async () => {
             class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
           >
             <Lucide
-              icon="File"
+              icon="FileText"
               class="mr-1 w-4 h-4"
             />
             Capitulo: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ title }}</span>
@@ -91,7 +91,7 @@ onMounted(async () => {
             class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
           >
             <Lucide
-              icon="BookOpen"
+              icon="BookOpenText"
               class="mr-1 w-4 h-4"
             />
             Livro: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ bookName }}</span>
