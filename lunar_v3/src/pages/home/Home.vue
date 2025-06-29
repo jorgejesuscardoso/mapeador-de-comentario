@@ -15,14 +15,14 @@ const scrollToTop = () => {
 
 <template>	
 	<div
-		class="lg:mt-1.5 lg:p-4 relative"
+		class="mt-5 lg:mt-1.5 relative w-screen flex items-center justify-center"
 	>
 		<Header>
 		</Header>
 
 
 		<div
-			class="pb-6"
+			class="pb-6 w-full"
 		>
 			<AllbooksCard
 				@update-length="totalBooks = $event"

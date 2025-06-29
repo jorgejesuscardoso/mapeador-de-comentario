@@ -250,7 +250,7 @@ onUnmounted(() => {
 			</div>
 
 			<main
-				class="lg:w-10/12 z-0 px-4 lg:p-0 mt-12 lg:mt-0"
+				class="flex w-full items-center justify-center lg:w-10/12 z-0 px-4 lg:p-0 mt-12 lg:mt-0"
 			>
 				<router-view />
 			</main>
