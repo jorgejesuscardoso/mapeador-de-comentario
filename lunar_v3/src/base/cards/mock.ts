@@ -154,7 +154,12 @@ export const mockUser = [
   {
     name:'The Hell', 
     autor:'Four_Craft', 
-    link:'393422239'
+    id:'393422239'
+  },
+  {
+    name: 'O Pintor', 
+    autor: 'Yumi-PSI',
+    id: '394009247'
   },
 
 ]
