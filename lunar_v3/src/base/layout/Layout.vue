@@ -7,8 +7,7 @@ import Lucide from '../lucide/Lucide.vue'
 const route = useRoute();
 
 const isLogged = ref(true)
-const isAdmin = ref(true)
-
+const isAdmin = ref(false)
 const handleToTop = () => {
     window.scrollTo({
         top: 0,
@@ -64,7 +63,9 @@ const handleToTop = () => {
 								Home
 							</RouterLink>
 						</li>
-						<!-- <li>
+						<li
+							v-if="isAdmin"
+						>
 							<RouterLink 
 								to="/bot"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
@@ -80,7 +81,7 @@ const handleToTop = () => {
 								/>
 								Robozinho
 							</RouterLink>
-						</li> -->
+						</li>
 						<li>
 							<RouterLink 
 								to=""
