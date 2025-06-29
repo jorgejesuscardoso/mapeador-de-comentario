@@ -108,12 +108,12 @@ export const mockUser = [
   {
     name: 'Lunatharic — O Trono Que Sangra',
     autor: 'Kauã Falcão',
-    link:'390454326'
+    id:'390454326'
   },
   {
     name:'Série: A Substituta - Possessivo Amor',
     autor:'Aydra',
-    link: '394543996'
+    id: '394543996'
   },
 
  {
@@ -149,36 +149,6 @@ export const mockUser = [
   {
     name: 'Raizen Renji',
     autor: 'IzaroStar',
-    link: '388548316'
-  },
- {
-    name:'',
-    autor:'',
-    id:''
-  },
- {
-    name:'',
-    autor:'',
-    id:''
-  },
- {
-    name:'',
-    autor:'',
-    id:''
-  },
- {
-    name:'',
-    autor:'',
-    id:''
-  },
- {
-    name:'',
-    autor:'',
-    id:''
-  },
- {
-    name:'',
-    autor:'',
-    id:''
+    id: '388548316'
   },
 ]
