@@ -52,19 +52,12 @@ const filteredData = ref<booksData[]>([]);
 
 
 setInterval(async () => {
-  for (const book of mockUser) {
-    const result = await getBooks(book.id);
-
-    const index = data.value.findIndex((item) => item.id === result.id);
-
-    if (index !== -1) {
-      
-      data.value.splice(index, 1, result);
-    } else {
-      
-      data.value.push(result);
-    }
-  }
+  const books = await fetchBooks();
+    data.value = books;
+    filteredData.value = [...books];
+    bookCache.books = books;
+    emit('update-length', books.length);
+  
 }, 60 * 10 * 1000); 
 
 watch(

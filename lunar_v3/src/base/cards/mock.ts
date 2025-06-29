@@ -187,9 +187,14 @@ export const mockUser = [
     id: '371952658'
   },
   {
-    name: '', 
-    autor: '',
-    id: ''
-  }
+    name:'Diário de uma sobrevivente', 
+    autor:'Dayna-san', 
+    link:'392961889',
+  },
+  {
+    name:'Pertencendo ao mesmo universo', 
+    autor:'Ajieshy', 
+    link:'386834599',
+  },
 
 ]
