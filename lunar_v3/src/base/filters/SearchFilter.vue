@@ -49,7 +49,7 @@ const handleClearFilter = () => {
   <div class="w-full bg-white rounded-xl shadow p-4 border border-violet-200 mt-4">
     <!--Limpar filtros-->
     <div
-      class="absolute top-4 right-4"
+      class="absolute top-6 lg:top-4 lg:right-4"
     >
       <button
         @click="handleClearFilter"
@@ -63,20 +63,20 @@ const handleClearFilter = () => {
       </button>
     </div>
     <!-- Filtros principais -->
-    <div class="grid grid-cols-[auto_auto] grid-rows-3 gap-2 mb-4 w-10/12 pr-8">
-    <button
-      v-for="f in filters"
-      :key="f.value"
-      @click="() => { selectedFilter = f.value; emit('filter', f.value); }"
-      :class="[ 
-        'flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all',
-        selectedFilter === f.value ? 'bg-violet-500 text-white' : 'hover:bg-violet-100 text-violet-800'
-      ]"
-    >
-    <Lucide :icon="f.icon" class="w-4 h-4" />
-    <span>{{ f.label }}</span>
-  </button>
-</div>
+    <div class="grid grid-cols-2 lg:grid-cols-[auto_auto] grid-rows-auto lg:grid-rows-3 gap-2 mb-4 w-full lg:w-10/12 lg:pr-8 mt-10">
+      <button
+        v-for="f in filters"
+        :key="f.value"
+        @click="() => { selectedFilter = f.value; emit('filter', f.value); }"
+        :class="[ 
+          'flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-all',
+          selectedFilter === f.value ? 'bg-violet-500 text-white' : 'hover:bg-violet-100 text-violet-800'
+        ]"
+      >
+        <Lucide :icon="f.icon" class="w-4 h-4" />
+        <span>{{ f.label }}</span>
+      </button>
+    </div>
 
     <!-- Gêneros -->
     <div>
