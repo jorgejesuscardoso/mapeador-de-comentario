@@ -185,6 +185,11 @@ export const mockUser = [
     name: 'Angel', 
     autor: 'AnnaViih23',
     id: '371952658'
+  },
+  {
+    name: '', 
+    autor: '',
+    id: ''
   }
 
 ]
