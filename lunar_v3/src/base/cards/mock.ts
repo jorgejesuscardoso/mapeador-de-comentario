@@ -160,6 +160,31 @@ export const mockUser = [
     name: 'O Pintor', 
     autor: 'Yumi-PSI',
     id: '394009247'
+  },  
+  {
+    name: 'HERDEIRO DA RUPTURA', 
+    autor: 'NIMEPLEX',
+    id: '396090059'
   },
+  {
+    name:'Despertar',
+    autor:'Emmy_ily ',
+    id:'396233717'
+  }, 
+  {
+    name:'Julia, a pequena gata branca',
+    autor:'mariajuliamartins22',
+    id:'394770031'
+  },
+  {
+    name:'Aetheris: Desatino - Livro 1',
+    autor:'Mih2110',
+    id:'389532147'
+  },
+  {
+    name: 'Angel', 
+    autor: 'AnnaViih23',
+    id: '371952658'
+  }
 
 ]

@@ -51,10 +51,10 @@ onUnmounted(() => {
 			class="flex items-center justify-end"
 		>
 			<div
-				class="hidden lg:flex w-2/12 h-full mt-1 fixed top-10 left-0"
+				class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0"
 			>
 				<nav
-					class="rounded-2xl bg-white p-4 h-[90vh]"
+					class="rounded-2xl bg-white p-4 min-w-52 h-[90vh]"
 				>
 					<ul
 						class="flex flex-col w-full gap-1 text-violet-700 text-sm font-semibold"

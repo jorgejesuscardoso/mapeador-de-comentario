@@ -77,7 +77,7 @@ function formatDate(dateStr: string) {
 </script>
 
 <template>
-  <div class="lg:p-6 mx-auto mt-3">
+  <div class="lg:p-6 mx-auto mt-3 lg:mt-4">
     <LoadCard v-if="isLoading" />
 
     <div v-else-if="book" class="bg-white rounded">
@@ -87,7 +87,7 @@ function formatDate(dateStr: string) {
           alt="Capa do livro"
           class="lg:w-60 h-2/3"
         />
-        <div class="lg:p-6 flex-1">
+        <div class="lg:px-6 flex-1">
           <div class="flex justify-between items-start">
             <h1 class="text-3xl font-bold text-gray-800">
               {{ book.title }}
