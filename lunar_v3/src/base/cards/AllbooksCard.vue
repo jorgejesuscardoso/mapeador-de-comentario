@@ -114,12 +114,24 @@ watch(
 
 
 async function fetchBooks() {
-  const books: booksData[] = [];
-  for (const book of mockUser) {
-    const result = await getBooks(book.id);
-    books.push(result);
+  try {
+    const results = await Promise.allSettled(
+      mockUser.map(book => getBooks(book.id))
+    );
+
+    const successfulBooks = results
+      .map((result, i) => {
+        if (result.status === 'fulfilled') return result.value;
+        console.warn(`Erro ao buscar o livro com ID ${mockUser[i].id}:`, result.reason);
+        return null;
+      })
+      .filter(Boolean) as booksData[];
+
+    return successfulBooks;
+  } catch (err) {
+    console.error("Erro inesperado ao buscar livros:", err);
+    return [];
   }
-  return books;
 }
 
 
@@ -161,23 +173,24 @@ const handleStyleFilter = (s: string) => {
 onMounted(async () => {
   isLoading.value = true;
 
-  // Se já houver cache, usa ele
-  if (bookCache.books && bookCache.books.length > 0) {
-		data.value = bookCache.books;
-		filteredData.value = [...bookCache.books];
-		isLoading.value = false;
-		emit('update-length', bookCache.books.length);
-		return;
-	}
+  try {
+    if (bookCache.books && bookCache.books.length > 0) {
+      data.value = bookCache.books;
+      filteredData.value = [...bookCache.books];
+      emit('update-length', bookCache.books.length);
+      return;
+    }
 
-
-  // Senão, busca os dados e salva no cache
-  const books = await fetchBooks();
-  data.value = books;
-  filteredData.value = [...books];  
-	bookCache.books = books; // ✅ salva no cache
-  isLoading.value = false;
-  emit('update-length', books.length);
+    const books = await fetchBooks();
+    data.value = books;
+    filteredData.value = [...books];
+    bookCache.books = books;
+    emit('update-length', books.length);
+  } catch (e) {
+    console.error("Erro ao montar componente de livros:", e);
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 </script>

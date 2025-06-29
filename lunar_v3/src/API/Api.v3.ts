@@ -39,28 +39,25 @@ export const getComments = async (wUser: string, wUrl: string) => {
 }
 
 export const getBooks = async (id: string) => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 180000); // 40s timeout    
-    const url = `${endPoint}/getBooks/${id}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 40000); // 40 segundos
 
-    try {
-        const response = await axios(url, {
-            method: 'GET',
-            headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-            }
-        });
+  const url = `${endPoint}/getBooks/${id}`;
 
-        if (!response) {
-            throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      signal: controller.signal, // ✅ isso ativa o AbortController
+    });
 
-        const data = await response.data;
-        return data;
-    } catch (err) {
-        return (err || "Erro ao buscar livros.");
-    } finally {
-        clearTimeout(timeout);
-    }
-}
+    return response.data;
+  } catch (err) {
+    // ✅ lança o erro para que possa ser tratado por Promise.allSettled corretamente
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
