@@ -209,8 +209,7 @@ onMounted(async () => {
       @filters:style="handleStyleFilter"
       :total="filteredData.length"
     />
-
-</div>
+  </div>
   <div class="rounded-lg">
 		<div>
 			<div 
@@ -221,7 +220,6 @@ onMounted(async () => {
 					v-for="book in filteredData"
 					:key="book.id"
 					class="flex items-center flex-col bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 pt-2 cursor-pointer relative"
-					@click="router.push(`/work/${book.id}`)"
 				>
 					<span
 						class="absolute top-4 left-2 text-xs font-semibold"
@@ -235,7 +233,8 @@ onMounted(async () => {
 					<img
 						:src="book.cover"
 						alt="Book cover"
-						class="w-44 h-60 object-cover"
+						class="w-44 h-60 object-cover"          
+					  @click="router.push(`/work/${book.id}`)"
 					/>
 					<span
 						v-if="book.completed"
@@ -245,7 +244,10 @@ onMounted(async () => {
 					</span>
 
 					<div class="px-4 py-2 flex flex-col justify-between items-start h-full w-full">
-						<h2 class="text-base font-semibold text-gray-800 line-clamp-1">
+						<h2 
+              class="text-base font-semibold text-gray-800 line-clamp-1"            
+					    @click="router.push(`/work/${book.id}`)"
+            >
 							{{ book.title }}
 						</h2>
 						<span class="text-xs font-semibold text-fuchsia-600 line-clamp-1">Autor(a): <span>@{{ book.user.userName }}</span></span>
