@@ -40,7 +40,7 @@ const showModal = ref(false)
 const capsId = ref('');
 const wUser = ref('');
 const capToSearch = ref('')
-
+const isAdm = ref(false)
 
 onMounted(async () => {
   const id = route.params.id as string;
@@ -152,6 +152,7 @@ function formatDate(dateStr: string) {
           </div>
         </div>
       </div>
+
       <div v-if="book?.caps?.length" class="px-10 pb-5">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Capítulos</h2>
 
@@ -182,7 +183,7 @@ function formatDate(dateStr: string) {
 
         <!--modal-->
         <div
-          v-if="showModal"
+          v-if="showModal && isAdm"
           class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
         >
           <div class="bg-white w-[90%] max-w-md rounded-xl shadow-xl p-6 border border-gray-200">
