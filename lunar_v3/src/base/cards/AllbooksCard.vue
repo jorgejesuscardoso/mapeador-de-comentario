@@ -45,7 +45,11 @@ const emit = defineEmits<{
 }>();
 
 const isAdm = ref()
+const retrying = ref(false);
+const fetchError = ref(false);
 const isLoading = ref(false)
+const permanentFailure = ref(false);
+
 
 const data = ref<booksData[]>([]);
 const filteredData = ref<booksData[]>([]);
@@ -165,24 +169,51 @@ const handleStyleFilter = (s: string) => {
 
 onMounted(async () => {
   isLoading.value = true;
+  fetchError.value = false;
+  retrying.value = false;
 
   try {
+    // Usa cache se já tiver
     if (bookCache.books && bookCache.books.length > 0) {
       data.value = bookCache.books;
       filteredData.value = [...bookCache.books];
       emit('update-length', bookCache.books.length);
+      isLoading.value = false;
       return;
     }
 
-    const books = await fetchBooks();
+    const timeoutLimit = 50000; // 50 segundos
+    const retryInterval = 5000; // 5 segundos
+
+    const startTime = Date.now();
+    let books: booksData[] = [];
+
+    while ((Date.now() - startTime) < timeoutLimit && books.length === 0) {
+      books = await fetchBooks();
+
+      if (books.length > 0) break;
+
+      retrying.value = true;
+      fetchError.value = true;
+
+      await new Promise(res => setTimeout(res, retryInterval));
+    }
+
     data.value = books;
     filteredData.value = [...books];
     bookCache.books = books;
     emit('update-length', books.length);
+
+    // Se mesmo após o tempo ainda não obteve dados
+    if (books.length === 0) {
+      permanentFailure.value = true;
+    }
   } catch (e) {
     console.error("Erro ao montar componente de livros:", e);
+    fetchError.value = true;
   } finally {
     isLoading.value = false;
+    retrying.value = false;
   }
 });
 
@@ -274,8 +305,31 @@ onMounted(async () => {
 
 			</div>
 		</div>
-		<LoadCard 
-			v-if="isLoading"
-		/>
+		<div
+      class="flex flex-col items-center justify-center h-[50vh]"
+    >
+      <LoadCard 
+        v-if="isLoading"
+      />
+      <div
+        v-if="fetchError && retrying"
+        class="text-center text-sm mt-4 text-red-500 max-w-[300px] mx-auto bg-red-100 p-3 rounded"
+      >
+        Falha ao obter dados. Re-tentando conexão com o servidor...
+        <br />
+        Isso pode levar até 50 segundos.
+      </div>
+
+      <div
+        v-if="permanentFailure"
+        class="text-center text-sm text-red-600 mt-4 max-w-[300px] mx-auto bg-red-100 p-3 rounded-lg"
+      >
+        Não foi possível carregar nenhum livro após múltiplas tentativas.
+        <br />
+        Verifique sua conexão ou entre em contato com o desenvolvedor para suporte.
+      </div>
+
+    </div>
 	</div>
+
 </template>
