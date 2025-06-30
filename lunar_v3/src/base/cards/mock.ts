@@ -189,27 +189,27 @@ export const mockUser = [
   {
     name:'Diário de uma sobrevivente', 
     autor:'Dayna-san', 
-    link:'392961889',
+    id:'392961889',
   },
   {
     name:'Pertencendo ao mesmo universo', 
     autor:'Ajieshy', 
-    link:'386834599',
+    id:'386834599',
   },  
   {
     name:'O que há para ver?', 
     autor:'Lunes_Serpens', 
-    link:'377157634',
+    id:'377157634',
   },
   {
     name:'Segredos em Cinzas', 
     autor:'JulianaFerreira125', 
-    link:'392166076',
+    id:'392166076',
   },
   {
     name:'But Daddy I Love Him', 
     autor:'little_krystal', 
-    link:'388947761',
+    id:'388947761',
   },
 
 ]
