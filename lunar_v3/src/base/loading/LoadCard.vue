@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-screen">
+  <div class="flex justify-center items-center">
     <svg
       class="animate-spin h-10 w-10 text-indigo-600"
       xmlns="http://www.w3.org/2000/svg"

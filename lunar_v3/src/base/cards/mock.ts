@@ -195,6 +195,16 @@ export const mockUser = [
     name:'Pertencendo ao mesmo universo', 
     autor:'Ajieshy', 
     link:'386834599',
+  },  
+  {
+    name:'O que há para ver?', 
+    autor:'Lunes_Serpens', 
+    link:'377157634',
+  },
+  {
+    name:'Segredos em Cinzas', 
+    autor:'JulianaFerreira125', 
+    link:'392166076',
   },
 
 ]
