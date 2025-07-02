@@ -154,77 +154,86 @@ onMounted(async () => {
 
 <template>
   <div
-    class="flex flex-col items-center min-w-full justify-center mt-10"
+    class="flex flex-col items-center min-w-full justify-center mt-4 lg:mt-10"
   >
     <header
       class="w-full"
     >
       <div
-        class="flex flex-col bg-white mx-4 my-1 py-4 px-2 rounded-xl shadow-lg"
+        class="flex flex-col bg-white sm:mx-4 my-1 py-4 px-2 rounded-xl shadow-lg"
       > 
         <div
-          class="grid grid-cols-2 w-full"
+          class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-0 w-full"
         >
+          
           <div
-            class="flex flex-col gap-1.5"
+            class="px-4"
           >
-            <span
-              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
+            <h3 class="font-semibold text-violet-800 text-sm">Detalhes do capítulo</h3>
+          
+            <div
+              class="flex flex-col items-start gap-1.5 mt-2"
             >
-              <Lucide
-                icon="UserCircle"
-                class="mr-1 w-4 h-4"
-              />
-              User: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ wUser }}</span>
-            </span>
-            <span
-              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
-            >
-              <Lucide
-                icon="FileText"
-                class="mr-1 w-4 h-4"
-              />
-              Capitulo: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ title }}</span>
-            </span>
-            
-            <span
-              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
-            >
-              <Lucide
-                icon="BookOpenText"
-                class="mr-1 w-4 h-4"
-              />
-              Livro: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ bookName }}</span>
-            </span>
+              <div
+                class="flex flex-wrap items-center justify-start font-semibold text-indigo-800 text-xs"
+              >
+                <Lucide
+                  icon="UserCircle"
+                  class="mr-1 w-4 h-4"
+                />
+                User: <span class="font-bold text-fuchsia-600 ml-0.5 text-xs">{{ wUser }}</span>
+              </div>
+              <div
+                class="flex items-center justify-start flex-wrap sm font-semibold text-indigo-800 text-xs text-wrap"
+              >
+                <Lucide
+                  icon="FileText"
+                  class="mr-1 w-4 h-4"
+                />
+                Capítulo: <span class="font-bold text-fuchsia-600 ml-0.5 text-xs text-wrap">{{ title }}</span>
+              </div>
+              
+              <div
+                class="flex flex-wrap items-center justify-start font-semibold text-indigo-800 text-xs"
+              >
+                <Lucide
+                  icon="BookOpenText"
+                  class="mr-1 w-4 h-4"
+                />
+                Livro: <span class="font-bold text-fuchsia-600 ml-0.5 text-xs">{{ bookName }}</span>
+            </div>
 
-            <span
-              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
-            >
-              <Lucide
-                icon="AlignLeft"
-                class="mr-1 w-4 h-4"
-              />
-              Qtd. parágrafos: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ qtdParagraph }}</span>
-            </span> 
+              <span
+                class="flex items-center justify-start font-semibold text-indigo-800 text-xs"
+              >
+                <Lucide
+                  icon="AlignLeft"
+                  class="mr-1 w-4 h-4"
+                />
+                Parágrafos: <span class="font-bold text-fuchsia-600 ml-0.5 text-xs">{{ qtdParagraph }}</span>
+              </span> 
 
-            <span
-              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
-            >
-              <Lucide
-                icon="MessageSquareMore"
-                class="mr-1 w-4 h-4"
-              />
-              Comentários: 
-              <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ data.length }}</span>
-            </span>
+              <span
+                class="flex items-center justify-start font-semibold text-indigo-800 text-xs"
+              >
+                <Lucide
+                  icon="MessageSquareMore"
+                  class="mr-1 w-4 h-4"
+                />
+                Comentários: 
+                <span class="font-bold text-fuchsia-600 ml-0.5 text-xs">{{ data.length }}</span>
+              </span>
+            </div>
           </div>
 
           
-          <div>
-            <ul class="text-sm text-gray-800 ml-4 mt-2">
-              <li class="font-semibold text-violet-800">Distribuição dos comentários:</li>
-              <li v-for="(count, label) in paragraphStats" :key="label">
-                {{ label }}: <span class="font-bold text-pink-600">{{ count }}</span> comentário(s)
+          <div
+            class="w-full px-4 sm:px-0"
+          >
+          <h3 class="font-semibold text-violet-800 text-sm mt-4 sm:mt-0">Distribuição dos comentários:</h3>
+            <ul class="text-sm text-gray-800 mt-2 ">
+              <li v-for="(count, label) in paragraphStats" :key="label" class="text-indigo-800">
+                {{ label }}: <span class="font-bold text-pink-600">{{ count }}</span> comentário{{ count > 0 ? 's' : '' }}
               </li>
             </ul>
           </div>
@@ -255,8 +264,9 @@ onMounted(async () => {
         </div>
       </div>
     </header>
+
     <div 
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 p-4 min-w-full"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 mt-4 sm:p-4 min-w-full"
     >
       <div
         v-if="!isLoading"
