@@ -6,7 +6,7 @@ import axios from 'axios';
 const endPoint = UrlBase.render;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
-const pUrl = 'http://localhost:6060/paragraphs/'
+const pUrl = `${endPoint}/paragraphs/`
 
 export const getComments = async (wUser: string, wUrl: string) => {
     const controller = new AbortController();
