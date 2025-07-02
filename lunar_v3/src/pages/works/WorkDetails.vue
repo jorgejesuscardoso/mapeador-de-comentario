@@ -40,7 +40,7 @@ const showModal = ref(false)
 const capsId = ref('');
 const wUser = ref('');
 const capToSearch = ref('')
-const isAdm = ref(false)
+const isAdm = ref(true)
 
 onMounted(async () => {
   const id = route.params.id as string;
@@ -75,6 +75,14 @@ function formatDate(dateStr: string) {
     year: 'numeric',
   });
 }
+
+
+
+
+
+
+
+
 </script>
 
 <template>

@@ -6,7 +6,7 @@ import axios from 'axios';
 const endPoint = UrlBase.render;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
-
+const pUrl = 'http://localhost:6060/paragraphs/'
 
 export const getComments = async (wUser: string, wUrl: string) => {
     const controller = new AbortController();
@@ -30,7 +30,6 @@ export const getComments = async (wUser: string, wUrl: string) => {
         if (!response.ok) {
             throw new Error(`Erro ${response.status}: ${response.statusText}`);
         }
-
         const data = await response.json();
         return data;
     } catch (err) {
@@ -52,10 +51,24 @@ export const getBooks = async (id: string) => {
       },
       signal: controller.signal, // ✅ isso ativa o AbortController
     });
-
     return response.data;
   } catch (err) {
     // ✅ lança o erro para que possa ser tratado por Promise.allSettled corretamente
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+export const getParagraph = async (id: string) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const res = await fetch(`${pUrl}${id}`);    
+    const html = await res.text();
+    return html; // Deve ser string com <p>
+  } catch (err) {
     throw err;
   } finally {
     clearTimeout(timeout);
