@@ -16,8 +16,8 @@ const props = defineProps({
     default: 2
   },
   class: {
-    type: String,
-    default: ''
+  type: [String, Object, Array],
+  default: ''
   }
 });
 

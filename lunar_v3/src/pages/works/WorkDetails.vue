@@ -29,7 +29,8 @@ interface capsData {
   thumb: string,
   title: string,
   url: string,
-  votes: number
+  votes: number,
+  length: number
 }
 
 const route = useRoute();
@@ -40,6 +41,7 @@ const showModal = ref(false)
 const capsId = ref('');
 const wUser = ref('');
 const capToSearch = ref('')
+const length = ref(0)
 const isAdm = ref(true)
 
 onMounted(async () => {
@@ -50,6 +52,9 @@ onMounted(async () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 });
 
+const handleGetLength = (n: number) => {
+  length.value = n
+}
 
 function handleCapsId(cap: any) {
   const getUrl = cap.url;
@@ -62,7 +67,7 @@ function handleCapsId(cap: any) {
 
 function handleSearchComments() {
   if (!wUser.value) return alert('Informe o nome do usuário do Wattpad!');
-  router.push({ path: '/comments', query: { id: capsId.value, user: wUser.value, title: capToSearch.value, bookName: book.value.title } });
+  router.push({ path: '/comments', query: { id: capsId.value, user: wUser.value, title: capToSearch.value, bookName: book.value.title, length: length.value } });
   showModal.value = false;
 }
 
@@ -75,12 +80,6 @@ function formatDate(dateStr: string) {
     year: 'numeric',
   });
 }
-
-
-
-
-
-
 
 
 </script>
@@ -170,7 +169,7 @@ function formatDate(dateStr: string) {
             v-for="cap in book.caps as capsData[]"
             :key="cap.url"
             class="px-4 py-2 hover:bg-gray-50 cursor-pointer transition relative"
-            @click="handleCapsId(cap)"
+            @click="{ handleCapsId(cap); handleGetLength(cap.length)}"
           >
             <div class="flex justify-between items-center">
               <div>
