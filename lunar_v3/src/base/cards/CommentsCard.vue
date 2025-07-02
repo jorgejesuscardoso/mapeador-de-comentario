@@ -244,7 +244,7 @@ onMounted(async () => {
           class="w-full px-6 mt-6"
         >
           <button
-            class="text-pink-600 cursor-pointer border border-fuchsia-500 px-4 py-1 rounded-lg"
+            class="text-fuchsia-600 cursor-pointer border border-purple-500 px-4 py-1 rounded-lg"
             @click="handleGetComments"
           >
             <Lucide
