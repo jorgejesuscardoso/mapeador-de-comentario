@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { FindBook, RobozinhoV3 } from '../../robot/robo.v3';
+import { FindBook, getParagraph, RobozinhoV3 } from '../../robot/robo.v3';
 
 const bot = express.Router();
 
@@ -28,5 +28,15 @@ bot.get('/getBooks/:id', async (req, res) => {
         console.error('Erro ao buscar livro:', error);
     };
 });
+
+bot.get('/paragraphs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const resultado = await getParagraph(id);
+        res.json(resultado);
+    } catch (error) {
+        console.error('Erro ao buscar livro:', error);
+    };
+})
 
 export default bot;
