@@ -95,3 +95,24 @@ export const FindBook = async (id: any) => {
     }
     return data
 };
+
+
+export const getParagraph = async (id: any) => {
+ async function Robot() {
+    try {
+      
+      const response = await axios.get(`https://www.wattpad.com/apiv2/?m=storytext&id=${id}`).then(response => {
+        return response.data
+      }).catch(error => {
+        console.error('Erro na requisição:', error.response?.status, error.message);
+      });
+
+      return response;
+    } catch (error) {
+      console.error('Erro ao buscar comentários:', error);
+      return null;
+    }
+  }
+
+  return Robot();
+}
