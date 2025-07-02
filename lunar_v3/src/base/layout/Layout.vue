@@ -19,8 +19,13 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
+const scrollToTop = () => {
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
+	window.scrollTo({top: 0})
 });
 
 onUnmounted(() => {
@@ -256,6 +261,21 @@ onUnmounted(() => {
 			>
 				<router-view />
 			</main>
+
+			<div
+			class="fixed bottom-16 right-2 "
+		>
+			<button
+				class="bg-fuchsia-400 rounded-full p-1"
+			
+			>
+				<Lucide
+					icon="ChevronUp"
+					class="w-7 h-7 text-white"
+					@click="scrollToTop"
+				/>
+			</button>
+		</div>
 
 		</div>
 	</div>

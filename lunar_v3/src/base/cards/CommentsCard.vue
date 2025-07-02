@@ -10,6 +10,7 @@ const id = route.query.id as string;
 const wUser = route.query.user as string;
 const title = route.query.title as string;
 const bookName = route.query.bookName as string;
+const length = route.query.length as string;
 
 const isAdm = ref()
 const isLoading = ref(false)
@@ -18,6 +19,21 @@ const router = useRouter();
 const paragraphs = ref<any>([])
 const idRefsToParagraphs = ref([])
 const qtdParagraph = ref(0)
+const readingApproved = ref(false)
+const msgReadingPending = ref('')
+const goodDivision = ref(false)
+const times = ref({
+  est: 0,
+  wast: 0
+})
+
+const firstAndLastComments = ref<{
+  first: any | null,
+  last: any | null
+}>({
+  first: null,
+  last: null
+});
 
 const paragraphStats = ref({
   '1º início': 0,
@@ -52,6 +68,7 @@ async function getParagraphs() {
   });
 
   paragraphs.value = parsed;
+
   return parsed;
 }
 
@@ -60,6 +77,8 @@ watch(data, (val)=>{
   const a = val.map((s) => s.resource.resourceId)
   idRefsToParagraphs.value = a
 })
+
+
 
 // watch(data, (val)=>{
 //   const v = idRefsToParagraphs.value.map((s) => s.split('_',2)[1])
@@ -106,6 +125,14 @@ watch([paragraphs, idRefsToParagraphs], () => {
   });
 
   paragraphStats.value = counters;
+
+  const inicio = counters['1º início'] > 0;
+  const meio = counters['3º meio'] > 0;
+  const fim = counters['5º fim'] > 0;
+
+  goodDivision.value = inicio && meio && fim;
+
+  console.log(goodDivision.value)
 });
 
 
@@ -131,19 +158,124 @@ function formatDate(dataISO: string): string {
   }
 }
 
+function estimateReadTime(length: number): string {
+    const avgWordLength = 5;
+  const wordsPerMinute = 250;
+
+  const words = length / avgWordLength;
+  const totalSeconds = Math.ceil((words / wordsPerMinute) * 60);
+
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  times.value.est = totalSeconds
+
+  const parts: string[] = [];
+
+  if (hours > 0) parts.push(`${hours} hora${hours > 1 ? 's' : ''}`);
+  if (minutes > 0) parts.push(`${String(minutes).padStart(2, '0')} minuto${minutes !== 1 ? 's' : ''}`);
+  if (seconds > 0 || parts.length === 0) parts.push(`${String(seconds).padStart(2, '0')} segundo${seconds !== 1 ? 's' : ''}`);
+
+  return parts.join(' e ');
+}
+
 const handleGetComments = async () => {
   isLoading.value = true;
 
   const comments = await getComments(wUser.trim(), id); // já filtra por user se quiser
-
+  comments.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
   await getParagraphs();
+
 
   data.value = comments;
 
+  if (comments.length > 0) {
+    firstAndLastComments.value.first = comments[0];
+    firstAndLastComments.value.last = comments[comments.length - 1];
+  } else {
+    firstAndLastComments.value.first = null;
+    firstAndLastComments.value.last = null;
+  }
+
   window.scrollTo({ top: 0 });
   isLoading.value = false;
-  
 }
+
+function timeOfRead(): string {
+  const first = firstAndLastComments.value.first;
+  const last = firstAndLastComments.value.last;
+
+  if (!first || !last) return 'Leitura não iniciada';
+
+  const firstDate = new Date(first.created);
+  const lastDate = new Date(last.created);
+
+  const diffMs = lastDate.getTime() - firstDate.getTime();
+  if (diffMs < 0) return 'Tempo inválido';
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  times.value.wast = totalSeconds
+
+  const parts: string[] = [];
+  if (hours > 0) parts.push(`${hours} hora${hours > 1 ? 's' : ''}`);
+  if (minutes > 0) parts.push(`${minutes} minuto${minutes > 1 ? 's' : ''}`);
+  if (seconds > 0 || parts.length === 0) parts.push(`${seconds} segundo${seconds > 1 ? 's' : ''}`);
+
+  return parts.join(' e ');
+}
+
+watch(() => firstAndLastComments.value, (val) => {
+  const first = val.first;
+  const last = val.last;
+
+  if (!first || !last) {
+    times.value.wast = 0;
+    return;
+  }
+
+  const firstDate = new Date(first.created);
+  const lastDate = new Date(last.created);
+  const diffMs = lastDate.getTime() - firstDate.getTime();
+  if (diffMs < 0) {
+    times.value.wast = 0;
+    return;
+  }
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  times.value.wast = totalSeconds;
+}, { deep: true });
+
+
+watch([times, data],() => {
+  const handleReadingApproved = () => {
+    const est = times.value.est
+    const wast = times.value.wast
+    
+    if(data.value.length === 0) {
+      msgReadingPending.value = 'nenhum comentário encontrado.'
+      return
+    } else if (data.value.length < 6) {
+      msgReadingPending.value = 'comentários insuficientes.'
+      return
+    } else if(wast < est * 0.9) {
+      msgReadingPending.value = 'Tempo muito abaixo do estimado.'
+      return
+    } else if (!goodDivision.value) {
+      msgReadingPending.value = 'comentários mal distribuido.'
+      return
+    }
+
+    msgReadingPending.value = ''
+    readingApproved.value = true
+  }
+
+  handleReadingApproved()  
+}, {deep: true})
 
 onMounted(async () => {
   await handleGetComments()
@@ -223,6 +355,36 @@ onMounted(async () => {
                 Comentários: 
                 <span class="font-bold text-fuchsia-600 ml-0.5 text-xs">{{ data.length }}</span>
               </span>
+              
+              <span
+                class="flex items-center justify-start font-semibold text-indigo-800 text-xs"
+              >
+                <Lucide
+                  icon="Clock"
+                  class="mr-1 w-4 h-4"
+                />
+                  Tempo estimado: 
+                <span class="font-bold text-fuchsia-600 ml-0.5 text-xs">{{ estimateReadTime(+length) }}</span>
+              </span>
+
+              <span
+                class="flex items-center justify-start font-semibold text-xs mt-2"                
+                :class="{
+                    'text-green-600': readingApproved,
+                    'text-red-700' : !readingApproved
+                  }"
+              >
+                <Lucide
+                  :icon="readingApproved ? 'CheckCheck' : 'X'"
+                  class="mr-1 w-4 h-4"
+                  :class="{
+                    'text-green-600': readingApproved,
+                    'text-red-700' : !readingApproved
+                  }"
+                />
+                  Leitura {{ readingApproved ? 'aprovada' : 'não aprovada:' }} {{ msgReadingPending }}
+                
+              </span>
             </div>
           </div>
 
@@ -230,13 +392,25 @@ onMounted(async () => {
           <div
             class="w-full px-4 sm:px-0"
           >
-          <h3 class="font-semibold text-violet-800 text-sm mt-4 sm:mt-0">Distribuição dos comentários:</h3>
+            <h3 class="font-semibold text-violet-800 text-sm mt-4 sm:mt-0">Distribuição dos comentários:</h3>
             <ul class="text-sm text-gray-800 mt-2 ">
               <li v-for="(count, label) in paragraphStats" :key="label" class="text-indigo-800">
                 {{ label }}: <span class="font-bold text-pink-600">{{ count }}</span> comentário{{ count > 0 ? 's' : '' }}
               </li>
             </ul>
+
+            
+              <div
+                class="flex flex-wrap items-center justify-start font-semibold text-indigo-800 text-xs mt-2"
+              >
+                <Lucide
+                  icon="Timer"
+                  class="mr-1 w-4 h-4"
+                />
+                  Leitura feita em: <span class="font-bold text-fuchsia-600 ml-0.5 text-xs">{{ timeOfRead() }}</span>
+              </div>
           </div>
+
         </div>
 
         <span
