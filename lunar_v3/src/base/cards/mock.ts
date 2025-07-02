@@ -211,5 +211,25 @@ export const mockUser = [
     autor:'little_krystal', 
     id:'388947761',
   },
-
+  
+  {
+    name:'Delírios sobre o meu pecado', 
+    autor:'Yu_Suki', 
+    id:'394612458',
+  },
+  {
+    name:'Full Imagination', 
+    autor:'Nixkage', 
+    id:'386408358',
+  },  
+  {
+    name:'Amor e outros excessos~ Poemas', 
+    autor:'Xiao_Meihua_', 
+    id:'387596454',
+  },
+  {
+    name:'Dark Times', 
+    autor:'Eustyleswriter', 
+    id:'179387901',
+  },
 ]

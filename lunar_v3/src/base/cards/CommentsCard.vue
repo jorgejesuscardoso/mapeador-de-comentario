@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getComments } from '@/API/Api.v3';
-import { ref, onMounted } from 'vue';
+import { getComments, getParagraph } from '@/API/Api.v3';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute} from 'vue-router';
 import LoadCard from '../loading/LoadCard.vue';
 import Lucide from '../lucide/Lucide.vue';
@@ -15,10 +15,98 @@ const isAdm = ref()
 const isLoading = ref(false)
 const data = ref<any[]>([]);
 const router = useRouter();
+const paragraphs = ref<any>([])
+const idRefsToParagraphs = ref([])
+const qtdParagraph = ref(0)
+
+const paragraphStats = ref({
+  '1º início': 0,
+  '2º meio início': 0,
+  '3º meio': 0,
+  '4º meio fim': 0,
+  '5º fim': 0
+})
+
 
 function goBack() {
   router.back();
 }
+
+async function getParagraphs() {
+  const rawHtml = await getParagraph(id);
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = rawHtml;
+
+  const nodes = Array.from(tempDiv.querySelectorAll('p[data-p-id]'));
+
+  qtdParagraph.value = nodes.length
+  const parsed = nodes.map((el, index) => {
+  const rawId = el.getAttribute('data-p-id') || `no-id-${index}`;
+  const cleanId = rawId.replace(/\\+"/g, ''); // Remove \" escapado
+    return {
+      id: cleanId,
+      content: el.innerHTML,
+      index,
+    };
+  });
+
+  paragraphs.value = parsed;
+  return parsed;
+}
+
+
+watch(data, (val)=>{
+  const a = val.map((s) => s.resource.resourceId)
+  idRefsToParagraphs.value = a
+})
+
+// watch(data, (val)=>{
+//   const v = idRefsToParagraphs.value.map((s) => s.split('_',2)[1])
+//   console.log(v)
+// })
+
+watch([paragraphs, idRefsToParagraphs], () => {
+  if (!paragraphs.value.length || !idRefsToParagraphs.value.length) return;
+
+  const total = paragraphs.value.length;
+  const sliceSize = Math.floor(total / 5);
+
+  const slices = [
+    paragraphs.value.slice(0, sliceSize),
+    paragraphs.value.slice(sliceSize, sliceSize * 2),
+    paragraphs.value.slice(sliceSize * 2, sliceSize * 3),
+    paragraphs.value.slice(sliceSize * 3, sliceSize * 4),
+    paragraphs.value.slice(sliceSize * 4)
+  ];
+
+  const labels = ['1º início', '2º meio início', '3º meio', '4º meio fim', '5º fim'];
+
+  const counters: any = {
+    '1º início': 0,
+    '2º meio início': 0,
+    '3º meio': 0,
+    '4º meio fim': 0,
+    '5º fim': 0
+  };
+
+  // Transforma os slices em conjuntos de IDs dos parágrafos
+  const sliceIdSets = slices.map(slice =>
+    new Set(slice.map(paragraph => paragraph.id))
+  );
+
+  // Agora compara os ids dos comentários com os ids dos parágrafos de cada bloco
+  const splited = idRefsToParagraphs.value.map((s) => s.split('_',2)[1])
+  splited.forEach((refId) => {
+    sliceIdSets.forEach((idSet, index) => {
+      if (idSet.has(refId)) {
+        counters[labels[index]]++;
+      }
+    });
+  });
+
+  paragraphStats.value = counters;
+});
 
 
 function formatDate(dataISO: string): string {
@@ -43,21 +131,30 @@ function formatDate(dataISO: string): string {
   }
 }
 
-onMounted(async () => {
-	isLoading.value = true
-  const result = await getComments(wUser, id);
-  data.value = result;
-  window.scrollTo({top: 0})
-	isLoading.value = false
-});
+const handleGetComments = async () => {
+  isLoading.value = true;
 
+  const comments = await getComments(wUser.trim(), id); // já filtra por user se quiser
+
+  await getParagraphs();
+
+  data.value = comments;
+
+  window.scrollTo({ top: 0 });
+  isLoading.value = false;
+  
+}
+
+onMounted(async () => {
+  await handleGetComments()
+});
 
 </script>
 
 
 <template>
   <div
-    class="flex flex-col items-center justify-center mt-10"
+    class="flex flex-col items-center min-w-full justify-center mt-10"
   >
     <header
       class="w-full"
@@ -66,47 +163,73 @@ onMounted(async () => {
         class="flex flex-col bg-white mx-4 my-1 py-4 px-2 rounded-xl shadow-lg"
       > 
         <div
-          class="flex flex-col gap-1.5"
+          class="grid grid-cols-2 w-full"
         >
-          <span
-            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
+          <div
+            class="flex flex-col gap-1.5"
           >
-            <Lucide
-              icon="UserCircle"
-              class="mr-1 w-4 h-4"
-            />
-            User: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ wUser }}</span>
-          </span>
-           <span
-            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
-          >
-            <Lucide
-              icon="FileText"
-              class="mr-1 w-4 h-4"
-            />
-            Capitulo: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ title }}</span>
-          </span>
+            <span
+              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
+            >
+              <Lucide
+                icon="UserCircle"
+                class="mr-1 w-4 h-4"
+              />
+              User: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ wUser }}</span>
+            </span>
+            <span
+              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
+            >
+              <Lucide
+                icon="FileText"
+                class="mr-1 w-4 h-4"
+              />
+              Capitulo: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ title }}</span>
+            </span>
+            
+            <span
+              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
+            >
+              <Lucide
+                icon="BookOpenText"
+                class="mr-1 w-4 h-4"
+              />
+              Livro: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ bookName }}</span>
+            </span>
+
+            <span
+              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
+            >
+              <Lucide
+                icon="AlignLeft"
+                class="mr-1 w-4 h-4"
+              />
+              Qtd. parágrafos: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ qtdParagraph }}</span>
+            </span> 
+
+            <span
+              class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
+            >
+              <Lucide
+                icon="MessageSquareMore"
+                class="mr-1 w-4 h-4"
+              />
+              Comentários: 
+              <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ data.length }}</span>
+            </span>
+          </div>
+
           
-           <span
-            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
-          >
-            <Lucide
-              icon="BookOpenText"
-              class="mr-1 w-4 h-4"
-            />
-            Livro: <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ bookName }}</span>
-          </span>        
-           <span
-            class="flex items-center justify-start mx-4 font-semibold text-indigo-800 text-sm"
-          >
-            <Lucide
-              icon="MessageSquareMore"
-              class="mr-1 w-4 h-4"
-            />
-            Comentários: 
-            <span class="font-bold text-fuchsia-600 ml-0.5 text-sm">{{ data.length }}</span>
-          </span>
+          <div>
+            <ul class="text-sm text-gray-800 ml-4 mt-2">
+              <li class="font-semibold text-violet-800">Distribuição dos comentários:</li>
+              <li v-for="(count, label) in paragraphStats" :key="label">
+                {{ label }}: <span class="font-bold text-pink-600">{{ count }}</span> comentário(s)
+              </li>
+            </ul>
+          </div>
         </div>
+
         <span
           @click="goBack"
           class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer"
@@ -117,10 +240,23 @@ onMounted(async () => {
           />
           Voltar para todos capítulos
         </span>
+        <div
+          class="w-full px-6 mt-6"
+        >
+          <button
+            class="text-pink-600 cursor-pointer border border-fuchsia-500 px-4 py-1 rounded-lg"
+            @click="handleGetComments"
+          >
+            <Lucide
+              icon="RefreshCcw"
+              class="w-4 h-4"
+            />
+          </button>
+        </div>
       </div>
     </header>
     <div 
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 p-4"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 p-4 min-w-full"
     >
       <div
         v-if="!isLoading"
@@ -154,5 +290,6 @@ onMounted(async () => {
 		<LoadCard 
 			v-if="isLoading"
 		/>
+
 	</div>
 </template>
