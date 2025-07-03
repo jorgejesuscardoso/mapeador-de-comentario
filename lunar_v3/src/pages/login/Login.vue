@@ -11,7 +11,8 @@ const loading = ref(false)
 const error = ref('')
 
 const submit = async () => {
-  error.value = ''
+ try {
+   error.value = ''
   loading.value = true
 
   const data = await Login(email.value, password.value)
@@ -25,6 +26,9 @@ const submit = async () => {
   localStorage.setItem('user', JSON.stringify(data))
   loading.value = false
   router.push('/')
+ } catch (e) {
+  loading.value = false
+ }
 }
 </script>
 

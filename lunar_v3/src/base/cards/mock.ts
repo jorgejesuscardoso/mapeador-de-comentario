@@ -167,11 +167,6 @@ export const mockUser = [
     id: '396090059'
   },
   {
-    name:'Despertar',
-    autor:'Emmy_ily ',
-    id:'396233717'
-  }, 
-  {
     name:'Julia, a pequena gata branca',
     autor:'mariajuliamartins22',
     id:'394770031'

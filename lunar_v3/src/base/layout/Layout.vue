@@ -189,6 +189,19 @@ provide('isAdmin', isAdmin)
 								Perfil
 							</RouterLink>
 						</li>
+
+						
+							<li>
+								<RouterLink 
+									to=""
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
+									:class="{ 'bg-violet-200': route.path === '/profile' }"
+								>
+									<Lucide icon="FileInput" size="14" />
+									Registro
+								</RouterLink>
+							</li>
+
 						
 						<li
 							@click="handleLogout "
@@ -297,6 +310,17 @@ provide('isAdmin', isAdmin)
 								</RouterLink>
 							</li>
 
+							
+							<li>
+								<RouterLink 
+									to=""
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
+									:class="{ 'bg-violet-200': route.path === '/profile' }"
+								>
+									<Lucide icon="FileInput" size="14" />
+									Registro
+								</RouterLink>
+							</li>
 							
 							<li
 								@click="handleLogout"

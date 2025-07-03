@@ -2,7 +2,7 @@
 import { UrlBase } from './Base.url'
 import axios from 'axios'
 
-const endPoint = UrlBase.dev
+const endPoint = UrlBase.render
 
 export const Login = async (user: string, password: string) => {
   try {
