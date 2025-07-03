@@ -7,6 +7,9 @@ import Lucide from '@/base/lucide/Lucide.vue';
 
 const totalBooks = ref(0);
 
+onMounted(() => {
+	window.scrollTo({top: 0})
+})
 
 </script>
 

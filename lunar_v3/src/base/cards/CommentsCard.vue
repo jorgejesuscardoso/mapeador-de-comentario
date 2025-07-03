@@ -277,7 +277,6 @@ watch([times, data],() => {
   handleReadingApproved()  
 }, {deep: true})
 
-
 onMounted(async () => {
   await handleGetComments()
 });

@@ -59,7 +59,6 @@ const handleClearFilter = () => {
         ]"
       >
         <Lucide :icon="clearFilters.icon" class="w-4 h-4" />
-        <span>{{ clearFilters.label }}</span>
       </button>
     </div>
     <!-- Filtros principais -->

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import Routes from './routes';
 
 dotenv.config();
+
 class App {
     public app: Application;
 
