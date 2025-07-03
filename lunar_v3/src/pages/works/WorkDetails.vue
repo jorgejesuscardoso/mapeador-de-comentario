@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getBooks } from '@/API/Api.v3';
 import LoadCard from '../../base/loading/LoadCard.vue';
@@ -42,7 +42,7 @@ const capsId = ref('');
 const wUser = ref('');
 const capToSearch = ref('')
 const length = ref(0)
-const isAdm = ref(true)
+const isAdm = ref(inject('isAdmin'))
 
 onMounted(async () => {
   const id = route.params.id as string;

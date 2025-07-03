@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { getBooks } from '@/API/Api.v3';
-import { ref, onMounted, watch, reactive } from 'vue';
+import { ref, onMounted, watch, reactive, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { mockUser } from './mock';
 import LoadCard from '../loading/LoadCard.vue';
 import FilterBar from '../filters/FilterBar.vue';
-import { bookCache } from './BookCache';
+import { setCache, getCache } from './BookCache';
 import Lucide from '../lucide/Lucide.vue';
 
 interface booksData {
@@ -44,7 +44,7 @@ const emit = defineEmits<{
   (e: 'update-length', length: number): void;
 }>();
 
-const isAdm = ref()
+const isAdm = ref(inject('isAdmin'))
 const retrying = ref(false);
 const fetchError = ref(false);
 const isLoading = ref(false)
@@ -59,7 +59,6 @@ setInterval(async () => {
   const books = await fetchBooks();
     data.value = books;
     filteredData.value = [...books];
-    bookCache.books = books;
     emit('update-length', books.length);
   
 }, 60 * 10 * 1000); 
@@ -132,6 +131,38 @@ async function fetchBooks() {
 }
 
 
+async function loadBooksNormally(cacheKey: string) {
+  const timeoutLimit = 50000; // 50 segundos
+  const retryInterval = 5000; // 5 segundos
+
+  const startTime = Date.now();
+  let books: booksData[] = [];
+
+  while ((Date.now() - startTime) < timeoutLimit && books.length === 0) {
+    books = await fetchBooks();
+    if (books.length > 0) break;
+
+    retrying.value = true;
+    fetchError.value = true;
+    await new Promise(res => setTimeout(res, retryInterval));
+  }
+
+  data.value = books;
+  filteredData.value = [...books];
+  emit('update-length', books.length);
+
+  if (books.length === 0) {
+    permanentFailure.value = true;
+  } else {
+    setCache(cacheKey, books, 3600); // salva por 1 hora
+  }
+
+  isLoading.value = false;
+  retrying.value = false;
+}
+
+
+
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   return date.toLocaleDateString('pt-BR', {
@@ -172,50 +203,42 @@ onMounted(async () => {
   fetchError.value = false;
   retrying.value = false;
 
-  try {
-    // Usa cache se já tiver
-    if (bookCache.books && bookCache.books.length > 0) {
-      data.value = bookCache.books;
-      filteredData.value = [...bookCache.books];
-      emit('update-length', bookCache.books.length);
-      isLoading.value = false;
-      return;
-    }
+  const cacheKey = 'books_cache_v1';
+  const cache = getCache(cacheKey);
 
-    const timeoutLimit = 50000; // 50 segundos
-    const retryInterval = 5000; // 5 segundos
-
-    const startTime = Date.now();
-    let books: booksData[] = [];
-
-    while ((Date.now() - startTime) < timeoutLimit && books.length === 0) {
-      books = await fetchBooks();
-
-      if (books.length > 0) break;
-
-      retrying.value = true;
-      fetchError.value = true;
-
-      await new Promise(res => setTimeout(res, retryInterval));
-    }
-
-    data.value = books;
-    filteredData.value = [...books];
-    bookCache.books = books;
-    emit('update-length', books.length);
-
-    // Se mesmo após o tempo ainda não obteve dados
-    if (books.length === 0) {
-      permanentFailure.value = true;
-    }
-  } catch (e) {
-    console.error("Erro ao montar componente de livros:", e);
-    fetchError.value = true;
-  } finally {
+  if (cache) {
+    data.value = cache;
+    filteredData.value = [...cache];
+    emit('update-length', cache.length);
     isLoading.value = false;
-    retrying.value = false;
+
+    // Atualização em segundo plano
+    updateBooksInBackground(cacheKey, cache);
+    return;
   }
+
+  // Se não tiver cache, faz fetch normal
+  await loadBooksNormally(cacheKey);
 });
+
+
+async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) {
+  const freshBooks = await fetchBooks();
+
+  const oldIds = oldBooks.map(b => b.id).join(',');
+  const freshIds = freshBooks.map(b => b.id).join(',');
+
+  if (oldIds !== freshIds) {
+    data.value = freshBooks;
+    filteredData.value = [...freshBooks];
+    emit('update-length', freshBooks.length);
+    setCache(cacheKey, freshBooks, 3600); // renova cache
+    console.log('📥 Livros atualizados em segundo plano.');
+  } else {
+    console.log('✅ Livros do cache ainda válidos.');
+  }
+}
+
 
 </script>
 

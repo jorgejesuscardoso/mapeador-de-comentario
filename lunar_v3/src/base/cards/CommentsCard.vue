@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getComments, getParagraph } from '@/API/Api.v3';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, inject } from 'vue';
 import { useRouter, useRoute} from 'vue-router';
 import LoadCard from '../loading/LoadCard.vue';
 import Lucide from '../lucide/Lucide.vue';
@@ -12,7 +12,7 @@ const title = route.query.title as string;
 const bookName = route.query.bookName as string;
 const length = route.query.length as string;
 
-const isAdm = ref()
+const isAdm = ref(inject('in'))
 const isLoading = ref(false)
 const data = ref<any[]>([]);
 const router = useRouter();
@@ -276,6 +276,7 @@ watch([times, data],() => {
 
   handleReadingApproved()  
 }, {deep: true})
+
 
 onMounted(async () => {
   await handleGetComments()

@@ -5,6 +5,7 @@ import Home from '@/pages/home/Home.vue';
 import Robot from '@/pages/robot/Robot.vue';
 import WorkDetails from '@/pages/works/WorkDetails.vue';
 import CommentsCard from '@/base/cards/CommentsCard.vue';
+import Login from '@/pages/login/Login.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -21,11 +22,6 @@ const routes: RouteRecordRaw[] = [
         name: 'bot',
         component: Robot,
       },
-
-
-
-
-      
       { 
         path: '/work/:id', 
         name: 'workDetail',
@@ -36,9 +32,14 @@ const routes: RouteRecordRaw[] = [
         path: '/comments', 
         name: 'comments',
         component: CommentsCard,
-      }
+      },      
     ]
-  }
+  },  
+  { 
+    path: '/login', 
+    name: 'login',
+    component: Login,
+  },
 
 ];
 

@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, provide } from 'vue';
 import { useRoute } from 'vue-router';
 import Lucide from '../lucide/Lucide.vue'
+
+interface userData {
+	role: string
+	token: string,	
+}
 
 const route = useRoute();
 
 const menuOpen = ref(false);
 
-const isLogged = ref(true)
+const isLogged = ref(false)
 const isAdmin = ref(false)
 
 const menuRef = ref<HTMLElement | null>(null);
@@ -23,14 +28,35 @@ const scrollToTop = () => {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+const handleLogout = () => {
+	if(isLogged){
+		localStorage.removeItem('user')
+		window.location.reload()
+	} else {
+		return
+	}
+}
+
 onMounted(() => {
+	const storage = JSON.parse(localStorage.getItem('user')) as userData;
+	
+	if (storage) {
+		isLogged.value = true
+
+		if(storage.role === 'admin' || storage.role === 'superadmin'){
+			isAdmin.value = true
+		}
+	}
   document.addEventListener('click', handleClickOutside);
 	window.scrollTo({top: 0})
+	console.log('é adm',isAdmin.value, 'está logado',isLogged.value)
 });
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
+
+provide('isAdmin', isAdmin)
 </script>
 
 <template>
@@ -67,7 +93,7 @@ onUnmounted(() => {
 						<li>
 							<RouterLink 
 								to="/"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/',
 									'hover:bg-gray-100': route.path !== '/'
@@ -81,11 +107,11 @@ onUnmounted(() => {
 							</RouterLink>
 						</li>
 						<li
-							v-if="isAdmin"
+							v-if="isLogged && isAdmin"
 						>
 							<RouterLink 
 								to="/bot"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/bot',
 									'hover:bg-gray-100': route.path !== '/bot'
@@ -93,7 +119,7 @@ onUnmounted(() => {
 							>
 								<Lucide
 										icon="Bot"
-										size="20"
+										size="14"
 
 								/>
 								Robozinho
@@ -102,7 +128,7 @@ onUnmounted(() => {
 						<li>
 							<RouterLink 
 								to=""
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/members',
 									'hover:bg-gray-100': route.path !== '/members'
@@ -110,7 +136,7 @@ onUnmounted(() => {
 							>
 								<Lucide
 										icon="Users"
-										size="20"
+										size="14"
 								/>
 								Membros
 							</RouterLink>
@@ -118,7 +144,7 @@ onUnmounted(() => {
 						<li>
 							<RouterLink 
 								to=""
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/subs',
 									'hover:bg-gray-100': route.path !== '/subs'
@@ -126,7 +152,7 @@ onUnmounted(() => {
 							>
 								<Lucide
 										icon="List"
-										size="20"
+										size="14"
 								/>
 								Subs
 							</RouterLink>
@@ -134,7 +160,7 @@ onUnmounted(() => {
 						<li>
 							<RouterLink 
 								to=""
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/shop',
 									'hover:bg-gray-100': route.path !== '/shop'
@@ -142,7 +168,7 @@ onUnmounted(() => {
 							>
 								<Lucide
 										icon="Store"
-										size="20"
+										size="14"
 								/>
 								Lojinha Lunar
 							</RouterLink>
@@ -150,7 +176,7 @@ onUnmounted(() => {
 						<li>
 							<RouterLink 
 								to=""
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/profile',
 									'hover:bg-gray-100': route.path !== '/profile'
@@ -158,9 +184,28 @@ onUnmounted(() => {
 							>
 								<Lucide
 										icon="CircleUserRound"
-										size="20"
+										size="14"
 								/>
 								Perfil
+							</RouterLink>
+						</li>
+						
+						<li
+							@click="handleLogout "
+						>
+							<RouterLink 
+								:to="!isLogged ? '/login': ''"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
+								:class="{
+									'hover:bg-green-100 text-green-800': !isLogged,
+									'hover:bg-red-100 text-red-800': isLogged
+								}"								
+							>
+								<Lucide
+										:icon="isLogged ? 'LogOut': 'LogIn'"
+										size="14"
+								/>
+								{{ isLogged ? 'Sair' : 'Login' }}
 							</RouterLink>
 						</li>
 					</ul>
@@ -194,61 +239,81 @@ onUnmounted(() => {
 							<li>
 								<RouterLink 
 									to="/"
-									class="flex items-center gap-2 px-2 py-1 rounded-md"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-200': route.path === '/' }"
 								>
 									<Lucide icon="Home" size="16" />
 									Home
 								</RouterLink>
 							</li>
-							<li v-if="isAdmin">
+							<li v-if="isLogged && isAdmin">
 								<RouterLink 
 									to="/bot"
-									class="flex items-center gap-2 px-2 py-1 rounded-md"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-200': route.path === '/bot' }"
 								>
-									<Lucide icon="Bot" size="20" />
+									<Lucide icon="Bot" size="14" />
 									Robozinho
 								</RouterLink>
 							</li>
 							<li>
 								<RouterLink 
 									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
 									:class="{ 'bg-violet-200': route.path === '/members' }"
 								>
-									<Lucide icon="Users" size="20" />
+									<Lucide icon="Users" size="14" />
 									Membros
 								</RouterLink>
 							</li>
 							<li>
 								<RouterLink 
 									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
 									:class="{ 'bg-violet-200': route.path === '/subs' }"
 								>
-									<Lucide icon="List" size="20" />
+									<Lucide icon="List" size="14" />
 									Subs
 								</RouterLink>
 							</li>
 							<li>
 								<RouterLink 
 									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
 									:class="{ 'bg-violet-200': route.path === '/shop' }"
 								>
-									<Lucide icon="Store" size="20" />
+									<Lucide icon="Store" size="14" />
 									Lojinha Lunar
 								</RouterLink>
 							</li>
 							<li>
 								<RouterLink 
 									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
 									:class="{ 'bg-violet-200': route.path === '/profile' }"
 								>
-									<Lucide icon="CircleUserRound" size="20" />
+									<Lucide icon="CircleUserRound" size="14" />
 									Perfil
+								</RouterLink>
+							</li>
+
+							
+							<li
+								@click="handleLogout"
+							>
+								<RouterLink 
+									:to="!isLogged ? '/login': ''"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
+									:class="{
+										'hover:bg-green-100 text-green-800': !isLogged,
+										'hover:bg-red-100 text-red-800': isLogged
+									}"
+								>
+									<Lucide
+											:icon="isLogged ? 'LogOut': 'LogIn'"
+											size="14"
+									/>
+									{{ isLogged ? 'Sair' : 'Login' }}
 								</RouterLink>
 							</li>
 						</ul>
