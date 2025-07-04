@@ -7,6 +7,7 @@ import WorkDetails from '@/pages/works/WorkDetails.vue';
 import CommentsCard from '@/base/cards/CommentsCard.vue';
 import Login from '@/pages/login/Login.vue';
 import Register from '@/pages/register/Register.vue';
+import Profile from '@/pages/profile/Profile.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -17,6 +18,11 @@ const routes: RouteRecordRaw[] = [
         path: '', 
         name: 'home',
         component: Home,
+      },
+      { 
+        path: '/profile', 
+        name: 'profile',
+        component: Profile,
       },
       { 
         path: '/bot', 

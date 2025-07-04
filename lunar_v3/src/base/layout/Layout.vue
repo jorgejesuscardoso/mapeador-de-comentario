@@ -175,8 +175,8 @@ provide('isAdmin', isAdmin)
 						</li>
 						<li>
 							<RouterLink 
-								to=""
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
+								to="/profile"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/profile',
 									'hover:bg-gray-100': route.path !== '/profile'
@@ -301,8 +301,8 @@ provide('isAdmin', isAdmin)
 							</li>
 							<li>
 								<RouterLink 
-									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
+									to="/profile"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-200': route.path === '/profile' }"
 								>
 									<Lucide icon="CircleUserRound" size="14" />
@@ -315,7 +315,6 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to=""
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
-									:class="{ 'bg-violet-200': route.path === '/profile' }"
 								>
 									<Lucide icon="FileInput" size="14" />
 									Registro
