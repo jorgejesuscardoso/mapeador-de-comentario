@@ -10,7 +10,7 @@ const user = express.Router();
 
 
 user.post('/register', async (req: Request, res: Response) => {
-  const { user, password } = req.body;
+  const { user, password, name, age } = req.body;
 
   if (!user || !password) {
     return res.status(400).json({ error: 'Usuário ou senha ausente!' });
@@ -38,6 +38,8 @@ user.post('/register', async (req: Request, res: Response) => {
         Item: {
           user,
           password: hashedPassword,
+          name,
+          age,
           createdAt: new Date().toISOString()
         }
       })
@@ -75,7 +77,7 @@ user.post('/login', async (req: Request, res: Response) => {
     };
 
     const getToken = generateToken({user: result.Item.user, role: result.Item.role})
-    const userData = { token: getToken.token, role: result.Item.role}
+    const userData = { token: getToken.token, role: result.Item.role, user: result.Item.role}
     res.status(200).json(userData);
   } catch (err) {
     console.error(err);
