@@ -16,15 +16,21 @@ books.post('/register', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Dados ausente!' });
   }
 
-  const split = bookUrl.split('story/')[1]
-  const splitId = split.split('-')[0]
+  const urlObj = new URL(bookUrl);
+  const pathParts = urlObj.pathname.split('/');
+  const id = pathParts[2]?.split('-')[0]; // Captura o ID mesmo se vier seguido de texto (ex: 389938474-nome-do-livro)
 
+  if (!id || isNaN(Number(id))) {
+    return res.status(400).json({ error: 'ID inválido na URL!' });
+  }
+
+  console.log('ID extraído:', id);
   try {
     // Verifica se já existe
     const existing = await db.send(
       new GetCommand({
         TableName: 'books',
-        Key: { book_id: splitId }
+        Key: { book_id: splited }
       })
     );
 
@@ -170,6 +176,52 @@ books.delete('/:book', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro ao deletar livro!' });
   }
 }); 
+
+
+
+
+books.post('/feed', async (req: Request, res: Response) => {
+  const { user, bookUrl, bookName } = req.body;
+
+  if (!user || !bookUrl || !bookName) {
+    return res.status(400).json({ error: 'Dados ausente!' });
+  }
+
+  const split = bookUrl.split('story/')[1]
+  const splitId = split.split('-')[0]
+
+  try {
+    // Verifica se já existe
+    const existing = await db.send(
+      new GetCommand({
+        TableName: 'books',
+        Key: { book_id: splitId }
+      })
+    );
+
+    if (existing.Item) {
+      return res.status(200).json({ error: 'Livro já registrado!' });
+    }
+
+    await db.send(
+      new PutCommand({
+        TableName: 'books',
+        Item: {
+          user,
+          book_id: splitId,
+          book_name: bookName,
+          createdAt: new Date().toISOString()
+        }
+      })
+    );
+
+    res.status(201).json({ message: 'Livro cadastrado com sucesso!' });
+  } catch (err) {
+    console.error('Erro no registro:', err);
+    res.status(500).json({ error: 'Erro ao registrar o livro!' });
+  }
+});
+
 
 
 export default books;
