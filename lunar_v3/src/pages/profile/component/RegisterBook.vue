@@ -52,8 +52,8 @@ const submit = async () => {
       <h2 class="text-xl font-semibold text-center text-indigo-600">Enviar Livro</h2>
 
       <div v-if="error" class="text-red-600 text-sm text-center">{{ error }}</div>
-      <div v-if="success" class="text-green-600 text-sm text-center">
-        Livro enviado com sucesso!
+      <div v-if="success" class="text-green-600 text-xs text-center">
+        Livro enviado com sucesso! Pode demorar até 1hr para aparecer na biblioteca!
       </div>
 
       <form @submit.prevent="submit" class="space-y-4">
