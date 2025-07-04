@@ -1,4 +1,4 @@
-export function setCache(key: string, value: any, ttlSeconds = 3600) {
+export function setCache(key: string, value: any, ttlSeconds: number) {
   const expiresAt = Date.now() + ttlSeconds * 1000;
   const payload = { value, expiresAt };
   localStorage.setItem(key, JSON.stringify(payload));
