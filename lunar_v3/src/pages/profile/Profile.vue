@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import RegisterBook from './component/RegisterBook.vue';
+import {ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+onMounted(() => {
+  const store = localStorage.getItem('user')
+  const parsed = store ? JSON.parse(store) : null
+
+  if(!parsed) return router.push('/login')
+})
 </script>
 
 <template>

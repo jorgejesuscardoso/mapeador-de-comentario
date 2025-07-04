@@ -37,7 +37,7 @@ onMounted(() =>{
   const parse = JSON.parse(getUser)
 
 
-  if(parse.token) {
+  if(parse) {
     modalIsLogged.value = true
 
     setTimeout(() =>{

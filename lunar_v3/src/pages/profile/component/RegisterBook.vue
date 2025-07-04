@@ -44,13 +44,6 @@ const submit = async () => {
   }
 }
 
-onMounted(() => {
-  const storedUser = localStorage.getItem('user')
-  const parsed = storedUser ? JSON.parse(storedUser) : null
-
-  if(!parsed.user) return router.push('/')
-})
-
 </script>
 
 <template>
