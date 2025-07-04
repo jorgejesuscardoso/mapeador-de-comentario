@@ -3,7 +3,7 @@ import { UrlBase } from './Base.url'
 import axios from 'axios'
 import { mockUser } from '@/base/cards/mock'
 
-const endPoint = UrlBase.dev
+const endPoint = UrlBase.prod
 
 
 export const RegisterBook = async (data: any) => {

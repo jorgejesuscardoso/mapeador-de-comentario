@@ -50,28 +50,38 @@ export const RobozinhoV3 = async (wUser: string, wId: string) => {
 };
 
 
-export const FindBook = async (id: any) => {
-    const response = await axios.get(`https://www.wattpad.com/api/v3/stories/${id}`).then(response => {
-      return response.data
-    }).catch(error => {
-      console.error('Erro na requisição:', error.response?.status, error.message);
-    });
- 
-    const raw = parse(response)
+const bookCache = new Map<string, { timestamp: number; data: any }>();
+
+const ONE_HOUR = 60 * 60 * 1000; // em milissegundos
+
+export const FindBook = async (id: string) => {
+  const now = Date.now();
+
+  const cached = bookCache.get(id);
+
+  if (cached && (now - cached.timestamp) < ONE_HOUR) {
+    // ✅ Retorna do cache se não passou 1h
+    console.log("chamou no cache")
+    return cached.data;
+  }
+
+  try {
+    const response = await axios.get(`https://www.wattpad.com/api/v3/stories/${id}`);
+    const raw = parse(response.data);
+
     const tagsArray = Object.values(raw.tags);
-    const capsArray = Object.values(raw.parts)
-    const capsFormated = capsArray.map((s: any) => {
-      return {
-        title: s.title,
-        url: s.url,
-        createdAt: s.createDate,
-        length: s.length,
-        comments: s.commentCount,
-        votes: s.voteCount,
-        reads: s.readCount,
-        thumb: s.photoUrl,
-      }
-    })
+    const capsArray = Object.values(raw.parts);
+    const capsFormated = capsArray.map((s: any) => ({
+      title: s.title,
+      url: s.url,
+      createdAt: s.createDate,
+      length: s.length,
+      comments: s.commentCount,
+      votes: s.voteCount,
+      reads: s.readCount,
+      thumb: s.photoUrl,
+    }));
+
     const data = {
       id: raw.id,
       title: raw.title,
@@ -81,7 +91,7 @@ export const FindBook = async (id: any) => {
       user: {
         userName: raw.user.name,
         avatar: raw.user.avatar,
-        name: raw.user.fullname
+        name: raw.user.fullname,
       },
       describe: raw.description,
       cover: raw.cover,
@@ -91,9 +101,17 @@ export const FindBook = async (id: any) => {
       url: raw.url,
       numCaps: raw.numParts,
       caps: capsFormated,
-      readTotal: raw.readCount
-    }
-    return data
+      readTotal: raw.readCount,
+    };
+
+    // ✅ Atualiza o cache
+    bookCache.set(id, { timestamp: now, data });
+    console.log('nao chamou cache')
+    return data;
+  } catch (error: any) {
+    console.error('Erro na requisição:', error.response?.status, error.message);
+    return null;
+  }
 };
 
 

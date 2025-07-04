@@ -39,6 +39,7 @@ bot.post('/getBooks', async (req, res) => {
       })
       .filter(Boolean); // remove os nulls
 
+    //console.log("############################################",results)
     res.json(livrosSucesso);
   } catch (error) {
     console.error('Erro geral ao buscar livros:', error);

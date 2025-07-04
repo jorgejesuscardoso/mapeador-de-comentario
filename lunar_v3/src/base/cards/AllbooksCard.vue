@@ -237,7 +237,7 @@ onMounted(async () => {
   isLoading.value = true;
   fetchError.value = false;
   retrying.value = false;
-
+  
   const cacheKey = 'books_cache_v1';
   const cache = getCache(cacheKey);
 
@@ -268,8 +268,8 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
 
   const oldIds = oldBooks.map(b => b.id).join(',');
   const freshIds = freshBooks.map(b => b.id).join(',');
-
-  if (oldIds !== freshIds && freshIds > 0) {
+  
+  if ((oldIds !== freshIds) && freshIds) {
     data.value = freshBooks;
     filteredData.value = [...freshBooks];
     emit('update-length', freshBooks.length);
