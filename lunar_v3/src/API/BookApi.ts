@@ -2,7 +2,7 @@
 import { UrlBase } from './Base.url'
 import axios from 'axios'
 
-const endPoint = UrlBase.prod
+const endPoint = UrlBase.render
 
 
 export const RegisterBook = async (data: any) => {
