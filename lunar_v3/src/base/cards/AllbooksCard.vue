@@ -167,10 +167,7 @@ async function loadBooksNormally(cacheKey: string) {
   if (books.length === 0) {
     permanentFailure.value = true;
   } else {
-    setCache('books_cache_v1', {
-      books,
-      lastUpdate: Date.now()
-    }, 3600);
+    setCache('books_cache_v1', books, 3600);
   }
 
   isLoading.value = false;
