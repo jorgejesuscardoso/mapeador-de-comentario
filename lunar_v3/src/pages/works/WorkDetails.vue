@@ -180,7 +180,10 @@ function formatDate(dateStr: string) {
                   Criado em: {{ formatDate(cap.createdAt) }}
                 </p>
               </div>
-              <div class="flex items-center justify-between gap-4 text-xs text-gray-500 text-right">
+              <div                
+                v-if="book.user.userName != '3ricautora'"
+                class="flex items-center justify-between gap-4 text-xs text-gray-500 text-right"
+              >
                 <p>👁 {{ cap.reads }} leituras</p>
                 <p>💬 {{ cap.comments }} comentários</p>
               </div>

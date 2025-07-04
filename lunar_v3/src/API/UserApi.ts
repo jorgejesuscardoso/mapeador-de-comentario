@@ -43,7 +43,7 @@ export const Register = async (data: TRegister) => {
       data: JSON.stringify(data),
       signal: controller.signal,
     })
-
+    console.log(response)
     return response.data
   } catch (err: any) {
     throw err.response?.data?.message || 'Erro inesperado no login'
