@@ -26,7 +26,7 @@ user.post('/register', async (req: Request, res: Response) => {
     );
 
     if (existing.Item) {
-      return res.status(409).json({ error: 'Usuário já existe!' });
+      return res.status(200).json({ error: 'Usuário já existe!' });
     }
 
     const hashedPassword = await generateHash(password);
