@@ -3,7 +3,6 @@ import db from "../db";
 import express, { Request, Response } from 'express';
 import { GetCommand, ScanCommand, PutCommand  } from '@aws-sdk/lib-dynamodb';
 import { generateToken, verifyToken } from "../configs/jwt";
-import { generateHash, verifyHash } from "../configs/bcrypt";
 
 const books = express.Router();
 
@@ -24,7 +23,6 @@ books.post('/register', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'ID inválido na URL!' });
   }
 
-  console.log('ID extraído:', id);
   try {
     // Verifica se já existe
     const existing = await db.send(
@@ -44,6 +42,47 @@ books.post('/register', async (req: Request, res: Response) => {
         Item: {
           user,
           book_id: id,
+          book_name: bookName,
+          createdAt: new Date().toISOString()
+        }
+      })
+    );
+
+    res.status(201).json({ message: 'Livro cadastrado com sucesso!' });
+  } catch (err) {
+    console.error('Erro no registro:', err);
+    res.status(500).json({ error: 'Erro ao registrar o livro!' });
+  }
+});
+
+books.post('/feed', async (req: Request, res: Response) => {
+  const { user, bookUrl, bookName, key } = req.body;
+
+  if(key) return res.status(401).json({ error: 'Acesso nengado!'})
+
+  if (!user || !bookUrl || !bookName) {
+    return res.status(400).json({ error: 'Dados ausente!' });
+  }
+  console.log('registrando o livro: ', bookName)
+  try {
+    // Verifica se já existe
+    const existing = await db.send(
+      new GetCommand({
+        TableName: 'books',
+        Key: { book_id: bookUrl }
+      })
+    );
+
+    if (existing.Item) {
+      return res.status(200).json({ error: 'Livro já registrado!' });
+    }
+
+    await db.send(
+      new PutCommand({
+        TableName: 'books',
+        Item: {
+          user,
+          book_id: bookUrl,
           book_name: bookName,
           createdAt: new Date().toISOString()
         }
@@ -84,7 +123,7 @@ books.get('/', async (req: Request, res: Response) => {
 
 books.get('/:book', async (req: Request, res: Response) => {
   const { bookId: bookParam } = req.params;
-
+  
   try {
     const result = await db.send(
       new GetCommand({
@@ -144,7 +183,6 @@ books.put('/:book', async (req: Request, res: Response) => {
   }
 });
 
-
 books.delete('/:book', async (req: Request, res: Response) => {
   const { book: bookParam } = req.params;
 
@@ -176,8 +214,6 @@ books.delete('/:book', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro ao deletar livro!' });
   }
 }); 
-
-
 
 
 books.post('/feed', async (req: Request, res: Response) => {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { getBooks } from '@/API/Api.v3';
-import { ref, onMounted, watch, reactive, inject } from 'vue';
+import { ref, onMounted, watch, reactive, inject, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { mockUser } from './mock';
 import LoadCard from '../loading/LoadCard.vue';
 import FilterBar from '../filters/FilterBar.vue';
 import { setCache, getCache } from './BookCache';
 import Lucide from '../lucide/Lucide.vue';
+import { feed, getBooksAws } from '@/API/BookApi';
 
 interface booksData {
   caps: [];
@@ -72,71 +72,93 @@ setInterval(async () => {
   }
 }, 60 * 10 * 1000);
 
+const activeFilters = computed(() => ({
+  search: searchFilter.search.trim().toLowerCase(),
+  genre: searchFilter.genre.trim().toLowerCase(),
+  style: searchFilter.style.trim().toLowerCase(),
+  sort: sortType.value.trim().toLowerCase()
+}));
 
-watch(
-  () => [searchFilter.search, searchFilter.genre, searchFilter.style, sortType.value],
-  ([search, genre, style]) => {
+const sortPriority = (data: any) => {
 
-    if (data.value.length === 0) return;
+  const prioridadeAutores = ['anna_fransa', '3ricautora', 'jcbushido'];
 
-    const query = search.toLocaleLowerCase().trim();
-    const genreQuery = genre.toLocaleLowerCase().trim();
-    const styleQuery = style.toLocaleLowerCase().trim();
+  data.sort((a, b) => {
+    const prioridade = (userName: string) => {
+      const index = prioridadeAutores.indexOf(userName.toLowerCase());
+      return index !== -1 ? index : 999;
+    };
+    const prioridadeA = prioridade(a.user.userName);
+    const prioridadeB = prioridade(b.user.userName);
+
+    if (prioridadeA !== prioridadeB) {
+      return prioridadeA - prioridadeB;
+    }
+
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+}
+
+const handleSortBooks = ({ search, genre, style, sort }) => {
+   if (data.value.length === 0) return;
 
     let result = data.value.filter((book) => {
       const completed = book.completed ? 'completo' : 'andamento';
       const mature = book.mature ? 'adulto' : 'geral';
 
-      const matchesSearch = !query || (
-        book.title.toLowerCase().includes(query) ||
-        book.user.name.toLowerCase().includes(query) ||
-        book.user.userName.toLowerCase().includes(query) ||
-        book.tags.some((s) => s.toLowerCase().includes(query)) ||
-        completed.includes(query) ||
-        mature.includes(query)
+      const matchesSearch = !search || (
+        book.title.toLowerCase().includes(search) ||
+        book.user.userName.toLowerCase().includes(search) ||
+        book.tags.some((s) => s.toLowerCase().includes(search)) ||
+        completed.includes(search) ||
+        mature.includes(search)
       );
 
-      const matchesGenre = !genreQuery || book.tags.some((tag) =>
-        tag.toLowerCase().includes(genreQuery)
+      const matchesGenre = !genre || book.tags.some((tag) =>
+        tag.toLowerCase().includes(genre)
       );
 
-      const matchesStyle = !styleQuery || book.tags.some((tag) =>
-        tag.toLowerCase().includes(styleQuery)
+      const matchesStyle = !style || book.tags.some((tag) =>
+        tag.toLowerCase().includes(style)
       );
 
       return matchesSearch && matchesGenre && matchesStyle;
     });
 
-    // Ordenação (mantida igual)
-    if (sortType.value === 'votes_desc') result.sort((a, b) => b.votes - a.votes);
-    if (sortType.value === 'votes_asc') result.sort((a, b) => a.votes - b.votes);
-    if (sortType.value === 'comments_desc') result.sort((a, b) => b.comments - a.comments);
-    if (sortType.value === 'comments_asc') result.sort((a, b) => a.comments - b.comments);
-    if (sortType.value === 'views_desc') result.sort((a, b) => b.readTotal - a.readTotal);
-    if (sortType.value === 'views_asc') result.sort((a, b) => a.readTotal - b.readTotal);
+
+    // 🔥 priorização
+    if (!search && !genre && !style && !sort) {
+
+      sortPriority(result)
+
+    } else {
+      // outros sorts
+      if (sort === 'votes_desc') result.sort((a, b) => b.votes - a.votes);
+      if (sort === 'votes_asc') result.sort((a, b) => a.votes - b.votes);
+      if (sort === 'comments_desc') result.sort((a, b) => b.comments - a.comments);
+      if (sort === 'comments_asc') result.sort((a, b) => a.comments - b.comments);
+      if (sort === 'views_desc') result.sort((a, b) => b.readTotal - a.readTotal);
+      if (sort === 'views_asc') result.sort((a, b) => a.readTotal - b.readTotal);
+    }
 
     filteredData.value = result;
     emit('update-length', result.length);
+}
+
+watch(
+  activeFilters,
+  ({ search, genre, style, sort }) => {
+   handleSortBooks({ search, genre, style, sort })
   },
   { immediate: true }
 );
 
-
 async function fetchBooks() {
   try {
-    const results = await Promise.allSettled(
-      mockUser.map(book => getBooks(book.id))
-    );
+    const book = await getBooksAws()
+    const results = await  getBooks(book);
 
-    const successfulBooks = results
-      .map((result, i) => {
-        if (result.status === 'fulfilled') return result.value;
-        console.warn(`Erro ao buscar o livro com ID ${mockUser[i].id}:`, result.reason);
-        return null;
-      })
-      .filter(Boolean) as booksData[];
-
-    return successfulBooks;
+    return results;
   } catch (err) {
     console.error("Erro inesperado ao buscar livros:", err);
     return [];
@@ -211,6 +233,7 @@ const handleStyleFilter = (s: string) => {
 /// Falta implementar a Logica - Ainda nao existe separação por estilo //////
 
 onMounted(async () => {
+  
   isLoading.value = true;
   fetchError.value = false;
   retrying.value = false;
@@ -224,13 +247,19 @@ onMounted(async () => {
     emit('update-length', cache.length);
     isLoading.value = false;
 
+    sortPriority(filteredData.value)
+
     // Atualização em segundo plano
     updateBooksInBackground(cacheKey, cache);
+    
+    window.scrollTo({ top: 0, behavior: 'smooth'})
     return;
   }
 
   // Se não tiver cache, faz fetch normal
   await loadBooksNormally(cacheKey);
+
+  window.scrollTo({ top: 0, behavior: 'smooth'})
 });
 
 
@@ -240,7 +269,7 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
   const oldIds = oldBooks.map(b => b.id).join(',');
   const freshIds = freshBooks.map(b => b.id).join(',');
 
-  if (oldIds !== freshIds) {
+  if (oldIds !== freshIds && freshIds > 0) {
     data.value = freshBooks;
     filteredData.value = [...freshBooks];
     emit('update-length', freshBooks.length);

@@ -3,7 +3,7 @@
 import { UrlBase } from './Base.url'
 import axios from 'axios';
 
-const endPoint = UrlBase.render;
+const endPoint = UrlBase.dev;
 const token: string | null = localStorage.getItem('token');
 const cleanToken = token ? token.replace(/"/g, '') : null;
 const pUrl = `${endPoint}/paragraphs/`
@@ -37,20 +37,22 @@ export const getComments = async (wUser: string, wUrl: string) => {
     }
 }
 
-export const getBooks = async (id: string) => {
+export const getBooks = async (books: any) => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000); // 40 segundos
-
-  const url = `${endPoint}/getBooks/${id}`;
+ 
+  const url = `${endPoint}/getBooks`;
 
   try {
-    const response = await axios.get(url, {
+    const response = await axios.post(url, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
       signal: controller.signal, // ✅ isso ativa o AbortController
+      body: books
     });
+    
     return response.data;
   } catch (err) {
     // ✅ lança o erro para que possa ser tratado por Promise.allSettled corretamente

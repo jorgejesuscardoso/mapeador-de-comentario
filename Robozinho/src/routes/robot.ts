@@ -19,14 +19,31 @@ bot.post('/getComments', async (req: Request, res: Response) => {
     }
 });
 
-bot.get('/getBooks/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const resultado = await FindBook(id);
-        res.json(resultado);
-    } catch (error) {
-        console.error('Erro ao buscar livro:', error);
-    };
+bot.post('/getBooks', async (req, res) => {
+  try {
+    const { body } = req.body; // espera-se: [{ book_id: '123' }, { book_id: '456' }, ...]
+    
+    if (!Array.isArray(body)) {
+      return res.status(400).json({ error: 'Formato inválido. Esperado array de objetos com book_id.' });
+    }
+
+    const results = await Promise.allSettled(
+      body.map(item => FindBook(item.book_id))
+    );
+
+    const livrosSucesso = results
+      .map((result, index) => {
+        if (result.status === 'fulfilled') return result.value;
+        console.warn(`❌ Falha ao buscar o livro com ID ${body[index].book_id}:`, result.reason);
+        return null;
+      })
+      .filter(Boolean); // remove os nulls
+
+    res.json(livrosSucesso);
+  } catch (error) {
+    console.error('Erro geral ao buscar livros:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
 });
 
 bot.get('/paragraphs/:id', async (req, res) => {

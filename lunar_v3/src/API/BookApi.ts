@@ -3,7 +3,7 @@ import { UrlBase } from './Base.url'
 import axios from 'axios'
 import { mockUser } from '@/base/cards/mock'
 
-const endPoint = UrlBase.render
+const endPoint = UrlBase.dev
 
 
 export const RegisterBook = async (data: any) => {
@@ -27,18 +27,12 @@ export const RegisterBook = async (data: any) => {
   }
 }
 
-export const getBooks = async (data: any) => {
+export const getBooksAws = async () => {
   try {
     const controller = new AbortController()
 
-    const response = await axios(`${endPoint}/books/register`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify(data),
-      signal: controller.signal,
-    })
+    const response = await axios(`${endPoint}/books/`, {
+      method: 'GET'})
 
     return response.data
   } catch (err: any) {
@@ -47,3 +41,34 @@ export const getBooks = async (data: any) => {
     )
   }
 }
+
+export const feed = async () => {
+  const data = mockUser.map((s) => ({
+    user: s.autor,
+    bookUrl: s.id,
+    bookName: s.name
+  }));
+
+  try {
+    const results = await Promise.allSettled(
+      data.map(d => axios.post(`${endPoint}/books/feed`, d))
+    );
+
+    const successResponses = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => (r as PromiseFulfilledResult<any>).value.data);
+
+    const failed = results.filter(r => r.status === 'rejected');
+
+    console.log('✅ Sucesso:', successResponses.length);
+    console.log('❌ Falharam:', failed.length);
+    if (failed.length > 0) {
+      console.warn('Erros nas requisições:', failed);
+    }
+
+    return successResponses;
+  } catch (err) {
+    console.error('Erro inesperado no feed:', err);
+    return [];
+  }
+};

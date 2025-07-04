@@ -2,7 +2,7 @@
 import { UrlBase } from './Base.url'
 import axios from 'axios'
 
-const endPoint = UrlBase.render
+const endPoint = UrlBase.dev
 
 export type TRegister = {
   user: string,

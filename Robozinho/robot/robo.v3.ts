@@ -56,7 +56,7 @@ export const FindBook = async (id: any) => {
     }).catch(error => {
       console.error('Erro na requisição:', error.response?.status, error.message);
     });
-
+ 
     const raw = parse(response)
     const tagsArray = Object.values(raw.tags);
     const capsArray = Object.values(raw.parts)
