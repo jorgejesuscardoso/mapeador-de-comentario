@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 import router from '@/router'
+import { RegisterBook } from '@/API/BookApi'
 
 const nomeLivro = ref('')
 const linkLivro = ref('')
@@ -27,16 +27,18 @@ const submit = async () => {
 
     const payload = {
       user: parsed.user,
-      nomeLivro: nomeLivro.value,
-      linkLivro: linkLivro.value
+      bookName: nomeLivro.value,
+      bookUrl: linkLivro.value
     }
 
-    await axios.post('/api/livros', payload) // ajuste a rota conforme seu backend
+    const response = await RegisterBook(payload) // ajuste a rota conforme seu backend
+    if(response.error) return error.value = response.error
+
     success.value = true
     nomeLivro.value = ''
     linkLivro.value = ''
   } catch (e) {
-    error.value = 'Erro ao enviar o livro.'
+    error.value = e.message || 'Erro ao registrar'
   } finally {
     loading.value = false
   }

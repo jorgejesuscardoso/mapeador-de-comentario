@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CreateLinkBook from './component/CreateLinkBook.vue';
+import RegisterBook from './component/RegisterBook.vue';
 </script>
 
 <template>
@@ -15,7 +15,7 @@ import CreateLinkBook from './component/CreateLinkBook.vue';
       >
         Ainda em construção
       </h1>
-      <CreateLinkBook />
+      <RegisterBook />
     </main>
   </div>
 </template>
