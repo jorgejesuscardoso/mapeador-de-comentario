@@ -30,7 +30,7 @@ books.post('/register', async (req: Request, res: Response) => {
     const existing = await db.send(
       new GetCommand({
         TableName: 'books',
-        Key: { book_id: splited }
+        Key: { book_id: id }
       })
     );
 
@@ -43,7 +43,7 @@ books.post('/register', async (req: Request, res: Response) => {
         TableName: 'books',
         Item: {
           user,
-          book_id: splitId,
+          book_id: id,
           book_name: bookName,
           createdAt: new Date().toISOString()
         }
