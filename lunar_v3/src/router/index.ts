@@ -6,6 +6,7 @@ import Robot from '@/pages/robot/Robot.vue';
 import WorkDetails from '@/pages/works/WorkDetails.vue';
 import CommentsCard from '@/base/cards/CommentsCard.vue';
 import Login from '@/pages/login/Login.vue';
+import Register from '@/pages/register/Register.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -39,6 +40,12 @@ const routes: RouteRecordRaw[] = [
     path: '/login', 
     name: 'login',
     component: Login,
+  },
+  
+  { 
+    path: '/register', 
+    name: 'register',
+    component: Register,
   },
 
 ];

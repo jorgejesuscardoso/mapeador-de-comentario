@@ -57,15 +57,28 @@ const filteredData = ref<booksData[]>([]);
 
 setInterval(async () => {
   const books = await fetchBooks();
+
+  const currentIds = data.value.map(b => b.id).join(',');
+  const newIds = books.map(b => b.id).join(',');
+
+  if (currentIds !== newIds) {
     data.value = books;
     filteredData.value = [...books];
     emit('update-length', books.length);
-  
-}, 60 * 10 * 1000); 
+    setCache('books_cache_v1', books, 3600); // Salva o cache também
+    console.log('🔄 Atualizado via setInterval');
+  } else {
+    console.log('📦 Nenhuma mudança detectada, cache mantido');
+  }
+}, 60 * 10 * 1000);
+
 
 watch(
   () => [searchFilter.search, searchFilter.genre, searchFilter.style, sortType.value],
   ([search, genre, style]) => {
+
+    if (data.value.length === 0) return;
+
     const query = search.toLocaleLowerCase().trim();
     const genreQuery = genre.toLocaleLowerCase().trim();
     const styleQuery = style.toLocaleLowerCase().trim();
@@ -154,7 +167,10 @@ async function loadBooksNormally(cacheKey: string) {
   if (books.length === 0) {
     permanentFailure.value = true;
   } else {
-    setCache(cacheKey, books, 3600); // salva por 1 hora
+    setCache('books_cache_v1', {
+      books,
+      lastUpdate: Date.now()
+    }, 3600);
   }
 
   isLoading.value = false;
@@ -232,7 +248,9 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
     data.value = freshBooks;
     filteredData.value = [...freshBooks];
     emit('update-length', freshBooks.length);
-    setCache(cacheKey, freshBooks, 3600); // renova cache
+    setTimeout(() => {      
+      setCache(cacheKey, freshBooks, 3600);
+    }, 60*1000)
     console.log('📥 Livros atualizados em segundo plano.');
   } else {
     console.log('✅ Livros do cache ainda válidos.');

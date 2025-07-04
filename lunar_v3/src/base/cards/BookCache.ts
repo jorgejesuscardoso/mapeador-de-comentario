@@ -10,12 +10,12 @@ export function getCache(key: string) {
 
   try {
     const { value, expiresAt } = JSON.parse(item);
-    // if (Date.now() > expiresAt) {
-    //   localStorage.removeItem(key);
-    //   return null;
-    // }
+    if (Date.now() > expiresAt) {
+      localStorage.removeItem(key);
+      return null;
+    }
     return value;
   } catch {
     return null;
   }
-}
+} 
