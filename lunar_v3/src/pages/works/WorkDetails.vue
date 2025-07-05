@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, inject } from 'vue';
+import { ref, onMounted, watch, inject, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getBooks } from '@/API/Api.v3';
+import { getBookDetail } from '@/API/Api.v3';
 import LoadCard from '../../base/loading/LoadCard.vue';
 
 interface booksData {
@@ -40,14 +40,15 @@ const isLoading = ref(false);
 const showModal = ref(false)
 const capsId = ref('');
 const wUser = ref('');
-const capToSearch = ref('')
+const capToSearch = ref<any>('')
 const length = ref(0)
 const isAdm = ref(inject('isAdmin'))
+const modalRef = ref<HTMLElement | null>(null);
 
 onMounted(async () => {
   const id = route.params.id as string;
   isLoading.value = true;
-  book.value = await getBooks(id);
+  book.value = await getBookDetail(id);
   isLoading.value = false;
   window.scrollTo({ top: 0, behavior: 'smooth' })
 });
@@ -81,6 +82,19 @@ function formatDate(dateStr: string) {
   });
 }
 
+function handleClickOutside(event: MouseEvent) {
+  if (modalRef.value && !modalRef.value.contains(event.target as Node)) {
+    showModal.value = false;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 
 </script>
 
@@ -165,11 +179,11 @@ function formatDate(dateStr: string) {
         <h2 class="text-xl font-bold text-gray-800 mb-4">Capítulos</h2>
 
         <ul class="divide-y divide-gray-300 rounded overflow-hidden shadow-md border border-gray-300">
-          <li
+          <li 
             v-for="cap in book.caps as capsData[]"
             :key="cap.url"
             class="px-4 py-2 hover:bg-gray-50 cursor-pointer transition relative"
-            @click="{ handleCapsId(cap); handleGetLength(cap.length)}"
+            @click.stop="{ handleCapsId(cap); handleGetLength(cap.length)}"
           >
             <div class="flex justify-between items-center">
               <div>
@@ -194,41 +208,65 @@ function formatDate(dateStr: string) {
 
         <!--modal-->
         <div
-          v-if="showModal && isAdm"
+          v-if="showModal"
           class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
         >
-          <div class="bg-white w-[90%] max-w-md rounded-xl shadow-xl p-6 border border-gray-200">
+          <div 
+            ref="modalRef"
+            class="bg-white w-[90%] max-w-md rounded-xl shadow-xl p-6 border border-gray-200"
+          >
             <h2 class="text-lg font-bold text-gray-800 mb-4">
-              Buscar Comentários do Wattpad
+              {{ isAdm ? 'Buscar Comentários do Wattpad' : 'Capítulo disponível no Wattpad' }}
             </h2>
 
-            <label class="block text-sm text-gray-600 mb-1" for="user-input">
-              Nome de usuário:
-            </label>
-            <input
-              id="user-input"
-              v-model="wUser"
-              type="text"
-              placeholder="Ex: 3ricautora"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+            <!-- Formulário visível apenas para administradores -->
+            <form v-if="isAdm" @submit.prevent="handleSearchComments">
+              <label class="block text-sm text-gray-600 mb-1" for="user-input">
+                Nome de usuário:
+              </label>
+              <input
+                id="user-input"
+                v-model="wUser"
+                type="text"
+                placeholder="Ex: 3ricautora"
+                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
 
-            <div class="mt-4 flex justify-end gap-2">
-              <button
-                @click="showModal = false"
-                class="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100 transition"
+              <div class="mt-4 flex justify-end gap-2">
+                <button
+                  type="button"
+                  @click="showModal = false"
+                  class="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100 transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
+                >
+                  Buscar Comentários
+                </button>
+              </div>
+            </form>
+
+            <!-- Botão de leitura, disponível sempre -->
+            <div :class="isAdm ? 'mt-6 border-t pt-4' : ''">
+              <h3 class="text-sm font-semibold text-gray-700 mb-2">
+                {{ isAdm ? 'Ou abra o capítulo:' : 'Acesse o capítulo no Wattpad:' }}
+              </h3>
+              <a
+                :href="`${(book?.caps.find((c: any) => c.title === capToSearch) as capsData )?.url }`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block w-full text-center px-4 py-2 text-sm text-white bg-green-600 hover:bg-green-700 rounded-md transition"
               >
-                Cancelar
-              </button>
-              <button
-                @click="handleSearchComments"
-                class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
-              >
-                Buscar
-              </button>
+                📖 Ler Capítulo no Wattpad
+              </a>
             </div>
           </div>
         </div>
+
+
       </div>
     </div>
     <div v-else class="text-center text-gray-500">

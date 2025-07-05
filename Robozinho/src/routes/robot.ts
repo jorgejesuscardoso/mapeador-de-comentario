@@ -19,6 +19,22 @@ bot.post('/getComments', async (req: Request, res: Response) => {
     }
 });
 
+
+bot.get('/detail/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    
+
+    const results = await FindBook(id);
+
+    //console.log("############################################",results)
+    res.json(results);
+  } catch (error) {
+    console.error('Erro geral ao buscar livros:', error);
+    res.status(500).json({ error: 'Erro interno do servidor.' });
+  }
+});
+
 bot.post('/getBooks', async (req, res) => {
   try {
     const { body } = req.body; // espera-se: [{ book_id: '123' }, { book_id: '456' }, ...]

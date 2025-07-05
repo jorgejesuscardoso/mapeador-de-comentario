@@ -62,6 +62,25 @@ export const getBooks = async (books: any) => {
   }
 };
 
+
+export const getBookDetail = async (id: any) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000); // 40 segundos
+ 
+  const url = `${endPoint}`;
+
+  try {
+    const response = await axios.get(`${url}/detail/${id}`);
+    
+    return response.data;
+  } catch (err) {
+    // ✅ lança o erro para que possa ser tratado por Promise.allSettled corretamente
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 export const getParagraph = async (id: string) => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 15000);
