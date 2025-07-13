@@ -273,6 +273,7 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
     data.value = freshBooks;
     filteredData.value = [...freshBooks];
     emit('update-length', freshBooks.length);
+    sortPriority(filteredData.value)
     setTimeout(() => {      
       setCache(cacheKey, freshBooks, 604800);
     }, 60*1000)
