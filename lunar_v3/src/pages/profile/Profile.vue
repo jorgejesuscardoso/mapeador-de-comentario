@@ -69,7 +69,7 @@ onMounted(async () => {
         <div class="flex flex-col lg:flex-row items-center gap-8 w-full">
           
           <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-1/2">
+          <div class="flex flex-col items-center text-center w-full lg:w-2/3">
             <img
               :src="userData.avatar || ''"
               alt="Avatar"
@@ -77,7 +77,7 @@ onMounted(async () => {
             />
             <h2 class="mt-4 text-lg font-bold text-purple-700">{{ userData.name }}</h2>
             <p class="text-sm text-gray-500 mb-2">@{{ userData.userName }}</p>
-            <p class="text-sm text-gray-600 max-w-sm">{{ userData.description || 'Sem bio ainda.' }}</p>
+            <p class="text-sm text-gray-600 max-w-md">{{ userData.description || 'Sem bio ainda.' }}</p>
             <a
               :href="userData.perfilWtpd"
               target="_blank"
@@ -92,7 +92,7 @@ onMounted(async () => {
           </div>
 
           <!-- Estatísticas à direita -->
-          <div class="gap-6 w-full lg:w-1/2">
+          <div class="gap-6 w-full lg:w-5/12">
             <div
               class="grid grid-cols-2 sm:grid-cols-2 gap-6"
             >
