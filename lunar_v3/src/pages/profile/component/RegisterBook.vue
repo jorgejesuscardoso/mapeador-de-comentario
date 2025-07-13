@@ -49,13 +49,19 @@ const submit = async () => {
 </script>
 
 <template>
-  <div class="min-w-full flex items-center justify-center border p-2 bg-fuchsia-400/90 rounded-xl">
+  <div 
+    class="min-w-full flex items-center justify-center border p-2 rounded-xl"
+    :class="{
+       'bg-fuchsia-500': !showForm,
+       'bg-fuchsia-500/90': showForm
+    }"
+  >
     <div class="w-full w-md space-y-4">
       <h2 
-        class="flex justify-between text-base font-bold text-start text-indigo-800  cursor-pointer"
+        class="flex justify-between text-lg font-semibold text-start text-white -700  cursor-pointer"
         @click="showForm = !showForm"
         :class="{
-          'border-b border-purple-500' : showForm,
+          'border-b border-fuchsia-400' : showForm,
           '' : !showForm
         }"
       >
@@ -77,12 +83,12 @@ const submit = async () => {
         <div
           class="w-full"
         >
-          <label class="block mb-1 text-sm font-semibold text-violet-700">Nome do Livro</label>
+          <label class="block mb-1 text-sm font-semibold text-white">Nome do Livro</label>
           <input
             v-model="nomeLivro"
             type="text"
             placeholder="Ex: As crônicas de Narnia"
-            class="w-full border rounded px-3 py-1 focus:outline-none"
+            class="w-full border rounded px-3 py-1 focus:outline-none placeholder:text-pink-500"
             required
           />
         </div>
@@ -90,19 +96,19 @@ const submit = async () => {
         <div
           class="w-full"
         >
-          <label class="block mb-1 text-sm font-semibold text-violet-700">Link do Livro</label>
+          <label class="block mb-1 text-sm font-semibold text-white">Link do Livro</label>
           <input
             v-model="linkLivro"
             type="url"
             placeholder="https://www.wattpad.com/story/..."
-            class="w-full border rounded px-3 py-1 focus:outline-none"
+            class="w-full border rounded px-3 py-1 focus:outline-none placeholder:text-pink-500"
             required
           />
         </div>
 
         <button
           :disabled="loading"
-          class="flex items-center justify-center text-sm mx-auto gap-2 w-full lg:w-32 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-xl transition disabled:opacity-50"
+          class="flex items-center justify-center text-sm mx-auto gap-2 w-full lg:w-32 bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 rounded-xl transition disabled:opacity-50"
         >
           <Lucide 
             icon="Send"
