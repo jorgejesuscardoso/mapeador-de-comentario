@@ -3,6 +3,7 @@ import { ref, onMounted, watch, inject, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getBookDetail } from '@/API/Api.v3';
 import LoadCard from '../../base/loading/LoadCard.vue';
+import Lucide from '@/base/lucide/Lucide.vue';
 
 interface booksData {
   caps: [];
@@ -20,7 +21,7 @@ interface booksData {
   url: string;
   user: { name?: string, userName?: string }; // você pode adaptar melhor isso
   votes: number;
-}
+} 
 
 interface capsData {
   comments: number,
@@ -52,6 +53,10 @@ onMounted(async () => {
   isLoading.value = false;
   window.scrollTo({ top: 0, behavior: 'smooth' })
 });
+
+function goBack() {
+  router.back();
+}
 
 const handleGetLength = (n: number) => {
   length.value = n
@@ -103,11 +108,25 @@ onBeforeUnmount(() => {
     <LoadCard v-if="isLoading" />
 
     <div v-else-if="book" class="bg-white rounded">
-      <div class="flex flex-col md:flex-row p-4">
+      <div class="flex flex-col md:flex-row p-4 relative">
+        <div
+          class="flex items-center gap-1 pb-1 text-xs border-b border-gray-300 lg:border-0 mb-4 text-purple-700 font-semibold lg:absolute lg:top-3 lg:left-4"  
+        >
+          <Lucide
+            icon="ArrowLeft"
+            class="h-4 w-4"        
+            @click="goBack"
+          />
+          <h3        
+            @click="goBack"
+          >
+            Voltar
+          </h3>
+        </div>
         <img
           :src="book.cover"
           alt="Capa do livro"
-          class="lg:w-60 h-2/3"
+          class="lg:w-60 h-2/3 lg:mt-6"
         />
         <div class="lg:px-6 flex-1 my-4">
           <div class="flex justify-between items-center">

@@ -106,7 +106,7 @@ provide('isAdmin', isAdmin)
 								Home
 							</RouterLink>
 						</li>
-						<li
+						<!-- <li
 							v-if="isLogged && isAdmin"
 						>
 							<RouterLink 
@@ -124,7 +124,7 @@ provide('isAdmin', isAdmin)
 								/>
 								Robozinho
 							</RouterLink>
-						</li>
+						</li> -->
 						<li>
 							<RouterLink 
 								to=""
@@ -193,9 +193,9 @@ provide('isAdmin', isAdmin)
 						
 							<li>
 								<RouterLink 
-									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
-									:class="{ 'bg-violet-200': route.path === '/profile' }"
+									v-if="!isLogged"
+									to="/register"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 								>
 									<Lucide icon="FileInput" size="14" />
 									Registro
@@ -259,7 +259,7 @@ provide('isAdmin', isAdmin)
 									Home
 								</RouterLink>
 							</li>
-							<li v-if="isLogged && isAdmin">
+							<!-- <li v-if="isLogged && isAdmin">
 								<RouterLink 
 									to="/bot"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
@@ -268,7 +268,7 @@ provide('isAdmin', isAdmin)
 									<Lucide icon="Bot" size="14" />
 									Robozinho
 								</RouterLink>
-							</li>
+							</li> -->
 							<li>
 								<RouterLink 
 									to=""
@@ -313,8 +313,9 @@ provide('isAdmin', isAdmin)
 							
 							<li>
 								<RouterLink 
-									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
+									v-if="!isLogged"
+									to="/register"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 								>
 									<Lucide icon="FileInput" size="14" />
 									Registro

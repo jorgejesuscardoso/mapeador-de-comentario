@@ -60,9 +60,9 @@ const isFormValid = computed(() => {
 onMounted(() =>{
   const getUser = localStorage.getItem('user')
   const parse = JSON.parse(getUser)
+  const hasToken = parse?.token ? true : false
 
-
-  if(parse.token) {   
+  if(hasToken) {   
       router.push('/')
     return
   }

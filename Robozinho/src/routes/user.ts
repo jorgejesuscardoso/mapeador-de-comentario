@@ -4,6 +4,8 @@ import express, { Request, Response } from 'express';
 import { GetCommand, ScanCommand, PutCommand  } from '@aws-sdk/lib-dynamodb';
 import { generateToken, verifyToken } from "../configs/jwt";
 import { generateHash, verifyHash } from "../configs/bcrypt";
+import axios from "axios";
+import { parse } from 'php-array-parser';
 
 const user = express.Router();
 
@@ -110,8 +112,23 @@ user.get('/', async (req: Request, res: Response) => {
   }
 });
 
-user.get('/:user', async (req: Request, res: Response) => {
-  const { user: userParam } = req.params;
+
+user.get('/wtpd/:id', async (req: Request, res: Response) => {
+  const { id: userParam } = req.params;
+  const url = 'https://www.wattpad.com/api/v3/users'
+
+  try {
+    const result = await axios(`${url}/${userParam}`);
+    const raw = parse(result.data);
+    res.json(raw);
+  } catch (err) {
+    console.error('Erro ao buscar usuário:', err);
+    res.status(500).json({ error: 'Erro ao buscar usuário!' });
+  }
+});
+
+user.get('/:id', async (req: Request, res: Response) => {
+  const { id: userParam } = req.params;
 
   try {
     const result = await db.send(
@@ -120,7 +137,7 @@ user.get('/:user', async (req: Request, res: Response) => {
         Key: { user: userParam }
       })
     );
-
+ 
     if (!result.Item || result.Item.deletedAt) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }

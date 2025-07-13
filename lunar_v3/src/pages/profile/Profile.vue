@@ -1,32 +1,145 @@
 <script setup lang="ts">
+import { getUserWtpd } from '@/API/UserApi';
 import RegisterBook from './component/RegisterBook.vue';
-import {ref, onMounted } from 'vue';
+import {ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import BookCard from './component/BookCard.vue';
+import Lucide from '@/base/lucide/Lucide.vue';
 
 const router = useRouter();
+const userData = ref({
+  avatar: '',
+  createdAt: '',
+  perfilWtpd: '',
+  description: '',
+  gender: '',
+  modifyDate: '',
+  name: '',
+  numFollowers: 0,
+  numFollowing: 0,
+  numList: 0,
+  numPublished: 0,
+  userName: '',
+  votesReceived: 0
+})
+const isLoading = ref(false)
+const userProp = ref('')
 
-onMounted(() => {
+watch(userData, (val) => {
+    userProp.value = val.userName
+}, {immediate: true })
+
+onMounted(async () => {
+  isLoading.value = true
   const store = localStorage.getItem('user')
   const parsed = store ? JSON.parse(store) : null
-
+  
   if(!parsed) return router.push('/login')
+  const data = await getUserWtpd(parsed.user)
+
+  if(data){
+    userData.value = {
+      avatar: data.avatar,
+      createdAt: data.createDate,
+      description: data.description,
+      gender: data.gender,
+      modifyDate: data.modifyDate,
+      name: data.name,
+      numFollowers: data.numFollowers,
+      numFollowing: data.numFollowing,
+      numList: data.numLists,
+      numPublished: data.numStoriesPublished,
+      perfilWtpd: data.deeplink,
+      userName: data.username,
+      votesReceived: data.votesReceived
+    }
+  }
+
+   isLoading.value = false
 })
 </script>
 
 <template>
-  <div
-    class="flex w-full"
-  >
-
-    <main
-      class="flex flex-col min-w-full items-center  min-h-screen gap-10"
-    >
-      <h1
-        class="mt-14 text-xl font-semibold text-purple-800"
+  <div class="flex flex-col justify-center items-center w-full min-h-screen bg-white px-4">
+    
+      <div
+        v-if="!isLoading"
+        class="rounded-2xl mt-14 py-8 px-6 w-full max-w-6xl mx-auto bg-white shadow-sm text-gray-800 space-y-6"
       >
-        Ainda em construção
-      </h1>
-      <RegisterBook />
-    </main>
+        <div class="flex flex-col lg:flex-row items-center gap-8 w-full">
+          
+          <!-- Perfil à esquerda -->
+          <div class="flex flex-col items-center text-center w-full lg:w-1/2">
+            <img
+              :src="userData.avatar || ''"
+              alt="Avatar"
+              class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
+            />
+            <h2 class="mt-4 text-lg font-bold text-purple-700">{{ userData.name }}</h2>
+            <p class="text-sm text-gray-500 mb-2">@{{ userData.userName }}</p>
+            <p class="text-sm text-gray-600 max-w-sm">{{ userData.description || 'Sem bio ainda.' }}</p>
+            <a
+              :href="userData.perfilWtpd"
+              target="_blank"
+              class="flex items-center text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition"
+            >
+            <Lucide
+              icon="ExternalLink"
+              class="w-4 h-4"
+            />
+              Ver perfil no Wattpad
+            </a>
+          </div>
+
+          <!-- Estatísticas à direita -->
+          <div class="gap-6 w-full lg:w-1/2">
+            <div
+              class="grid grid-cols-2 sm:grid-cols-2 gap-6"
+            >
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
+                <p class="text-xl font-bold text-purple-600">{{ userData.numFollowers }}</p>
+                <p class="text-sm text-gray-500">Seguidores</p>
+              </div>
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
+                <p class="text-xl font-bold text-purple-600">{{ userData.numFollowing }}</p>
+                <p class="text-sm text-gray-500">Seguindo</p>
+              </div>
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
+                <p class="text-xl font-bold text-purple-600">{{ userData.numPublished }}</p>
+                <p class="text-sm text-gray-500">Histórias</p>
+              </div>
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
+                <p class="text-xl font-bold text-purple-600">{{ userData.votesReceived }}</p>
+                <p class="text-sm text-gray-500">Votos totais</p>
+              </div>
+            </div>
+            
+            <div
+              class="hidden w-full lg:flex mt-6"
+            >
+              <RegisterBook />
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div v-else class="text-gray-500 text-lg">Carregando perfil...</div>
+        
+    
+      <div
+        class="w-full lg:hidden"
+      >
+        <RegisterBook />
+      </div>
+
+    <div
+      class="flex w-full mt-16 pb-14"
+    >
+      <BookCard
+        :user-id="userProp"
+      />
+    </div>
   </div>
 </template>

@@ -49,3 +49,18 @@ export const Register = async (data: TRegister) => {
     throw err.response?.data?.message || 'Erro inesperado no login'
   }
 }
+
+export const getUserWtpd = async (id: string) => {
+  try {
+    const controller = new AbortController()
+
+    const response = await axios(`${endPoint}/users/wtpd/${id}`, {
+      method: 'GET',
+      signal: controller.signal,
+    })
+
+    return response.data
+  } catch (err: any) {
+    throw err.response?.data?.message || 'Erro inesperado'
+  }
+}

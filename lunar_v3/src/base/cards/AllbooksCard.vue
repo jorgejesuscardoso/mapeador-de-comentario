@@ -55,30 +55,6 @@ const data = ref<booksData[]>([]);
 const filteredData = ref<booksData[]>([]);
 
 
-setInterval(async () => {
-  const books = await fetchBooks();
-
-  const currentIds = data.value.map(b => b.id).join(',');
-  const newIds = books.map(b => b.id).join(',');
- 
-  if (currentIds !== newIds) {
-    data.value = books;
-    filteredData.value = [...books];
-    emit('update-length', books.length);
-    setCache('books_cache_v1', books, 604800); // Salva o cache também
-    console.log('🔄 Atualizado via setInterval');
-  } else {
-    console.log('📦 Nenhuma mudança detectada, cache mantido');
-  }
-}, 60 * 10 * 1000);
-
-const activeFilters = computed(() => ({
-  search: searchFilter.search.trim().toLowerCase(),
-  genre: searchFilter.genre.trim().toLowerCase(),
-  style: searchFilter.style.trim().toLowerCase(),
-  sort: sortType.value.trim().toLowerCase()
-}));
-
 const sortPriority = (data: any) => {
 
   const prioridadeAutores = ['anna_fransa', '3ricautora', 'jcbushido'];
@@ -98,6 +74,31 @@ const sortPriority = (data: any) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 }
+
+setInterval(async () => {
+  const books = await fetchBooks();
+
+  const currentIds = data.value.map(b => b.id).join(',');
+  const newIds = books.map(b => b.id).join(',');
+ 
+  if (currentIds !== newIds) {
+    data.value = books;
+    filteredData.value = [...books];
+    emit('update-length', books.length);
+    sortPriority(filteredData.value)
+    setCache('books_cache_v1', books, 604800); // Salva o cache também
+    console.log('🔄 Atualizado via setInterval');
+  } else {
+    console.log('📦 Nenhuma mudança detectada, cache mantido');
+  }
+}, 60 * 10 * 1000);
+
+const activeFilters = computed(() => ({
+  search: searchFilter.search.trim().toLowerCase(),
+  genre: searchFilter.genre.trim().toLowerCase(),
+  style: searchFilter.style.trim().toLowerCase(),
+  sort: sortType.value.trim().toLowerCase()
+}));
 
 const handleSortBooks = ({ search, genre, style, sort }) => {
    if (data.value.length === 0) return;
@@ -184,6 +185,7 @@ async function loadBooksNormally(cacheKey: string) {
 
   data.value = books;
   filteredData.value = [...books];
+  sortPriority(filteredData.value)
   emit('update-length', books.length);
 
   if (books.length === 0) {
@@ -272,8 +274,8 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
   if ((oldIds !== freshIds) && freshIds) {
     data.value = freshBooks;
     filteredData.value = [...freshBooks];
-    emit('update-length', freshBooks.length);
     sortPriority(filteredData.value)
+    emit('update-length', freshBooks.length);
     setTimeout(() => {      
       setCache(cacheKey, freshBooks, 604800);
     }, 60*1000)
@@ -317,7 +319,7 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
   <div class="flex items-center justify-center w-full rounded-lg">
 		<div>
 			<div 
-				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-1"
+				class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-1"
 			>
 				<div
 					v-if="!isLoading"

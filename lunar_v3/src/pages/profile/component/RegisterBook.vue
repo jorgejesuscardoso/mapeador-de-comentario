@@ -3,12 +3,14 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import router from '@/router'
 import { RegisterBook } from '@/API/BookApi'
+import Lucide from '@/base/lucide/Lucide.vue'
 
 const nomeLivro = ref('')
 const linkLivro = ref('')
 const error = ref('')
 const success = ref(false)
 const loading = ref(false)
+const showForm = ref(true)
 
 const submit = async () => {
   try {
@@ -47,42 +49,65 @@ const submit = async () => {
 </script>
 
 <template>
-  <div class="min-w-full flex items-center justify-center">
-    <div class="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4">
-      <h2 class="text-xl font-semibold text-center text-indigo-600">Enviar Livro</h2>
+  <div class="min-w-full flex items-center justify-center border p-2 bg-fuchsia-400/90 rounded-xl">
+    <div class="w-full w-md space-y-4">
+      <h2 
+        class="flex justify-between text-base font-bold text-start text-indigo-800  cursor-pointer"
+        @click="showForm = !showForm"
+        :class="{
+          'border-b border-purple-500' : showForm,
+          '' : !showForm
+        }"
+      >
+       Enviar Livro
+       <Lucide 
+          :icon="!showForm ? 'ChevronDown' : 'ChevronUp'"
+       />
+      </h2>
 
       <div v-if="error" class="text-red-600 text-sm text-center">{{ error }}</div>
-      <div v-if="success" class="text-green-600 text-xs text-center">
-        Livro enviado com sucesso! Pode demorar até 1hr para aparecer na biblioteca!
+      <div v-if="success" class="text-green-600 bg-white text-sm font-semibold text-center">
+        <p>Livro enviado com sucesso! Pode demorar até 1hr para aparecer na biblioteca!</p>
       </div>
 
-      <form @submit.prevent="submit" class="space-y-4">
-        <div>
-          <label class="block mb-1 text-sm font-medium text-gray-600">Nome do Livro</label>
+      <form 
+        v-if="showForm"
+        @submit.prevent="submit" class="space-y-4"
+      >
+        <div
+          class="w-full"
+        >
+          <label class="block mb-1 text-sm font-semibold text-violet-700">Nome do Livro</label>
           <input
             v-model="nomeLivro"
             type="text"
-            placeholder="Ex: O Guardião de Feras"
-            class="w-full border rounded-lg px-3 py-2 focus:outline-none"
+            placeholder="Ex: As crônicas de Narnia"
+            class="w-full border rounded px-3 py-1 focus:outline-none"
             required
           />
         </div>
 
-        <div>
-          <label class="block mb-1 text-sm font-medium text-gray-600">Link do Livro</label>
+        <div
+          class="w-full"
+        >
+          <label class="block mb-1 text-sm font-semibold text-violet-700">Link do Livro</label>
           <input
             v-model="linkLivro"
             type="url"
             placeholder="https://www.wattpad.com/story/..."
-            class="w-full border rounded-lg px-3 py-2 focus:outline-none"
+            class="w-full border rounded px-3 py-1 focus:outline-none"
             required
           />
         </div>
 
         <button
           :disabled="loading"
-          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition disabled:opacity-50"
+          class="flex items-center justify-center text-sm mx-auto gap-2 w-full lg:w-32 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-xl transition disabled:opacity-50"
         >
+          <Lucide 
+            icon="Send"
+            class="w-4 h-4"
+          />
           {{ loading ? 'Enviando...' : 'Enviar Livro' }}
         </button>
       </form>
