@@ -82,7 +82,14 @@ user.post('/register', async (req: Request, res: Response) => {
           name,
           age,
           role,
-          createdAt: new Date().toISOString()
+          subRole:'',
+          promo:[],
+          tierPoints: 0,
+          house:[{
+            name:'',
+            thumb: ''
+          }],
+          createdAt: new Date().toISOString(),
         }
       })
     );
