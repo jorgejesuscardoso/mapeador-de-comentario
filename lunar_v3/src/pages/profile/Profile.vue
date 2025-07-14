@@ -24,6 +24,7 @@ const userData = ref({
 })
 const isLoading = ref(false)
 const userProp = ref('')
+const userLogged = ref()
 
 watch(userData, (val) => {
     userProp.value = val.userName
@@ -36,7 +37,8 @@ onMounted(async () => {
   
   if(!parsed) return router.push('/login')
   const data = await getUserWtpd(parsed.user)
-
+  userLogged.value = parsed
+  console.log(parsed)
   if(data){
     userData.value = {
       avatar: data.avatar,
@@ -64,7 +66,7 @@ onMounted(async () => {
     
       <div
         v-if="!isLoading"
-        class="rounded-2xl mt-14 py-8 px-6 w-full max-w-6xl mx-auto bg-white shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-14 py-8 px-6 w-full max-w-6xl mx-auto bg-white shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-center gap-8 w-full">
           
@@ -93,26 +95,59 @@ onMounted(async () => {
 
           <!-- Estatísticas à direita -->
           <div class="gap-6 w-full lg:w-5/12">
-            <div
-              class="grid grid-cols-2 sm:grid-cols-2 gap-6"
-            >
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
-                <p class="text-xl font-bold text-purple-600">{{ userData.numFollowers }}</p>
-                <p class="text-sm text-gray-500">Seguidores</p>
+            <div class="grid grid-cols-2 sm:grid-cols-2 gap-6">
+              <!-- Seguidores -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-600"
+                  > 
+                    <Lucide icon="Users" class="w-5 h-5 text-purple-500" />
+                    {{ userData.numFollowers }}
+                  </p>
+                  <p class="text-sm text-gray-500">Seguidores</p>
+                </div>
               </div>
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
-                <p class="text-xl font-bold text-purple-600">{{ userData.numFollowing }}</p>
-                <p class="text-sm text-gray-500">Seguindo</p>
+
+              <!-- Seguindo -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-600"
+                  > 
+                    <Lucide icon="UserPlus" class="w-5 h-5 text-purple-500" />
+                    {{ userData.numFollowing }}
+                  </p>
+                  <p class="text-sm text-gray-500">Seguindo</p>
+                </div>
               </div>
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
-                <p class="text-xl font-bold text-purple-600">{{ userData.numPublished }}</p>
-                <p class="text-sm text-gray-500">Histórias</p>
+
+              <!-- Histórias publicadas -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-between  gap-1 text-xl font-bold text-purple-600"
+                  >  
+                    <Lucide icon="BookOpen" class="w-5 h-5 text-purple-500" />
+                    {{ userData.numPublished }}
+                  </p>
+                  <p class="text-sm text-gray-500">Histórias</p>
+                </div>
               </div>
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm">
-                <p class="text-xl font-bold text-purple-600">{{ userData.votesReceived }}</p>
-                <p class="text-sm text-gray-500">Votos totais</p>
+
+              <!-- Votos recebidos -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-600"
+                  > 
+                    <Lucide icon="Star" class="w-5 h-5 text-purple-500 fill-yellow-400" />
+                    {{ userData.votesReceived }}
+                  </p>
+                  <p class="text-sm text-gray-500">Votos totais</p>
+                </div>
               </div>
-            </div>
+              </div>
             
             <div
               class="hidden w-full lg:flex mt-6"

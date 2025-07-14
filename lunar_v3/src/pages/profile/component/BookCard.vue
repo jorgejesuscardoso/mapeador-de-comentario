@@ -60,7 +60,7 @@ onMounted(async () => {
       class="flex justify-between text-base font-bold text-start text-indigo-800 border-b border-purple-300 cursor-pointer"  
       @click="showWork = !showWork"    
     >
-      Obras publicadas
+      Suas obras publicadas
       <Lucide
           :icon="!showWork ? 'ChevronDown' : 'ChevronUp'"
        />
