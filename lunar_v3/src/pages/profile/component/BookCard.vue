@@ -64,7 +64,7 @@ onMounted(async () => {
     >
       Suas obras na biblioteca Lunar
       <Lucide
-          :icon="!showWork ? 'ChevronDown' : 'ChevronUp'"
+        :icon="!showWork ? 'ChevronDown' : 'ChevronUp'"
        />
     </h2>
 

@@ -5,6 +5,8 @@ import {ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import BookCard from './component/BookCard.vue';
 import Lucide from '@/base/lucide/Lucide.vue';
+import { getRoleDisplay } from '@/base/helpers/roleDisplay';
+
 
 const router = useRouter();
 const userData = ref({
@@ -27,8 +29,11 @@ const userProp = ref('')
 const userLogged = ref()
 const isLoadingLibrary = ref(false)
 
+const roleTag = ref() 
+
 watch(userData, (val) => {
     userProp.value = val.userName
+    roleTag.value = getRoleDisplay(userLogged?.value?.role, userLogged?.value?.subrole)
 }, {immediate: true })
 
 onMounted(async () => {
@@ -59,7 +64,6 @@ onMounted(async () => {
   }
 
   isLoading.value = false
-   
 })
 </script>
 
@@ -77,18 +81,10 @@ onMounted(async () => {
               <div
                 v-if="userLogged?.role"
                 class="absolute lg:relative top-0 right-0 rounded-bl-xl rounded-tr-xl lg:rounded-tr-none lg:rounded-b-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
-                :class="{
-                  'bg-purple-800': userLogged.role === 'superadmin',
-                  'bg-fuchsia-600': userLogged.role === 'admin',
-                  'bg-blue-500': !userLogged.role || userLogged.role === 'member' || userLogged.role === ' '
-                }"
+                :class="roleTag.class"
               >
                 {{
-                  userLogged.role === 'superadmin'
-                    ? 'Super Adm'
-                    : userLogged.role === 'admin'
-                    ? 'Adm'
-                    : 'Membro Lunar'
+                  roleTag.label
                 }}
               </div>
             <img
