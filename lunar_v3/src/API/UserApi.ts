@@ -83,3 +83,53 @@ export const getUserById = async (id: string) => {
     throw err.response?.data?.message || 'Erro inesperado'
   }
 }
+
+export const updateTierPoints = async (user: string, points: number, type: any) => {
+  try {
+    const controller = new AbortController()
+    const plusOrMinus = type === 'plus' ? "tierPointsPlus" : 'tierPointsMinus'
+    const data = {
+      [plusOrMinus]: points
+    }
+    const response = await axios(`${endPoint}/users/${user}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+      signal: controller.signal,
+    })
+
+    return response.data
+
+  } catch (err: any) {
+    // Se o backend envia uma mensagem de erro, ela será capturada aqui
+    const msg = err?.response?.data?.error || 'Erro inesperado no login'
+    throw new Error(msg)
+  }
+}
+
+export const updatePromotionalTierPoints = async (user: string) => {
+  try {
+    const controller = new AbortController()
+    const data = {
+      tierPointsPlus: 10,
+      promo: 'start'
+    }
+    const response = await axios(`${endPoint}/users/promo/${user}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+      signal: controller.signal,
+    })
+
+    return response.data
+
+  } catch (err: any) {
+    // Se o backend envia uma mensagem de erro, ela será capturada aqui
+    const msg = err?.response?.data?.error || 'Erro inesperado no login'
+    throw new Error(msg)
+  }
+}

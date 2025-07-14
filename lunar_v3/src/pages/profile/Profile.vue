@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUserById, getUserWtpd } from '@/API/UserApi';
+import { getUserById, getUserWtpd, updateTierPoints, updatePromotionalTierPoints } from '@/API/UserApi';
 import RegisterBook from './component/RegisterBook.vue';
 import {ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
@@ -23,24 +23,48 @@ const userData = ref({
   numList: 0,
   numPublished: 0,
   userName: '',
-  votesReceived: 0
+  votesReceived: 0,
+  promo: []
 })
+
 const isLoading = ref(false)
 const userProp = ref('')
 const userLogged = ref()
 const isLoadingLibrary = ref(false)
 const roleTag = ref() 
-
+const promosActived = ref([])
 const tierData = ref()
 
+const showReward = ref(false)
+
+function closeReward() {
+  showReward.value = false
+  handleUpdate()
+}
+
+watch(showReward, (value) => {
+  if (value) {
+    setTimeout(() => {
+      if (showReward.value) closeReward()
+    }, 5000)
+  }
+})
+
 watch(userData, (val) => {
-    userProp.value = val.userName
-    roleTag.value = getRoleDisplay(userLogged?.value?.role, userLogged?.value?.subrole)
-}, {immediate: true })
+  userProp.value = val.userName
+  roleTag.value = getRoleDisplay(userLogged?.value?.role, userLogged?.value?.subrole)
+  promosActived.value = val.promo
+}, { immediate: true, deep: true }) 
 
 watch(tierData, (val) =>{
-  //console.log(val)
-})
+  promosActived.value = val?.promo
+  console.log(promosActived.value)
+}, {immediate: true })
+
+const handleUpdate = async () => {
+  await updatePromotionalTierPoints(userData.value.userName)
+  window.location.reload()
+}
 
 onMounted(async () => {
   isLoading.value = true
@@ -65,7 +89,8 @@ onMounted(async () => {
       numPublished: data.numStoriesPublished,
       perfilWtpd: data.deeplink,
       userName: data.username,
-      votesReceived: data.votesReceived
+      votesReceived: data.votesReceived,
+      promo: data.promo
     }
   }
 
@@ -104,6 +129,23 @@ onMounted(async () => {
                 {{
                   tierData?.fullLabel
                 }}
+              </div>
+
+              <!-- MOEDA PROMOCIONAL -->
+              <div 
+                v-if="!isLoading && !promosActived?.includes('start') && !showReward"
+                class="flex flex-col absolute top-16 right-5 z-50"
+              >
+                <button 
+                  @click="showReward = true" class="text-4xl transition-transform hover:scale-110"
+                >
+                  💰
+                </button>
+                <span
+                  class="text-xs font-semibold text-purple-800"
+                >
+                  Promoção
+                </span>
               </div>
               
             <img
@@ -340,4 +382,25 @@ onMounted(async () => {
       </div>
     </div>  
   </div>
+
+<!-- Modal de recompensa -->
+<div 
+  v-if="showReward"
+  class="fixed inset-0 flex flex-col items-center justify-center bg-black/50 z-50"
+>
+  <div
+    class="bg-white rounded-xl p-4 shadow-xl flex flex-col items-center"
+    style="width: 50vw; max-width: 300px"
+  >
+    <div class="text-7xl">💰</div>
+    <p class="mt-4 text-purple-700 font-semibold">Parabéns!</p>
+    <p class="mt-4 text-purple-700 text-center font-semibold">Você ganhou 10 pontos de Elo!</p>
+    <button
+      class="mt-4 text-sm text-fuchsia-700 hover:underline"
+      @click="closeReward"
+    >
+      Fechar
+    </button>
+  </div>
+</div>
 </template>

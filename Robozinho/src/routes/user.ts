@@ -211,7 +211,7 @@ user.get('/:id', async (req: Request, res: Response) => {
     }
 
     const tier = calculateUserTierByPoints(result.Item.tierPoints)
-    const userData = { ...tier, house: result.Item.house, points: result.Item.points}
+    const userData = { ...tier, house: result.Item.house, points: result.Item.points, promo: result.Item.promo}
 
     res.json(userData);
   } catch (err) {
@@ -222,8 +222,7 @@ user.get('/:id', async (req: Request, res: Response) => {
 
 user.put('/:user', async (req: Request, res: Response) => {
   const userParam = req.params.user;
-  const { data } = req.body;
-
+  const data = req.body;
   if (!data) {
     return res.status(400).json({ error: 'Dados ausentes!' });
   }
@@ -277,6 +276,48 @@ user.put('/:user', async (req: Request, res: Response) => {
   }
 });
 
+user.put('/promo/:user', async (req: Request, res: Response) => {
+  const userParam = req.params.user;
+  const data = req.body;
+  
+  if (!data) {
+    return res.status(400).json({ error: 'Dados ausentes!' });
+  }
+
+  try {
+    const result = await db.send(
+      new GetCommand({
+        TableName: 'dbLunar2',
+        Key: { user: userParam }
+      })
+    );
+
+    const existingUser = result.Item;
+    if (!existingUser || existingUser.deletedAt) {
+      return res.status(404).json({ error: 'Usuário não encontrado!' });
+    }
+
+    let currentTierPoints = result?.Item?.tierPoints + data?.tierPointsPlus
+    
+
+    await db.send(
+      new PutCommand({
+        TableName: 'dbLunar2',
+        Item: {
+          ...existingUser, // mantém os campos que não foram modificados
+          tierPoints: currentTierPoints,
+          updatedAt: new Date().toISOString(),
+          promo: [data.promo]
+        }
+      })
+    );
+
+    res.json({ message: 'Usuário atualizado com sucesso!' });
+  } catch (err) {
+    console.error('Erro ao atualizar usuário:', err);
+    res.status(500).json({ error: 'Erro ao atualizar usuário!' });
+  }
+});
 
 user.delete('/:user', async (req: Request, res: Response) => {
   const { user: userParam } = req.params;
