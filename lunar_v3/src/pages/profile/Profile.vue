@@ -184,7 +184,7 @@ onMounted(async () => {
                 <a
                   :href="userData.perfilWtpd"
                   target="_blank"
-                  class="flex items-center w-52 lg:w-6/12 mx-auto text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
+                  class="flex items-center w-52  mx-auto text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
                 >
                 <Lucide
                   icon="ExternalLink"
