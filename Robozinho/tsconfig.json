@@ -1,6 +1,6 @@
 {
   "compilerOptions": {    
-    "target": "es2016",                                
+    "target": "es2018",                                
     "module": "commonjs",
     "outDir": "./dist",
     "esModuleInterop": true,
@@ -8,6 +8,6 @@
     "strict": true, 
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "lib": ["ES2017", "DOM"],
+    "lib": ["ES2018", "DOM"],
   }
 }

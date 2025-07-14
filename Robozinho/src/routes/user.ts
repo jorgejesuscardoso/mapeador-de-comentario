@@ -9,6 +9,44 @@ import { parse } from 'php-array-parser';
 
 const user = express.Router();
 
+function parsePhpArray(str: string) {
+  const result: Record<string, any> = {};
+  const lines = str
+    .replace(/^array\s*\(\s*/i, '')      // remove 'array ('
+    .replace(/\)\s*$/, '')               // remove ')'
+    .split(/\n(?=\s{2,}'[^']+')/)        // quebra apenas nas linhas de chave (mantém multilinhas no valor)
+    .map(l => l.trim())
+    .filter(Boolean);
+
+  for (const line of lines) {
+    const match = line.match(/^'(.+?)'\s*=>\s*(.+)$/s);
+    if (!match) continue;
+    let [, key, value] = match as any;
+
+    // Remove vírgula no final se existir
+    value = value.trim().replace(/,$/, '');
+
+    // Trata strings com aspas
+    if (value.startsWith("'") && value.endsWith("'")) {
+      value = value.slice(1, -1).replace(/\\'/g, "'");
+    }
+
+    // Trata números
+    if (!isNaN(Number(value))) {
+      value = Number(value);
+    }
+
+    // Trata booleanos e null
+    if (value === 'false') value = false;
+    if (value === 'true') value = true;
+    if (value === 'NULL' || value === 'null') value = null;
+
+    result[key] = value;
+  }
+
+  return result;
+}
+
 
 
 user.post('/register', async (req: Request, res: Response) => {
@@ -116,15 +154,40 @@ user.get('/', async (req: Request, res: Response) => {
 
 user.get('/wtpd/:id', async (req: Request, res: Response) => {
   const { id: userParam } = req.params;
-  const url = 'https://www.wattpad.com/api/v3/users'
+  const url = `https://www.wattpad.com/api/v3/users/${userParam}`;
 
   try {
-    const result = await axios(`${url}/${userParam}`);
-    const raw = parse(result.data);
-    res.json(raw);
+    const response = await axios.get(url, {
+      headers: { Accept: 'text/plain' },
+      responseType: 'text',
+    });
+
+    const parsed = parsePhpArray(response.data);
+
+    if (!parsed?.username) {
+      return res.status(201).json({ message: 'Usuário não encontrado no Wattpad' });
+    }
+ 
+    const formatted = {
+      username: parsed.username,
+      avatar: parsed.avatar,
+      description: parsed.description,
+      gender: parsed.gender,
+      name: parsed.name,
+      createDate: parsed.createDate,
+      modifyDate: parsed.modifyDate,
+      numFollowers: parsed.numFollowers || 0,
+      numFollowing: parsed.numFollowing || 0,
+      numLists: parsed.numLists || 0,
+      numStoriesPublished: parsed.numStoriesPublished || 0,
+      votesReceived: parsed.votesReceived || 0,
+      deeplink: parsed.deeplink,
+    };
+    
+    return res.json(formatted);
   } catch (err) {
     console.error('Erro ao buscar usuário:', err);
-    res.status(500).json({ error: 'Erro ao buscar usuário!' });
+    return res.status(500).json({ error: 'Erro ao buscar usuário!' });
   }
 });
 

@@ -12,24 +12,27 @@ const error = ref('')
 const modalIsLogged = ref(false)
 
 const submit = async () => {
- try {
-   error.value = ''
-  loading.value = true
+  try {
+    error.value = ''
+    loading.value = true
 
-  const data = await Login(email.value, password.value)
+    const data = await Login(email.value, password.value)
 
-  if(!data.token) {
-    error.value = "Dados inválidos!"
+    // Aqui só entra se o login for OK
+    if (!data.token) {
+      error.value = "Dados inválidos!"
+      return
+    }
+
+    localStorage.setItem('user', JSON.stringify(data))
+    router.push('/')
+
+  } catch (e: any) {
+    // Mostra a mensagem do throw new Error(...)
+    error.value = e.message
+  } finally {
     loading.value = false
-    return
   }
- 
-  localStorage.setItem('user', JSON.stringify(data))
-  loading.value = false
-  router.push('/')
- } catch (e) {
-  loading.value = false
- }
 }
 
 onMounted(() =>{

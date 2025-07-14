@@ -28,6 +28,7 @@ const userLogged = ref()
 
 watch(userData, (val) => {
     userProp.value = val.userName
+    console.log(val)
 }, {immediate: true })
 
 onMounted(async () => {
@@ -72,12 +73,13 @@ onMounted(async () => {
           <!-- Perfil à esquerda -->
           <div class="flex flex-col items-center text-center w-full lg:w-2/3 relative">
             <!-- TAG DE ROLE -->
-              <div                
+              <div
+                v-if="userLogged?.role"
                 class="absolute top-0 right-0 rounded-bl-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
                 :class="{
-                  'bg-purple-800': userLogged?.role === 'superadmin',
-                  'bg-fuchsia-600': userLogged?.role === 'admin',
-                  'bg-blue-500': !userLogged?.role || userLogged?.role === 'member' || userLogged?.role === ' '
+                  'bg-purple-800': userLogged.role === 'superadmin',
+                  'bg-fuchsia-600': userLogged.role === 'admin',
+                  'bg-blue-500': !userLogged.role || userLogged.role === 'member' || userLogged.role === ' '
                 }"
               >
                 {{
@@ -93,7 +95,7 @@ onMounted(async () => {
               alt="Avatar"
               class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
             />
-            <h2 class="mt-4 text-lg font-bold text-purple-700">{{ userData.name }}</h2>
+            <h2 class="mt-4 text-lg font-bold text-purple-700">{{ userData.name || userData.userName }}</h2>
             <p class="text-sm text-gray-500 mb-2">@{{ userData.userName }}</p>
             <p class="text-sm text-gray-600 max-w-md">{{ userData.description || 'Sem bio ainda.' }}</p>
             <a

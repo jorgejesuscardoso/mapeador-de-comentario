@@ -26,10 +26,14 @@ export const Login = async (user: string, password: string) => {
     })
 
     return response.data
+
   } catch (err: any) {
-    throw err.response?.data?.message || 'Erro inesperado no login'
+    // Se o backend envia uma mensagem de erro, ela será capturada aqui
+    const msg = err?.response?.data?.error || 'Erro inesperado no login'
+    throw new Error(msg)
   }
 }
+
 
 export const Register = async (data: TRegister) => {
   try {
