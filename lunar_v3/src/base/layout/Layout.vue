@@ -254,6 +254,7 @@ provide('isAdmin', isAdmin)
 									to="/"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-200': route.path === '/' }"
+									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Home" size="16" />
 									Home
@@ -271,9 +272,10 @@ provide('isAdmin', isAdmin)
 							</li> -->
 							<li>
 								<RouterLink 
-									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
+									to="/members"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-200': route.path === '/members' }"
+									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Users" size="14" />
 									Membros
@@ -284,6 +286,7 @@ provide('isAdmin', isAdmin)
 									to=""
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
 									:class="{ 'bg-violet-200': route.path === '/subs' }"
+									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="List" size="14" />
 									Subs
@@ -294,6 +297,7 @@ provide('isAdmin', isAdmin)
 									to=""
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
 									:class="{ 'bg-violet-200': route.path === '/shop' }"
+									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Store" size="14" />
 									Lojinha Lunar
@@ -304,6 +308,7 @@ provide('isAdmin', isAdmin)
 									to="/profile"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-200': route.path === '/profile' }"
+									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="CircleUserRound" size="14" />
 									Perfil
@@ -316,6 +321,7 @@ provide('isAdmin', isAdmin)
 									v-if="!isLogged"
 									to="/register"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
+									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="FileInput" size="14" />
 									Registro
@@ -332,6 +338,7 @@ provide('isAdmin', isAdmin)
 										'hover:bg-green-100 text-green-800': !isLogged,
 										'hover:bg-red-100 text-red-800': isLogged
 									}"
+									@click.stop="menuOpen = false" 
 								>
 									<Lucide
 											:icon="isLogged ? 'LogOut': 'LogIn'"

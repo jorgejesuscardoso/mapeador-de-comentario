@@ -8,6 +8,7 @@ import CommentsCard from '@/base/cards/CommentsCard.vue';
 import Login from '@/pages/login/Login.vue';
 import Register from '@/pages/register/Register.vue';
 import Profile from '@/pages/profile/Profile.vue';
+import Members from '@/pages/members/Members.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -39,9 +40,18 @@ const routes: RouteRecordRaw[] = [
         path: '/comments', 
         name: 'comments',
         component: CommentsCard,
-      },      
+      },  
+      { 
+        path: '/members', 
+        name: 'members',
+        component: Members,
+      },     
     ]
   },  
+
+
+
+
   { 
     path: '/login', 
     name: 'login',

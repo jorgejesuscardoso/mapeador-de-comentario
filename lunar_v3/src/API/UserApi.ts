@@ -54,6 +54,20 @@ export const Register = async (data: TRegister) => {
   }
 }
 
+
+export const getUser = async () => {
+  try {
+    const controller = new AbortController()
+
+    const response = await axios(`${endPoint}/users/`)
+
+    return response.data
+  } catch (err: any) {
+    throw err.response?.data?.message || 'Erro inesperado'
+  }
+}
+
+
 export const getUserWtpd = async (id: string) => {
   try {
     const controller = new AbortController()

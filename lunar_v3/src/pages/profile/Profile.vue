@@ -156,7 +156,7 @@ onMounted(async () => {
 
             <div
               v-if="tierData?.house?.thumb"
-              class="flex flex-col items-center rounded-md p-1  absolute top-9 left-2 lg:top-5 lg:left-16"
+              class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
             >
               <h3 class="text-xs font-semibold text-purple-800 ">
                 House
@@ -164,7 +164,7 @@ onMounted(async () => {
               <img 
                 :src="`/houses_flags/${tierData?.house?.thumb}`"
                 alt="Bandeira da Casa"
-                class="w-10 h-14 mt-2 rounded-b-3xl rounded-t-md"
+                class="w-8 h-12  rounded-b-3xl rounded-t-md"
               >
               <p
                 class="flex items-center justify-center text-xs text-purple-800 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
