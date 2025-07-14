@@ -34,7 +34,7 @@ function formatDate(dateStr: string) {
 }
 
 watchEffect(() => {
-  console.log('userId detectado pelo watchEffect:', props.userId)
+  props.userId
   filterUserBooks()
 })
 
@@ -45,7 +45,6 @@ onMounted(async () => {
     const storage = localStorage.getItem('books_cache_v1')
     const parsedBooks = storage ? JSON.parse(storage) : []
     
-  console.log(props)
     allBooks.value = parsedBooks.value
   } catch (e) {
     console.error('Erro ao carregar livros:', e)
@@ -63,14 +62,14 @@ onMounted(async () => {
       class="flex justify-between text-base font-bold text-start text-indigo-800 border-b border-purple-300 cursor-pointer"  
       @click="showWork = !showWork"    
     >
-      Suas obras publicadas
+      Suas obras na biblioteca Lunar
       <Lucide
           :icon="!showWork ? 'ChevronDown' : 'ChevronUp'"
        />
     </h2>
 
     <div v-if="isLoading" class="text-gray-500">Carregando livros...</div>
-    <div v-else-if="userBooks.length === 0" class="text-gray-400 italic">Nenhum livro publicado.</div>
+    <div v-else-if="userBooks.length === 0" class="text-gray-400 italic">Nenhum livro encontrado.</div>
 
     <div 
       v-if="showWork && !isLoading"
