@@ -10,7 +10,7 @@ const linkLivro = ref('')
 const error = ref('')
 const success = ref(false)
 const loading = ref(false)
-const showForm = ref(true)
+const showForm = ref(false)
 
 const submit = async () => {
   try {

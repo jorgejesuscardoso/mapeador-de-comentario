@@ -132,7 +132,6 @@ watch([paragraphs, idRefsToParagraphs], () => {
 
   goodDivision.value = inicio && meio && fim;
 
-  console.log(goodDivision.value)
 });
 
 

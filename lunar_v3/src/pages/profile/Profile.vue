@@ -28,7 +28,6 @@ const userLogged = ref()
 
 watch(userData, (val) => {
     userProp.value = val.userName
-    console.log(val)
 }, {immediate: true })
 
 onMounted(async () => {
@@ -39,7 +38,7 @@ onMounted(async () => {
   if(!parsed) return router.push('/login')
   const data = await getUserWtpd(parsed.user)
   userLogged.value = parsed
-  console.log(parsed)
+  
   if(data){
     userData.value = {
       avatar: data.avatar,
