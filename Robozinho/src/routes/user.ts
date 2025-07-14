@@ -229,7 +229,9 @@ user.get('/:id', async (req: Request, res: Response) => {
 
 user.put('/:user', async (req: Request, res: Response) => {
   const userParam = req.params.user;
-  const data = req.body;
+  const { data } = req.body;
+  
+    
   if (!data) {
     return res.status(400).json({ error: 'Dados ausentes!' });
   }
@@ -241,7 +243,7 @@ user.put('/:user', async (req: Request, res: Response) => {
         Key: { user: userParam }
       })
     );
-
+    
     const existingUser = result.Item;
     if (!existingUser || existingUser.deletedAt) {
       return res.status(404).json({ error: 'Usuário não encontrado!' });
@@ -263,11 +265,25 @@ user.put('/:user', async (req: Request, res: Response) => {
       }
     }
 
+    let currentPoints = result?.Item?.points;
+    
+    if(data.pointsPlus){
+      currentPoints += data.pointsPlus
+    } else if (data.pointsMinus) {
+      if (data.pointsMinus > currentPoints) {
+        currentPoints = 0;
+      } else {
+        currentPoints -= data.pointsMinus;
+      }
+    }
+    
     await db.send(
       new PutCommand({
         TableName: 'dbLunar2',
         Item: {
           ...existingUser, // mantém os campos que não foram modificados
+          ...data,
+          points: currentPoints,
           password: updatedPassword,
           role: data.role || existingUser.role,
           tierPoints: currentTierPoints,
