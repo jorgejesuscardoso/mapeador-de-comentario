@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUserWtpd } from '@/API/UserApi';
+import { getUserById, getUserWtpd } from '@/API/UserApi';
 import RegisterBook from './component/RegisterBook.vue';
 import {ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
@@ -29,24 +29,18 @@ const isLoading = ref(false)
 const userProp = ref('')
 const userLogged = ref()
 const isLoadingLibrary = ref(false)
-
 const roleTag = ref() 
 
-const tier = ref()
-const nextTier = ref()
-
-const pointsLeft = computed(() =>
-  userLogged.value?.tier?.max_points && userLogged.value?.tier?.points
-    ? userLogged.value.tier.max_points - userLogged.value.tier.points
-    : 0
-)
+const tierData = ref()
 
 watch(userData, (val) => {
     userProp.value = val.userName
     roleTag.value = getRoleDisplay(userLogged?.value?.role, userLogged?.value?.subrole)
-    tier.value = getTierInfo(userLogged?.value?.tier?.name, userLogged?.value?.tier?.elo);
-    nextTier.value = getTierInfo(userLogged?.value?.nextTier?.tier, userLogged?.value?.nextTier?.elo);
 }, {immediate: true })
+
+watch(tierData, (val) =>{
+  //console.log(val)
+})
 
 onMounted(async () => {
   isLoading.value = true
@@ -75,6 +69,8 @@ onMounted(async () => {
     }
   }
 
+  const tier = await getUserById(parsed.user)
+  tierData.value = tier
   isLoading.value = false
 })
 </script>
@@ -101,12 +97,12 @@ onMounted(async () => {
               </div>
               <!-- TAG DE TIER -->
               <div
-                v-if="userLogged?.tier"
+                v-if="tierData?.tier"
                 class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
-                :class="userLogged?.colorClass"
+                :class="tierData?.colorClass"
               >
                 {{
-                  userLogged?.fullLabel
+                  tierData?.fullLabel
                 }}
               </div>
               
@@ -117,21 +113,21 @@ onMounted(async () => {
             />
 
             <div
-              v-if="userLogged?.house?.thumb"
+              v-if="tierData?.house?.thumb"
               class="flex flex-col items-center rounded-md p-1  absolute top-9 left-2 lg:top-5 lg:left-16"
             >
               <h3 class="text-xs font-semibold text-purple-800 ">
                 House
               </h3>
               <img 
-                :src="`/houses_flags/${userLogged?.house?.thumb}`"
+                :src="`/houses_flags/${tierData?.house?.thumb}`"
                 alt="Bandeira da Casa"
                 class="w-14 h-20 mt-2 rounded-b-3xl rounded-t-md"
               >
               <p
                 class="flex items-center justify-center text-xs text-purple-800 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
               >
-                {{ userLogged.house.name }}
+                {{ tierData.house.name }}
               </p>
             </div>
 
@@ -161,7 +157,7 @@ onMounted(async () => {
           <!-- Estatísticas à direita -->
           <div class="gap-6 w-full lg:w-5/12">
             <div
-              v-if="userLogged?.tier"
+              v-if="tierData?.tier"
               class="lg:px-6"
             >
               <div class="bg-gradient-to-br from-fuchsia-100 mb-4 via-purple-100 to-white rounded-xl p-4 shadow-md border border-purple-200">
@@ -171,33 +167,33 @@ onMounted(async () => {
                   <h3 class="text-sm font-semibold text-purple-800 uppercase tracking-wider">Progresso de Tier</h3>
                   <div class="flex items-center gap-1 text-xs font-semibold text-gray-500">
                    <p>Tier Atual: </p>
-                    <div :class="userLogged?.colorClass" class="flex flex-col px-2 py-1 rounded text-white shadow relative">
-                      <span>{{ userLogged.fullLabel }}</span>
-                      <span class="absolute top-6 right-0 text-purple-800">{{ userLogged.progressText }}</span>
+                    <div :class="tierData?.colorClass" class="flex flex-col px-2 py-1 rounded text-white shadow relative">
+                      <span>{{ tierData.fullLabel }}</span>
+                      <span class="absolute top-6 right-0 text-purple-800">{{ tierData.progressText }}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- Progresso numérico -->
                 <p class="text-sm text-gray-700 mt-4">
-                  🌕 Falta <span class="font-bold text-purple-700">{{ userLogged.maxPoints - +userLogged.tierPoints }}</span> pts para se tornar 
-                  <span class="font-semibold text-purple-800">{{ userLogged?.nextTierLabel }}</span>
+                  🌕 Falta <span class="font-bold text-purple-700">{{ tierData.maxPoints - +tierData.tierPoints }}</span> pts para se tornar 
+                  <span class="font-semibold text-purple-800">{{ tierData?.nextTierLabel }}</span>
                 </p>
 
                 <!-- Barra de progresso estilizada -->
                 <div class="relative w-full h-3 bg-gray-300 rounded-full overflow-hidden shadow-inner">
                   <div
                     class="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-700 ease-out"
-                    :style="{ width: ((userLogged?.tierPoints / userLogged?.maxPoints) * 100) + '%' }"
+                    :style="{ width: ((tierData?.tierPoints / tierData?.maxPoints) * 100) + '%' }"
                   ></div>
                 </div>
 
                 <!-- Detalhes numéricos opcionais -->
                 <div class="text-[11px] text-gray-500 mt-1 text-right relative">
                  
-                  <span class="absolute top-0 right-1/2 text-purple-700">{{ userLogged.progressPercent }}%</span> 
+                  <span class="absolute top-0 right-1/2 text-purple-700">{{ tierData.progressPercent }}%</span> 
 
-                  {{ userLogged?.tierPoints }} / {{ userLogged?.maxPoints }} pontos
+                  {{ tierData?.tierPoints }} / {{ tierData?.maxPoints }} pontos
                 </div>
               </div>
             </div>
@@ -226,7 +222,7 @@ onMounted(async () => {
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
                   > 
                     <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
-                    {{ userLogged?.points?.toLocaleString('pt-br') || 0 }}
+                    {{ tierData?.points?.toLocaleString('pt-br') || 0 }}
                   </p>
                   <p class="text-sm text-gray-500">Pontos Lunar</p>
                 </div>
@@ -239,7 +235,7 @@ onMounted(async () => {
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
                   > 
                     <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
-                    {{ userLogged?.totalTierPoints?.toLocaleString('pt-br') || 0 }}
+                    {{ tierData?.totalTierPoints?.toLocaleString('pt-br') || 0 }}
                   </p>
                   <p class="text-sm text-gray-500">Pontos de Elo</p>
                 </div>

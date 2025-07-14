@@ -68,3 +68,18 @@ export const getUserWtpd = async (id: string) => {
     throw err.response?.data?.message || 'Erro inesperado'
   }
 }
+
+export const getUserById = async (id: string) => {
+  try {
+    const controller = new AbortController()
+
+    const response = await axios(`${endPoint}/users/${id}`, {
+      method: 'GET',
+      signal: controller.signal,
+    })
+
+    return response.data
+  } catch (err: any) {
+    throw err.response?.data?.message || 'Erro inesperado'
+  }
+}

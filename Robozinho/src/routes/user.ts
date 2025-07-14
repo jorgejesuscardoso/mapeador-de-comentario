@@ -197,6 +197,7 @@ user.get('/wtpd/:id', async (req: Request, res: Response) => {
 
 user.get('/:id', async (req: Request, res: Response) => {
   const { id: userParam } = req.params;
+  
   try {
     const result = await db.send(
       new GetCommand({
@@ -209,7 +210,10 @@ user.get('/:id', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    res.json(result.Item);
+    const tier = calculateUserTierByPoints(result.Item.tierPoints)
+    const userData = { ...tier, house: result.Item.house, points: result.Item.points}
+
+    res.json(userData);
   } catch (err) {
     console.error('Erro ao buscar usuário:', err);
     res.status(500).json({ error: 'Erro ao buscar usuário!' });
@@ -225,7 +229,6 @@ user.put('/:user', async (req: Request, res: Response) => {
   }
 
   try {
-    // Pega o usuário pelo valor da URL (chave primária)
     const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
@@ -233,24 +236,35 @@ user.put('/:user', async (req: Request, res: Response) => {
       })
     );
 
-    if (!result.Item || result.Item.deletedAt) {
+    const existingUser = result.Item;
+    if (!existingUser || existingUser.deletedAt) {
       return res.status(404).json({ error: 'Usuário não encontrado!' });
     }
 
-    // Gera novo hash se a senha for atualizada
-    let updatedPassword = result.Item.password;
+    // Atualiza senha se houver
+    let updatedPassword = existingUser.password;
     if (data.password) {
       updatedPassword = await generateHash(data.password);
     }
+    let currentTierPoints = result?.Item?.tierPoints 
+    if(data.tierPointsPlus){
+      currentTierPoints += data.tierPointsPlus
+    } else if (data.tierPointsMinus) {
+      if (data.tierPointsMinus > currentTierPoints) {
+        currentTierPoints = 0;
+      } else {
+        currentTierPoints -= data.tierPointsMinus;
+      }
+    }
 
-    // Atualiza o mesmo item sem mudar a chave
     await db.send(
       new PutCommand({
         TableName: 'dbLunar2',
         Item: {
-          user: userParam, // Usa sempre a chave original
+          ...existingUser, // mantém os campos que não foram modificados
           password: updatedPassword,
-          role: data.role || result.Item.role,
+          role: data.role || existingUser.role,
+          tierPoints: currentTierPoints,
           updatedAt: new Date().toISOString()
         }
       })
