@@ -50,22 +50,34 @@ const submit = async () => {
 
 <template>
   <div 
-    class="min-w-full flex items-center justify-center border p-2 rounded-xl"
+    class="min-w-full flex items-center justify-center border px-4 rounded-xl"
     :class="{
-       'bg-fuchsia-500': !showForm,
-       'bg-fuchsia-500/90': showForm
+       'bg-fuchsia-500 py-1': !showForm,
+       'bg-fuchsia-500/90 py-4': showForm
     }"
   >
     <div class="w-full w-md space-y-4">
       <h2 
-        class="flex justify-between text-lg font-semibold text-start text-white -700  cursor-pointer"
+        class="flex justify-between font-semibold text-start text-white -700  cursor-pointer"
         @click="showForm = !showForm"
         :class="{
           'border-b border-fuchsia-400' : showForm,
           '' : !showForm
         }"
       >
+      <p
+        class="flex items-center justify-center gap-1"
+        :class="{
+          'text-base' : showForm,
+          'text-sm' : !showForm
+        }"
+      >
+        <Lucide 
+          icon="BookOpenText"
+          class="h-4 w-4"
+       />
        Enviar Livro
+      </p>
        <Lucide 
           :icon="!showForm ? 'ChevronDown' : 'ChevronUp'"
        />

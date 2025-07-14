@@ -25,6 +25,7 @@ const submit = async () => {
       password: password.value,
       name: nome.value,
       age: idade.value,
+      role:'member'
     } as TRegister
 
     const data = await Register(payload)

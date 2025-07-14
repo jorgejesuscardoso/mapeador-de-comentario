@@ -66,12 +66,28 @@ onMounted(async () => {
     
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-14 py-8 px-6 w-full max-w-6xl mx-auto bg-white shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-14 py-8 lg:px-6 w-full mx-auto bg-white shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-center gap-8 w-full">
-          
           <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-2/3">
+          <div class="flex flex-col items-center text-center w-full lg:w-2/3 relative">
+            <!-- TAG DE ROLE -->
+              <div                
+                class="absolute top-0 right-0 rounded-bl-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
+                :class="{
+                  'bg-purple-800': userLogged?.role === 'superadmin',
+                  'bg-fuchsia-600': userLogged?.role === 'admin',
+                  'bg-blue-500': !userLogged?.role || userLogged?.role === 'member' || userLogged?.role === ' '
+                }"
+              >
+                {{
+                  userLogged.role === 'superadmin'
+                    ? 'Super Adm'
+                    : userLogged.role === 'admin'
+                    ? 'Adm'
+                    : 'Membro Lunar'
+                }}
+              </div>
             <img
               :src="userData.avatar || ''"
               alt="Avatar"
@@ -95,7 +111,7 @@ onMounted(async () => {
 
           <!-- Estatísticas à direita -->
           <div class="gap-6 w-full lg:w-5/12">
-            <div class="grid grid-cols-2 sm:grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
               <!-- Seguidores -->
               <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
@@ -147,10 +163,10 @@ onMounted(async () => {
                   <p class="text-sm text-gray-500">Votos totais</p>
                 </div>
               </div>
-              </div>
-            
+            </div>
+          
             <div
-              class="hidden w-full lg:flex mt-6"
+              class="hidden w-full lg:flex mt-6 lg:px-6"
             >
               <RegisterBook />
             </div>
