@@ -321,7 +321,6 @@ provide('isAdmin', isAdmin)
 									v-if="!isLogged"
 									to="/register"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="FileInput" size="14" />
 									Registro
@@ -338,7 +337,6 @@ provide('isAdmin', isAdmin)
 										'hover:bg-green-100 text-green-800': !isLogged,
 										'hover:bg-red-100 text-red-800': isLogged
 									}"
-									@click.stop="menuOpen = false" 
 								>
 									<Lucide
 											:icon="isLogged ? 'LogOut': 'LogIn'"

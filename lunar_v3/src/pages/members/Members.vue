@@ -20,10 +20,17 @@ onMounted(async () => {
       class="bg-white rounded-2xl shadow-lg p-5 flex flex-col items-center text-center space-y-3 border border-purple-100"
     >
       <img
+        v-if="member.house?.thumb"
         :src="`/houses_flags/${member.house?.thumb}`"
         alt="Casa"
-        class="w-20 h-32 object-cover rounded-b-full rounded-t-md shadow border border-purple-300"
+        class="w-20 h-32 object-fit rounded-b-full rounded-t-md"
       />
+      <div
+        v-else
+        class="w-20 h-32 flex items-center justify-center text-center bg-gray-100 text-purple-600 text-xs rounded-b-full rounded-t-md shadow px-2"
+      >
+        Ainda não faz parte<br>de uma casa Lunar.
+      </div>
       <h2 class="text-lg font-bold text-purple-800">{{ member.name }}</h2>
       <p class="text-sm text-gray-500">@{{ member.user }}</p>
       <p class="text-xs text-gray-600">🎭 {{ member.subrole || 'Sem subfunção' }}</p>
