@@ -178,7 +178,7 @@ onMounted(async () => {
 
                 <!-- Progresso numérico -->
                 <p class="text-sm text-gray-700">
-                  🌕 Falta <span class="font-bold text-purple-700">{{ pointsLeft }}</span> pts para se tornar 
+                  🌕 Falta <span class="font-bold text-purple-700">{{ pointsLeft <= 0 ? 0 : pointsLeft }}</span> pts para se tornar 
                   <span class="font-semibold text-purple-800">{{ nextTier?.fullLabel }}</span>
                 </p>
 
