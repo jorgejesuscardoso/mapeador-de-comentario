@@ -1,13 +1,14 @@
 <!--bookcard do perfil para listar todos os livros que se é proprietario-->
 <script setup lang="ts">
-import Lucide from '@/base/lucide/Lucide.vue';import { ref, onMounted, watch } from 'vue';
-
+import Lucide from '@/base/lucide/Lucide.vue';
+import { ref, onMounted, watch, watchEffect } from 'vue';
+import { toRef } from 'vue'
 import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   userId: string
 }>()
-
+const userId = toRef(props, 'userId')
 
 const router = useRouter();
 
@@ -19,7 +20,6 @@ const showWork = ref(true)
 // 👉 Filtra os livros do usuário recebido via props
 function filterUserBooks() {
   if (!props.userId) return
-
   userBooks.value = allBooks.value.filter((book) => book.user.userName === props.userId)
 }
 
@@ -33,7 +33,8 @@ function formatDate(dateStr: string) {
   });
 }
 
-watch(props, () =>{  
+watchEffect(() => {
+  console.log('userId detectado pelo watchEffect:', props.userId)
   filterUserBooks()
 })
 
@@ -43,6 +44,8 @@ onMounted(async () => {
   try {
     const storage = localStorage.getItem('books_cache_v1')
     const parsedBooks = storage ? JSON.parse(storage) : []
+    
+  console.log(props)
     allBooks.value = parsedBooks.value
   } catch (e) {
     console.error('Erro ao carregar livros:', e)

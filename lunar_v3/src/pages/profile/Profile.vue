@@ -25,6 +25,7 @@ const userData = ref({
 const isLoading = ref(false)
 const userProp = ref('')
 const userLogged = ref()
+const isLoadingLibrary = ref(false)
 
 watch(userData, (val) => {
     userProp.value = val.userName
@@ -57,7 +58,8 @@ onMounted(async () => {
     }
   }
 
-   isLoading.value = false
+  isLoading.value = false
+   
 })
 </script>
 
@@ -171,13 +173,20 @@ onMounted(async () => {
             >
               <RegisterBook />
             </div>
-
           </div>
         </div>
       </div>
 
 
-      <div v-else class="text-gray-500 text-lg">Carregando perfil...</div>
+      <div v-else class="flex flex-col items-center justify-center gap-3 mt-12 text-purple-700 animate-pulse">
+        <div class="bg-fuchsia-100/60 p-4 rounded-xl shadow w-full max-w-md border border-purple-300">
+          <div class="flex items-center justify-center gap-2 mb-2">
+            <Lucide icon="Loader2" class="w-5 h-5 animate-spin text-purple-600" />
+            <span class="text-base font-medium">Carregando perfil Lunar...</span>
+          </div>
+          <p class="text-sm text-gray-600">Estamos alinhando os astros para exibir seu perfil com magia.</p>
+        </div>
+      </div>
         
     
       <div
@@ -187,11 +196,22 @@ onMounted(async () => {
       </div>
 
     <div
+      v-if="!isLoading && !isLoadingLibrary"
       class="flex w-full mt-16 pb-14"
     >
       <BookCard
+        v-if="userProp"
         :user-id="userProp"
       />
-    </div>
+    </div>    
+    <div v-else class="flex flex-col items-center justify-center gap-3 text-center mt-12 text-purple-700 animate-pulse mb-14">
+      <div class="bg-fuchsia-100/60 p-4 rounded-xl shadow w-full max-w-md border border-purple-300">
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <Lucide icon="Loader2" class="w-5 h-5 animate-spin text-purple-600" />
+          <span class="text-base font-medium">Carregando biblioteca Lunar...</span>
+        </div>
+        <p class="text-sm text-gray-600">Buscando seus livros no Wattpad... isso pode levar alguns segundos.</p>
+      </div>
+    </div>  
   </div>
 </template>
