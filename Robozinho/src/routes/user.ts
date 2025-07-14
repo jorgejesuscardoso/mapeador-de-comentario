@@ -297,7 +297,8 @@ user.put('/promo/:user', async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Usuário não encontrado!' });
     }
 
-    let currentTierPoints = result?.Item?.tierPoints + data?.tierPointsPlus
+    let currentTierPoints = (Number(result?.Item?.tierPoints) || 0) + (Number(data?.tierPointsPlus) || 0);
+
     
 
     await db.send(
