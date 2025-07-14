@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { getUserWtpd } from '@/API/UserApi';
 import RegisterBook from './component/RegisterBook.vue';
-import {ref, onMounted, watch } from 'vue';
+import {ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import BookCard from './component/BookCard.vue';
 import Lucide from '@/base/lucide/Lucide.vue';
 import { getRoleDisplay } from '@/base/helpers/roleDisplay';
-import { getRankingInfo, rankingTiers } from '@/base/gamification/rankings';
-
+import { getTierInfo, rankingTiers } from '@/base/gamification/tier';
+import { capitalize } from '@/base/helpers/capitalize';
 
 const router = useRouter();
 const userData = ref({
@@ -32,14 +32,20 @@ const isLoadingLibrary = ref(false)
 
 const roleTag = ref() 
 
+const tier = ref()
+const nextTier = ref()
 
-const userTier = 'nevoa';
-const userElo = 'I';
-const ranking = getRankingInfo(userLogged.value.tier, userLogged.value.elo);
+const pointsLeft = computed(() =>
+  userLogged.value?.tier?.max_points && userLogged.value?.tier?.points
+    ? userLogged.value.tier.max_points - userLogged.value.tier.points
+    : 0
+)
 
 watch(userData, (val) => {
     userProp.value = val.userName
     roleTag.value = getRoleDisplay(userLogged?.value?.role, userLogged?.value?.subrole)
+    tier.value = getTierInfo(userLogged?.value?.tier?.name, userLogged?.value?.tier?.elo);
+    nextTier.value = getTierInfo(userLogged?.value?.nextTier?.tier, userLogged?.value?.nextTier?.elo);
 }, {immediate: true })
 
 onMounted(async () => {
@@ -80,26 +86,27 @@ onMounted(async () => {
         v-if="!isLoading"
         class="rounded-2xl lg:mt-8 py-8 lg:px-6 w-full mx-auto bg-white shadow-sm text-gray-800 space-y-6"
       >
-        <div class="flex flex-col lg:flex-row items-center gap-8 w-full">
+        <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative bg-fuchsia-200 lg:shadow-lg rounded-xl lg:pb-3">
+          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative bg-fuchsia-300 lg:shadow-lg rounded-xl lg:pb-3">
             <!-- TAG DE ROLE -->
               <div
                 v-if="userLogged?.role"
-                class="absolute lg:relative top-0 right-0 rounded-bl-xl rounded-tr-xl lg:rounded-tr-none lg:rounded-b-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
+                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
                 :class="roleTag.class"
               >
                 {{
                   roleTag.label
                 }}
               </div>
+              <!-- TAG DE TIER -->
               <div
-                v-if="userLogged?.role"
-                class="absolute lg:relative top-0 left-0 rounded-br-xl rounded-tl-xl lg:rounded-tl-none lg:rounded-b-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
-                :class="ranking.colorClass"
+                v-if="userLogged?.tier"
+                class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
+                :class="tier?.colorClass"
               >
                 {{
-                  ranking.fullLabel
+                  tier?.fullLabel
                 }}
               </div>
               
@@ -108,25 +115,130 @@ onMounted(async () => {
               alt="Avatar"
               class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
             />
-            <h2 class="mt-4 text-lg font-bold text-purple-700">{{ userData.name || userData.userName }}</h2>
-            <p class="text-sm text-indigo-700 mb-2">@{{ userData.userName }}</p>
-            <p class="text-sm text-fuchsia-950 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
-            <a
-              :href="userData.perfilWtpd"
-              target="_blank"
-              class="flex items-center text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
+
+            <div
+              v-if="userLogged?.house?.thumb"
+              class="flex flex-col items-center rounded-xl p-1.5 bg-white absolute top-16 left-2"
             >
-            <Lucide
-              icon="ExternalLink"
-              class="w-4 h-4"
-            />
-              Ver perfil no Wattpad
-            </a>
+              <h3 class="text-xs font-semibold text-purple-800 ">
+                House
+              </h3>
+              <img 
+                :src="`/houses_flags/${userLogged?.house?.thumb}`"
+                alt="Bandeira da Casa"
+                class="w-8 mt-2"
+              >
+              <p
+                class="flex items-center justify-center text-xs text-purple-800 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
+              >
+                {{ userLogged.house.name }}
+              </p>
+            </div>
+
+            <div
+              class="flex items-start justify-center mt-4 w-full"
+            >
+
+              <div>
+                <h2 class="text-lg font-bold text-purple-700">{{ userData.name || userData.userName }}</h2>
+                <p class="text-sm text-indigo-700 mb-2">@{{ userData.userName }}</p>
+                <p class="text-sm text-fuchsia-950 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
+                <a
+                  :href="userData.perfilWtpd"
+                  target="_blank"
+                  class="flex items-center text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
+                >
+                <Lucide
+                  icon="ExternalLink"
+                  class="w-4 h-4"
+                />
+                  Ver perfil no Wattpad
+                </a>
+              </div>
+            </div>
           </div>
 
           <!-- Estatísticas à direita -->
           <div class="gap-6 w-full lg:w-5/12">
+            <div
+              v-if="tier"
+              class="lg:px-6"
+            >
+              <div class="bg-gradient-to-br from-fuchsia-100 mb-4 via-purple-100 to-white rounded-xl p-4 shadow-md border border-purple-200 space-y-2">
+              
+                <!-- Cabeçalho bonito -->
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm font-semibold text-purple-800 uppercase tracking-wider">Progresso de Tier</h3>
+                  <span class="text-xs font-semibold text-gray-500">Tier Atual: 
+                    <span :class="tier?.colorClass" class="px-2 py-1 rounded text-white shadow">
+                      {{ tier?.fullLabel }}
+                    </span>
+                  </span>
+                </div>
+
+                <!-- Progresso numérico -->
+                <p class="text-sm text-gray-700">
+                  🌕 Falta <span class="font-bold text-purple-700">{{ pointsLeft }}</span> pts para se tornar 
+                  <span class="font-semibold text-purple-800">{{ nextTier?.fullLabel }}</span>
+                </p>
+
+                <!-- Barra de progresso estilizada -->
+                <div class="relative w-full h-3 bg-gray-300 rounded-full overflow-hidden shadow-inner">
+                  <div
+                    class="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-700 ease-out"
+                    :style="{ width: ((userLogged?.tier?.points / userLogged?.tier?.max_points) * 100) + '%' }"
+                  ></div>
+                </div>
+
+                <!-- Detalhes numéricos opcionais -->
+                <div class="text-[11px] text-gray-500 mt-1 text-right">
+                  {{ userLogged?.tier?.points }} / {{ userLogged?.tier?.max_points }} pontos
+                </div>
+              </div>
+            </div>
+            <div v-else class="lg:px-6 mb-4">
+              <div class="bg-gradient-to-br from-slate-100 via-gray-100 to-white rounded-xl p-4 shadow-md border border-gray-200 space-y-2 text-center">
+                <h3 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">Você ainda não foi ranqueado</h3>
+                <p class="text-xs text-gray-600">
+                  🌑 Colete pontos para começar sua jornada no Ranking Lunar.<br>
+                  Conquiste feitos, participe da comunidade e não falhe nas leituras!
+                </p>
+                <div class="mt-2">
+                  <span class="inline-block px-3 py-1 rounded-full text-xs bg-gray-300 text-gray-600 font-semibold tracking-wider">
+                    Tier: Desconhecido
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
+
+              <!-- Pontos Lunar -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                  > 
+                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
+                    {{ userLogged?.points || 0 }}
+                  </p>
+                  <p class="text-sm text-gray-500">Pontos Lunar</p>
+                </div>
+              </div>
+
+              <!-- Pontos elo -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                  > 
+                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
+                    {{ userLogged?.tier?.points || 0 }}
+                  </p>
+                  <p class="text-sm text-gray-500">Pontos de Elo</p>
+                </div>
+              </div>
+
               <!-- Seguidores -->
               <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>

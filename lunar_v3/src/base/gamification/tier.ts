@@ -1,4 +1,4 @@
-type RankingInfo = {
+type TierInfo = {
   name: string;
   fullLabel: string; // ex: "Prata II"
   colorClass: string;
@@ -45,8 +45,8 @@ export const rankingTiers = {
 }
 
 
-export function getRankingInfo(tier: string, elo: string): RankingInfo | null {
-  const tierKey = tier.toLowerCase();
+export function getTierInfo(tier: string, elo: string): TierInfo | null {
+  const tierKey = tier?.toLowerCase();
   const tierData = rankingTiers[tierKey as keyof typeof rankingTiers];
 
   if (!tierData || !tierData.tiers.includes(elo)) return null;
