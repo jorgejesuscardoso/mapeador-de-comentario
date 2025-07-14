@@ -118,7 +118,7 @@ user.post('/login', async (req: Request, res: Response) => {
     };
 
     const getToken = generateToken({user: result.Item.user, role: result.Item.role})
-    const userData = { token: getToken.token, role: result.Item.role, subrole: result.Item.subrole, user: result.Item.user}
+    const userData = { token: getToken.token, role: result.Item.role, subrole: result.Item.subrole, user: result.Item.user, tier: result.Item.tier, elo: result.Item.elo, house: result.Item.house}
     res.status(200).json(userData);
   } catch (err) {
     console.error(err);

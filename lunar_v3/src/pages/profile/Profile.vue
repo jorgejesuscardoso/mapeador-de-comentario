@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 import BookCard from './component/BookCard.vue';
 import Lucide from '@/base/lucide/Lucide.vue';
 import { getRoleDisplay } from '@/base/helpers/roleDisplay';
+import { getRankingInfo, rankingTiers } from '@/base/gamification/rankings';
 
 
 const router = useRouter();
@@ -30,6 +31,11 @@ const userLogged = ref()
 const isLoadingLibrary = ref(false)
 
 const roleTag = ref() 
+
+
+const userTier = 'nevoa';
+const userElo = 'I';
+const ranking = getRankingInfo(userLogged.value.tier, userLogged.value.elo);
 
 watch(userData, (val) => {
     userProp.value = val.userName
@@ -87,6 +93,16 @@ onMounted(async () => {
                   roleTag.label
                 }}
               </div>
+              <div
+                v-if="userLogged?.role"
+                class="absolute lg:relative top-0 left-0 rounded-br-xl rounded-tl-xl lg:rounded-tl-none lg:rounded-b-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
+                :class="ranking.colorClass"
+              >
+                {{
+                  ranking.fullLabel
+                }}
+              </div>
+              
             <img
               :src="userData.avatar || ''"
               alt="Avatar"
