@@ -38,7 +38,7 @@ onMounted(async () => {
   if(!parsed) return router.push('/login')
   const data = await getUserWtpd(parsed.user)
   userLogged.value = parsed
-  
+
   if(data){
     userData.value = {
       avatar: data.avatar,
@@ -66,15 +66,15 @@ onMounted(async () => {
     
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-14 py-8 lg:px-6 w-full mx-auto bg-white shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-8 py-8 lg:px-6 w-full mx-auto bg-white shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-center gap-8 w-full">
           <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-2/3 relative">
+          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative bg-fuchsia-200 lg:shadow-lg rounded-xl lg:pb-3">
             <!-- TAG DE ROLE -->
               <div
                 v-if="userLogged?.role"
-                class="absolute top-0 right-0 rounded-bl-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
+                class="absolute lg:relative top-0 right-0 rounded-bl-xl rounded-tr-xl lg:rounded-tr-none lg:rounded-b-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
                 :class="{
                   'bg-purple-800': userLogged.role === 'superadmin',
                   'bg-fuchsia-600': userLogged.role === 'admin',
@@ -95,12 +95,12 @@ onMounted(async () => {
               class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
             />
             <h2 class="mt-4 text-lg font-bold text-purple-700">{{ userData.name || userData.userName }}</h2>
-            <p class="text-sm text-gray-500 mb-2">@{{ userData.userName }}</p>
-            <p class="text-sm text-gray-600 max-w-md">{{ userData.description || 'Sem bio ainda.' }}</p>
+            <p class="text-sm text-indigo-700 mb-2">@{{ userData.userName }}</p>
+            <p class="text-sm text-fuchsia-950 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
             <a
               :href="userData.perfilWtpd"
               target="_blank"
-              class="flex items-center text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition"
+              class="flex items-center text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
             >
             <Lucide
               icon="ExternalLink"
