@@ -103,10 +103,10 @@ onMounted(async () => {
               <div
                 v-if="userLogged?.tier"
                 class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
-                :class="tier?.colorClass"
+                :class="userLogged?.colorClass"
               >
                 {{
-                  tier?.fullLabel
+                  userLogged?.fullLabel
                 }}
               </div>
               
@@ -126,7 +126,7 @@ onMounted(async () => {
               <img 
                 :src="`/houses_flags/${userLogged?.house?.thumb}`"
                 alt="Bandeira da Casa"
-                class="w-14 h-20 mt-2 rounded-br-3xl rounded-bl-3xl rounded-tr-md rounded-tl-md"
+                class="w-14 h-20 mt-2 rounded-b-3xl rounded-t-md"
               >
               <p
                 class="flex items-center justify-center text-xs text-purple-800 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
@@ -161,7 +161,7 @@ onMounted(async () => {
           <!-- Estatísticas à direita -->
           <div class="gap-6 w-full lg:w-5/12">
             <div
-              v-if="tier"
+              v-if="userLogged?.tier"
               class="lg:px-6"
             >
               <div class="bg-gradient-to-br from-fuchsia-100 mb-4 via-purple-100 to-white rounded-xl p-4 shadow-md border border-purple-200">
@@ -171,33 +171,37 @@ onMounted(async () => {
                   <h3 class="text-sm font-semibold text-purple-800 uppercase tracking-wider">Progresso de Tier</h3>
                   <div class="flex items-center gap-1 text-xs font-semibold text-gray-500">
                    <p>Tier Atual: </p>
-                    <div :class="tier?.colorClass" class="flex flex-col px-2 py-1 rounded text-white shadow relative">
-                      <span>{{ tier?.fullLabel }}</span>
-                      <span class="absolute top-6 right-0 text-purple-800">{{ getTierProgressLabel(tier.name, tier.elo) }}</span>
+                    <div :class="userLogged?.colorClass" class="flex flex-col px-2 py-1 rounded text-white shadow relative">
+                      <span>{{ userLogged.fullLabel }}</span>
+                      <span class="absolute top-6 right-0 text-purple-800">{{ userLogged.progressText }}</span>
                     </div>
                   </div>
                 </div>
 
                 <!-- Progresso numérico -->
                 <p class="text-sm text-gray-700 mt-4">
-                  🌕 Falta <span class="font-bold text-purple-700">{{ pointsLeft <= 0 ? 0 : pointsLeft }}</span> pts para se tornar 
-                  <span class="font-semibold text-purple-800">{{ nextTier?.fullLabel }}</span>
+                  🌕 Falta <span class="font-bold text-purple-700">{{ userLogged.maxPoints - +userLogged.tierPoints }}</span> pts para se tornar 
+                  <span class="font-semibold text-purple-800">{{ userLogged?.nextTierLabel }}</span>
                 </p>
 
                 <!-- Barra de progresso estilizada -->
                 <div class="relative w-full h-3 bg-gray-300 rounded-full overflow-hidden shadow-inner">
                   <div
                     class="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-700 ease-out"
-                    :style="{ width: ((userLogged?.tier?.points / userLogged?.tier?.max_points) * 100) + '%' }"
+                    :style="{ width: ((userLogged?.tierPoints / userLogged?.maxPoints) * 100) + '%' }"
                   ></div>
                 </div>
 
                 <!-- Detalhes numéricos opcionais -->
-                <div class="text-[11px] text-gray-500 mt-1 text-right">
-                  {{ userLogged?.tier?.points }} / {{ userLogged?.tier?.max_points }} pontos
+                <div class="text-[11px] text-gray-500 mt-1 text-right relative">
+                 
+                  <span class="absolute top-0 right-1/2 text-purple-700">{{ userLogged.progressPercent }}%</span> 
+
+                  {{ userLogged?.tierPoints }} / {{ userLogged?.maxPoints }} pontos
                 </div>
               </div>
             </div>
+
             <div v-else class="lg:px-6 mb-4">
               <div class="bg-gradient-to-br from-slate-100 via-gray-100 to-white rounded-xl p-4 shadow-md border border-gray-200 space-y-2 text-center">
                 <h3 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">Você ainda não foi ranqueado</h3>
@@ -222,7 +226,7 @@ onMounted(async () => {
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
                   > 
                     <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
-                    {{ userLogged?.points || 0 }}
+                    {{ userLogged?.points?.toLocaleString('pt-br') || 0 }}
                   </p>
                   <p class="text-sm text-gray-500">Pontos Lunar</p>
                 </div>
@@ -235,7 +239,7 @@ onMounted(async () => {
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
                   > 
                     <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
-                    {{ userLogged?.tier?.points || 0 }}
+                    {{ userLogged?.totalTierPoints?.toLocaleString('pt-br') || 0 }}
                   </p>
                   <p class="text-sm text-gray-500">Pontos de Elo</p>
                 </div>

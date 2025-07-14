@@ -2,9 +2,10 @@
 import { ref, onMounted, watch } from 'vue'
 import { Mail, Lock } from 'lucide-vue-next'
 import { Login } from '@/API/UserApi'
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter()
+const route = useRoute()
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
@@ -25,7 +26,7 @@ const submit = async () => {
     }
 
     localStorage.setItem('user', JSON.stringify(data))
-    router.push('/')
+    router.back()
 
   } catch (e: any) {
     // Mostra a mensagem do throw new Error(...)

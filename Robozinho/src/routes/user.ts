@@ -6,6 +6,7 @@ import { generateToken, verifyToken } from "../configs/jwt";
 import { generateHash, verifyHash } from "../configs/bcrypt";
 import axios from "axios";
 import { parse } from 'php-array-parser';
+import { calculateUserTierByPoints } from "../gamification/tiers";
 
 const user = express.Router();
 
@@ -117,8 +118,10 @@ user.post('/login', async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Dados inválidos!' })
     };
 
+    const tier = calculateUserTierByPoints(result.Item.tierPoints)
     const getToken = generateToken({user: result.Item.user, role: result.Item.role})
-    const userData = { token: getToken.token, role: result.Item.role, subrole: result.Item.subrole, user: result.Item.user, tier: result.Item.tier, nextTier: result.Item.next, house: result.Item.house, points: result.Item.points}
+    const userData = { ...tier, token: getToken.token, role: result.Item.role, subrole: result.Item.subrole, user: result.Item.user, house: result.Item.house, points: result.Item.points}
+    
     res.status(200).json(userData);
   } catch (err) {
     console.error(err);
@@ -156,6 +159,7 @@ user.get('/wtpd/:id', async (req: Request, res: Response) => {
   const { id: userParam } = req.params;
   const url = `https://www.wattpad.com/api/v3/users/${userParam}`;
 
+  
   try {
     const response = await axios.get(url, {
       headers: { Accept: 'text/plain' },
@@ -183,7 +187,7 @@ user.get('/wtpd/:id', async (req: Request, res: Response) => {
       votesReceived: parsed.votesReceived || 0,
       deeplink: parsed.deeplink,
     };
-    
+
     return res.json(formatted);
   } catch (err) {
     console.error('Erro ao buscar usuário:', err);
@@ -193,7 +197,6 @@ user.get('/wtpd/:id', async (req: Request, res: Response) => {
 
 user.get('/:id', async (req: Request, res: Response) => {
   const { id: userParam } = req.params;
-
   try {
     const result = await db.send(
       new GetCommand({
