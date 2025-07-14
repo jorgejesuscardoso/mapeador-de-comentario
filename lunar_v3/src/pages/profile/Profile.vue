@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router';
 import BookCard from './component/BookCard.vue';
 import Lucide from '@/base/lucide/Lucide.vue';
 import { getRoleDisplay } from '@/base/helpers/roleDisplay';
-import { getTierInfo, rankingTiers } from '@/base/gamification/tier';
+import { getTierInfo, getTierProgressLabel, rankingTiers } from '@/base/gamification/tier';
 import { capitalize } from '@/base/helpers/capitalize';
 
 const router = useRouter();
@@ -92,7 +92,7 @@ onMounted(async () => {
             <!-- TAG DE ROLE -->
               <div
                 v-if="userLogged?.role"
-                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
+                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 max-w-24 text-xs font-semibold text-white shadow-md"
                 :class="roleTag.class"
               >
                 {{
@@ -118,7 +118,7 @@ onMounted(async () => {
 
             <div
               v-if="userLogged?.house?.thumb"
-              class="flex flex-col items-center rounded-xl p-1.5 bg-white absolute top-16 left-2"
+              class="flex flex-col items-center rounded-md p-1  absolute top-9 left-2 lg:top-5 lg:left-16"
             >
               <h3 class="text-xs font-semibold text-purple-800 ">
                 House
@@ -126,7 +126,7 @@ onMounted(async () => {
               <img 
                 :src="`/houses_flags/${userLogged?.house?.thumb}`"
                 alt="Bandeira da Casa"
-                class="w-8 mt-2"
+                class="w-14 h-20 mt-2 rounded-br-3xl rounded-bl-3xl rounded-tr-md rounded-tl-md"
               >
               <p
                 class="flex items-center justify-center text-xs text-purple-800 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
@@ -146,7 +146,7 @@ onMounted(async () => {
                 <a
                   :href="userData.perfilWtpd"
                   target="_blank"
-                  class="flex items-center text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
+                  class="flex items-center w-8/12 lg:w-6/12 mx-auto text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
                 >
                 <Lucide
                   icon="ExternalLink"
@@ -164,20 +164,22 @@ onMounted(async () => {
               v-if="tier"
               class="lg:px-6"
             >
-              <div class="bg-gradient-to-br from-fuchsia-100 mb-4 via-purple-100 to-white rounded-xl p-4 shadow-md border border-purple-200 space-y-2">
+              <div class="bg-gradient-to-br from-fuchsia-100 mb-4 via-purple-100 to-white rounded-xl p-4 shadow-md border border-purple-200">
               
                 <!-- Cabeçalho bonito -->
                 <div class="flex items-center justify-between">
                   <h3 class="text-sm font-semibold text-purple-800 uppercase tracking-wider">Progresso de Tier</h3>
-                  <span class="text-xs font-semibold text-gray-500">Tier Atual: 
-                    <span :class="tier?.colorClass" class="px-2 py-1 rounded text-white shadow">
-                      {{ tier?.fullLabel }}
-                    </span>
-                  </span>
+                  <div class="flex items-center gap-1 text-xs font-semibold text-gray-500">
+                   <p>Tier Atual: </p>
+                    <div :class="tier?.colorClass" class="flex flex-col px-2 py-1 rounded text-white shadow relative">
+                      <span>{{ tier?.fullLabel }}</span>
+                      <span class="absolute top-6 right-0 text-purple-800">{{ getTierProgressLabel(tier.name, tier.elo) }}</span>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Progresso numérico -->
-                <p class="text-sm text-gray-700">
+                <p class="text-sm text-gray-700 mt-4">
                   🌕 Falta <span class="font-bold text-purple-700">{{ pointsLeft <= 0 ? 0 : pointsLeft }}</span> pts para se tornar 
                   <span class="font-semibold text-purple-800">{{ nextTier?.fullLabel }}</span>
                 </p>

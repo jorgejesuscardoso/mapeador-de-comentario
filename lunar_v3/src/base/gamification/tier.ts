@@ -59,3 +59,30 @@ export function getTierInfo(tier: string, elo: string): TierInfo | null {
     elo
   };
 }
+
+export function getTierProgressLabel(currentTier: string, currentElo: string): string {
+  const tiersOrder = ['nevoa', 'bronze', 'prata', 'ouro', 'diamante', 'arcano', 'lunar'];
+  const elosOrder = ['V', 'IV', 'III', 'II', 'I'];
+
+  // Validação
+  const tierKey = currentTier?.toLowerCase();
+  if (!rankingTiers[tierKey]) return 'Desconhecido';
+  if (!elosOrder.includes(currentElo)) return 'Desconhecido';
+
+  const totalTiers = tiersOrder.length * elosOrder.length;
+
+  // Índices para progressão
+  const tierIndex = tiersOrder.indexOf(tierKey);
+  const eloIndex = elosOrder.indexOf(currentElo);
+
+  // Corrigir para progresso real (1 a 35)
+  const currentPosition = (tierIndex * elosOrder.length) + (elosOrder.length - eloIndex);
+
+  // Verifica se está no nível máximo
+  if (tierKey === 'lunar' && currentElo === 'I') {
+    return 'Max';
+  }
+
+  return `${currentPosition} / ${totalTiers}`;
+}
+
