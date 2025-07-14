@@ -164,7 +164,7 @@ onMounted(async () => {
               <img 
                 :src="`/houses_flags/${tierData?.house?.thumb}`"
                 alt="Bandeira da Casa"
-                class="w-14 h-20 mt-2 rounded-b-3xl rounded-t-md"
+                class="w-10 h-14 mt-2 rounded-b-3xl rounded-t-md"
               >
               <p
                 class="flex items-center justify-center text-xs text-purple-800 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
