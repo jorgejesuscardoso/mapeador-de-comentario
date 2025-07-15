@@ -1,19 +1,28 @@
 
 <script setup lang="ts">
 import { getUser, getUserById, getUserWtpd } from '@/API/UserApi'
+import Loading from '@/base/loading/Loading.vue'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 const data = ref([])
+const isLoading = ref(false)
+const router = useRouter()
+
+const handelGetProfile = (user: string) => {
+  router.push(`/profile/${user}`)
+}
 
 onMounted(async () => {
+  isLoading.value = true
   const members = await getUser()
 
   const filteredMembers = members.filter(member => member != null)
 
   data.value = filteredMembers
 
-  console.log(filteredMembers)
+  isLoading.value = false
 })
 
 </script>
@@ -21,6 +30,20 @@ onMounted(async () => {
 
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full mx-auto mt-4 lg:mt-11">
+
+
+    
+    <Loading :is-loading="isLoading">
+      <template #title>
+        Carregando os membros lunar
+      </template>
+      <template #description>
+        Isso pode levar alguns segundos. Por favor, aguarde...
+      </template>
+    </Loading>
+
+
+
     <div
       v-for="member in data"
       :key="member.user"
@@ -34,6 +57,7 @@ onMounted(async () => {
           :src="member.avatar || '/user.png'"
           alt="Avatar"
           class="w-24 h-24 lg:w-20 lg:h-20 rounded-full border-2 border-purple-300 object-cover shadow cursor-pointer"
+          @click="handelGetProfile(member.user)"
         />
 
         <!-- Nome + Username -->
@@ -151,6 +175,7 @@ onMounted(async () => {
       <Lucide icon="ExternalLink" class="w-3 h-3" />
       </a>
     </div>
+
   </div>
 </template>
 

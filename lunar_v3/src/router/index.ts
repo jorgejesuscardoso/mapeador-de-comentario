@@ -9,6 +9,7 @@ import Login from '@/pages/login/Login.vue';
 import Register from '@/pages/register/Register.vue';
 import Profile from '@/pages/profile/Profile.vue';
 import Members from '@/pages/members/Members.vue';
+import ThirdPersonProfile from '@/pages/profile/thirdPersonProfile.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -24,6 +25,11 @@ const routes: RouteRecordRaw[] = [
         path: '/profile', 
         name: 'profile',
         component: Profile,
+      },      
+      { 
+        path: '/profile/:user', 
+        name: 'profileThirdPerson',
+        component: ThirdPersonProfile,
       },
       { 
         path: '/bot', 

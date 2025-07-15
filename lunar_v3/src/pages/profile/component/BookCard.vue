@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   userId: string
+  thirdUser?: boolean
 }>()
 const userId = toRef(props, 'userId')
 
@@ -62,7 +63,7 @@ onMounted(async () => {
       class="flex justify-between text-base font-bold text-start text-indigo-800 border-b border-purple-300 cursor-pointer"  
       @click="showWork = !showWork"    
     >
-      Suas obras na biblioteca Lunar
+      {{ thirdUser ? `Obras de ${userId} no Lunar`: 'Suas obras na biblioteca Lunar' }}
       <Lucide
         :icon="!showWork ? 'ChevronDown' : 'ChevronUp'"
        />

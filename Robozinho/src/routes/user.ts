@@ -266,7 +266,7 @@ user.get('/:id', async (req: Request, res: Response) => {
     }
 
     const tier = calculateUserTierByPoints(result.Item.tierPoints)
-    const userData = { ...tier, house: result.Item.house, points: result.Item.points, promo: result.Item.promo}
+    const userData = { ...tier, ...result.Item}
 
     res.json(userData);
   } catch (err) {
