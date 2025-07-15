@@ -144,22 +144,69 @@ user.get('/', async (req: Request, res: Response) => {
       })
     );
 
-    const data = [] as any[]
+    let data = [] as any[];
 
     if (result.Items && result.Items.length > 0) {
-        result.Items.map((s: any) => {
-          if (!s.deletedAt) {
-            data.push(s)
-          }
-        })
+      data = await Promise.all(
+        result.Items
+          .filter((s: any) => !s.deletedAt)
+          .map(async ({ password, ...rest }) => {
+            const tier = calculateUserTierByPoints(rest.tierPoints || 0);
+
+            let wattpadData = null;
+
+            try {
+              const url = `https://www.wattpad.com/api/v3/users/${rest.user}`;
+              const response = await axios.get(url, {
+                headers: { Accept: 'text/plain' },
+                responseType: 'text',
+              });
+              wattpadData = response.data;
+              
+              const parsed = parsePhpArray(response.data);
+
+              if (!parsed?.username) {
+                return res.status(201).json({ message: 'Usuário não encontrado no Wattpad' });
+              }
+            
+          
+              const formatted = {
+                username: parsed.username,
+                avatar: parsed.avatar,
+                description: parsed.description,
+                gender: parsed.gender,
+                name: parsed.name,
+                createDate: parsed.createDate,
+                modifyDate: parsed.modifyDate,
+                numFollowers: parsed.numFollowers || 0,
+                numFollowing: parsed.numFollowing || 0,
+                numLists: parsed.numLists || 0,
+                numStoriesPublished: parsed.numStoriesPublished || 0,
+                votesReceived: parsed.votesReceived || 0,
+                deeplink: parsed.deeplink,
+              };
+
+            return {
+              ...formatted,
+              ...rest,
+              tier
+            };
+            } catch (err) {
+              ''
+            }
+          }) 
+      );
     }
 
-    res.status(200).json(data || []);
+
+    res.status(200).json(data); // já com tier embutido em cada user
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao acessar o DynamoDB' });
   }
 });
+
+
 
 
 user.get('/wtpd/:id', async (req: Request, res: Response) => {
@@ -212,7 +259,8 @@ user.get('/:id', async (req: Request, res: Response) => {
         Key: { user: userParam }
       })
     );
- 
+
+    
     if (!result.Item || result.Item.deletedAt) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }

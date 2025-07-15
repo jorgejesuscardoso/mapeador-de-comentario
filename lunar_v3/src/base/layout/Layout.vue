@@ -127,8 +127,8 @@ provide('isAdmin', isAdmin)
 						</li> -->
 						<li>
 							<RouterLink 
-								to=""
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
+								to="/members"
+								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/members',
 									'hover:bg-gray-100': route.path !== '/members'
