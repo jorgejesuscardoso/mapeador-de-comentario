@@ -20,11 +20,11 @@ onMounted(async () => {
 
 
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full mx-auto mt-10">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full mx-auto mt-4 lg:mt-11">
     <div
       v-for="member in data"
       :key="member.user"
-      class="bg-white border border-purple-200 rounded-xl shadow-md p-2 hover:shadow-xl transition-all flex flex-col items-center text-center bg-red relative"
+      class="bg-white border border-purple-200 rounded-xl shadow-md p-2 py-6 hover:shadow-xl transition-all flex flex-col items-center text-center bg-red relative"
     >
       <!-- Avatar -->
       <div
@@ -50,7 +50,7 @@ onMounted(async () => {
 
       
       <!-- Casa -->
-      <div class="flex flex-col items-center absolute left-6 top-20 lg:left-10 lg:top-8">
+      <div class="flex flex-col items-center absolute left-6 top-20 lg:left-6 lg:top-14">
         <img
           v-if="member.house?.thumb"
           :src="`/houses_flags/${member.house.thumb}`"
@@ -88,7 +88,10 @@ onMounted(async () => {
             <Lucide icon="Trophy" class="w-3 h-3" />
             Ranking:
           </span>
-          <span class="font-medium text-violet-500 ml-2">
+          <span 
+            class="font-medium ml-2 px-2 rounded-br-xl  rounded-tl-xl"
+            :class="member.tier?.colorClass"
+          >
             {{ member.tier?.fullLabel || 'N/A' }}
           </span>
         </div>
@@ -111,7 +114,7 @@ onMounted(async () => {
             Pontos:
           </span>
           <span class="font-medium text-violet-500 ml-2">
-            {{ member.tierPoints }}
+            {{ member?.tierPoints?.toLocaleString('pt-br') }}
           </span>
         </div>
 
