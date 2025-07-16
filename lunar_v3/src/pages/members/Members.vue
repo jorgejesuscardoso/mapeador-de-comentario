@@ -1,29 +1,127 @@
 
 <script setup lang="ts">
-import { getUser, getUserById, getUserWtpd } from '@/API/UserApi'
+import { getUser } from '@/API/UserApi'
 import Loading from '@/base/loading/Loading.vue'
 import Lucide from '@/base/lucide/Lucide.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { setCache, getCache } from '../../base/cache/Cache' // Mesmo local que o dos livros
 
+
+const cacheKey = 'cache_member_v1'
 const data = ref([])
 const isLoading = ref(false)
+const fetchError = ref(false)
+const retrying = ref(false)
+const permanentFailure = ref(false)
+
 const router = useRouter()
 
 const handelGetProfile = (user: string) => {
   router.push(`/profile/${user}`)
 }
 
-onMounted(async () => {
-  isLoading.value = true
-  const members = await getUser()
+async function fetchMembers(){
+  try {
+    const members = await getUser()
+    return members.filter(m => m != null)
+  } catch (err) {
+    console.error('❌ Erro ao buscar membros:', err)
+    return []
+  }
+}
 
-  const filteredMembers = members.filter(member => member != null)
+async function loadMembersNormally() {
+  const timeoutLimit = 50000 // 50s
+  const retryInterval = 5000 // 5s
 
-  data.value = filteredMembers
+  const startTime = Date.now()
+  let members = []
 
+  while ((Date.now() - startTime) < timeoutLimit && members.length === 0) {
+    members = await fetchMembers()
+    if (members.length > 0) break
+
+    retrying.value = true
+    fetchError.value = true
+    await new Promise(res => setTimeout(res, retryInterval))
+  }
+
+  data.value = members
+
+  if (members.length === 0) {
+    permanentFailure.value = true
+  } else {
+    setCache(cacheKey, members, 604800) // 7 dias
+  }
+
+  retrying.value = false
+  fetchError.value = false
   isLoading.value = false
+}
+
+async function updateMembersInBackground(oldMembers) {
+  const freshMembers = await fetchMembers()
+
+  const oldIds = oldMembers.map(m => m.id).join(',')
+  const newIds = freshMembers.map(m => m.id).join(',')
+
+  if (oldIds !== newIds && freshMembers.length > 0) {
+    data.value = freshMembers
+    setTimeout(() => {
+      setCache(cacheKey, freshMembers, 604800)
+    }, 60 * 1000)
+    console.log('📥 Membros atualizados em segundo plano.')
+  } else {
+    console.log('✅ Cache de membros ainda válido.')
+  }
+}
+
+watch(data,(val) => {  
+  console.log(val)
 })
+
+
+setTimeout(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}, 200) 
+
+onMounted(async () => {
+  await nextTick() 
+  isLoading.value = true
+  const cached = getCache(cacheKey)
+
+  if (cached && cached.length > 0) {
+    data.value = cached
+    isLoading.value = false
+    
+    window.scrollTo({top:0,behavior:'smooth'})
+    // Atualização em segundo plano
+    updateMembersInBackground(cached)
+    return
+  }
+  
+  window.scrollTo({top:0,behavior:'smooth'})
+  await loadMembersNormally()
+  isLoading.value = false
+  
+})
+
+// Atualiza a cada 10 minutos se tiver mudanças
+setInterval(async () => {
+  const freshMembers = await fetchMembers()
+
+  const currentIds = data.value.map(m => m.id).join(',')
+  const newIds = freshMembers.map(m => m.id).join(',')
+
+  if (currentIds !== newIds && freshMembers.length > 0) {
+    data.value = freshMembers
+    setCache(cacheKey, freshMembers, 604800)
+    console.log('🔄 Membros atualizados via setInterval')
+  } else {
+    console.log('📦 Nenhuma mudança nos membros detectada')
+  }
+}, 60 * 10 * 1000)
 
 </script>
 

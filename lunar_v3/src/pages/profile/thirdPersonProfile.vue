@@ -57,7 +57,6 @@ watch(showReward, (value) => {
 watch(tierData, (val) => {
   userProp.value = userId as string
   roleTag.value = getRoleDisplay(val?.role, val?.subrole)
-  console.log(val)
   promosActived.value = val?.promo
 }, { immediate: true, deep: true }) 
 
@@ -69,7 +68,7 @@ const handleUpdate = async () => {
   await updatePromotionalTierPoints(userData.value.userName)
   window.location.reload()
 }
-
+ 
 onMounted(async () => {
   isLoading.value = true
   const data = await getUserWtpd(userId as string)
@@ -97,15 +96,31 @@ onMounted(async () => {
   tierData.value = tier
   isLoading.value = false
   isLoadingLibrary.value = false
+
+  window.scrollTo({top:0,behavior:'smooth'})
 })
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center w-full min-h-screen bg-white px-4">
-    
+  <div class="flex flex-col justify-center items-center w-full min-h-screen bg-white px-4 relative">
+    <div
+        class="top-0 lg:top-7 p-4 absolute z-10 left-0 lg:left-6"
+      >
+        <h1
+          class="flex items-center text-purple-800 text-sm cursor-pointer"
+          @click="router.push('/members')"
+        >
+          <Lucide
+              icon="ArrowLeft"
+              class="w-5 h-5"
+            />
+            Voltar
+        </h1>
+      </div>
+
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-8 py-8 lg:px-6 w-full mx-auto bg-white shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl mt-5 lg:mt-12 py-4 lg:px-6 w-full mx-auto bg-white shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
@@ -174,24 +189,8 @@ onMounted(async () => {
                   class="w-4 h-4"
                 />
                   Ver perfil no Wattpad
-                </a>
+                </a>   
 
-                
-
-              <div
-                class="p-4"
-              >
-                <h1
-                  class="flex items-center text-purple-800 text-sm"
-                  @click="router.push('/members')"
-                >
-                  <Lucide
-                      icon="ArrowLeft"
-                      class="w-5 h-5"
-                    />
-                    Voltar
-                </h1>
-              </div>
               </div>
             </div>
           </div>

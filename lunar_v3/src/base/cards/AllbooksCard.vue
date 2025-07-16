@@ -4,7 +4,7 @@ import { ref, onMounted, watch, reactive, inject, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import LoadCard from '../loading/LoadCard.vue';
 import FilterBar from '../filters/FilterBar.vue';
-import { setCache, getCache } from './BookCache';
+import { setCache, getCache } from '../cache/Cache';
 import Lucide from '../lucide/Lucide.vue';
 import { feed, getBooksAws } from '@/API/BookApi';
 
