@@ -78,7 +78,6 @@ async function updateMembersInBackground(oldMembers) {
 }
 
 watch(data,(val) => {  
-  console.log(val)
 })
 
 
