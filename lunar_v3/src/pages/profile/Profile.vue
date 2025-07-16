@@ -113,7 +113,7 @@ onMounted(async () => {
             <!-- TAG DE ROLE -->
               <div
                 v-if="userLogged?.role"
-                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 max-w-24 text-xs font-semibold text-white shadow-md"
+                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
                 :class="roleTag.class"
               >
                 {{

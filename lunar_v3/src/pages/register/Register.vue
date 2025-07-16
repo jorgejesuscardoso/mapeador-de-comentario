@@ -8,6 +8,8 @@ const router = useRouter()
 const userWattpad = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const role = ref('member')
+const subrole = ref('')
 const nome = ref('')
 const idade = ref<number | null>(null)
 const loading = ref(false)
@@ -25,7 +27,8 @@ const submit = async () => {
       password: password.value.trim(),
       name: nome.value.trim(),
       age: idade.value,
-      role:'member'
+      role: role.value,
+      subrole: subrole.value
     } as TRegister
 
     const data = await Register(payload)

@@ -51,7 +51,7 @@ function parsePhpArray(str: string) {
 
 
 user.post('/register', async (req: Request, res: Response) => {
-  const { user, password, name, age, role } = req.body;
+  const { user, password, name, age, role, subrole } = req.body;
 
   if (!user || !password) {
     return res.status(400).json({ error: 'Usuário ou senha ausente!' });
@@ -82,7 +82,7 @@ user.post('/register', async (req: Request, res: Response) => {
           name,
           age,
           role,
-          subRole:'',
+          subrole,
           promo:[],
           tierPoints: 0,
           house:[{

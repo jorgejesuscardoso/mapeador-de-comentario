@@ -113,7 +113,7 @@ onMounted(async () => {
             <!-- TAG DE ROLE -->
               <div
                 v-if="tierData?.role"
-                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 max-w-24 text-xs font-semibold text-white shadow-md"
+                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
                 :class="roleTag.class"
               >
                 {{
@@ -254,18 +254,6 @@ onMounted(async () => {
 
             <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
 
-              <!-- Pontos Lunar -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
-                  > 
-                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
-                    {{ tierData?.points?.toLocaleString('pt-br') || 0 }}
-                  </p>
-                  <p class="text-sm text-gray-500">Pontos Lunar</p>
-                </div>
-              </div>
 
               <!-- Pontos elo -->
               <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
@@ -280,55 +268,17 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <!-- Seguidores -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-600"
-                  > 
-                    <Lucide icon="Users" class="w-5 h-5 text-purple-500" />
-                    {{ userData.numFollowers }}
-                  </p>
-                  <p class="text-sm text-gray-500">Seguidores</p>
-                </div>
-              </div>
-
-              <!-- Seguindo -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-600"
-                  > 
-                    <Lucide icon="UserPlus" class="w-5 h-5 text-purple-500" />
-                    {{ userData.numFollowing }}
-                  </p>
-                  <p class="text-sm text-gray-500">Seguindo</p>
-                </div>
-              </div>
-
-              <!-- Histórias publicadas -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-between  gap-1 text-xl font-bold text-purple-600"
-                  >  
-                    <Lucide icon="BookOpen" class="w-5 h-5 text-purple-500" />
-                    {{ userData.numPublished }}
-                  </p>
-                  <p class="text-sm text-gray-500">Histórias</p>
-                </div>
-              </div>
 
               <!-- Votos recebidos -->
               <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
-                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-600"
+                    class="flex items-center justify-between gap-2 text-lg font-bold text-purple-600"
                   > 
                     <Lucide icon="Star" class="w-5 h-5 text-purple-500 fill-yellow-400" />
-                    {{ userData.votesReceived }}
+                    {{ tierData?.fullLabel }}
                   </p>
-                  <p class="text-sm text-gray-500">Votos totais</p>
+                  <p class="text-sm text-gray-500">Elo mais alto</p>
                 </div>
               </div>
             </div>
