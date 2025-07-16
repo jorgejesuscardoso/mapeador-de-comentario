@@ -18,7 +18,7 @@
 }
 
 .userCard{
-    background-image: url('bgCard.png');
+    background-image: url('/bgCard.png');
     background-position: center;
     background-size: contain;
 }
