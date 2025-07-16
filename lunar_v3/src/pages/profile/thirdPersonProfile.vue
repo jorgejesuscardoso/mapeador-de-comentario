@@ -294,7 +294,7 @@ onMounted(async () => {
                     <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
                     {{ tierData?.totalTierPoints?.toLocaleString('pt-br') || 0 }}
                   </p>
-                  <p class="text-sm text-gray-500">Pontos de Tier</p>
+                  <p class="text-sm text-gray-500">Pontos de Elo Total</p>
                 </div>
               </div>
 
