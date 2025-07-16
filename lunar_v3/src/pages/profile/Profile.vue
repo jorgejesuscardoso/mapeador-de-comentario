@@ -166,7 +166,7 @@ onMounted(async () => {
                 <div>
                   <h2 class="text-lg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
                   <p class="text-sm text-indigo-400 mb-2">@{{ userData.userName }}</p>
-                  <p class="text-sm text-fuchsia-300 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
+                  <p class="text-sm text-white max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
                   <a
                     :href="userData.perfilWtpd"
                     target="_blank"
