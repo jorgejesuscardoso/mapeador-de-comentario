@@ -123,7 +123,7 @@ onMounted(async () => {
               <!-- TAG DE TIER -->
               <div
                 v-if="tierData?.tier"
-                class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold text-white shadow-md"
+                class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold shadow-md"
                 :class="tierData?.colorClass"
               >
                 {{
