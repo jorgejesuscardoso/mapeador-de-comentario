@@ -109,91 +109,79 @@ onMounted(async () => {
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative bg-fuchsia-300 lg:shadow-lg rounded-xl lg:pb-3">
+          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard lg:shadow-lg rounded-xl lg:pb-3">
             <!-- TAG DE ROLE -->
               <div
-                v-if="userLogged?.role"
-                class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
-                :class="roleTag.class"
+                class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.5)] rounded-2xl"
               >
-                {{
-                  roleTag.label
-                }}
-              </div>
-              <!-- TAG DE TIER -->
+                <div
+                  v-if="tierData?.role"
+                  class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
+                  :class="roleTag.class"
+                >
+                  {{
+                    roleTag.label
+                  }}
+                </div>
+                <!-- TAG DE TIER -->
+                <div
+                  v-if="tierData?.tier"
+                  class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold shadow-md"
+                  :class="tierData?.colorClass"
+                >
+                  {{
+                    tierData?.fullLabel
+                  }}
+                </div>
+                
+              <img
+                :src="userData.avatar || ''"
+                alt="Avatar"
+                class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
+              />
+
               <div
-                v-if="tierData?.tier"
-                class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold shadow-md"
-                :class="tierData?.colorClass"
+                v-if="tierData?.house?.thumb"
+                class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
               >
-                {{
-                  tierData?.fullLabel
-                }}
+                <h3 class="text-xs font-semibold text-purple-400 ">
+                  House
+                </h3>
+                <img 
+                  :src="`/houses_flags/${tierData?.house?.thumb}`"
+                  alt="Bandeira da Casa"
+                  class="w-8 h-12  rounded-b-3xl rounded-t-md"
+                >
+                <p
+                  class="flex items-center justify-center text-xs text-purple-400 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
+                >
+                  {{ tierData.house.name }}
+                </p>
               </div>
 
-              <!-- MOEDA PROMOCIONAL -->
-              <div 
-                v-if="!isLoading && !promosActived?.includes('start') && !showReward"
-                class="flex flex-col absolute top-16 right-5 z-50"
+              <div
+                class="flex items-start justify-center mt-4 w-full"
               >
-                <button 
-                  @click="showReward = true" class="text-4xl transition-transform hover:scale-110"
-                >
-                  💰
-                </button>
-                <span
-                  class="text-xs font-semibold text-purple-800"
-                >
-                  Promoção
-                </span>
+
+                <div>
+                  <h2 class="text-lg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
+                  <p class="text-sm text-indigo-400 mb-2">@{{ userData.userName }}</p>
+                  <p class="text-sm text-fuchsia-300 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
+                  <a
+                    :href="userData.perfilWtpd"
+                    target="_blank"
+                    class="flex items-center w-52  mx-auto text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
+                  >
+                  <Lucide
+                    icon="ExternalLink"
+                    class="w-4 h-4"
+                  />
+                    Ver perfil no Wattpad
+                  </a>   
+
+                </div>
               </div>
-              
-            <img
-              :src="userData.avatar || ''"
-              alt="Avatar"
-              class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
-            />
-
-            <div
-              v-if="tierData?.house?.thumb"
-              class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
-            >
-              <h3 class="text-xs font-semibold text-purple-800 ">
-                House
-              </h3>
-              <img 
-                :src="`/houses_flags/${tierData?.house?.thumb}`"
-                alt="Bandeira da Casa"
-                class="w-8 h-12  rounded-b-3xl rounded-t-md"
-              >
-              <p
-                class="flex items-center justify-center text-xs text-purple-800 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
-              >
-                {{ tierData.house.name }}
-              </p>
-            </div>
-
-            <div
-              class="flex items-start justify-center mt-4 w-full"
-            >
-
-              <div>
-                <h2 class="text-lg font-bold text-purple-700">{{ userData.name || userData.userName }}</h2>
-                <p class="text-sm text-indigo-700 mb-2">@{{ userData.userName }}</p>
-                <p class="text-sm text-fuchsia-950 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
-                <a
-                  :href="userData.perfilWtpd"
-                  target="_blank"
-                  class="flex items-center w-52  mx-auto text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition mb-6"
-                >
-                <Lucide
-                  icon="ExternalLink"
-                  class="w-4 h-4"
-                />
-                  Ver perfil no Wattpad
-                </a>
               </div>
-            </div>
           </div>
 
           <!-- Estatísticas à direita -->
