@@ -20,7 +20,7 @@ const eloPointsThresholds = [
 export const rankingTiers = {
   nevoa: {
     name: 'Névoa',
-    colorClass: 'bg-gray-400 text-white',
+    colorClass: 'bg-gray-100 text-gray-700', // Quase branco, com texto escuro
     tiers: ['V', 'IV', 'III', 'II', 'I']
   },
   bronze: {
@@ -30,12 +30,12 @@ export const rankingTiers = {
   },
   prata: {
     name: 'Prata',
-    colorClass: 'bg-gray-300 text-gray-900',
+    colorClass: 'bg-neutral-400 text-white', // Mais metálico
     tiers: ['V', 'IV', 'III', 'II', 'I']
   },
   ouro: {
     name: 'Ouro',
-    colorClass: 'bg-yellow-500 text-gray-900',
+    colorClass: 'bg-yellow-500 text-white',
     tiers: ['V', 'IV', 'III', 'II', 'I']
   },
   diamante: {
@@ -59,6 +59,7 @@ export const rankingTiers = {
     tiers: ['']
   }
 }
+
 
 
 export function calculateUserTierByPoints(totalPoints: number) {

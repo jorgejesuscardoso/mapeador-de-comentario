@@ -16,3 +16,9 @@
     --dark-mode-btn-bg: #f3f3f3;
     --bg-dark-hover-cancel: #6b0000;
 }
+
+.userCard{
+    background-image: url('bgCard.png');
+    background-position: center;
+    background-size: contain;
+}
