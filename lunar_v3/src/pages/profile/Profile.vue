@@ -218,7 +218,7 @@ onMounted(async () => {
 
                 <!-- Progresso numérico -->
                 <p class="text-sm text-gray-700 mt-4">
-                  🌕 Falta <span class="font-bold text-purple-700">{{ tierData.maxPoints - +tierData.tierPoints }}</span> pts para se tornar 
+                  🌕 Falta <span class="font-bold text-purple-700">{{ tierData.pointsToNext }}</span> pts para se tornar 
                   <span class="font-semibold text-purple-800">{{ tierData?.nextTierLabel }}</span>
                 </p>
 
@@ -226,7 +226,7 @@ onMounted(async () => {
                 <div class="relative w-full h-3 bg-gray-300 rounded-full overflow-hidden shadow-inner">
                   <div
                     class="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-700 ease-out"
-                    :style="{ width: ((tierData?.tierPoints / tierData?.maxPoints) * 100) + '%' }"
+                    :style="{ width: ((tierData?.eloPoints / tierData?.maxPoints) * 100) + '%' }"
                   ></div>
                 </div>
 
@@ -235,7 +235,7 @@ onMounted(async () => {
                  
                   <span class="absolute top-0 right-1/2 text-purple-700">{{ tierData.progressPercent }}%</span> 
 
-                  {{ tierData?.tierPoints }} / {{ tierData?.maxPoints }} pontos
+                  {{ tierData?.eloPoints }} / {{ tierData?.maxPoints }} pontos
                 </div>
               </div>
             </div>
@@ -255,8 +255,34 @@ onMounted(async () => {
               </div>
             </div>
 
-            <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
 
+
+            <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
+               <!-- Pontos tier -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                  > 
+                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-500" />
+                    {{ tierData?.rakingPosition?.toLocaleString('pt-br') || "N/A" }}
+                  </p>
+                  <p class="text-sm text-gray-500">Ranking Geral</p>
+                </div>
+              </div>
+
+              <!-- Pontos tier -->
+              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                <div>
+                  <p 
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                  > 
+                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-500" />
+                    {{ tierData?.houseRakingPosition?.toLocaleString('pt-br') || "N/A" }}
+                  </p>
+                  <p class="text-sm text-gray-500">Ranking na Casa</p>
+                </div>
+              </div>
               <!-- Pontos Lunar -->
               <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
@@ -277,11 +303,13 @@ onMounted(async () => {
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
                   > 
                     <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
-                    {{ tierData?.totalTierPoints?.toLocaleString('pt-br') || 0 }}
+                    {{ tierData?.tierPoints?.toLocaleString('pt-br') || 0 }}
                   </p>
-                  <p class="text-sm text-gray-500">Pontos de Elo</p>
+                  <p class="text-sm text-gray-500">Pontos de Tier</p>
                 </div>
               </div>
+
+              
 
               <!-- Seguidores -->
               <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">

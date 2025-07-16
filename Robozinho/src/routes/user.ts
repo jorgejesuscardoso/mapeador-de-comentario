@@ -207,8 +207,6 @@ user.get('/', async (req: Request, res: Response) => {
 });
 
 
-
-
 user.get('/wtpd/:id', async (req: Request, res: Response) => {
   const { id: userParam } = req.params;
   const url = `https://www.wattpad.com/api/v3/users/${userParam}`;

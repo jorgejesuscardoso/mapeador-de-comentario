@@ -68,13 +68,14 @@ export function calculateUserTierByPoints(totalPoints: number) {
 
   const totalEloCount = eloPointsThresholds.length;
 
-  if(!totalPoints) return null
-  // Encontrar índice do elo atual com base na pontuação
+  if (!totalPoints) return null;
+
+  // Índice do elo atual
   let index = eloPointsThresholds.findIndex((threshold, i) =>
     totalPoints < eloPointsThresholds[i + 1]
   );
 
-  // Se não encontrou, está no máximo
+  // Se não encontrou, tá no Oráculo (máximo)
   if (index === -1) {
     return {
       tier: 'oraculo',
@@ -84,9 +85,11 @@ export function calculateUserTierByPoints(totalPoints: number) {
       colorClass: rankingTiers.oraculo.colorClass,
       current: totalEloCount,
       total: totalEloCount,
-      tierPoints: 0,
+      tierPoints: eloPointsThresholds[eloPointsThresholds.length - 1], // Tudo que passou até aqui
       totalTierPoints: totalPoints,
       maxPoints: 0,
+      eloPoints: totalPoints - eloPointsThresholds[eloPointsThresholds.length - 2],
+      pointsToNext: 0,
       progressText: 'Max',
       progressPercent: 100,
       nextTier: null,
@@ -95,7 +98,6 @@ export function calculateUserTierByPoints(totalPoints: number) {
     };
   }
 
-  // Calcular tier e elo com base no índice
   const tierIndex = Math.floor(index / 5);
   const tierKey = tiersOrder[tierIndex];
   const tier = rankingTiers[tierKey];
@@ -103,18 +105,24 @@ export function calculateUserTierByPoints(totalPoints: number) {
   const elo = tier?.tiers?.[eloPosition] || '';
 
   const nextIndex = index + 1;
+  const nextThreshold = eloPointsThresholds[nextIndex];
+  const currentThreshold = eloPointsThresholds[index];
+
+  const tierStartThreshold = eloPointsThresholds[tierIndex * 5];
+  const tierPoints = totalPoints - tierStartThreshold;
+
+  const eloPoints = totalPoints - currentThreshold;
+  const pointsToNext = nextThreshold - totalPoints;
+  const maxPoints = nextThreshold - currentThreshold;
+
+  const percent = Math.round((eloPoints / maxPoints) * 100);
+
   const nextTierIndex = Math.floor(nextIndex / 5);
   const nextTierKey = tiersOrder[nextTierIndex];
   const nextTier = rankingTiers[nextTierKey];
   const nextEloPosition = nextIndex % 5;
   const nextElo = nextTier?.tiers?.[nextEloPosition] || '';
   const nextTierLabel = nextTierKey === 'oraculo' ? 'Oráculo' : `${nextTier?.name} ${nextElo}`;
-
-  const nextThreshold = eloPointsThresholds[nextIndex];
-  const currentThreshold = eloPointsThresholds[index];
-  const pointsInCurrent = totalPoints - currentThreshold;
-  const pointsToNext = nextThreshold - currentThreshold;
-  const percent = Math.round((pointsInCurrent / pointsToNext) * 100);
 
   return {
     tier: tierKey,
@@ -124,9 +132,11 @@ export function calculateUserTierByPoints(totalPoints: number) {
     colorClass: tier.colorClass,
     current: index + 1,
     total: totalEloCount,
-    tierPoints: pointsInCurrent,
+    tierPoints,            // <= pontos acumulados no tier
+    eloPoints,             // <= pontos dentro do elo atual
+    pointsToNext,          // <= quanto falta pro próximo elo
     totalTierPoints: totalPoints,
-    maxPoints: pointsToNext,
+    maxPoints,
     progressText: `${index + 1} / ${totalEloCount}`,
     progressPercent: percent,
     nextTier: nextTierKey,
@@ -134,4 +144,5 @@ export function calculateUserTierByPoints(totalPoints: number) {
     nextTierLabel
   };
 }
+
 

@@ -18,6 +18,8 @@ const permanentFailure = ref(false)
 const router = useRouter()
 
 const handleGetProfile = (user: string) => {
+  const userLogged = JSON.parse(localStorage.getItem('user')) || '';
+  if(user && user === userLogged.user) return router.push('/profile')
   router.push(`/profile/${user}`)
 }
 
