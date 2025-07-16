@@ -21,9 +21,9 @@ const submit = async () => {
     loading.value = true
 
     const payload = {
-      user: userWattpad.value,
-      password: password.value,
-      name: nome.value,
+      user: userWattpad.value.trim(),
+      password: password.value.trim(),
+      name: nome.value.trim(),
       age: idade.value,
       role:'member'
     } as TRegister

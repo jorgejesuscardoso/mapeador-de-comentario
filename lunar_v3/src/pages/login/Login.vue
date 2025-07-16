@@ -17,7 +17,7 @@ const submit = async () => {
     error.value = ''
     loading.value = true
 
-    const data = await Login(email.value, password.value)
+    const data = await Login(email.value.trim(), password.value.trim())
 
     // Aqui só entra se o login for OK
     if (!data.token) {
