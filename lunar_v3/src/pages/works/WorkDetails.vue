@@ -235,13 +235,13 @@ onBeforeUnmount(() => {
             class="bg-white w-[90%] max-w-md rounded-xl shadow-xl p-6 border border-gray-200"
           >
             <h2 class="text-lg font-bold text-gray-800 mb-4">
-              {{ isAdm ? 'Buscar Comentários do Wattpad' : 'Capítulo disponível no Wattpad' }}
+              {{ isAdm ? 'Verificação de leitura' : 'Capítulo disponível no Wattpad' }}
             </h2>
 
             <!-- Formulário visível apenas para administradores -->
             <form v-if="isAdm" @submit.prevent="handleSearchComments">
               <label class="block text-sm text-gray-600 mb-1" for="user-input">
-                Nome de usuário:
+                Usuário a ser verificado:
               </label>
               <input
                 id="user-input"
