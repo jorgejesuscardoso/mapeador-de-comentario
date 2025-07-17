@@ -37,7 +37,7 @@ const searchFilter = reactive({
 })
 
 const sortType = ref('');
-const showFilterBar = ref(false)
+const showFilterBar = ref(true)
 
 const router = useRouter();
 const emit = defineEmits<{
