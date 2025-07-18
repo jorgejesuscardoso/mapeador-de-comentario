@@ -58,7 +58,6 @@ watch(userData, (val) => {
 
 watch(tierData, (val) =>{
   promosActived.value = val?.promo
-  console.log(promosActived.value)
 }, {immediate: true })
 
 const handleUpdate = async () => {
@@ -110,6 +109,16 @@ onMounted(async () => {
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
           <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard lg:shadow-lg rounded-xl lg:pb-3">
+            <!--Moeda promocional-->
+            <!-- Moeda promocional -->
+            <button
+              v-if="!promosActived?.includes('start')"
+              class="absolute top-24 right-10 z-50 w-9 h-9 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border-2 border-yellow-600 shadow-xl flex items-center justify-center animate-bounce hover:scale-110 transition-transform duration-300"
+              @click="showReward = !showReward"
+            >
+              <Lucide icon="Bitcoin" class="w-6 h-6 text-white drop-shadow" />
+            </button>
+
             <!-- TAG DE ROLE -->
               <div
                 class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.5)] rounded-2xl"
@@ -205,8 +214,13 @@ onMounted(async () => {
                 </div>
 
                 <!-- Progresso numérico -->
-                <p class="text-sm text-gray-700 mt-4">
-                  🌕 Falta <span class="font-bold text-purple-700">{{ tierData.pointsToNext }}</span> pts para se tornar 
+                <p class="flex items-center justify-start gap-1 text-sm text-gray-700 mt-4">
+                  
+                <Lucide
+                 icon="Bitcoin" 
+                 class="w-4 h-4 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center" 
+                 /> 
+                  Falta <span class="font-bold text-purple-700">{{ tierData.pointsToNext }}</span> pts para se tornar 
                   <span class="font-semibold text-purple-800">{{ tierData?.nextTierLabel }}</span>
                 </p>
 
@@ -402,17 +416,23 @@ onMounted(async () => {
 <!-- Modal de recompensa -->
 <div 
   v-if="showReward"
-  class="fixed inset-0 flex flex-col items-center justify-center bg-black/50 z-50"
+  class="fixed inset-0 flex flex-col items-center justify-center bg-black/60 z-50"
 >
   <div
-    class="bg-white rounded-xl p-4 shadow-xl flex flex-col items-center"
-    style="width: 50vw; max-width: 300px"
+    class="bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 shadow-2xl flex flex-col items-center border border-purple-200"
+    style="width: 80vw; max-width: 320px"
   >
-    <div class="text-7xl">💰</div>
-    <p class="mt-4 text-purple-700 font-semibold">Parabéns!</p>
-    <p class="mt-4 text-purple-700 text-center font-semibold">Você ganhou 10 pontos de Elo!</p>
+    <div
+      class="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border-2 border-yellow-600 shadow-lg flex items-center justify-center mb-4"
+    >
+      <Lucide icon="Bitcoin" class="w-10 h-10 text-white drop-shadow" />
+    </div>
+    <p class="text-xl text-purple-700 font-bold">Parabéns!</p>
+    <p class="mt-2 text-purple-700 text-center font-medium">
+      Você ganhou <span class="text-yellow-600 font-bold">10 pontos de Elo!</span>
+    </p>
     <button
-      class="mt-4 text-sm text-fuchsia-700 hover:underline"
+      class="mt-5 text-sm text-white px-2 py-1 rounded-xl bg-fuchsia-700 font-semibold  hover:bg-fuchsia-800 transition"
       @click="closeReward"
     >
       Fechar
