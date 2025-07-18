@@ -8,6 +8,7 @@ import Lucide from '@/base/lucide/Lucide.vue';
 import { getRoleDisplay } from '@/base/helpers/roleDisplay';
 import { getTierInfo, getTierProgressLabel, rankingTiers } from '@/base/gamification/tier';
 import { capitalize } from '@/base/helpers/capitalize';
+import { formatRankingPosition } from '@/base/utils/houseRankingFormat';
 
 const router = useRouter();
 const userData = ref({
@@ -109,15 +110,21 @@ onMounted(async () => {
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
           <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard lg:shadow-lg rounded-xl lg:pb-3">
-            <!--Moeda promocional-->
+            
             <!-- Moeda promocional -->
-            <button
-              v-if="!promosActived?.includes('start')"
-              class="absolute top-24 right-10 z-50 w-9 h-9 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border-2 border-yellow-600 shadow-xl flex items-center justify-center animate-bounce hover:scale-110 transition-transform duration-300"
-              @click="showReward = !showReward"
+            <div
+              class="flex items-center justify-center flex-col absolute top-24 right-6 z-50 w-14"
             >
-              <Lucide icon="Bitcoin" class="w-6 h-6 text-white drop-shadow" />
-            </button>
+              <button
+                v-if="!promosActived?.includes('start')"
+                class="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border-2 border-yellow-600 shadow-xl flex items-center justify-center animate-bounce hover:scale-110 transition-transform duration-300"
+                @click="showReward = !showReward"
+              >
+                <Lucide icon="Bitcoin" class="w-6 h-6 text-white drop-shadow" />
+              </button>
+
+              <p class="text-white text-[10px] text-center">+10 pontos</p>
+            </div>
 
             <!-- TAG DE ROLE -->
               <div
@@ -153,8 +160,8 @@ onMounted(async () => {
                 v-if="tierData?.house?.thumb"
                 class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
               >
-                <h3 class="text-xs font-semibold text-purple-400 ">
-                  House
+                <h3 class="text-xs mb-1 font-semibold text-purple-400 ">
+                  {{ formatRankingPosition(tierData.house.rankingPosition) }}
                 </h3>
                 <img 
                   :src="`/houses_flags/${tierData?.house?.thumb}`"
@@ -165,6 +172,13 @@ onMounted(async () => {
                   class="flex items-center justify-center text-xs text-purple-400 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
                 >
                   {{ tierData.house.name }}
+                </p>
+
+                <p class="flex items-center justify-center text-[10px] font-medium text-purple-400">
+                  <Lucide
+                    icon="Bitcoin" 
+                    class="w-3 h-3 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
+                    /> {{ tierData.house?.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
                 </p>
               </div>
 

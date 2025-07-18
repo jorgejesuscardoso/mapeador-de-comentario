@@ -8,6 +8,7 @@ import Lucide from '@/base/lucide/Lucide.vue';
 import { getRoleDisplay } from '@/base/helpers/roleDisplay';
 import { getTierInfo, getTierProgressLabel, rankingTiers } from '@/base/gamification/tier';
 import { capitalize } from '@/base/helpers/capitalize';
+import { formatRankingPosition } from '@/base/utils/houseRankingFormat';
 
 const router = useRouter();
 const userData = ref({
@@ -68,6 +69,7 @@ const handleUpdate = async () => {
   await updatePromotionalTierPoints(userData.value.userName)
   window.location.reload()
 }
+
  
 onMounted(async () => {
   isLoading.value = true
@@ -159,8 +161,8 @@ onMounted(async () => {
                 v-if="tierData?.house?.thumb"
                 class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
               >
-                <h3 class="text-xs font-semibold text-purple-400 ">
-                  House
+                <h3 class="text-xs mb-1 font-semibold text-purple-400 ">
+                  {{ formatRankingPosition(tierData.house.rankingPosition) }}
                 </h3>
                 <img 
                   :src="`/houses_flags/${tierData?.house?.thumb}`"
@@ -170,7 +172,14 @@ onMounted(async () => {
                 <p
                   class="flex items-center justify-center text-xs text-purple-400 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
                 >
-                  {{ tierData.house.name }}
+                  {{ capitalize(tierData.house.name) }}
+                </p>
+
+                <p class="flex items-center justify-center text-xs lg:text-[10px] font-medium text-purple-400">
+                  <Lucide
+                    icon="Bitcoin" 
+                    class="w-3 h-3 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
+                    /> {{ tierData.house?.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
                 </p>
               </div>
 

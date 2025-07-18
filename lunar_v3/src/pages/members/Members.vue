@@ -8,6 +8,8 @@ import { useRouter } from 'vue-router'
 import { setCache, getCache } from '../../base/cache/Cache' // Mesmo local que o dos livros
 import FilterBar from '@/base/filters/FilterBar.vue'
 import SearchInput from '@/base/Inputs.vue/SearchInput.vue'
+import { capitalize } from '@/base/helpers/capitalize'
+import { formatRankingPosition } from '@/base/utils/houseRankingFormat'
 
 
 const cacheKey = 'cache_member_v1'
@@ -17,7 +19,7 @@ const fetchError = ref(false)
 const retrying = ref(false)
 const permanentFailure = ref(false)
 const search = ref('')
-const showSearchMenu = ref(true)
+const rankingPosition = ref(0)
 const router = useRouter()
 
 const handleGetProfile = (user: string) => {
@@ -121,8 +123,19 @@ const filteredMembers = computed(() => {
   })
 })
 
-watch(data,(val) => {  
-})
+watch(data, (val) => {
+  const sorted = [...val].sort((a, b) => {
+    const pointsA = a?.tierPoints || 0;
+    const pointsB = b?.tierPoints || 0;
+    return pointsB - pointsA;
+  });
+
+  sorted.forEach((member, index) => {
+    member.rankingPosition = index + 1;
+  });
+});
+
+
 
 
 setTimeout(() => {
@@ -172,7 +185,7 @@ setInterval(async () => {
 <template>
     
   <div
-    class="lg:mt-11"
+    class="mt-4 lg:mt-11"
   >
     <div
       class="mb-2 relative bg-white px-4 pt-5 pb-3 shadow-lg rounded-xl"
@@ -193,15 +206,6 @@ setInterval(async () => {
                 class="w-3 h-3"
               />
               Buscar: 
-            </div>
-            <div    
-              class="flex items-center justify-start cursor-pointer"
-              @click="showSearchMenu = !showSearchMenu"
-            >
-              <Lucide 
-                icon="ListFilterPlus"
-                class="text-violet-800 w-5 h-5"
-              />
             </div>
           </div>
         </div>
@@ -239,6 +243,14 @@ setInterval(async () => {
       <div
         class="bg-[rgba(0,0,0,0.5)] w-full h-full p-2 py-6 rounded-xl shadow-md hover:shadow-xl"
       >
+
+        <div
+          v-if="member?.rankingPosition"
+          class="flex items-center justify-center absolute text-violet-300 top-6 right-10"
+        >
+          {{ formatRankingPosition(member?.rankingPosition) }}
+        </div>
+
         <div
         class="flex items-center justify-center flex-col "
         >
@@ -264,7 +276,10 @@ setInterval(async () => {
 
           
           <!-- Casa -->
-          <div class="flex flex-col items-center absolute left-6 top-20 lg:left-6 lg:top-14">
+          <div class="flex flex-col items-center absolute left-5 top-16 lg:left-6 lg:top-14">
+            <h3 class="text-xs mb-1 font-semibold text-purple-400 ">
+              {{ formatRankingPosition(member.house.rankingPosition) }}
+            </h3>
             <img
               v-if="member.house?.thumb"
               :src="`/houses_flags/${member.house.thumb}`"
@@ -279,7 +294,17 @@ setInterval(async () => {
             </div>
 
             <p class="text-xs mt-1 lg:text-[10px] font-medium text-purple-400">
-              {{ member.house?.name || 'Sem casa' }}
+              {{ capitalize(member.house?.name) || 'Sem casa' }}
+            </p>
+
+            <p 
+              v-if="member.house"
+              class="flex items-center justify-center text-xs lg:text-[10px] font-medium text-purple-400"
+            >
+              <Lucide
+                 icon="Bitcoin" 
+                 class="w-3 h-3 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
+                 /> {{ member.house.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
             </p>
 
           </div>

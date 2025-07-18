@@ -85,10 +85,7 @@ user.post('/register', async (req: Request, res: Response) => {
           subrole,
           promo:[],
           tierPoints: 0,
-          house:[{
-            name:'',
-            thumb: ''
-          }],
+          house: '',
           createdAt: new Date().toISOString(),
         }
       })
@@ -151,50 +148,69 @@ user.get('/', async (req: Request, res: Response) => {
         result.Items
           .filter((s: any) => !s.deletedAt)
           .map(async ({ password, ...rest }) => {
-            const tier = calculateUserTierByPoints(rest.tierPoints || 0);
+          const tier = calculateUserTierByPoints(rest.tierPoints || 0);
 
-            let wattpadData = null;
+          let wattpadData = null;
 
-            try {
-              const url = `https://www.wattpad.com/api/v3/users/${rest.user}`;
-              const response = await axios.get(url, {
-                headers: { Accept: 'text/plain' },
-                responseType: 'text',
-              });
-              wattpadData = response.data;
-              
-              const parsed = parsePhpArray(response.data);
+          try {
+            const url = `https://www.wattpad.com/api/v3/users/${rest.user}`;
+            const response = await axios.get(url, {
+              headers: { Accept: 'text/plain' },
+              responseType: 'text',
+            });
 
-              if (!parsed?.username) {
-                return res.status(201).json({ message: 'Usuário não encontrado no Wattpad' });
-              }
-            
-          
-              const formatted = {
-                username: parsed.username,
-                avatar: parsed.avatar,
-                description: parsed.description,
-                gender: parsed.gender,
-                name: parsed.name,
-                createDate: parsed.createDate,
-                modifyDate: parsed.modifyDate,
-                numFollowers: parsed.numFollowers || 0,
-                numFollowing: parsed.numFollowing || 0,
-                numLists: parsed.numLists || 0,
-                numStoriesPublished: parsed.numStoriesPublished || 0,
-                votesReceived: parsed.votesReceived || 0,
-                deeplink: parsed.deeplink,
-              };
+            const parsed = parsePhpArray(response.data);
+
+            if (!parsed?.username) {
+              return null; // Wattpad inválido
+            }
+
+            // Só busca house se rest.house for válido
+            let houseData: any = '';
+            if (rest.house) {
+              const houseResult = await db.send(
+                new GetCommand({
+                  TableName: 'house',
+                  Key: { name: rest.house }
+                })
+              );
+              houseData = houseResult.Item || '';
+            }
+
+            const formatted = {
+              username: parsed.username,
+              avatar: parsed.avatar,
+              description: parsed.description,
+              gender: parsed.gender,
+              name: parsed.name,
+              createDate: parsed.createDate,
+              modifyDate: parsed.modifyDate,
+              numFollowers: parsed.numFollowers || 0,
+              numFollowing: parsed.numFollowing || 0,
+              numLists: parsed.numLists || 0,
+              numStoriesPublished: parsed.numStoriesPublished || 0,
+              votesReceived: parsed.votesReceived || 0,
+              deeplink: parsed.deeplink,
+            };
 
             return {
               ...formatted,
               ...rest,
+              house: houseData,
               tier
             };
-            } catch (err) {
-              ''
-            }
-          }) 
+          } catch (err) {
+            return {
+              ...rest,
+              username: rest.user,
+              avatar: '',
+              description: '',
+              name: rest.name || '',
+              house: '',
+              tier
+            };
+          }
+        })
       );
     }
 
@@ -264,6 +280,13 @@ user.get('/:id', async (req: Request, res: Response) => {
     }
 
     const tier = calculateUserTierByPoints(result.Item.tierPoints)
+    const house = await db.send(
+      new GetCommand({
+        TableName: 'house',
+        Key: { name: result.Item.house }
+      })
+    );
+    result.Item.house = house.Item
     const userData = { ...tier, ...result.Item}
 
     res.json(userData);
