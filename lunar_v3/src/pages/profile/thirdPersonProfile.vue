@@ -150,7 +150,12 @@ onMounted(async () => {
                     tierData?.fullLabel
                   }}
                 </div>
-                
+                <div
+                  v-if="tierData?.rankingPosition"
+                  class="flex items-center justify-center absolute text-violet-300 top-6 right-10"
+                >
+                  {{ formatRankingPosition(tierData?.rankingPosition) }}
+                </div>
               <img
                 :src="userData.avatar || ''"
                 alt="Avatar"

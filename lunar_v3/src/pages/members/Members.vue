@@ -276,9 +276,9 @@ setInterval(async () => {
 
           
           <!-- Casa -->
-          <div class="flex flex-col items-center absolute left-5 top-16 lg:left-6 lg:top-14">
-            <h3 class="text-xs mb-1 font-semibold text-purple-400 ">
-              {{ formatRankingPosition(member.house.rankingPosition) }}
+          <div class="flex flex-col items-center absolute left-4 top-6 lg:left-6 lg:top-14">
+            <h3 class="text-[10px] mb-1 font-semibold text-purple-400 ">
+              {{ formatRankingPosition(member?.house?.rankingPosition) }}
             </h3>
             <img
               v-if="member.house?.thumb"
@@ -293,17 +293,17 @@ setInterval(async () => {
               —
             </div>
 
-            <p class="text-xs mt-1 lg:text-[10px] font-medium text-purple-400">
+            <p class="text-[10px] mt-1 lg:text-[10px] font-medium text-purple-400">
               {{ capitalize(member.house?.name) || 'Sem casa' }}
             </p>
 
             <p 
               v-if="member.house"
-              class="flex items-center justify-center text-xs lg:text-[10px] font-medium text-purple-400"
+              class="flex items-center justify-center text-[10px] font-medium text-purple-400"
             >
               <Lucide
                  icon="Bitcoin" 
-                 class="w-3 h-3 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
+                 class="w-2.5 h-2.5 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
                  /> {{ member.house.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
             </p>
 
