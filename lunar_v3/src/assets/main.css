@@ -22,3 +22,9 @@
     background-position: center;
     background-size: contain;
 }
+
+.searchFilterBg {    
+    background-image: url('/bgCard.png');
+    background-position: start;
+    background-size: cover;
+}

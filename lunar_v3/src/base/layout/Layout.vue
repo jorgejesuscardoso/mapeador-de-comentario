@@ -63,7 +63,7 @@ provide('isAdmin', isAdmin)
 	<div
 		class="min-h-screen min-w-screen bg-fuchsia-200"
 	>
-		<header class="hidden lg:block w-full bg-slate-900 text-gray-50 overflow-hidden p-1 fixed z-10">
+		<header class="hidden lg:block w-full text-gray-50 overflow-hidden p-1 fixed z-10 searchFilterBg">
 			<div class="whitespace-nowrap text-center">
 				<h1 class="inline-block px-4 text-lg">
 					🌙✨ Seja muito bem-vindo ao Projeto Lunar ✨🌙
@@ -79,13 +79,13 @@ provide('isAdmin', isAdmin)
 
 
 		<div
-			class="flex items-center justify-end"
+			class="flex items-center justify-end searchFilterBg"
 		>
 			<div
 				class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0"
 			>
 				<nav
-					class="rounded-2xl bg-white p-4 min-w-52 h-[90vh]"
+					class="rounded-2xl bg-white p-4 min-w-52 h-[90vh] searchFilterBg"
 				>
 					<ul
 						class="flex flex-col w-full gap-1 text-violet-700 text-sm font-semibold"
@@ -226,7 +226,7 @@ provide('isAdmin', isAdmin)
 			</div>
 
 			<!-- Mobile Nav -->
-			<div class="lg:hidden w-full bg-slate-900 text-white fixed top-0 left-0 z-20"
+			<div class="lg:hidden w-full searchFilterBg text-white fixed top-0 left-0 z-20"
 				:class="{'border-b-2 border-fuchsia-300': menuOpen, 'border-0':!menuOpen}"
 			>
 				<div class="flex items-center justify-between p-4">

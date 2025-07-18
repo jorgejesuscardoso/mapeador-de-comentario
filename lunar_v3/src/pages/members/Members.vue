@@ -189,7 +189,7 @@ setInterval(async () => {
   >
     <!--Barra de pesquisa-->
     <div
-      class="mb-2 relative px-4 pt-5 pb-3 shadow-lg rounded-xl bg-violet-900"
+      class="mb-2 relative px-4 pt-5 pb-3 rounded-xl"
     >
       <div class="flex flex-col items-between justify-start gap-3">
         
