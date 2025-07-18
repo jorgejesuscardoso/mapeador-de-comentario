@@ -329,7 +329,7 @@ setInterval(async () => {
               </span>
               <span 
                 class="font-medium ml-2 px-2 rounded-br-xl  rounded-tl-xl"
-                :class="member.tier?.colorClass"
+                :class="member.tier?.colorClass || 'text-white bg-red-600'"
               >
                 {{ member.tier?.fullLabel || 'N/A' }}
               </span>
