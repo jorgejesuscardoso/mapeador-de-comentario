@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Lucide from '../lucide/Lucide.vue';
+import { useAttrs } from 'vue';
+
+const attrs = useAttrs();
 
 const props = defineProps<{
   placeholder?: string
@@ -21,6 +24,7 @@ const onInput = (e: Event) => {
 <template>
   <div class="relative">
     <input 
+      v-bind="attrs"
       type="text"
       :placeholder="props.placeholder"
       :value="props.modelValue"

@@ -185,27 +185,29 @@ setInterval(async () => {
 <template>
     
   <div
-    class="mt-4 lg:mt-11"
+    class="mt-4 lg:mt-11 w-full"
   >
+    <!--Barra de pesquisa-->
     <div
-      class="mb-2 relative bg-white px-4 pt-5 pb-3 shadow-lg rounded-xl"
+      class="mb-2 relative px-4 pt-5 pb-3 shadow-lg rounded-xl bg-violet-900"
     >
       <div class="flex flex-col items-between justify-start gap-3">
+        
         <div 
           ref="filterMenuRef2"
-          class="flex flex-col text-xs text-indigo-700 "
+          class="flex flex-col text-xs text-indigo-700"
         >
           <div
             class="flex items-center justify-between gap-3"
           >
             <div
-              class="flex items-center justify-center gap-1 cursor-pointer"
+              class="flex items-center text-violet-200 text-sm justify-center gap-1 cursor-pointer"
             >
               <Lucide
                 icon="Search"
-                class="w-3 h-3"
+                class="w-4 h-4"
               />
-              Buscar: 
+              Buscar membro lunar:
             </div>
           </div>
         </div>
@@ -216,6 +218,7 @@ setInterval(async () => {
             <SearchInput
               v-model="search"
               placeholder="Busque por usuário, nome ou casa!"
+              class="border-gray-100"
             />
           </div>      
         </div>
@@ -252,7 +255,7 @@ setInterval(async () => {
         </div>
 
         <div
-        class="flex items-center justify-center flex-col "
+          class="flex items-center justify-center flex-col "
         >
         <!-- Avatar -->
             <img
@@ -276,7 +279,7 @@ setInterval(async () => {
 
           
           <!-- Casa -->
-          <div class="flex flex-col items-center absolute left-4 top-6 lg:left-6 lg:top-14">
+          <div class="flex flex-col items-center absolute left-4 top-6 lg:left-3 ">
             <h3 class="text-[10px] mb-1 font-semibold text-purple-400 ">
               {{ formatRankingPosition(member?.house?.rankingPosition) }}
             </h3>
