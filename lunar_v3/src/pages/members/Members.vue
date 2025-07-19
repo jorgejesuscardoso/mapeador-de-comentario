@@ -189,7 +189,7 @@ setInterval(async () => {
   >
     <!--Barra de pesquisa-->
     <div
-      class="mb-2 relative px-4 pt-5 pb-3 rounded-xl"
+      class="mb-2 relative px-4 pt-5 pb-3 rounded-xl bg-[rgba(0,0,0,0.4)]"
     >
       <div class="flex flex-col items-between justify-start gap-3">
         
@@ -212,7 +212,7 @@ setInterval(async () => {
           </div>
         </div>
         <div
-          class="flex items-center justify-between"
+          class="flex items-center justify-between "
         >
           <div class="w-full  mb-4">
             <SearchInput
@@ -241,10 +241,10 @@ setInterval(async () => {
       <div
         v-for="member in filteredMembers"
         :key="member.user"
-        class="bg-white border border-purple-200 transition-all rounded-xl flex flex-col items-center text-center  relative userCard"
+        class="bg-white border border-purple-700 transition-all rounded-xl flex flex-col items-center text-center  relative userCard"
       >
       <div
-        class="bg-[rgba(0,0,0,0.5)] w-full h-full p-2 py-6 rounded-xl shadow-md hover:shadow-xl"
+        class="bg-[rgba(0,0,0,0.8)] w-full h-full p-2 py-6 rounded-xl shadow-md hover:shadow-xl"
       >
 
         <div

@@ -50,7 +50,7 @@ const submit = async () => {
 
 <template>
   <div 
-    class="min-w-full flex items-center justify-center rounded-xl bg-[rgb(0,0,0,0.4)] "
+    class="min-w-full flex items-center justify-center rounded-xl bg-[rgb(0,0,0,0.8)] "
     :class="{
       'p-4': showForm,
       'py-2 px-4': !showForm

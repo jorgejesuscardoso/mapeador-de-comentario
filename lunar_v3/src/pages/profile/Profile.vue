@@ -113,10 +113,10 @@ onMounted(async () => {
             
             <!-- Moeda promocional -->
             <div
+              v-if="!promosActived?.includes('start')"
               class="flex items-center justify-center flex-col absolute top-24 right-6 z-50 w-14"
             >
               <button
-                v-if="!promosActived?.includes('start')"
                 class="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border-2 border-yellow-600 shadow-xl flex items-center justify-center animate-bounce hover:scale-110 transition-transform duration-300"
                 @click="showReward = !showReward"
               >
@@ -128,7 +128,7 @@ onMounted(async () => {
 
             <!-- TAG DE ROLE -->
               <div
-                class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.5)] rounded-2xl py-4"
+                class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.7)] rounded-2xl py-4"
               >
                 <div
                   v-if="tierData?.role"
@@ -189,7 +189,7 @@ onMounted(async () => {
                 <div>
                   <h2 class="text-lg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
                   <p class="text-sm text-indigo-400 mb-2">@{{ userData.userName }}</p>
-                  <p class="text-sm text-white max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
+                  <p class="text-sm text-violet-300 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
                   <a
                     :href="userData.perfilWtpd"
                     target="_blank"
@@ -213,7 +213,7 @@ onMounted(async () => {
               v-if="tierData?.tier"
               class="lg:px-6"
             >
-              <div class="bg-[rgb(0,0,0,0.4)] rounded-xl p-4 shadow-md mb-2">
+              <div class="bg-[rgb(0,0,0,0.7)] rounded-xl p-4 shadow-md mb-2">
               
                 <!-- Cabeçalho bonito -->
                 <div class="flex items-center justify-between">
@@ -257,7 +257,7 @@ onMounted(async () => {
             </div>
 
             <div v-else class="lg:px-6 mb-4">
-              <div class="bg-[rgb(0,0,0,0.4)] rounded-xl p-4 shadow-md border border-gray-200 space-y-2 text-center">
+              <div class="bg-[rgb(0,0,0,0.7)] rounded-xl p-4 shadow-md border border-gray-200 space-y-2 text-center">
                 <h3 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">Você ainda não foi ranqueado</h3>
                 <p class="text-xs text-gray-600">
                   🌑 Colete pontos para começar sua jornada no Ranking Lunar.<br>
@@ -275,7 +275,7 @@ onMounted(async () => {
 
             <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
                <!-- Pontos tier -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -288,7 +288,7 @@ onMounted(async () => {
               </div>
 
               <!-- Pontos tier -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -300,7 +300,7 @@ onMounted(async () => {
                 </div>
               </div>
               <!-- Pontos Lunar -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -313,7 +313,7 @@ onMounted(async () => {
               </div>
 
               <!-- Pontos elo -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -328,7 +328,7 @@ onMounted(async () => {
               
 
               <!-- Seguidores -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-between gap-1 text-xl font-bold text-purple-400"
@@ -341,7 +341,7 @@ onMounted(async () => {
               </div>
 
               <!-- Seguindo -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-between gap-1 text-xl font-bold text-purple-400"
@@ -354,7 +354,7 @@ onMounted(async () => {
               </div>
 
               <!-- Histórias publicadas -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-between  gap-1 text-xl font-bold text-purple-400"
@@ -367,7 +367,7 @@ onMounted(async () => {
               </div>
 
               <!-- Votos recebidos -->
-              <div class="bg-[rgb(0,0,0,0.4)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-between gap-1 text-xl font-bold text-purple-400"
@@ -409,7 +409,7 @@ onMounted(async () => {
 
     <div
       v-if="!isLoading && !isLoadingLibrary"
-      class="flex w-full mt-2 lg:mt-0 mb-24 bg-[rgb(0,0,0,0.8)] p-4 rounded-2xl pb-14"
+      class="flex w-full mt-2 lg:mt-0 mb-4 bg-[rgb(0,0,0,0.8)] p-4 rounded-2xl pb-14"
     >
       <BookCard
         v-if="userProp"
