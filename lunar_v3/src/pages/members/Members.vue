@@ -185,7 +185,7 @@ setInterval(async () => {
 <template>
     
   <div
-    class="mt-4 lg:mt-11 w-full"
+    class="mt-4 lg:mt-11 w-full px-2 lg:px-0"
   >
     <!--Barra de pesquisa-->
     <div
@@ -267,7 +267,7 @@ setInterval(async () => {
 
             <!-- Nome + Username -->
             <div>
-              <h2 class="text-lg lg:text-sm font-semibold text-purple-400 leading-tight mt-4">
+              <h2 class="text-lg lg:text-sm font-semibold text-purple-200 leading-tight mt-4">
                 {{ member.name }}
               </h2>
               <p class="text-sm lg:text-xs text-violet-300">@{{ member.user }}</p>
@@ -280,7 +280,7 @@ setInterval(async () => {
           
           <!-- Casa -->
           <div class="flex flex-col items-center absolute left-4 top-6 lg:left-3 ">
-            <h3 class="text-[10px] mb-1 font-semibold text-purple-400 ">
+            <h3 class="text-[10px] mb-1 font-semibold text-purple-300 ">
               {{ formatRankingPosition(member?.house?.rankingPosition) }}
             </h3>
             <img
@@ -296,13 +296,13 @@ setInterval(async () => {
               —
             </div>
 
-            <p class="text-[10px] mt-1 lg:text-[10px] font-medium text-purple-400">
+            <p class="text-[10px] mt-1 lg:text-[10px] font-medium text-purple-300">
               {{ capitalize(member.house?.name) || 'Sem casa' }}
             </p>
 
             <p 
               v-if="member.house"
-              class="flex items-center justify-center text-[10px] font-medium text-purple-400"
+              class="flex items-center justify-center text-[10px] font-medium text-purple-300"
             >
               <Lucide
                  icon="Bitcoin" 
@@ -315,7 +315,7 @@ setInterval(async () => {
           <div class="grid grid-cols-2 text-start w-full text-sm lg:text-[11px] text-gray-700 mt-4 ml-2">
             <!-- Cargo -->
             <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-400">
+              <span class="flex items-center gap-1 font-medium text-purple-300">
                 <Lucide icon="BadgeCheck" class="w-3 h-3" />
                 Cargo:
               </span>
@@ -326,7 +326,7 @@ setInterval(async () => {
 
             <!-- Ranking -->
             <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-400">
+              <span class="flex items-center gap-1 font-medium text-purple-300">
                 <Lucide icon="Trophy" class="w-3 h-3" />
                 Ranking:
               </span>
@@ -340,7 +340,7 @@ setInterval(async () => {
 
             <!-- Obras publicadas -->
             <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-400">
+              <span class="flex items-center gap-1 font-medium text-purple-300">
                 <Lucide icon="BookOpenText" class="w-3 h-3" />
                 Obras:
               </span>
@@ -351,7 +351,7 @@ setInterval(async () => {
 
             <!-- Pontos -->
             <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-400">
+              <span class="flex items-center gap-1 font-medium text-purple-300">
                 <Lucide icon="Star" class="w-3 h-3" />
                 Pontos:
               </span>
@@ -362,7 +362,7 @@ setInterval(async () => {
 
             <!-- Medalhas -->
             <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-400">
+              <span class="flex items-center gap-1 font-medium text-purple-300">
                 <Lucide icon="Medal" class="w-3 h-3" />
                 Medalha:
               </span>
@@ -373,7 +373,7 @@ setInterval(async () => {
 
             <!-- Conquistas -->
             <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-400">
+              <span class="flex items-center gap-1 font-medium text-purple-300">
                 <Lucide icon="BadgeCheck" class="w-3 h-3" />
                 Conquistas:
               </span>
@@ -387,7 +387,7 @@ setInterval(async () => {
           <a
             :href="member.deeplink"
             target="_blank"
-            class="flex items-center justify-center gap-1 text-xs font-semibold text-purple-400 hover:underline mt-6"
+            class="flex items-center justify-center gap-1 text-xs font-semibold text-purple-300 hover:underline mt-6"
           >
           Ver no Wattpad
           <Lucide icon="ExternalLink" class="w-3 h-3" />

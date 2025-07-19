@@ -292,20 +292,20 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
 <template>
   <div
     @click="showFilterBar = !showFilterBar"    
-    class="flex bg-white w-fit p-2 mb-2 shadow-xl rounded-lg cursor-pointer"
+    class="flex bg-[rgb(0,0,0,0.6)] w-fit p-2 mb-2 shadow-xl rounded-lg cursor-pointer"
   >
     <Lucide 
       icon="ListFilter"
-      class="text-violet-700 w-3 h-3"
+      class="text-violet-200 w-3 h-3"
     />
     <Lucide 
       :icon="!showFilterBar ? 'ChevronDown' : 'ChevronUp'"
-      class="text-violet-700 w-3 h-3"
+      class="text-violet-200 w-3 h-3"
     />
   </div>
 	<div
     v-if="showFilterBar"
-    class="mb-2 relative bg-white px-4 pt-5 pb-3 shadow-lg rounded-xl"
+    class="mb-2 relative px-4 pt-5 pb-3 shadow-lg rounded-xl bg-[rgb(0,0,0,0.6)]"
   >
     <FilterBar 
       @clear="handleClearFilter"
@@ -325,7 +325,7 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
 					v-if="!isLoading"
 					v-for="book in filteredData"
 					:key="book.id"
-					class="flex items-center flex-col bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 pt-2 cursor-pointer relative"
+					class="flex items-center flex-col bg-[rgb(0,0,0,0.9)] rounded-xl shadow-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 pt-2 cursor-pointer relative"
 				>
 					<span
 						class="absolute top-4 left-2 text-xs font-semibold"
@@ -351,12 +351,12 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
 
 					<div class="px-4 py-2 flex flex-col justify-between items-start h-full w-full">
 						<h2 
-              class="text-base font-semibold text-gray-800 line-clamp-1"            
+              class="text-base font-semibold text-gray-300 line-clamp-1"            
 					    @click="router.push(`/work/${book.id}`)"
             >
 							{{ book.title }}
 						</h2>
-						<span class="text-xs font-semibold text-fuchsia-600 line-clamp-1">Autor(a): <span>@{{ book.user.userName }}</span></span>
+						<span class="text-xs font-semibold text-fuchsia-400 line-clamp-1">Autor(a): <span>@{{ book.user.userName }}</span></span>
 						<p class="text-xs text-gray-500 line-clamp-2 mt-1">
 							{{ book.describe }}
 						</p>
@@ -365,7 +365,7 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
 							<span v-if="book.user.userName != '3ricautora'">⭐ {{ book.votes }} votos</span>
 							<span v-if="book.user.userName != '3ricautora'">💬 {{ book.comments }} comentários</span>
 						</div>
-						<div class="mt-1 text-[10px] text-gray-500">
+						<div class="mt-1 text-[10px] text-gray-400">
 							Criado em: {{ formatDate(book.createdAt) }}
 						</div>
 					</div>

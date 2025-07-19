@@ -60,7 +60,7 @@ onMounted(async () => {
     class="w-full"
   >
     <h2 
-      class="flex justify-between text-base font-bold text-start text-indigo-800 border-b border-purple-300 cursor-pointer"  
+      class="flex justify-between text-base font-bold text-start text-white border-b border-purple-500 cursor-pointer"  
       @click="showWork = !showWork"    
     >
       {{ thirdUser ? `Obras de ${userId} no Lunar`: 'Suas obras na biblioteca Lunar' }}
@@ -100,15 +100,15 @@ onMounted(async () => {
         <div class="flex flex-col justify-between w-full pr-2">  
           <!-- Título -->
           <h2
-            class="flex items-center justify-between text-base font-semibold text-gray-800 line-clamp-1 cursor-pointer"
+            class="flex items-center justify-between text-base font-semibold text-fuchsia-500 line-clamp-1 cursor-pointer"
             @click="router.push(`/work/${book.id}`)"
           >
             {{ book.title }}
              <!-- Selo +18 ou Livre -->
             <span
-              class="text-xs font-semibold"
+              class="text-sm font-semibold flex items-center justify-center"
               :class="{
-                'text-red-700': book.mature,
+                'text-red-700 bg-[rgb(255,255,255,0.9)] rounded-full h-8 w-8': book.mature,
                 'text-green-600': !book.mature
               }"
             >
@@ -117,24 +117,24 @@ onMounted(async () => {
           </h2>
 
           <!-- Autor -->
-          <span class="text-xs font-semibold text-fuchsia-600 line-clamp-1">
+          <span class="text-xs font-semibold text-violet-400 line-clamp-1">
             Autor(a): <span>@{{ book.user.userName }}</span>
           </span>
 
           <!-- Descrição -->
-          <p class="text-xs text-gray-500 line-clamp-2 mt-1">
+          <p class="text-xs text-white line-clamp-2 mt-1">
             {{ book.describe }}
           </p>
 
           <!-- Métricas -->
-          <div class="mt-2 w-full flex items-center justify-between text-[10px] text-gray-400">
+          <div class="mt-2 w-full flex items-center justify-between text-[10px] text-gray-200">
             <span>📚 {{ book.numCaps }} caps</span>
             <span v-if="book.user.userName">⭐ {{ book.votes }} votos</span>
             <span v-if="book.user.userName">💬 {{ book.comments }} comentários</span>
           </div>
 
           <!-- Data de criação -->
-          <div class="mt-1 text-[10px] text-gray-500">
+          <div class="mt-1 text-[10px] text-indigo-400">
             Criado em: {{ formatDate(book.createdAt) }}
           </div>
         </div>

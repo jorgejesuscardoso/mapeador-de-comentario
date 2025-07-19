@@ -104,12 +104,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center w-full min-h-screen bg-white px-4 relative">
+  <div class="flex flex-col justify-center items-center w-full min-h-screen  px-4 relative">
     <div
-        class="top-0 lg:top-7 p-4 absolute z-10 left-0 lg:left-6"
+        class="top-0 lg:top-6 p-4 absolute z-10 left-0"
       >
         <h1
-          class="flex items-center text-purple-800 text-sm cursor-pointer"
+          class="flex items-center text-purple-400 text-sm cursor-pointer"
           @click="router.push('/members')"
         >
           <Lucide
@@ -122,11 +122,11 @@ onMounted(async () => {
 
       <div
         v-if="!isLoading"
-        class="rounded-2xl mt-5 lg:mt-12 py-4 lg:px-6 w-full mx-auto bg-white shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-12 py-4 w-full mx-auto shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard lg:shadow-lg rounded-xl lg:pb-3">
+          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard lg:shadow-lg rounded-xl ">
             <!-- TAG DE ROLE -->
               <div
                 class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.5)] rounded-2xl"
@@ -159,7 +159,7 @@ onMounted(async () => {
               <img
                 :src="userData.avatar || ''"
                 alt="Avatar"
-                class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
+                class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow mt-6"
               />
 
               <div
@@ -215,143 +215,86 @@ onMounted(async () => {
 
           <!-- Estatísticas à direita -->
           <div class="gap-6 w-full lg:w-5/12">
-            <div
-              v-if="tierData?.tier"
-              class="lg:px-6"
-            >
-              <div class="hidden bg-gradient-to-br from-fuchsia-100 mb-4 via-purple-100 to-white rounded-xl p-4 shadow-md border border-purple-200">
-              
-                <!-- Cabeçalho bonito -->
-                <div class="flex items-center justify-between">
-                  <h3 class="text-sm font-semibold text-purple-800 uppercase tracking-wider">Progresso de Tier</h3>
-                  <div class="flex items-center gap-1 text-xs font-semibold text-gray-500">
-                   <p>Tier Atual: </p>
-                    <div :class="tierData?.colorClass" class="flex flex-col px-2 py-1 rounded text-white shadow relative">
-                      <span>{{ tierData.fullLabel }}</span>
-                      <span class="absolute top-6 right-0 text-purple-800">{{ tierData.progressText }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Progresso numérico -->
-                <p class="text-sm text-gray-700 mt-4">
-                  🌕 Falta <span class="font-bold text-purple-700">{{ tierData.pointsToNext }}</span> pts para se tornar 
-                  <span class="font-semibold text-purple-800">{{ tierData?.nextTierLabel }}</span>
-                </p>
-
-                <!-- Barra de progresso estilizada -->
-                <div class="relative w-full h-3 bg-gray-300 rounded-full overflow-hidden shadow-inner">
-                  <div
-                    class="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-700 ease-out"
-                    :style="{ width: ((tierData?.eloPoints / tierData?.maxPoints) * 100) + '%' }"
-                  ></div>
-                </div>
-
-                <!-- Detalhes numéricos opcionais -->
-                <div class="text-[11px] text-gray-500 mt-1 text-right relative">
-                 
-                  <span class="absolute top-0 right-1/2 text-purple-700">{{ tierData.progressPercent }}%</span> 
-
-                  {{ tierData?.eloPoints }} / {{ tierData?.maxPoints }} pontos
-                </div>
-              </div>
-            </div>
-
-            
-            <div v-else class="lg:px-6 mb-4">
-              <div class="bg-gradient-to-br from-slate-100 via-gray-100 to-white rounded-xl p-4 shadow-md border border-gray-200 space-y-2 text-center">
-                <h3 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">{{ userId }} ainda não foi ranqueado</h3>
-               
-                <div class="mt-2">
-                  <span class="inline-block px-3 py-1 rounded-full text-xs bg-gray-300 text-gray-600 font-semibold tracking-wider">
-                    Tier: Desconhecido
-                  </span>
-                </div>
-              </div>
-            </div>
-
-
-
 
             <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
 
                <!-- Pontos tier -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
                   > 
-                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-500" />
+                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-400" />
                     {{ tierData?.rakingPosition?.toLocaleString('pt-br') || "N/A" }}
                   </p>
-                  <p class="text-sm text-gray-500">Ranking Geral</p>
+                  <p class="text-sm text-gray-300">Ranking Geral</p>
                 </div>
               </div>
 
               <!-- Pontos tier -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
                   > 
-                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-500" />
+                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-400" />
                     {{ tierData?.houseRakingPosition?.toLocaleString('pt-br') || "N/A" }}
                   </p>
-                  <p class="text-sm text-gray-500">Ranking na Casa</p>
+                  <p class="text-sm text-gray-300">Ranking na Casa</p>
                 </div>
               </div>
 
 
 
               <!-- Pontos tier -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
                   > 
-                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
+                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-400" />
                     {{ tierData?.totalTierPoints?.toLocaleString('pt-br') || 0 }}
                   </p>
-                  <p class="text-sm text-gray-500">Pontos de Elo Total</p>
+                  <p class="text-sm text-gray-300">Pontos de Elo Total</p>
                 </div>
               </div>
 
 
               <!-- Pontos elo -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
                   > 
-                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-500" />
+                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-400" />
                     {{ tierData?.eloPoints?.toLocaleString('pt-br') || 0 }}
                   </p>
-                  <p class="text-sm text-gray-500">Pontos no Elo atual</p>
+                  <p class="text-sm text-gray-300">Pontos no Elo atual</p>
                 </div>
               </div>
 
               <!-- Pontos elo -->
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-600"
+                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
                   > 
-                    <Lucide icon="Link2" class="w-5 h-5 text-purple-500" />
+                    <Lucide icon="Link2" class="w-5 h-5 text-purple-400" />
                     {{ tierData?.nextTierLabel?.toLocaleString('pt-br') || 0 }}
                   </p>
-                  <p class="text-sm text-gray-500">Próximo Elo</p>
+                  <p class="text-sm text-gray-300">Próximo Elo</p>
                 </div>
               </div>
 
-              <div class="bg-gray-100 p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
-                    class="flex items-center justify-between gap-2 text-lg font-bold text-purple-600"
+                    class="flex items-center justify-between gap-2 text-lg font-bold text-purple-400"
                   > 
-                    <Lucide icon="Link" class="w-5 h-5 text-purple-500 " />
+                    <Lucide icon="Link" class="w-5 h-5 text-purple-400 " />
                     {{ tierData?.fullLabel }}
                   </p>
-                  <p class="text-sm text-gray-500">Elo mais alto</p>
+                  <p class="text-sm text-gray-300">Elo mais alto</p>
                 </div>
               </div>
             </div>
@@ -361,7 +304,7 @@ onMounted(async () => {
 
     <div
       v-if="!isLoading && !isLoadingLibrary"
-      class="flex w-full mt-16 pb-14"
+      class="flex w-full pb-14 bg-[rgba(0,0,0,0.5)] p-4 rounded-xl mb-4"
     >
       <BookCard
         v-if="userProp"

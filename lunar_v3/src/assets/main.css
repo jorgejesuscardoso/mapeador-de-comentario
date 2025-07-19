@@ -28,3 +28,9 @@
     background-position: start;
     background-size: cover;
 }
+
+.searchFilterBg2 {    
+    background-image: url('/bgCard.png');
+    background-position: start;
+    background-repeat: repeat;
+}

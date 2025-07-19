@@ -22,7 +22,7 @@ onMounted(() => {
 
 
 		<div
-			class="lg:mt-10 pb-6 w-full"
+			class="lg:mt-10 pb-6 w-full px-1 lg:px-0"
 		>
 			<AllbooksCard
 				@update-length="totalBooks = $event"

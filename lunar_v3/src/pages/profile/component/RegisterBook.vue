@@ -50,15 +50,15 @@ const submit = async () => {
 
 <template>
   <div 
-    class="min-w-full flex items-center justify-center border px-4 rounded-xl"
+    class="min-w-full flex items-center justify-center rounded-xl bg-[rgb(0,0,0,0.4)] "
     :class="{
-       'bg-fuchsia-500 py-1': !showForm,
-       'bg-fuchsia-500/90 py-4': showForm
+      'p-4': showForm,
+      'py-2 px-4': !showForm
     }"
   >
     <div class="w-full w-md space-y-4">
       <h2 
-        class="flex justify-between font-semibold text-start text-white -700  cursor-pointer"
+        class="flex justify-between font-semibold text-start text-white cursor-pointer"
         @click="showForm = !showForm"
         :class="{
           'border-b border-fuchsia-400' : showForm,
@@ -100,7 +100,7 @@ const submit = async () => {
             v-model="nomeLivro"
             type="text"
             placeholder="Ex: As crônicas de Narnia"
-            class="w-full border rounded px-3 py-1 focus:outline-none placeholder:text-pink-500"
+            class="bg-transparent w-full border border-violet-500 rounded px-3 py-1 focus:outline-none placeholder:text-white"
             required
           />
         </div>
@@ -113,7 +113,7 @@ const submit = async () => {
             v-model="linkLivro"
             type="url"
             placeholder="https://www.wattpad.com/story/..."
-            class="w-full border rounded px-3 py-1 focus:outline-none placeholder:text-pink-500"
+            class="bg-transparent w-full border border-violet-500 rounded px-3 py-1 focus:outline-none placeholder:text-white"
             required
           />
         </div>

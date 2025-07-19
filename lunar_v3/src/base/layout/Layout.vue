@@ -68,35 +68,29 @@ provide('isAdmin', isAdmin)
 				<h1 class="inline-block px-4 text-lg">
 					🌙✨ Seja muito bem-vindo ao Projeto Lunar ✨🌙
 				</h1>
-				<span>
-					-
-				</span>
-				<h1 class="inline-block px-4 text-lg">
-					📚 Onde a lua ilumina os livros 🌌📖
-				</h1>
 			</div>
 		</header>
 
 
 		<div
-			class="flex items-center justify-end searchFilterBg"
+			class="flex items-center justify-end searchFilterBg2"
 		>
 			<div
 				class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0"
 			>
 				<nav
-					class="rounded-2xl bg-white p-4 min-w-52 h-[90vh] searchFilterBg"
+					class="rounded-2xl p-4 min-w-52 h-[90vh] bg-[rgba(0,0,0,0.8)]"
 				>
 					<ul
-						class="flex flex-col w-full gap-1 text-violet-700 text-sm font-semibold"
+						class="flex flex-col w-full gap-1 text-violet-400 text-sm font-semibold"
 					>
 						<li>
 							<RouterLink 
 								to="/"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
-									'bg-violet-200 text-violet-800': route.path === '/',
-									'hover:bg-gray-100': route.path !== '/'
+									'bg-violet-300 text-violet-800': route.path === '/',
+									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/'
 								}"
 							>
 								<Lucide
@@ -114,7 +108,7 @@ provide('isAdmin', isAdmin)
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
 									'bg-violet-200 text-violet-800': route.path === '/bot',
-									'hover:bg-gray-100': route.path !== '/bot'
+									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/bot'
 								}"
 							>
 								<Lucide
@@ -130,8 +124,8 @@ provide('isAdmin', isAdmin)
 								to="/members"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
-									'bg-violet-200 text-violet-800': route.path === '/members',
-									'hover:bg-gray-100': route.path !== '/members'
+									'bg-violet-300 text-violet-800': route.path === '/members',
+									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/members'
 								}"
 							>
 								<Lucide
@@ -146,8 +140,8 @@ provide('isAdmin', isAdmin)
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
-									'bg-violet-200 text-violet-800': route.path === '/subs',
-									'hover:bg-gray-100': route.path !== '/subs'
+									'bg-violet-300 text-violet-800': route.path === '/subs',
+									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/subs'
 								}"
 							>
 								<Lucide
@@ -162,8 +156,8 @@ provide('isAdmin', isAdmin)
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
-									'bg-violet-200 text-violet-800': route.path === '/shop',
-									'hover:bg-gray-100': route.path !== '/shop'
+									'bg-violet-300 text-violet-800': route.path === '/shop',
+									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
 								}"
 							>
 								<Lucide
@@ -178,8 +172,8 @@ provide('isAdmin', isAdmin)
 								to="/profile"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
-									'bg-violet-200 text-violet-800': route.path === '/profile',
-									'hover:bg-gray-100': route.path !== '/profile'
+									'bg-violet-300 text-violet-800': route.path === '/profile',
+									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
 								}"
 							>
 								<Lucide
@@ -351,7 +345,7 @@ provide('isAdmin', isAdmin)
 			</div>
 
 			<main
-				class="flex w-full items-center justify-center lg:w-10/12 z-0 px-2 lg:p-0 mt-12 lg:mt-0"
+				class="flex w-full items-center justify-center lg:w-10/12 z-0 mt-12 lg:mt-0"
 			>
 				<router-view />
 			</main>

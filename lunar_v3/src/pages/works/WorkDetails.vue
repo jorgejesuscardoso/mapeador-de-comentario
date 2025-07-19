@@ -107,10 +107,10 @@ onBeforeUnmount(() => {
   <div class="lg:p-6 mx-auto mt-3 lg:mt-4">
     <LoadCard v-if="isLoading" />
 
-    <div v-else-if="book" class="bg-white rounded">
+    <div v-else-if="book" class="bg-[rgb(0,0,0,0.7)] rounded-xl">
       <div class="flex flex-col md:flex-row p-4 relative">
         <div
-          class="flex items-center gap-1 pb-1 text-xs border-b border-gray-300 lg:border-0 mb-4 text-purple-700 font-semibold lg:absolute lg:top-3 lg:left-4"  
+          class="flex items-center gap-1 pb-1 text-xs border-b border-gray-300 lg:border-0 mb-4 text-purple-400 font-semibold lg:absolute lg:top-3 lg:left-4"  
         >
           <Lucide
             icon="ArrowLeft"
@@ -126,22 +126,22 @@ onBeforeUnmount(() => {
         <img
           :src="book.cover"
           alt="Capa do livro"
-          class="lg:w-60 h-2/3 lg:mt-6"
+          class="lg:w-70 h-2/3 lg:mt-6"
         />
         <div class="lg:px-6 flex-1 my-4">
           <div class="flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-gray-800">
+            <h1 class="text-3xl font-bold text-gray-300">
               {{ book.title }}
             </h1>
             <span
               v-if="book.completed"
-              class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full shadow"
+              class="bg-green-100 text-green-500 text-xs font-semibold px-3 py-1 rounded-full shadow"
             >
               ✔ Completo
             </span>
           </div>
 
-          <p class="mt-2 text-sm text-gray-500">
+          <p class="mt-2 text-sm text-violet-400">
             {{ book.describe }}
           </p>
 
@@ -172,14 +172,14 @@ onBeforeUnmount(() => {
             </span>
           </div>
 
-          <div class="mt-6 text-sm font-semibold text-fuchsia-500">
+          <div class="mt-6 text-sm font-semibold text-fuchsia-400">
             Criado em: {{ formatDate(book.createdAt) }}<br />
             Leitura total: {{ book.readTotal }}<br />
             Autor: {{ book.user?.name || 'Desconhecido' }}
           </div>
 
           <div v-if="book.tags.length" class="mt-4">
-            <h3 class="font-semibold text-sm text-gray-600">Tags:</h3>
+            <h3 class="font-semibold text-sm text-purple-300">Tags:</h3>
             <div class="flex flex-wrap gap-2 mt-1">
               <span
                 v-for="tag in book.tags"
@@ -195,27 +195,27 @@ onBeforeUnmount(() => {
       </div>
 
       <div v-if="book?.caps?.length" class="p-2 lg:px-10 pb-5">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Capítulos</h2>
+        <h2 class="text-xl font-bold text-violet-200 mb-4">Capítulos</h2>
 
-        <ul class="divide-y divide-gray-300 rounded overflow-hidden shadow-md border border-gray-300">
+        <ul class="divide-y divide-gray-300 rounded overflow-hidden shadow-md bg-black/70">
           <li 
             v-for="cap in book.caps as capsData[]"
             :key="cap.url"
-            class="px-4 py-2 hover:bg-gray-50 cursor-pointer transition relative"
+            class="px-4 py-2 hover:bg-black/50 cursor-pointer transition relative"
             @click.stop="{ handleCapsId(cap); handleGetLength(cap.length)}"
           >
             <div class="flex justify-between items-center">
               <div>
-                <h3 class="text-sm font-semibold text-indigo-700">
+                <h3 class="text-sm font-semibold text-white">
                   {{ cap.title }}
                 </h3>
-                <p class="text-xs text-gray-500 mt-1">
+                <p class="text-xs text-fuchsia-400 mt-1">
                   Criado em: {{ formatDate(cap.createdAt) }}
                 </p>
               </div>
               <div                
                 v-if="book.user.userName != '3ricautora'"
-                class="flex items-center justify-between gap-4 text-xs text-gray-500 text-right"
+                class="flex items-center justify-between gap-4 text-xs text-fuchsia-400 text-right"
               >
                 <p>👁 {{ cap.reads }} leituras</p>
                 <p>💬 {{ cap.comments }} comentários</p>
@@ -232,15 +232,15 @@ onBeforeUnmount(() => {
         >
           <div 
             ref="modalRef"
-            class="bg-white w-[90%] max-w-md rounded-xl shadow-xl p-6 border border-gray-200"
+            class="bg-white w-[90%] max-w-md rounded-xl shadow-xl p-6 border border-gray-800"
           >
-            <h2 class="text-lg font-bold text-gray-800 mb-4">
+            <h2 class="text-lg font-bold text-fuchsia-500 mb-4">
               {{ isAdm ? 'Verificação de leitura' : 'Capítulo disponível no Wattpad' }}
             </h2>
 
             <!-- Formulário visível apenas para administradores -->
             <form v-if="isAdm" @submit.prevent="handleSearchComments">
-              <label class="block text-sm text-gray-600 mb-1" for="user-input">
+              <label class="block text-sm text-violet-600 mb-1" for="user-input">
                 Usuário a ser verificado:
               </label>
               <input
@@ -248,20 +248,20 @@ onBeforeUnmount(() => {
                 v-model="wUser"
                 type="text"
                 placeholder="Ex: 3ricautora"
-                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                class="w-full border border-indigo-500 rounded-md placeholder:text-fuchsia-400 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
 
-              <div class="mt-4 flex justify-end gap-2">
+              <div class="mt-4 flex justify-between gap-2">
                 <button
                   type="button"
                   @click="showModal = false"
-                  class="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100 transition"
+                  class="px-4 py-2 text-sm rounded-md border border-indigo-500 hover:bg-gray-100 transition text-fuchsia-600"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md transition"
+                  class="px-4 py-2 text-sm text-white bg-purple-600 hover:bg-indigo-700 rounded-md transition"
                 >
                   Buscar Comentários
                 </button>
@@ -270,14 +270,14 @@ onBeforeUnmount(() => {
 
             <!-- Botão de leitura, disponível sempre -->
             <div :class="isAdm ? 'mt-6 border-t pt-4' : ''">
-              <h3 class="text-sm font-semibold text-gray-700 mb-2">
+              <h3 class="text-sm font-semibold text-fuchsia-600 mb-2">
                 {{ isAdm ? 'Ou abra o capítulo:' : 'Acesse o capítulo no Wattpad:' }}
               </h3>
               <a
                 :href="`${(book?.caps.find((c: any) => c.title === capToSearch) as capsData )?.url }`"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-block w-full text-center px-4 py-2 text-sm text-white bg-green-600 hover:bg-green-700 rounded-md transition"
+                class="inline-block w-full text-center px-4 py-2 text-sm text-white bg-pink-600 hover:bg-green-700 rounded-md transition"
               >
                 📖 Ler Capítulo no Wattpad
               </a>

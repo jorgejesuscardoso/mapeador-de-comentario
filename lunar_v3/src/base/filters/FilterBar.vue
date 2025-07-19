@@ -124,13 +124,13 @@ function getFilterLabel(filter: any): string {
 
 
 <template>
-  <div class="flex flex-col items-between justify-start gap-3">
+  <div class="flex flex-col items-between justify-start gap-3 bg-transparent">
     <div 
       ref="filterMenuRef2"
-      class="flex flex-col text-xs text-indigo-700 "
+      class="flex flex-col text-xs text-white"
     >
       <div
-        class="flex items-center justify-between gap-3"
+        class="flex items-center justify-start gap-3 relative"
       >
         <div
           class="flex items-center justify-center gap-1 cursor-pointer"
@@ -146,12 +146,12 @@ function getFilterLabel(filter: any): string {
           Nenhum
         </template>
         <div    
-          class="flex items-center justify-start cursor-pointer"
+          class="flex items-center justify-start cursor-pointer absolute top-0 right-4"
           @click="showFilterMenu = !showFilterMenu"
         >
           <Lucide 
             icon="ListFilterPlus"
-            class="text-violet-800 w-5 h-5"
+            class="text-violet-200 w-5 h-5"
           />
         </div>
       </div>
@@ -182,7 +182,7 @@ function getFilterLabel(filter: any): string {
     </div>
   </div>  
 	<span
-    class="flex item items-center justify-start gap-1 text-xs text-indigo-700"
+    class="flex item items-center justify-start gap-1 text-xs text-indigo-100"
   >
     <Lucide
       icon="BookOpenText"

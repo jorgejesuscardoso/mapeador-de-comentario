@@ -280,13 +280,24 @@ user.get('/:id', async (req: Request, res: Response) => {
     }
 
     const tier = calculateUserTierByPoints(result.Item.tierPoints)
-    const house = await db.send(
-      new GetCommand({
-        TableName: 'house',
-        Key: { name: result.Item.house }
-      })
-    );
-    result.Item.house = house.Item
+
+    let houseData = {}
+
+    if (result.Item.house && result.Item.house.trim() !== '') {
+      try {
+        const houseResult = await db.send(
+          new GetCommand({
+            TableName: 'house',
+            Key: { name: result.Item.house }
+          })
+        )
+        houseData = houseResult.Item || ''
+      } catch (err) {
+        console.warn(`Erro ao buscar house "${result.Item.house}":`, err)
+      }
+    }
+
+    result.Item.house = houseData
     const userData = { ...tier, ...result.Item}
 
     res.json(userData);
