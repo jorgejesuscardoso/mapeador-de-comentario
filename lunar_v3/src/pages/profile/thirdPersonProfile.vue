@@ -122,7 +122,7 @@ onMounted(async () => {
 
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-12 py-4 w-full mx-auto shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-12 mt-6 py-4 w-full mx-auto shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
@@ -175,9 +175,10 @@ onMounted(async () => {
                   class="w-8 h-12  rounded-b-3xl rounded-t-md"
                 >
                 <p
+                  v-if="tierData.house"
                   class="flex items-center justify-center text-xs text-purple-400 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
                 >
-                  {{ capitalize(tierData.house.name) }}
+                  {{ capitalize(tierData.house.name)}}
                 </p>
 
                 <p class="flex items-center justify-center text-xs lg:text-[10px] font-medium text-purple-400">

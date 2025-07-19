@@ -281,7 +281,7 @@ setInterval(async () => {
           <!-- Casa -->
           <div class="flex flex-col items-center absolute left-4 top-6 lg:left-3 ">
             <h3 class="text-[10px] mb-1 font-semibold text-purple-300 ">
-              {{ formatRankingPosition(member?.house?.rankingPosition) }}
+              {{ member?.house ? formatRankingPosition(member?.house?.rankingPosition) : 'N/A'}}
             </h3>
             <img
               v-if="member.house?.thumb"
@@ -331,7 +331,7 @@ setInterval(async () => {
                 Ranking:
               </span>
               <span 
-                class="font-medium ml-2 px-2 rounded-br-xl  rounded-tl-xl"
+                class="flex items-center font-medium ml-2 px-2 rounded-br-xl text-[11px] rounded-tl-xl"
                 :class="member.tier?.colorClass || 'text-white bg-red-600'"
               >
                 {{ member.tier?.fullLabel || 'N/A' }}
