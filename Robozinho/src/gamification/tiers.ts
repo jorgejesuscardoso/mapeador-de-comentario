@@ -20,7 +20,7 @@ const eloPointsThresholds = [
 export const rankingTiers = {
   nevoa: {
     name: 'Névoa',
-    colorClass: 'bg-gray-100 text-gray-700', // Quase branco, com texto escuro
+    colorClass: 'bg-white text-gray-800', // Quase branco, com texto escuro
     tiers: ['V', 'IV', 'III', 'II', 'I']
   },
   bronze: {
