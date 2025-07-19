@@ -75,9 +75,9 @@ onMounted(() =>{
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-fuchsia-200 p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-3">
-      <h2 class="text-2xl font-bold text-center text-purple-600">Registrar Conta</h2>
+  <div class="min-h-screen flex items-center justify-center searchFilterBg p-4">
+    <div class="bg-[rgb(0,0,0,0.7)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-3">
+      <h2 class="text-2xl font-bold text-center text-purple-400">Registrar Conta</h2>
 
       <span v-if="error" class="text-red-600 text-sm text-center">{{ error }}</span>
       <span v-if="success" class="text-green-600 text-sm text-center">Usuário criado com sucesso! Redirecionando...</span>
@@ -154,19 +154,19 @@ onMounted(() =>{
         <!-- Botão de envio com controle de validação -->
         <button
           :disabled="loading || !isFormValid"
-          class="w-full py-2 bg-purple-500 hover:bg-purple-700 text-white rounded-xl transition duration-200 disabled:opacity-50"
+          class="w-full py-2 bg-[rgb(0,0,0,0.5)] hover:bg-purple-700 text-white rounded-xl transition duration-200 disabled:opacity-50"
         >
           {{ loading ? 'Registrando...' : 'Registrar' }}
         </button>
       </form>
 
-      <p class="text-center text-sm text-gray-500">
+      <p class="text-center text-sm text-gray-300">
         Já tem uma conta?
         <RouterLink to="/login" class="text-blue-500 underline">Entrar</RouterLink>
       </p>
 
-      <p class="text-center text-base text-gray-500">
-        <RouterLink to="/" class="text-blue-500">Voltar para o Início</RouterLink>
+      <p class="text-center text-base text-gray-100">
+        <RouterLink to="/" class="text-indigo-500 p-1 rounded-xl px-2">Voltar para o Início</RouterLink>
       </p>
     </div>
   </div>

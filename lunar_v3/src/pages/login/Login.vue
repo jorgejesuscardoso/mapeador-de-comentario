@@ -54,9 +54,9 @@ onMounted(() =>{
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-fuchsia-200 p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5">
-      <h2 class="text-2xl font-bold text-center text-fuchsia-600 mb-6">Login</h2>
+  <div class="min-h-screen flex items-center justify-center searchFilterBg p-4">
+    <div class="bg-[rgb(0,0,0,0.5)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5">
+      <h2 class="text-2xl font-bold text-center text-fuchsia-400 mb-6">Login</h2>
       
       <div v-if="error" class="text-red-600 text-sm text-center">{{ error }}</div>
 
@@ -67,7 +67,7 @@ onMounted(() =>{
             v-model="email"
             type="text"
             placeholder="User Wattpad"
-            class="w-full pl-10 pr-3 py-2 border rounded-xl focus:outline-none focus:ring-0"
+            class="w-full pl-10 pr-3 py-2 bg-transparent border rounded-xl focus:outline-none focus:ring-0"
             required
           />
         </div>
@@ -78,14 +78,14 @@ onMounted(() =>{
             v-model="password"
             type="password"
             placeholder="Senha"
-            class="w-full pl-10 pr-3 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+            class="w-full pl-10 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
             required
           />
         </div>
 
         <button
           :disabled="loading"
-          class="w-full py-2 bg-purple-500 hover:bg-purple-700 text-white rounded-xl transition duration-200 disabled:opacity-50"
+          class="w-full py-2 bg-[rgb(0,0,0,0.6)] hover:bg-purple-700 text-white rounded-xl transition duration-200 disabled:opacity-50"
         >
           {{ loading ? 'Entrando...' : 'Entrar' }}
         </button>
@@ -93,18 +93,18 @@ onMounted(() =>{
 
       <p 
         v-if="1+2 != 3"
-        class="text-center text-sm text-gray-500"
+        class="text-center text-sm text-fuchsia-300"
       >
         Esqueceu a senha?
-        <RouterLink to="#" class="text-blue-500 underline">Recuperar</RouterLink>
+        <RouterLink to="#" class="text-blue-300 underline">Recuperar</RouterLink>
       </p>
       
-      <p class="text-center text-sm text-gray-500">
+      <p class="text-center text-sm text-fuchsia-200">
         Não possue uma conta?
-        <RouterLink to="/register" class="text-blue-500 underline">Registrar</RouterLink>
+        <RouterLink to="/register" class="text-indigo-400 font-semibold underline">Registrar</RouterLink>
       </p>
       <p class="text-center text-base text-gray-500">
-        <RouterLink to="/" class="text-blue-500">Inicio</RouterLink>
+        <RouterLink to="/" class="text-indigo-400 font-semibold">Inicio</RouterLink>
       </p>
     </div>
 

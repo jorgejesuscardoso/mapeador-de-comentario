@@ -120,7 +120,7 @@ const submit = async () => {
 
         <button
           :disabled="loading"
-          class="flex items-center justify-center text-sm mx-auto gap-2 w-full lg:w-32 bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 rounded-xl transition disabled:opacity-50"
+          class="flex items-center justify-center text-sm mx-auto gap-2 w-full lg:w-32 border border-violet-500 hover:bg-pink-700 text-white font-medium py-2 rounded-xl transition disabled:opacity-50"
         >
           <Lucide 
             icon="Send"
