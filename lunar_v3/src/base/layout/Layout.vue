@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, provide } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Lucide from '../lucide/Lucide.vue'
 
 interface userData {
@@ -9,6 +9,7 @@ interface userData {
 }
 
 const route = useRoute();
+const router = useRouter();
 
 const menuOpen = ref(false);
 
@@ -223,8 +224,11 @@ provide('isAdmin', isAdmin)
 			<div class="lg:hidden w-full searchFilterBg text-white fixed top-0 left-0 z-20"
 				:class="{'border-b-2 border-fuchsia-300': menuOpen, 'border-0':!menuOpen}"
 			>
-				<div class="flex items-center justify-between p-4">
-					<h1 class="text-base font-semibold whitespace-nowrap">
+				<div class="flex items-center justify-between p-4 bg-[rgb(0,0,0,0.3)]">
+					<h1 
+						class="text-base font-semibold whitespace-nowrap"
+						@click="router.push('/')"
+					>
 						Projeto Lunar
 					</h1>
 					<button 
@@ -240,30 +244,30 @@ provide('isAdmin', isAdmin)
 					<nav
   					ref="menuRef"
 						v-show="menuOpen"
-						class="bg-white text-violet-800 p-4"
+						class="bg-white text-violet-300 searchFilterBg2"
 					>
-						<ul class="flex flex-col gap-2 font-semibold text-sm">
+						<ul class="flex flex-col gap-2 font-semibold text-sm p-4 bg-[rgb(0,0,0,0.3)]">
 							<li>
 								<RouterLink 
 									to="/"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-200': route.path === '/' }"
+									:class="{ 'bg-violet-100': route.path === '/' }"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Home" size="16" />
 									Home
 								</RouterLink>
 							</li>
-							<!-- <li v-if="isLogged && isAdmin">
+							<li v-if="isLogged && isAdmin">
 								<RouterLink 
-									to="/bot"
+									to="/houses"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-200': route.path === '/bot' }"
+									:class="{ 'bg-violet-200': route.path === '/houses' }"
 								>
-									<Lucide icon="Bot" size="14" />
-									Robozinho
+									<Lucide icon="Moon" size="14" />
+									Casas lunar
 								</RouterLink>
-							</li> -->
+							</li>
 							<li>
 								<RouterLink 
 									to="/members"
@@ -301,7 +305,7 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to="/profile"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-200': route.path === '/profile' }"
+									:class="{ 'bg-violet-200': route.path === '/profile' ||  route.path === `/profile/*` }"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="CircleUserRound" size="14" />
@@ -328,8 +332,8 @@ provide('isAdmin', isAdmin)
 									:to="!isLogged ? '/login': ''"
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 									:class="{
-										'hover:bg-green-100 text-green-800': !isLogged,
-										'hover:bg-red-100 text-red-800': isLogged
+										'hover:bg-green-100 text-green-400': !isLogged,
+										'hover:bg-red-100 text-red-400': isLogged
 									}"
 								>
 									<Lucide

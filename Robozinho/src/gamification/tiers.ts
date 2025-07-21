@@ -7,20 +7,34 @@ type TierInfo = {
 };
 
 const eloPointsThresholds = [
-  0, 50, 150, 300, 500,               // Névoa V → I
-  800, 1200, 1700, 2300, 3000,        // Bronze V → I
-  3800, 4700, 5700, 6800, 8000,       // Prata
-  9300, 10700, 12200, 13800, 15500,   // Ouro
-  17300, 19200, 21200, 23300, 25500,  // Diamante
-  27800, 30200, 32700, 35300, 38000,  // Arcano
-  40800, 43700, 46700, 49800,         // Lunar
-  50000                               // Oráculo
+  // Ferro
+  0, 100, 250, 450, 700,
+  // Bronze
+  1000, 1400, 1850, 2350, 2900,
+  // Prata
+  3500, 4150, 4850, 5600, 6400,
+  // Ouro
+  7300, 8250, 9250, 10300, 11400,
+  // Diamante
+  12600, 13900, 15300, 16800, 18400,
+  // Lunar
+  20100, 21900, 23800, 25800, 27900,
+  // Eclipse
+  30100, 32400, 34800, 37300, 39900,
+  // Arcano (dois elos)
+  42600, 45400, 48300, 51300, 54400,   
+  // Mistico
+  57600, 60900,64300, 67800, 71400,  
+  // Celestial
+  75100, 78900,82800, 86800, 90900,
+  // Eterno
+  100000
 ]
 
 export const rankingTiers = {
-  nevoa: {
-    name: 'Névoa',
-    colorClass: 'bg-white text-gray-800', // Quase branco, com texto escuro
+  ferro: {
+    name: 'Ferro',
+    colorClass: 'bg-black/70 text-white', // Quase branco, com texto escuro
     tiers: ['V', 'IV', 'III', 'II', 'I']
   },
   bronze: {
@@ -43,27 +57,42 @@ export const rankingTiers = {
     colorClass: 'bg-blue-500 text-white',
     tiers: ['V', 'IV', 'III', 'II', 'I']
   },
-  arcano: {
-    name: 'Arcano',
-    colorClass: 'bg-fuchsia-600 text-white',
-    tiers: ['V', 'IV', 'III', 'II', 'I']
-  },
   lunar: {
     name: 'Lunar',
     colorClass: 'bg-purple-800 text-white',
     tiers: ['V', 'IV', 'III', 'II', 'I']
   },
-  oraculo: {
-    name: 'Oráculo',
+  eclipse: {
+    name: 'Eclipse',
+    colorClass: 'bg-fuchsia-600 text-white',
+    tiers: ['V', 'IV', 'III', 'II', 'I']
+  },
+  arcano: {
+    name: 'Arcano',
     colorClass: 'bg-indigo-700 text-white',
     tiers: ['']
-  }
+  },
+  mística: {
+    name: 'Mística',
+    colorClass: 'bg-fuchsia-600 text-white',
+    tiers: ['V', 'IV', 'III', 'II', 'I']
+  },
+  celestial: {
+    name: 'Celestial',
+    colorClass: 'bg-cyan-400 text-white',
+    tiers: ['V', 'IV', 'III', 'II', 'I']
+  },
+  eterno: {
+    name: 'Eterno',
+    colorClass: 'bg-cyan-400 text-white',
+    tiers: ['V', 'IV', 'III', 'II', 'I']
+  },
 }
 
 
 
 export function calculateUserTierByPoints(totalPoints: number) {
-  const tiersOrder = ['nevoa', 'bronze', 'prata', 'ouro', 'diamante', 'arcano', 'lunar', 'oraculo'];
+  const tiersOrder = ['ferro', 'bronze', 'prata', 'ouro', 'diamante', 'lunar', 'eclipse', 'arcano', 'mística', 'celestial', 'eterno'];
   const elosOrder = ['V', 'IV', 'III', 'II', 'I'];
 
   const totalEloCount = eloPointsThresholds.length;
@@ -78,11 +107,11 @@ export function calculateUserTierByPoints(totalPoints: number) {
   // Se não encontrou, tá no Oráculo (máximo)
   if (index === -1) {
     return {
-      tier: 'oraculo',
+      tier: 'eterno',
       elo: '',
-      fullLabel: 'Oráculo',
+      fullLabel: 'Eterno',
       isMax: true,
-      colorClass: rankingTiers.oraculo.colorClass,
+      colorClass: rankingTiers.celestial.colorClass,
       current: totalEloCount,
       total: totalEloCount,
       tierPoints: eloPointsThresholds[eloPointsThresholds.length - 1], // Tudo que passou até aqui
@@ -122,7 +151,7 @@ export function calculateUserTierByPoints(totalPoints: number) {
   const nextTier = rankingTiers[nextTierKey];
   const nextEloPosition = nextIndex % 5;
   const nextElo = nextTier?.tiers?.[nextEloPosition] || '';
-  const nextTierLabel = nextTierKey === 'oraculo' ? 'Oráculo' : `${nextTier?.name} ${nextElo}`;
+  const nextTierLabel = nextTierKey === 'eterno' ? 'Eterno' : `${nextTier?.name} ${nextElo}`;
 
   return {
     tier: tierKey,

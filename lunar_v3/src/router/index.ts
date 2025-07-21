@@ -11,6 +11,7 @@ import Profile from '@/pages/profile/Profile.vue';
 import Members from '@/pages/members/Members.vue';
 import ThirdPersonProfile from '@/pages/profile/thirdPersonProfile.vue';
 import TierList from '@/base/gamification/tierList.vue';
+import HousesCard from '@/pages/houses/HousesCard.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -57,7 +58,12 @@ const routes: RouteRecordRaw[] = [
         path: '/tierlist', 
         name: 'tierList',
         component: TierList,
-      },      
+      },     
+      { 
+        path: '/houses', 
+        name: 'houses',
+        component: HousesCard,
+      }, 
     ]
   },  
 

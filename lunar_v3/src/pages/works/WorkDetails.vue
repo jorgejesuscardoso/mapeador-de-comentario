@@ -104,8 +104,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="lg:p-6 mx-auto mt-3 lg:mt-4">
-    <LoadCard v-if="isLoading" />
+  <div class="lg:p-6 mx-auto mt-3 lg:mt-4 min-h-screen flex">
+
+    <LoadCard v-if="isLoading" class="m-auto"/>
 
     <div v-else-if="book" class="bg-[rgb(0,0,0,0.7)] rounded-xl">
       <div class="flex flex-col md:flex-row p-4 relative">

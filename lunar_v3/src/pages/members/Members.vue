@@ -212,7 +212,7 @@ setInterval(async () => {
           </div>
         </div>
         <div
-          class="flex items-center justify-between "
+          class="flex flex-col items-start justify-between "
         >
           <div class="w-full  mb-4">
             <SearchInput
@@ -220,7 +220,12 @@ setInterval(async () => {
               placeholder="Busque por usuário, nome ou casa!"
               class="border-gray-100"
             />
-          </div>      
+          </div> 
+            <p
+              class="text-white text-[10px]"
+            >
+              Membros encontrados: {{ filteredMembers.length }}
+            </p>     
         </div>
       </div>  
     </div>

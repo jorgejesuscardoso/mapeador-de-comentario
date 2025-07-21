@@ -141,13 +141,27 @@ onMounted(async () => {
                 </div>
                 <!-- TAG DE TIER -->
                 <div
-                  v-if="tierData?.tier"
-                  class="absolute top-0 left-0 rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold shadow-md"
-                  :class="tierData?.colorClass"
+                  class="absolute top-0 left-0 flex items-center justify-center gap-2"
                 >
-                  {{
-                    tierData?.fullLabel
-                  }}
+                  <p
+                    v-if="tierData?.tier"
+                    class="rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold shadow-md"
+                    :class="tierData?.colorClass"
+                  >
+                    {{
+                      tierData?.fullLabel
+                    }}
+                  </p>
+
+                  <span
+                    class="flex gap-1 text-white text-[10px] w-fit text-start"
+                    @click="router.push('/tierlist')"
+                  >
+                    <Lucide
+                      icon="TableProperties"
+                      class="w-5 h-4"
+                    />
+                  </span>
                 </div>
                 
               <img

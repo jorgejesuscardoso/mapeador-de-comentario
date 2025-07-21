@@ -21,7 +21,7 @@ export const rankingTiers = {
     name: 'Prata',
     colorClass: 'bg-gray-300 text-gray-900',
     tiers: ['V', 'IV', 'III', 'II', 'I']
-  },
+  }, 
   ouro: {
     name: 'Ouro',
     colorClass: 'bg-yellow-500 text-gray-900',

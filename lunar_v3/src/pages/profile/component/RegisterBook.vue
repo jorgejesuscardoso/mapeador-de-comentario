@@ -126,7 +126,7 @@ const submit = async () => {
             icon="Send"
             class="w-4 h-4"
           />
-          {{ loading ? 'Enviando...' : 'Enviar Livro' }}
+          {{ loading ? 'Enviando...' : '' }}
         </button>
       </form>
     </div>

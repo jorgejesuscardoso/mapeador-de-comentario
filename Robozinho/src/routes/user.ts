@@ -1,4 +1,4 @@
-// user.ts
+// house.ts
 import db from "../db";
 import express, { Request, Response } from 'express';
 import { GetCommand, ScanCommand, PutCommand  } from '@aws-sdk/lib-dynamodb';
@@ -8,7 +8,7 @@ import axios from "axios";
 import { parse } from 'php-array-parser';
 import { calculateUserTierByPoints } from "../gamification/tiers";
 
-const user = express.Router();
+const house = express.Router();
 
 function parsePhpArray(str: string) {
   const result: Record<string, any> = {};
@@ -50,10 +50,10 @@ function parsePhpArray(str: string) {
 
 
 
-user.post('/register', async (req: Request, res: Response) => {
-  const { user, password, name, age, role, subrole } = req.body;
+house.post('/register', async (req: Request, res: Response) => {
+  const { house, password, name, age, role, subrole } = req.body;
 
-  if (!user || !password) {
+  if (!house || !password) {
     return res.status(400).json({ error: 'Usuário ou senha ausente!' });
   }
 
@@ -62,7 +62,7 @@ user.post('/register', async (req: Request, res: Response) => {
     const existing = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user }
+        Key: { house }
       })
     );
 
@@ -77,7 +77,7 @@ user.post('/register', async (req: Request, res: Response) => {
       new PutCommand({
         TableName: 'dbLunar2',
         Item: {
-          user,
+          house,
           password: hashedPassword,
           name,
           age,
@@ -85,7 +85,6 @@ user.post('/register', async (req: Request, res: Response) => {
           subrole,
           promo:[],
           tierPoints: 0,
-          house: '',
           createdAt: new Date().toISOString(),
         }
       })
@@ -98,124 +97,17 @@ user.post('/register', async (req: Request, res: Response) => {
   }
 });
 
-user.post('/login', async (req: Request, res: Response) => {
-  const { user, password } = req.body;
-  if (!user || !password) {
-    return res.status(400).json({ error: 'Dados ausentes!!' });
-  }
-
-  try {
-    const result = await db.send(
-      new GetCommand({
-        TableName: 'dbLunar2',
-        Key: { user }
-      })
-    );
-
-    if (!result.Item || result.Item.deletedAt) {
-      return res.status(404).json({ error: 'Usuário não encontrado' });
-    }
-
-    const validPass = await verifyHash(password, result.Item.password)
-    
-    if (!validPass) {
-      return res.status(401).json({ error: 'Dados inválidos!' })
-    };
-
-    const tier = calculateUserTierByPoints(result.Item.tierPoints)
-    const getToken = generateToken({user: result.Item.user, role: result.Item.role})
-    const userData = { ...tier, token: getToken.token, role: result.Item.role, subrole: result.Item.subrole, user: result.Item.user, house: result.Item.house, points: result.Item.points}
-    
-    res.status(200).json(userData);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao acessar o DynamoDB' });
-  }
-});
-
-user.get('/', async (req: Request, res: Response) => {
+house.get('/', async (req: Request, res: Response) => {
   try {
     const result = await db.send(
       new ScanCommand({
-        TableName: 'dbLunar2'
+        TableName: 'house',
       })
-    );
+    )
 
-    let data = [] as any[];
+    const data = result.Items
 
-    if (result.Items && result.Items.length > 0) {
-      data = await Promise.all(
-        result.Items
-          .filter((s: any) => !s.deletedAt)
-          .map(async ({ password, ...rest }) => {
-          const tier = calculateUserTierByPoints(rest.tierPoints || 0);
-
-          let wattpadData = null;
-
-          try {
-            const url = `https://www.wattpad.com/api/v3/users/${rest.user}`;
-            const response = await axios.get(url, {
-              headers: { Accept: 'text/plain' },
-              responseType: 'text',
-            });
-
-            const parsed = parsePhpArray(response.data);
-
-            if (!parsed?.username) {
-              return null; // Wattpad inválido
-            }
-
-            // Só busca house se rest.house for válido
-            let houseData: any = '';
-            if (rest.house) {
-              const houseResult = await db.send(
-                new GetCommand({
-                  TableName: 'house',
-                  Key: { name: rest.house }
-                })
-              );
-              houseData = houseResult.Item || '';
-            }
-
-            const formatted = {
-              username: parsed.username,
-              avatar: parsed.avatar,
-              description: parsed.description,
-              gender: parsed.gender,
-              name: parsed.name,
-              createDate: parsed.createDate,
-              modifyDate: parsed.modifyDate,
-              numFollowers: parsed.numFollowers || 0,
-              numFollowing: parsed.numFollowing || 0,
-              numLists: parsed.numLists || 0,
-              numStoriesPublished: parsed.numStoriesPublished || 0,
-              votesReceived: parsed.votesReceived || 0,
-              deeplink: parsed.deeplink,
-            };
-
-            return {
-              ...formatted,
-              ...rest,
-              house: houseData,
-              tier
-            };
-          } catch (err) {
-            return {
-              ...rest,
-              username: rest.user,
-              avatar: '',
-              description: '',
-              name: rest.name || '',
-              house: '',
-              tier
-            };
-          }
-        })
-      );
-    }
-
-
-    res.status(200).json(data); // já com tier embutido em cada user
+    res.status(200).json(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao acessar o DynamoDB' });
@@ -223,7 +115,7 @@ user.get('/', async (req: Request, res: Response) => {
 });
 
 
-user.get('/wtpd/:id', async (req: Request, res: Response) => {
+house.get('/wtpd/:id', async (req: Request, res: Response) => {
   const { id: userParam } = req.params;
   const url = `https://www.wattpad.com/api/v3/users/${userParam}`;
 
@@ -263,14 +155,14 @@ user.get('/wtpd/:id', async (req: Request, res: Response) => {
   }
 });
 
-user.get('/:id', async (req: Request, res: Response) => {
+house.get('/:id', async (req: Request, res: Response) => {
   const { id: userParam } = req.params;
   
   try {
     const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user: userParam }
+        Key: { house: userParam }
       })
     );
 
@@ -307,8 +199,8 @@ user.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-user.put('/:user', async (req: Request, res: Response) => {
-  const userParam = req.params.user;
+house.put('/:house', async (req: Request, res: Response) => {
+  const userParam = req.params.house;
   const { data } = req.body;
   
     
@@ -320,7 +212,7 @@ user.put('/:user', async (req: Request, res: Response) => {
     const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user: userParam }
+        Key: { house: userParam }
       })
     );
     
@@ -379,8 +271,8 @@ user.put('/:user', async (req: Request, res: Response) => {
   }
 });
 
-user.put('/promo/:user', async (req: Request, res: Response) => {
-  const userParam = req.params.user;
+house.put('/promo/:house', async (req: Request, res: Response) => {
+  const userParam = req.params.house;
   const data = req.body;
   
   if (!data) {
@@ -391,7 +283,7 @@ user.put('/promo/:user', async (req: Request, res: Response) => {
     const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user: userParam }
+        Key: { house: userParam }
       })
     );
 
@@ -423,14 +315,14 @@ user.put('/promo/:user', async (req: Request, res: Response) => {
   }
 });
 
-user.delete('/:user', async (req: Request, res: Response) => {
-  const { user: userParam } = req.params;
+house.delete('/:house', async (req: Request, res: Response) => {
+  const { house: userParam } = req.params;
 
   try {
     const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user: userParam }
+        Key: { house: userParam }
       })
     );
 
@@ -456,4 +348,4 @@ user.delete('/:user', async (req: Request, res: Response) => {
 });
 
 
-export default user;
+export default house;
