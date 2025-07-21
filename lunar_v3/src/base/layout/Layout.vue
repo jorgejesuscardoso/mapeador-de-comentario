@@ -258,11 +258,14 @@ provide('isAdmin', isAdmin)
 									Home
 								</RouterLink>
 							</li>
-							<li v-if="isLogged && isAdmin">
+							<li 
+								@click.stop="menuOpen = false" 
+							>
 								<RouterLink 
 									to="/houses"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-200': route.path === '/houses' }"
+									
 								>
 									<Lucide icon="Moon" size="14" />
 									Casas lunar

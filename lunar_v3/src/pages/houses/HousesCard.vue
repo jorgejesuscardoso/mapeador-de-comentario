@@ -4,7 +4,9 @@ import Loading from '@/base/loading/Loading.vue'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { getHouses } from '@/API/HouseApi'
 import { capitalize } from '@/base/helpers/capitalize'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 interface House {
   name: string
   description: string
@@ -42,16 +44,29 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full px-4 lg:px-8 py-6 lg:mt-14">
+  <div class="w-full px-4 lg:px-8 py-6 lg:mt-14 min-h-screen">
     <Loading :is-loading="isLoading">
       <template #title>Carregando as casas lunares</template>
       <template #description>Buscando dados do clã... 🛸</template>
     </Loading>
+    <div
+      class="flex items-center justify-start"
+    >
+      <p
+        class="flex items-center justify-start gap-1 text-white"
+        @click="router.back()"
+      >
+        <Lucide
+          icon="ArrowLeft"
+          class="w-4 h-4"
+        />
+        voltar
+      </p>
+    </div>
 
     <div v-if="fetchError" class="text-red-400 font-medium mt-4">
       Não foi possível carregar as casas. Tente novamente mais tarde.
     </div>
-
     <div v-if="!isLoading && !fetchError" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       <div
         v-for="house in houses"

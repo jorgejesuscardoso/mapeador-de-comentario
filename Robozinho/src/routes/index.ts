@@ -2,7 +2,7 @@ import express from 'express';
 import bot from './robot';
 import user from './user';
 import books from './books';
-import house from './user';
+import house from './houses';
 
 const Routes = express.Router();
 Routes.use(bot);
