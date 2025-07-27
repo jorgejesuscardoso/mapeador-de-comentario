@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { Mail, Lock } from 'lucide-vue-next'
+import { Mail, Lock, User } from 'lucide-vue-next'
 import { Login } from '@/API/UserApi'
 import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter()
 const route = useRoute()
-const email = ref('')
+const user = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
@@ -17,7 +17,7 @@ const submit = async () => {
     error.value = ''
     loading.value = true
 
-    const data = await Login(email.value.trim(), password.value.trim())
+    const data = await Login(user.value.trim(), password.value.trim())
 
     // Aqui só entra se o login for OK
     if (!data.token) {
@@ -55,19 +55,19 @@ onMounted(() =>{
 
 <template>
   <div class="min-h-screen flex items-center justify-center searchFilterBg p-4">
-    <div class="bg-[rgb(0,0,0,0.5)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5">
+    <div class="bg-[rgb(0,0,0,0.7)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5">
       <h2 class="text-2xl font-bold text-center text-fuchsia-400 mb-6">Login</h2>
       
       <div v-if="error" class="text-red-600 text-sm text-center">{{ error }}</div>
 
       <form @submit.prevent="submit" class="space-y-4">
         <div class="relative">
-          <Mail class="absolute top-3.5 left-3 h-5 w-5 text-gray-400" />
+          <User class="absolute top-3.5 left-3 h-5 w-5 text-gray-100" />
           <input
-            v-model="email"
+            v-model="user"
             type="text"
             placeholder="User Wattpad"
-            class="w-full pl-10 pr-3 py-2 bg-transparent border rounded-xl focus:outline-none focus:ring-0"
+            class="w-full pl-10 pr-3 py-2 bg-transparent border rounded-xl focus:outline-none focus:ring-0 text-white"
             required
           />
         </div>
