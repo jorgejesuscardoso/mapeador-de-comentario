@@ -259,7 +259,7 @@ user.get('/wtpd/:id', async (req: Request, res: Response) => {
     return res.json(formatted);
   } catch (err) {
     console.error('Erro ao buscar usuário:', err);
-    return res.status(500).json({ error: 'Erro ao buscar usuário!' });
+    return res.status(200).json({ error: 'Erro ao buscar usuário!' });
   }
 });
 
@@ -311,7 +311,7 @@ user.put('/:user', async (req: Request, res: Response) => {
   const userParam = req.params.user;
   const { data } = req.body;
   
-    
+  console.log(req.body)
   if (!data) {
     return res.status(400).json({ error: 'Dados ausentes!' });
   }
@@ -334,7 +334,9 @@ user.put('/:user', async (req: Request, res: Response) => {
     if (data.password) {
       updatedPassword = await generateHash(data.password);
     }
+
     let currentTierPoints = result?.Item?.tierPoints 
+
     if(data.tierPointsPlus){
       currentTierPoints += data.tierPointsPlus
     } else if (data.tierPointsMinus) {

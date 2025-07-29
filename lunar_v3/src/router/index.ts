@@ -8,6 +8,7 @@ import CommentsCard from '@/base/cards/CommentsCard.vue';
 import Login from '@/pages/login/Login.vue';
 import Register from '@/pages/register/Register.vue';
 import Profile from '@/pages/profile/Profile.vue';
+import Edit from '@/pages/profile/Edit.vue';
 import Members from '@/pages/members/Members.vue';
 import ThirdPersonProfile from '@/pages/profile/thirdPersonProfile.vue';
 import TierList from '@/base/gamification/tierList.vue';
@@ -27,7 +28,12 @@ const routes: RouteRecordRaw[] = [
         path: '/profile', 
         name: 'profile',
         component: Profile,
-      },      
+      },     
+      { 
+        path: '/profile/edit', 
+        name: 'profileEdit',
+        component: Edit,
+      },   
       { 
         path: '/profile/:user', 
         name: 'profileThirdPerson',

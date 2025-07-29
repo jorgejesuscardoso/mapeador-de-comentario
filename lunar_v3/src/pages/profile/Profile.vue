@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getUserById, getUserWtpd, updateTierPoints, updatePromotionalTierPoints } from '@/API/UserApi';
+import { getUserById, getUserWtpd, updateTierPoints, updatePromotionalTierPoints, updateUser } from '@/API/UserApi';
 import RegisterBook from './component/RegisterBook.vue';
 import {ref, onMounted, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
@@ -72,8 +72,12 @@ onMounted(async () => {
   const parsed = store ? JSON.parse(store) : null
   
   if(!parsed) return router.push('/login')
+
   const data = await getUserWtpd(parsed.user)
   userLogged.value = parsed
+
+  console.log(data)
+  if(!data) return isLoading.value = false
 
   if(data){
     userData.value = {
@@ -101,11 +105,24 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center w-full min-h-screen  px-1 lg:px-4">
-    
+  <div class="flex flex-col justify-center items-center w-full min-h-screen  px-1 lg:px-4 relative">
+    <div
+        class="top-0 lg:top-6 py-4 px-1 absolute z-10 left-0"
+    >
+      <h1
+        class="flex items-center text-purple-400 text-sm cursor-pointer"
+        @click="router.back()"
+      >
+        <Lucide
+            icon="ArrowLeft"
+            class="w-5 h-5"
+          />
+      </h1>
+    </div>
+
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-8 py-8  w-full mx-auto  shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-8 mt-6 py-8  w-full mx-auto  shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
@@ -159,7 +176,7 @@ onMounted(async () => {
                   >
                     <Lucide
                       icon="TableProperties"
-                      class="w-5 h-4"
+                      class="w-5 h-5"
                     />
                   </span>
                 </div>
@@ -170,6 +187,7 @@ onMounted(async () => {
                 class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
               />
 
+              <!--House-->
               <div
                 v-if="tierData?.house?.thumb"
                 class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
@@ -177,11 +195,15 @@ onMounted(async () => {
                 <h3 class="text-xs mb-1 font-semibold text-purple-400 ">
                   {{ formatRankingPosition(tierData.house.rankingPosition) }}
                 </h3>
-                <img 
-                  :src="`/houses_flags/${tierData?.house?.thumb}`"
-                  alt="Bandeira da Casa"
-                  class="w-8 h-12  rounded-b-3xl rounded-t-md"
+                <div
+                  class="flex items-center"
                 >
+                  <img 
+                    :src="`/houses_flags/${tierData?.house?.thumb}`"
+                    alt="Bandeira da Casa"
+                    class="w-12 h-12 object-contain rounded-full border-2 bg-white/50 border-purple-400 shadow"
+                  >
+                </div>
                 <p
                   class="flex items-center justify-center text-xs text-purple-400 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
                 >
@@ -202,7 +224,15 @@ onMounted(async () => {
 
                 <div>
                   <h2 class="text-lg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
-                  <p class="text-sm text-indigo-400 mb-2">@{{ userData.userName }}</p>
+                  <!-- Botão de editar perfil -->
+                  <p class="text-sm text-indigo-400">@{{ userData.userName }}</p>
+                <button
+                  class="m-4 inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-md transition-all duration-300 group"
+                  @click="router.push('/profile/edit')"
+                >
+                  <Lucide icon="Edit" class="w-4 h-4 text-white group-hover:rotate-12 transition-transform duration-300" />
+                  Editar Perfil
+                </button>
                   <p class="text-sm text-violet-300 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
                   <a
                     :href="userData.perfilWtpd"

@@ -107,29 +107,28 @@ onMounted(async () => {
   <div class="flex flex-col justify-center items-center w-full min-h-screen  px-4 relative">
     <div
         class="top-0 lg:top-6 p-4 absolute z-10 left-0"
+    >
+      <h1
+        class="flex items-center text-purple-400 text-sm cursor-pointer"
+        @click="router.push('/members')"
       >
-        <h1
-          class="flex items-center text-purple-400 text-sm cursor-pointer"
-          @click="router.push('/members')"
-        >
-          <Lucide
-              icon="ArrowLeft"
-              class="w-5 h-5"
-            />
-            Voltar
-        </h1>
-      </div>
+        <Lucide
+            icon="ArrowLeft"
+            class="w-5 h-5"
+          />
+      </h1>
+    </div>
 
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-12 mt-6 py-4 w-full mx-auto shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-12 mt-8 py-4 w-full mx-auto shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
           <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard lg:shadow-lg rounded-xl ">
             <!-- TAG DE ROLE -->
               <div
-                class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.5)] rounded-2xl"
+                class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.7)] rounded-2xl"
               >
                 <div
                   v-if="tierData?.role"
@@ -162,6 +161,8 @@ onMounted(async () => {
                 class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow mt-6"
               />
 
+
+              <!--House-->
               <div
                 v-if="tierData?.house?.thumb"
                 class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
@@ -169,11 +170,15 @@ onMounted(async () => {
                 <h3 class="text-xs mb-1 font-semibold text-purple-400 ">
                   {{ formatRankingPosition(tierData.house.rankingPosition) }}
                 </h3>
-                <img 
-                  :src="`/houses_flags/${tierData?.house?.thumb}`"
-                  alt="Bandeira da Casa"
-                  class="w-8 h-12  rounded-b-3xl rounded-t-md"
+                <div
+                  class="flex items-center"
                 >
+                  <img 
+                    :src="`/houses_flags/${tierData?.house?.thumb}`"
+                    alt="Bandeira da Casa"
+                    class="w-12 h-12 object-contain rounded-full border-2 bg-white/50 border-purple-400 shadow"
+                  >
+                </div>
                 <p
                   v-if="tierData.house"
                   class="flex items-center justify-center text-xs text-purple-400 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
@@ -220,7 +225,7 @@ onMounted(async () => {
             <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
 
                <!-- Pontos tier -->
-              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -233,7 +238,7 @@ onMounted(async () => {
               </div>
 
               <!-- Pontos tier -->
-              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -248,7 +253,7 @@ onMounted(async () => {
 
 
               <!-- Pontos tier -->
-              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -262,7 +267,7 @@ onMounted(async () => {
 
 
               <!-- Pontos elo -->
-              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -275,7 +280,7 @@ onMounted(async () => {
               </div>
 
               <!-- Pontos elo -->
-              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -287,7 +292,7 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <div class="bg-[rgba(0,0,0,0.5)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <div class="bg-[rgba(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-between gap-2 text-lg font-bold text-purple-400"
@@ -305,7 +310,7 @@ onMounted(async () => {
 
     <div
       v-if="!isLoading && !isLoadingLibrary"
-      class="flex w-full pb-14 bg-[rgba(0,0,0,0.5)] p-4 rounded-xl mb-4"
+      class="flex w-full pb-14 bg-[rgba(0,0,0,0.7)] p-4 rounded-xl mb-4"
     >
       <BookCard
         v-if="userProp"

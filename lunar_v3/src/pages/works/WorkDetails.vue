@@ -115,14 +115,9 @@ onBeforeUnmount(() => {
         >
           <Lucide
             icon="ArrowLeft"
-            class="h-4 w-4"        
+            class="h-5 w-5 mb-1"        
             @click="goBack"
           />
-          <h3        
-            @click="goBack"
-          >
-            Voltar
-          </h3>
         </div>
         <img
           :src="book.cover"

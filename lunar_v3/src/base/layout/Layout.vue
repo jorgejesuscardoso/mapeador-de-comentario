@@ -90,7 +90,7 @@ provide('isAdmin', isAdmin)
 								to="/"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
-									'bg-violet-300 text-violet-800': route.path === '/',
+									'bg-violet-100/10': route.path === '/',
 									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/'
 								}"
 							>
@@ -101,31 +101,27 @@ provide('isAdmin', isAdmin)
 								Home
 							</RouterLink>
 						</li>
-						<!-- <li
-							v-if="isLogged && isAdmin"
-						>
-							<RouterLink 
-								to="/bot"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
-								:class="{
-									'bg-violet-200 text-violet-800': route.path === '/bot',
-									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/bot'
-								}"
-							>
-								<Lucide
-										icon="Bot"
-										size="14"
-
-								/>
-								Robozinho
-							</RouterLink>
-						</li> -->
+						
+							<li>
+								<RouterLink 
+									to="/houses"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
+									:class="{ 
+										'bg-violet-100/10': route.path === '/houses',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/houses'
+									}"
+									
+								>
+									<Lucide icon="Moon" size="14" />
+									Casas lunar
+								</RouterLink>
+							</li>
 						<li>
 							<RouterLink 
 								to="/members"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
-									'bg-violet-300 text-violet-800': route.path === '/members',
+									'bg-violet-100/10': route.path === '/members',
 									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/members'
 								}"
 							>
@@ -141,7 +137,7 @@ provide('isAdmin', isAdmin)
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
-									'bg-violet-300 text-violet-800': route.path === '/subs',
+									'bg-violet-100/10': route.path === '/subs',
 									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/subs'
 								}"
 							>
@@ -157,7 +153,7 @@ provide('isAdmin', isAdmin)
 								to=""
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
 								:class="{
-									'bg-violet-300 text-violet-800': route.path === '/shop',
+									'bg-violet-100/10': route.path === '/shop',
 									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
 								}"
 							>
@@ -173,7 +169,7 @@ provide('isAdmin', isAdmin)
 								to="/profile"
 								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 								:class="{
-									'bg-violet-300 text-violet-800': route.path === '/profile',
+									'bg-violet-100/10': route.path === '/profile',
 									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
 								}"
 							>
@@ -251,7 +247,7 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to="/"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-100': route.path === '/' }"
+									:class="{ 'bg-violet-100/10': route.path === '/' }"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Home" size="16" />
@@ -264,7 +260,7 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to="/houses"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-200': route.path === '/houses' }"
+									:class="{ 'bg-violet-100/10': route.path === '/houses' }"
 									
 								>
 									<Lucide icon="Moon" size="14" />
@@ -275,7 +271,7 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to="/members"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-200': route.path === '/members' }"
+									:class="{ 'bg-violet-100/10': route.path === '/members' }"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Users" size="14" />
@@ -286,7 +282,7 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to=""
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
-									:class="{ 'bg-violet-200': route.path === '/subs' }"
+									:class="{ 'bg-violet-100/10': route.path === '/subs' }"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="List" size="14" />
@@ -297,7 +293,7 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to=""
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
-									:class="{ 'bg-violet-200': route.path === '/shop' }"
+									:class="{ 'bg-violet-100/10': route.path === '/shop' }"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Store" size="14" />
@@ -308,7 +304,7 @@ provide('isAdmin', isAdmin)
 								<RouterLink 
 									to="/profile"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-200': route.path === '/profile' ||  route.path === `/profile/*` }"
+									:class="{ 'bg-violet-100/10': route.path === '/profile' ||  route.path === `/profile/*` }"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="CircleUserRound" size="14" />
@@ -352,7 +348,7 @@ provide('isAdmin', isAdmin)
 			</div>
 
 			<main
-				class="flex w-full items-center justify-center lg:w-10/12 z-0 mt-12 lg:mt-0"
+				class="flex w-full min-h-screen items-center justify-center lg:w-10/12 z-0 mt-12 lg:mt-0"
 			>
 				<router-view />
 			</main>

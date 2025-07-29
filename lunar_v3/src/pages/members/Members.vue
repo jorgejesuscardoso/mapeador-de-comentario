@@ -288,17 +288,26 @@ setInterval(async () => {
             <h3 class="text-[10px] mb-1 font-semibold text-purple-300 ">
               {{ member?.house ? formatRankingPosition(member?.house?.rankingPosition) : 'N/A'}}
             </h3>
-            <img
+            
+            <div
               v-if="member.house?.thumb"
-              :src="`/houses_flags/${member.house.thumb}`"
-              alt="Casa"
-              class="w-8 lg:w-6 object-contain rounded-b-full shadow-sm"
-            />
+              class="flex items-center"
+            >
+              <img
+                :src="`/houses_flags/${member.house.thumb}`"
+                alt="Casa"                
+                class="w-12 h-12 object-contain rounded-full border-2 bg-white/50 border-purple-400 shadow"
+              />
+            </div>
+
             <div
               v-else
-              class="w-8 lg:w-6 lg:h-10 h-12 bg-violet-200 rounded-b-full shadow-sm text-purple-400 flex items-center justify-center text-xs rounded"
             >
-              —
+              <div
+                class="w-8 lg:w-6 lg:h-6 h-12 bg-violet-200 rounded-b-full shadow-sm text-purple-400 flex items-center justify-center text-xs rounded"
+              >
+                —
+              </div>
             </div>
 
             <p class="text-[10px] mt-1 lg:text-[10px] font-medium text-purple-300">

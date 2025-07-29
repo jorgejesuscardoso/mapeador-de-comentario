@@ -147,3 +147,25 @@ export const updatePromotionalTierPoints = async (user: string) => {
     throw new Error(msg)
   }
 }
+
+export const updateUser = async (user: string, data: any) => {
+  try {
+    const controller = new AbortController()
+    const payload = {data}
+    const response = await axios(`${endPoint}/users/${user}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: payload,
+      signal: controller.signal,
+    })
+
+    return response.data
+
+  } catch (err: any) {
+    // Se o backend envia uma mensagem de erro, ela será capturada aqui
+    const msg = err?.response?.data?.error || 'Erro inesperado no login'
+    throw new Error(msg)
+  }
+}
