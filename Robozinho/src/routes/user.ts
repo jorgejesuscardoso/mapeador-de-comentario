@@ -370,8 +370,8 @@ user.put('/:user', async (req: Request, res: Response) => {
 
     // Atualiza senha se houver
     let updatedPassword = existingUser.password;
-    if (data.password) {
-      updatedPassword = await generateHash(data.password);
+    if (data.newpassword) {
+      updatedPassword = await generateHash(data.newpassword);
     }
 
     let currentTierPoints = result?.Item?.tierPoints 
@@ -397,7 +397,6 @@ user.put('/:user', async (req: Request, res: Response) => {
         currentPoints -= data.pointsMinus;
       }
     }
-
     console.log(data)
 
     await db.send(
@@ -406,6 +405,7 @@ user.put('/:user', async (req: Request, res: Response) => {
         Item: {
           ...existingUser, // mantém os campos que não foram modificados
           ...data,
+          username: data.username || existingUser.username,
           points: currentPoints,
           password: updatedPassword,
           role: data.role || existingUser.role,
