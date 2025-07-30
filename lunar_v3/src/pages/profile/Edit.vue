@@ -312,13 +312,13 @@ onMounted(async () => {
           <!-- Tem hot? -->
           <label class="flex items-center gap-2">
             <input type="checkbox" v-model="workHasHot" />
-            Tem cenas hot, na sua obra?
+            Tem cenas hot na obra?
           </label>
 
           <!-- Tem gatilho? -->
           <label class="flex items-center gap-2">
             <input type="checkbox" v-model="workHasTrigger" />
-             Tem gatilhos? (separe por vírgula)
+             Tem gatilhos na obra?
           </label>
 
           <div v-if="workHasTrigger" class="flex flex-col gap-1">
