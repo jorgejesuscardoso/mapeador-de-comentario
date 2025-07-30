@@ -7,6 +7,7 @@ import { toast } from '@/base/utils/toast'
 import { getUserById, updateUser } from '@/API/UserApi'
 import { useRouter } from 'vue-router'
 import Select from '@/base/utils/Select.vue'
+import Switch from '@/base/utils/Switch.vue'
 
 const router = useRouter()
 
@@ -290,16 +291,16 @@ onMounted(async () => {
 
 
           <!-- Poesia? -->
-          <label class="flex items-center gap-2">
-            <input type="checkbox" v-model="isPoesia" />
-            É poesia?
-          </label>
+          <Switch
+            v-model="isPoesia"
+            label="A obra é poesia?"
+          />
 
           <!-- Capitulos longos? -->
-          <label class="flex items-center gap-2">
-            <input type="checkbox" v-model="workHasLongPart" />
-            Tem capítulos com mais de 4k palavras?
-          </label>
+          <Switch
+            v-model="workHasLongPart"
+            label="Tem capítulos com mais de 4k palavras?"
+          />
 
           <div v-if="workHasLongPart" class="flex flex-col gap-1">
             <label class="text-sm">Quais? (separe por vírgula)</label>
@@ -311,16 +312,17 @@ onMounted(async () => {
           </div>
 
           <!-- Tem hot? -->
-          <label class="flex items-center gap-2">
-            <input type="checkbox" v-model="workHasHot" />
-            Tem cenas hot na obra?
-          </label>
+          <Switch
+            v-model="workHasHot"
+            label="Tem cenas hot na obra?"
+          />
 
           <!-- Tem gatilho? -->
-          <label class="flex items-center gap-2">
-            <input type="checkbox" v-model="workHasTrigger" />
-             Tem gatilhos na obra? 
-          </label>
+          <Switch
+            v-model="workHasTrigger"
+            label="Tem gatilhos na obra? "
+          />
+          
 
           <div v-if="workHasTrigger" class="flex flex-col gap-1">
             <label class="text-sm">Quais?</label>
@@ -331,10 +333,10 @@ onMounted(async () => {
           </div>
 
           <!-- Vai ler hot? -->
-          <label class="flex items-center gap-2">
-            <input type="checkbox" v-model="userReadHot" />
-            Você ler hot?
-          </label>
+          <Switch
+            v-model="userReadHot"
+            label="Você ler hot? "
+          />
 
           <!-- Tem gatilhos? -->
           <div class="flex flex-col gap-1">
