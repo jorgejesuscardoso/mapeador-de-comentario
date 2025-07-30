@@ -302,8 +302,10 @@ onMounted(async () => {
 
           <div v-if="workHasLongPart" class="flex flex-col gap-1">
             <label class="text-sm">Quais? (separe por vírgula)</label>
-            <textarea v-model="howPartIsLong" 
-            class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+            <textarea 
+              v-model="howPartIsLong" 
+              class="bg-black/40 border min-h-32 border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+              placeholder="Ex: 1, 2, 3."
           />
           </div>
 
@@ -323,7 +325,7 @@ onMounted(async () => {
             <label class="text-sm">Quais?</label>
             <textarea 
             v-model="howTriggers" 
-            class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+            class="bg-black/40 min-h-32  border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
           </div>
 
@@ -338,7 +340,7 @@ onMounted(async () => {
             <label class="text-sm">Você possui gatilhos? (opcional descrever)</label>
             <textarea
               v-model="userHasTrigger"
-              class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+              class="bg-black/40 min-h-32 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
             />
           </div>
         </div>
