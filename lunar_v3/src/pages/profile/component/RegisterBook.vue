@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import router from '@/router'
 import { RegisterBook } from '@/API/BookApi'
 import Lucide from '@/base/lucide/Lucide.vue'
+import BaseSelect from '@/base/utils/BaseSelect.vue'
+import { genres } from '@/base/utils/genre'
 
 const nomeLivro = ref('')
 const linkLivro = ref('')
@@ -11,6 +13,7 @@ const error = ref('')
 const success = ref(false)
 const loading = ref(false)
 const showForm = ref(false)
+const selectedGenre = ref()
 
 const submit = async () => {
   try {
@@ -104,6 +107,14 @@ const submit = async () => {
             required
           />
         </div>
+
+        <!-- <div>
+          <BaseSelect
+             label="Selecione um gênero"
+            :options="genres"
+            v-model="selectedGenre"
+          />
+        </div> -->
 
         <div
           class="w-full"

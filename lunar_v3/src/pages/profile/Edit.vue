@@ -126,7 +126,8 @@ const submitForm = handleSubmit(async (values) => {
   isSaving.value = true
 
   try {
-    const response = await updateUser(parsed.user, values)
+    const record = { username: values.username, label: values }
+    const response = await updateUser(parsed.user, record)
     toast.success('Dados alterados com sucesso!')
     router.push('/profile')
     console.log('response', response)
@@ -150,18 +151,18 @@ onMounted(async () => {
 
     // Popular os campos
     username.value = data.username || ''
-    phone.value = data.phone || ''
-    selectedObraId.value = data.selectedObraId || null
-    isPoesia.value = !!data.isPoesia
-    workHasLongPart.value = !!data.workHasLongPart
-    howPartIsLong.value = data.howPartIsLong || ''
-    workHasHot.value = !!data.workHasHot
-    workHasTrigger.value = !!data.workHasTrigger
-    howTriggers.value = data.howTriggers || ''
-    userReadHot.value = !!data.userReadHot
-    userHasTrigger.value = data.userHasTrigger || ''
+    phone.value = data?.label?.phone || ''
+    selectedObraId.value = data?.label?.selectedObraId || null
+    isPoesia.value = !!data?.label?.isPoesia
+    workHasLongPart.value = !!data?.label?.workHasLongPart
+    howPartIsLong.value = data?.label?.howPartIsLong || ''
+    workHasHot.value = !!data?.label?.workHasHot
+    workHasTrigger.value = !!data?.label?.workHasTrigger
+    howTriggers.value = data?.label?.howTriggers || ''
+    userReadHot.value = !!data?.label?.userReadHot
+    userHasTrigger.value = data?.label?.userHasTrigger || ''
   }
-  console.log(prevData.value)
+  
   isLoading.value = false
 })
 

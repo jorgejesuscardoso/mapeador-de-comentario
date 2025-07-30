@@ -397,8 +397,7 @@ user.put('/:user', async (req: Request, res: Response) => {
         currentPoints -= data.pointsMinus;
       }
     }
-    console.log(data)
-
+    
     await db.send(
       new PutCommand({
         TableName: 'dbLunar2',
