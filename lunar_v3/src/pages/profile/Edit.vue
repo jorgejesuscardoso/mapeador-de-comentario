@@ -318,7 +318,7 @@ onMounted(async () => {
           <!-- Tem gatilho? -->
           <label class="flex items-center gap-2">
             <input type="checkbox" v-model="workHasTrigger" />
-             Tem gatilhos na obra?
+             Tem gatilhos na obra? 
           </label>
 
           <div v-if="workHasTrigger" class="flex flex-col gap-1">
