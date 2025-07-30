@@ -1,12 +1,17 @@
 // user.ts
 import db from "../db";
 import express, { Request, Response } from 'express';
-import { GetCommand, ScanCommand, PutCommand  } from '@aws-sdk/lib-dynamodb';
+import { GetCommand, ScanCommand, PutCommand, QueryCommand  } from '@aws-sdk/lib-dynamodb';
 import { generateToken, verifyToken } from "../configs/jwt";
 import { generateHash, verifyHash } from "../configs/bcrypt";
 import axios from "axios";
 import { parse } from 'php-array-parser';
 import { calculateUserTierByPoints } from "../gamification/tiers";
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { UpdateCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+
+const client = new DynamoDBClient({ region: 'us-east-1' }); // ou tua região
+const docClient = DynamoDBDocumentClient.from(client);
 
 const user = express.Router();
 
@@ -104,28 +109,63 @@ user.post('/login', async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Dados ausentes!!' });
   }
 
+  let account;
+
   try {
+    // Tenta buscar direto pela chave primária
     const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user }
+        Key: { user },
       })
     );
 
-    if (!result.Item || result.Item.deletedAt) {
+    if (result.Item && !result.Item.deletedAt) {
+      account = result.Item;
+    }
+
+     // Se não achou, procura pelo campo `username` usando o GSI
+    if (!account) {
+      const queryResult = await db.send(
+        new QueryCommand({
+          TableName: 'dbLunar2',
+          IndexName: 'username-index', // esse é o nome do GSI
+          KeyConditionExpression: 'username = :u',
+          ExpressionAttributeValues: {
+            ':u': String(user).trim(), // sem { S: ... }, pois o DocumentClient já trata
+          },
+          Limit: 1,
+        })
+      );
+
+      if (queryResult.Items && queryResult.Items.length > 0) {
+        account = queryResult.Items[0];
+      }
+    }
+
+    // Se ainda assim não encontrou
+    if (!account) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    const validPass = await verifyHash(password, result.Item.password)
-    
+    const validPass = await verifyHash(password, account.password);
     if (!validPass) {
-      return res.status(401).json({ error: 'Dados inválidos!' })
+      return res.status(401).json({ error: 'Dados inválidos!' });
+    }
+
+    const tier = calculateUserTierByPoints(account.tierPoints);
+    const getToken = generateToken({ user: account.user, role: account.role });
+
+    const userData = {
+      ...tier,
+      token: getToken.token,
+      role: account.role,
+      subrole: account.subrole,
+      user: account.user,
+      house: account.house,
+      points: account.points,
     };
 
-    const tier = calculateUserTierByPoints(result.Item.tierPoints)
-    const getToken = generateToken({user: result.Item.user, role: result.Item.role})
-    const userData = { ...tier, token: getToken.token, role: result.Item.role, subrole: result.Item.subrole, user: result.Item.user, house: result.Item.house, points: result.Item.points}
-    
     res.status(200).json(userData);
   } catch (err) {
     console.error(err);
@@ -311,7 +351,6 @@ user.put('/:user', async (req: Request, res: Response) => {
   const userParam = req.params.user;
   const { data } = req.body;
   
-  console.log(req.body)
   if (!data) {
     return res.status(400).json({ error: 'Dados ausentes!' });
   }
@@ -358,7 +397,9 @@ user.put('/:user', async (req: Request, res: Response) => {
         currentPoints -= data.pointsMinus;
       }
     }
-    
+
+    console.log(data)
+
     await db.send(
       new PutCommand({
         TableName: 'dbLunar2',

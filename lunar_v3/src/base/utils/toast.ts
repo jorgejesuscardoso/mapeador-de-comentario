@@ -3,13 +3,13 @@ import { ref } from 'vue'
 
 interface Toast {
   id: number
-  type: 'success' | 'error'
+  type: 'success' | 'error' | 'warning'
   message: string
 }
 
 const toasts = ref<Toast[]>([])
 
-const createToast = (type: 'success' | 'error', message: string) => {
+const createToast = (type: 'success' | 'error' | 'warning', message: string) => {
   const id = Date.now()
   toasts.value.push({ id, type, message })
 
@@ -24,6 +24,7 @@ const createToast = (type: 'success' | 'error', message: string) => {
 export const toast = {
   success: (msg: string) => createToast('success', msg),
   error: (msg: string) => createToast('error', msg),
+  warning: (msg: string) => createToast('warning', msg),
 }
 
 export const useToasts = () => toasts

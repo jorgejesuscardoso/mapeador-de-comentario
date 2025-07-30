@@ -1,7 +1,7 @@
 // user.ts
 import db from "../db";
 import express, { Request, Response } from 'express';
-import { GetCommand, ScanCommand, PutCommand  } from '@aws-sdk/lib-dynamodb';
+import { GetCommand, ScanCommand, PutCommand, UpdateCommand  } from '@aws-sdk/lib-dynamodb';
 import { generateToken, verifyToken } from "../configs/jwt";
 
 const books = express.Router();
@@ -36,6 +36,17 @@ books.post('/register', async (req: Request, res: Response) => {
       return res.status(200).json({ error: 'Livro já registrado!' });
     }
 
+    const existingUser = await db.send(
+      new GetCommand({
+        TableName: 'dbLunar2',
+        Key: { user: user }
+      })
+    );
+
+    if (!existingUser.Item) {
+      return res.status(200).json({ error: 'Usuário não encontrado!' });
+    }
+
     await db.send(
       new PutCommand({
         TableName: 'books',
@@ -44,6 +55,23 @@ books.post('/register', async (req: Request, res: Response) => {
           book_id: id,
           book_name: bookName,
           createdAt: new Date().toISOString()
+        }
+      })
+    );
+
+    await db.send(
+      new UpdateCommand({
+        TableName: 'dbLunar2',
+        Key: { user },
+        UpdateExpression: 'SET books = list_append(if_not_exists(books, :empty_list), :newBook)',
+        ExpressionAttributeValues: {
+          ':newBook': [{
+            author: user,
+            book_id: id,
+            book_name: bookName,
+            createdAt: new Date().toISOString()
+          }],
+          ':empty_list': []
         }
       })
     );

@@ -84,8 +84,8 @@ const submit = async () => {
       </h2>
 
       <div v-if="error" class="text-red-600 text-sm text-center">{{ error }}</div>
-      <div v-if="success" class="text-green-600 bg-white text-sm font-semibold text-center">
-        <p>Livro enviado com sucesso! Pode demorar até 1hr para aparecer na biblioteca!</p>
+      <div v-if="success" class="text-green-600 bg-white text-sm font-semibold text-center px-3 py-2 rounded-md">
+        <p>Livro enviado com sucesso! Pode demorar até 1h para aparecer na biblioteca!</p>
       </div>
 
       <form 
@@ -100,7 +100,7 @@ const submit = async () => {
             v-model="nomeLivro"
             type="text"
             placeholder="Ex: As crônicas de Narnia"
-            class="bg-transparent w-full border border-violet-500 rounded px-3 py-1 focus:outline-none placeholder:text-white"
+            class="bg-transparent w-full border border-violet-500 rounded px-3 py-1 focus:outline-none placeholder:text-gray-300 text-white"
             required
           />
         </div>
@@ -113,7 +113,7 @@ const submit = async () => {
             v-model="linkLivro"
             type="url"
             placeholder="https://www.wattpad.com/story/..."
-            class="bg-transparent w-full border border-violet-500 rounded px-3 py-1 focus:outline-none placeholder:text-white"
+            class="bg-transparent w-full border border-violet-500 rounded px-3 py-1 focus:outline-none placeholder:text-gray-300 text-white"
             required
           />
         </div>
