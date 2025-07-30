@@ -25,12 +25,19 @@ const selectedBookName = computed(() => {
   const book = props.books?.find((b) => b.book_id === props.modelValue);
   return book?.book_name || null;
 });
+
+const labelText = computed(() => {
+  const book = props.books?.find((b) => b.book_id === props.modelValue);
+  return book ? 'Obra selecionada' : 'Selecione uma obra';
+});
 </script>
 
 
 <template>
   <div class="relative w-full" @v-click-outside="isOpen = false">
-    <label class="text-sm text-purple-300 block mb-1">Selecione uma obra cadastrada</label>
+    <label class="text-sm text-purple-300 block mb-1">
+      {{ labelText }}
+    </label>
 
     <button
       type="button"

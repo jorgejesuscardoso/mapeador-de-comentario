@@ -122,7 +122,7 @@ onMounted(async () => {
 
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-8 mt-6 py-8  w-full mx-auto  shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl lg:mt-8 mt-4 py-8  w-full mx-auto  shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->

@@ -22,7 +22,7 @@ const schema = yup.object({
     excludeEmptyString: true
   }),
 
-  password: yup
+  newpassword: yup
     .string()
     .min(6, 'Mínimo 6 caracteres')
     .nullable()
@@ -32,12 +32,12 @@ const schema = yup.object({
     .string()
     .nullable()
     .transform((value) => (value === '' ? null : value))
-    .when('password', {
+    .when('newpassword', {
       is: (val: string | null) => val?.length > 0,
       then: (schema) =>
         schema
           .required('Confirme sua senha')
-          .oneOf([yup.ref('password')], 'As senhas não coincidem'),
+          .oneOf([yup.ref('newpassword')], 'As senhas não coincidem'),
       otherwise: (schema) => schema.notRequired(),
     }),
 
@@ -59,7 +59,7 @@ const { handleSubmit, errors } = useForm({
   initialValues: {
     username: '',
     phone: '',
-    password: '',
+    newpassword: '',
     confirmPassword: '',
     selectedObraId: null,
     isPoesia: false,
@@ -75,7 +75,7 @@ const { handleSubmit, errors } = useForm({
 
 const { value: username } = useField('username')
 const { value: phone } = useField('phone')
-const { value: password } = useField('password')
+const { value: newpassword } = useField('newpassword')
 const { value: confirmPassword } = useField('confirmPassword')
 const { value: selectedObraId } = useField<string>('selectedObraId')
 const { value: isPoesia } = useField<boolean>('isPoesia')
@@ -93,6 +93,7 @@ const { value: userHasTrigger } = useField<string>('userHasTrigger')
 const isSaving = ref(false)
 const isLoading = ref(true)
 const books = ref()
+const prevData = ref()
 
 const submitForm = handleSubmit(async (values) => {
   const userStore = localStorage.getItem('user')
@@ -117,7 +118,7 @@ const submitForm = handleSubmit(async (values) => {
     values.userHasTrigger
 
   // Se nada foi preenchido, só envia se senha ou telefone foram alterados
-  if (!answeredOptional && !values.password && !values.phone) {
+  if (!answeredOptional && !values.newpassword && !values.phone) {
     toast.warning('Nenhuma alteração foi feita.')
     return
   }
@@ -137,24 +138,38 @@ const submitForm = handleSubmit(async (values) => {
   }
 })
 
-
-onMounted(async () => {  
+onMounted(async () => {
   const userStore = localStorage.getItem('user')
   const parsed = JSON.parse(userStore)
-  if(!userStore) return router.push('/login')
-  const data = await getUserById(parsed.user)
+  if (!userStore) return router.push('/login')
 
-  if(data) {
+  const data = await getUserById(parsed.user)
+  if (data) {
     books.value = data.books
+    prevData.value = data
+
+    // Popular os campos
+    username.value = data.username || ''
+    phone.value = data.phone || ''
+    selectedObraId.value = data.selectedObraId || null
+    isPoesia.value = !!data.isPoesia
+    workHasLongPart.value = !!data.workHasLongPart
+    howPartIsLong.value = data.howPartIsLong || ''
+    workHasHot.value = !!data.workHasHot
+    workHasTrigger.value = !!data.workHasTrigger
+    howTriggers.value = data.howTriggers || ''
+    userReadHot.value = !!data.userReadHot
+    userHasTrigger.value = data.userHasTrigger || ''
   }
-  console.log(books.value)
+  console.log(prevData.value)
   isLoading.value = false
 })
+
 </script>
 
 <template>
   <div
-    class="flex flex-col items-center justify-start w-full p-2 mt-6 min-h-screen"
+    class="flex flex-col items-center justify-start w-full p-2 mt-2 min-h-screen"
   >
     <div
       class="w-full"
@@ -166,7 +181,7 @@ onMounted(async () => {
         <Lucide icon="ArrowLeft" class="w-6 h-6" />
       </h2>
     </div>
-    <div class="bg-[rgb(0,0,0,0.7)] p-6 rounded-2xl shadow-md w-full max-w-md text-white space-y-4 mx-auto mt-6 border border-purple-500">
+    <div class="bg-[rgb(0,0,0,0.7)] p-6 rounded-2xl shadow-md w-full max-w-md text-white space-y-4 mx-auto mt-2 border border-purple-500">
       <h2 class="text-lg font-bold text-purple-400 flex items-center gap-2">
         <Lucide icon="Settings" class="w-5 h-5" />
         Editar Perfil
@@ -176,24 +191,24 @@ onMounted(async () => {
         <div class="h-6 w-32 skeleton"></div> <!-- título -->
         <div class="h-10 w-full skeleton"></div> <!-- username -->
         <div class="h-10 w-full skeleton"></div> <!-- phone -->
-        <div class="h-10 w-full skeleton"></div> <!-- password -->
-        <div class="h-10 w-full skeleton"></div> <!-- confirm password -->
+        <div class="h-10 w-full skeleton"></div> <!-- newpassword -->
+        <div class="h-10 w-full skeleton"></div> <!-- confirm newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- botão -->
 
         
         <div class="h-6 w-32 skeleton"></div> <!-- título -->
         <div class="h-10 w-full skeleton"></div> <!-- username -->
         <div class="h-10 w-full skeleton"></div> <!-- phone -->
-        <div class="h-10 w-full skeleton"></div> <!-- password -->
-        <div class="h-10 w-full skeleton"></div> <!-- confirm password -->
+        <div class="h-10 w-full skeleton"></div> <!-- newpassword -->
+        <div class="h-10 w-full skeleton"></div> <!-- confirm newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- botão -->
 
         
         <div class="h-6 w-32 skeleton"></div> <!-- título -->
         <div class="h-10 w-full skeleton"></div> <!-- username -->
         <div class="h-10 w-full skeleton"></div> <!-- phone -->
-        <div class="h-10 w-full skeleton"></div> <!-- password -->
-        <div class="h-10 w-full skeleton"></div> <!-- confirm password -->
+        <div class="h-10 w-full skeleton"></div> <!-- newpassword -->
+        <div class="h-10 w-full skeleton"></div> <!-- confirm newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- botão -->
       </div>
 
@@ -205,7 +220,8 @@ onMounted(async () => {
         <!-- Username -->
         <div class="flex flex-col gap-1">
           <label for="username" class="text-sm text-purple-300">Usuário</label>
-          <input
+          <input 
+            autocomplete="off"
             v-model="username"
             type="text"
             id="username"
@@ -230,14 +246,14 @@ onMounted(async () => {
 
         <!-- Senha -->
         <div class="flex flex-col gap-1">
-          <label for="password" class="text-sm text-purple-300">Nova Senha</label>
+          <label for="newpassword" class="text-sm text-purple-300">Nova Senha</label>
           <input
-            v-model="password"
-            type="password"
-            id="password"
+            v-model="newpassword"
+            type="newpassword"
+            id="newpassword"
             class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
-          <span class="text-xs text-red-400">{{ errors.password }}</span>
+          <span class="text-xs text-red-400">{{ errors.newpassword }}</span>
         </div>
 
         <!-- Confirme Senha -->
@@ -245,7 +261,7 @@ onMounted(async () => {
           <label for="confirmPassword" class="text-sm text-purple-300">Confirme a Senha</label>
           <input
             v-model="confirmPassword"
-            type="password"
+            type="newpassword"
             id="confirmPassword"
             class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
@@ -257,7 +273,9 @@ onMounted(async () => {
 
         <!-- Separador -->
         <div class="border-t border-purple-500 pt-4 mt-8 space-y-4">
-          <h3 class="text-purple-300 font-semibold">Sobre a obra que vai entrar na grade de leitura</h3>
+          <h3 class="text-purple-300 font-semibold">
+            Sobre a obra que vai entrar na grade de leitura
+          </h3>
 
           <!-- Obra selecionada -->
           <div class="flex flex-col gap-1">
