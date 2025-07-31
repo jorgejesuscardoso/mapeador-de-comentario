@@ -50,21 +50,20 @@ onMounted(async () => {
       <template #description>Buscando dados do clã... 🛸</template>
     </Loading>
     <div
-      class="flex items-center justify-start"
+      class="flex items-center justify-start mb-2"
     >
       <p
-        class="flex items-center justify-start gap-1 text-white"
+        class="text-lg font-bold text-purple-400 flex items-center gap-2"
         @click="router.back()"
       >
         <Lucide
           icon="ArrowLeft"
-          class="w-4 h-4"
+          class="w-6 h-6"
         />
-        voltar
       </p>
     </div>
 
-    <div v-if="fetchError" class="text-red-400 font-medium mt-4">
+    <div v-if="fetchError" class="text-red-400 font-medium mt-6">
       Não foi possível carregar as casas. Tente novamente mais tarde.
     </div>
     <div v-if="!isLoading && !fetchError" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
