@@ -261,7 +261,7 @@ watch([times, data],() => {
     } else if (data.value.length < 6) {
       msgReadingPending.value = 'comentários insuficientes.'
       return
-    } else if(wast < est * 0.9) {
+    } else if(wast < est * 0.75) {
       msgReadingPending.value = 'Tempo muito abaixo do estimado.'
       return
     } else if (!goodDivision.value) {
