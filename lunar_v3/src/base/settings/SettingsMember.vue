@@ -294,15 +294,15 @@ const handleDeleteClick = () => {
             <span
               v-for="s in data.subs"
               :key="s"
-              class="px-2 py-1 rounded-lg bg-purple-700/40 border border-purple-500 text-purple-200 text-sm flex items-center gap-2 cursor-pointer"
+              class="px-2 py-1 rounded-lg bg-purple-700/40 border border-purple-500 text-purple-200 text-sm flex items-center gap-2"
             >
-              {{ s }}
               <button
                 type="button"
                 @click="removeSub(s)"
-                class="text-red-400 text-xs hover:text-red-200 font-bold"
+                class="text-xs hover:text-red-200 font-bold flex items-center gap-2"
               >
-                <Lucide icon="X" class="w-3 h-3" />
+                {{ s }}
+                <Lucide icon="X" class="w-3 h-3 text-red-400" />
               </button>
             </span>
           </div>
