@@ -221,7 +221,14 @@ onMounted(async () => {
       >
         <!-- Username -->
         <div class="flex flex-col gap-1">
-          <label for="username" class="text-sm text-purple-300">Usuário</label>
+          <label for="username" class="text-sm text-purple-300">
+            Usuário:
+            <span
+              class="text-xs text-purple-400 font-normal"
+            >
+              (opcional - usado para fazer login)
+            </span>
+          </label>
           <input 
             autocomplete="off"
             v-model="username"
