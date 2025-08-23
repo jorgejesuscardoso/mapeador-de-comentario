@@ -207,6 +207,12 @@ const reload = async () => {
   }
   isLoading.value = false
 }
+
+const toggleShowConfigMember = () => {
+  ShowConfigMember.value = null
+  window.location.reload()
+}
+
 </script>
 
 
@@ -477,7 +483,7 @@ const reload = async () => {
               points: member.points || 0,
               subs: member.subs || []
             }"
-            @close="ShowConfigMember = null"
+            @close="toggleShowConfigMember"
             @save="saveSettings()"
             @deleted="reload()"
             :User="member.user"

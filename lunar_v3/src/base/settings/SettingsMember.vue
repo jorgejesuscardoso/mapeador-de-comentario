@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue"
+import { onMounted, onUnmounted, ref, watch } from "vue"
 import Lucide from "@/base/lucide/Lucide.vue"
 import { deleteUser, updateUser } from "@/API/UserApi"
 import { getHouses } from "@/API/HouseApi"
@@ -12,6 +12,8 @@ const data = ref({
   plus: null,
   subs: [] as string[]
 })
+const debug = ref(false)
+const isSuperAdmin = ref(false)
 const inicialPoints = ref(0)
 const housesRef = ref<{ name: string }[]>([])
 const showDeleteConfirm = ref(false) // modal de confirmação
@@ -55,6 +57,13 @@ watch(
 )
 
 onMounted(async () => {
+  const userStore = localStorage.getItem('user')
+  const parsedUser = userStore ? JSON.parse(userStore) : null
+
+  if (parsedUser.role === 'superadmin') {
+    isSuperAdmin.value = true
+  }
+
   data.value.house = props.data.house
   data.value.role = props.data.role
   data.value.subs = props.data.subs || []
@@ -91,6 +100,36 @@ const updateMember = async () => {
   }
 }
 
+const updateMemberDebounce = async () => {
+
+  const payload = {
+    house: data.value.house || null,
+    role: data.value.role,
+    subs: data.value.subs
+  }
+
+  try {
+    const response = await updateUser(props.User, payload)
+    console.log("✅ Atualizado:", response)
+    toast.success("Usuário atualizado com sucesso!") 
+  } catch (err) {
+    console.error("❌ Erro ao atualizar usuário:", err)
+  }
+}
+
+watch(
+  () => [data.value.house, data.value.role, data.value.subs],
+  () => {
+    if (!debug.value) {
+      debug.value = true
+      return
+    } 
+    updateMemberDebounce()
+  } ,
+  { deep: true }
+)
+
+
 const confirmDelete = async () => {
   const getUserStore = localStorage.getItem('user')
   const parsedUser = getUserStore ? JSON.parse(getUserStore) : null
@@ -119,6 +158,32 @@ const confirmDelete = async () => {
     toast.error("Erro ao excluir usuário.")
   }
 }
+const toggleSwitch = () => {  
+  if (!isSuperAdmin.value) {
+    toast.error("Você não tem permissão para esta ação.")
+    return
+  }
+
+  if (data.value.plus === null) {
+    data.value.plus = true
+  } else {
+    data.value.plus = !data.value.plus
+  }
+  if (data.value.plus === null) {
+    data.value.points = 0
+  }
+}
+
+const handleDeleteClick = () => {
+  if (!isSuperAdmin.value) {
+    toast.error("Você não tem permissão para esta ação.")
+    return
+  }
+
+  showDeleteConfirm.value = true
+}
+
+
 </script>
 
 <template>
@@ -129,7 +194,7 @@ const confirmDelete = async () => {
 >
   <!-- modal -->
   <div
-    class="relative bg-[rgba(0,0,0,0.85)] border border-purple-700 rounded-xl mt-20 shadow-xl p-4 text-purple-200 w-full max-w-lg flex flex-col max-h-[190vh] "
+    class="relative bg-[rgba(0,0,0,0.85)] border border-purple-700 rounded-xl mt-36 shadow-xl p-4 text-purple-200 w-full max-w-lg flex flex-col max-h-[190vh] "
   >
       <!-- título + botão fechar -->
       <div class="flex justify-between items-center mb-2">
@@ -244,6 +309,12 @@ const confirmDelete = async () => {
         </div>
 
         <!-- Tipo de pontos -->
+        <h3
+          class="text-sm font-semibold text-purple-400 mt-4 mb-2 border-b border-purple-600 pt-4" 
+        >
+          Área com acesso restrito
+
+        </h3>
         <div>
           <label class="text-xs font-semibold inline-block text-purple-300 w-full text-start mb-4">
             Adicionar ou Remover Pontos
@@ -262,11 +333,7 @@ const confirmDelete = async () => {
                   'bg-red-500': data.plus === false,
                   'bg-gray-600': data.plus === null
                 }"
-                @click="
-                  data.plus === null
-                    ? (data.plus = true)
-                    : (data.plus = !data.plus)
-                "
+                @click="toggleSwitch"
               >
                 <span
                   class="inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-300"
@@ -331,12 +398,20 @@ const confirmDelete = async () => {
         <button
           @click="emit('close')"
           class="px-3 py-1 text-sm rounded-lg bg-gray-600 text-white hover:bg-gray-500"
+          :class="{
+            'opacity-50 cursor-not-allowed': !isSuperAdmin
+          }"
+          :disabled="!isSuperAdmin"
         >
           Cancelar
         </button>
         <button
           @click="updateMember"
           class="px-3 py-1 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-500"
+          :class="{
+            'opacity-50 cursor-not-allowed': !isSuperAdmin
+          }"
+          :disabled="!isSuperAdmin"
         >
           Salvar
         </button>
@@ -346,7 +421,7 @@ const confirmDelete = async () => {
       <div class="mt-6 border-t border-red-600 pt-4">
         <h3 class="text-sm font-semibold text-red-400 mb-2">Danger Zone</h3>
         <button
-          @click="showDeleteConfirm = true"
+          @click="handleDeleteClick "
           class="w-full px-3 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-500"
           :class="{
             'opacity-50 cursor-not-allowed': showDeleteConfirm

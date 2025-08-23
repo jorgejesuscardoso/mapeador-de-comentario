@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/core": "^13.7.0",
     "axios": "^1.10.0",
     "lucide-vue-next": "^0.518.0",
     "p-limit": "^6.2.0",
