@@ -294,7 +294,7 @@ const handleDeleteClick = () => {
             <span
               v-for="s in data.subs"
               :key="s"
-              class="px-2 py-1 rounded-lg bg-purple-700/40 border border-purple-500 text-purple-200 text-sm flex items-center gap-2"
+              class="px-2 py-1 rounded-lg bg-purple-700/40 border border-purple-500 text-purple-200 text-sm flex items-center gap-2 cursor-pointer"
             >
               {{ s }}
               <button
