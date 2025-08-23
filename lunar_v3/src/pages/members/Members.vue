@@ -3,13 +3,14 @@
 import { getUser } from '@/API/UserApi'
 import Loading from '@/base/loading/Loading.vue'
 import Lucide from '@/base/lucide/Lucide.vue'
-import { ref, onMounted, nextTick, watch, reactive, computed } from 'vue'
+import { ref, onMounted, nextTick, watch, reactive, computed, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { setCache, getCache } from '../../base/cache/Cache' // Mesmo local que o dos livros
 import FilterBar from '@/base/filters/FilterBar.vue'
 import SearchInput from '@/base/Inputs.vue/SearchInput.vue'
 import { capitalize } from '@/base/helpers/capitalize'
 import { formatRankingPosition } from '@/base/utils/houseRankingFormat'
+import SettingsMember from '@/base/settings/SettingsMember.vue'
 
 
 const cacheKey = 'cache_member_v1'
@@ -21,6 +22,12 @@ const permanentFailure = ref(false)
 const search = ref('')
 const rankingPosition = ref(0)
 const router = useRouter()
+const isAdmin = inject('isAdmin')
+const ShowConfigMember = ref<string | null>(null)
+
+const toggleConfig = (memberId: string) => {
+  ShowConfigMember.value = ShowConfigMember.value === memberId ? null : memberId
+}
 
 const handleGetProfile = (user: string) => {
   const userLogged = JSON.parse(localStorage.getItem('user')) || '';
@@ -136,8 +143,6 @@ watch(data, (val) => {
 });
 
 
-
-
 setTimeout(() => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }, 200) 
@@ -179,13 +184,36 @@ setInterval(async () => {
   }
 }, 60 * 10 * 1000)
 
+const saveSettings = () => {
+  ShowConfigMember.value = null
+  setTimeout(async () => {
+    const freshMembers = await fetchMembers()
+    if (freshMembers.length > 0) {
+      data.value = freshMembers
+      setCache(cacheKey, freshMembers, 604800) // 7 dias
+      console.log('🔄 Refetch pós-salvar concluído!')
+    }
+  }, 300)
+}
+
+const reload = async () => {
+  isLoading.value = true
+  const freshMembers = await fetchMembers()
+  search.value = ''
+  if (freshMembers.length > 0) {
+    data.value = freshMembers
+    setCache(cacheKey, freshMembers, 604800) // 7 dias
+    console.log('🔄 Refetch pós-deletar concluído!')
+  }
+  isLoading.value = false
+}
 </script>
 
 
 <template>
     
   <div
-    class="mt-4 lg:mt-11 w-full px-2 lg:px-0"
+    class="mt-4 lg:mt-11 w-full px-2 lg:px-6"
   >
     <!--Barra de pesquisa-->
     <div
@@ -242,172 +270,197 @@ setInterval(async () => {
       </Loading>
 
 
-
+      <!--Card-->
       <div
         v-for="member in filteredMembers"
         :key="member.user"
         class="bg-white border border-purple-700 transition-all rounded-xl flex flex-col items-center text-center  relative userCard"
       >
-      <div
-        class="bg-[rgba(0,0,0,0.8)] w-full h-full p-2 py-6 rounded-xl shadow-md hover:shadow-xl"
-      >
-
         <div
-          v-if="member?.rankingPosition"
-          class="flex items-center justify-center absolute text-violet-300 top-6 right-10"
+          class="bg-[rgba(0,0,0,0.8)] w-full h-full p-2 py-6 rounded-xl shadow-md hover:shadow-xl"
         >
-          {{ formatRankingPosition(member?.rankingPosition) }}
-        </div>
 
-        <div
-          class="flex items-center justify-center flex-col "
-        >
-        <!-- Avatar -->
-            <img
-              :src="member.avatar || '/user.png'"
-              alt="Avatar"
-              class="w-24 h-24 lg:w-20 lg:h-20 rounded-full border-2 border-purple-300 object-cover shadow cursor-pointer"
-              @click="handleGetProfile(member.user)"
-            />
+          <div
+            v-if="member?.rankingPosition"
+            class="flex flex-col items-center justify-center absolute text-violet-300 top-6 right-10 gap-10"
+          >
+            {{ formatRankingPosition(member?.rankingPosition) }}
 
-            <!-- Nome + Username -->
-            <div>
-              <h2 class="text-lg lg:text-sm font-semibold text-purple-200 leading-tight mt-4">
-                {{ member.name }}
-              </h2>
-              <p class="text-sm lg:text-xs text-violet-300">@{{ member.user }}</p>
+            <!-- Botão de configurações -->
+            <div
+              v-if="isAdmin"
+            >              
+              <Lucide
+                icon="Settings2"
+                class="w-8 h-8 object-contain rounded-full p-1.5 bg-white/10 shadow"
+                title="Configurações do membro"
+                @click="toggleConfig(member.user)"
+              />
             </div>
           </div>
 
-
-
-
-          
-          <!-- Casa -->
-          <div class="flex flex-col items-center absolute left-4 top-6 lg:left-3 ">
-            <h3 class="text-[10px] mb-1 font-semibold text-purple-300 ">
-              {{ member?.house ? formatRankingPosition(member?.house?.rankingPosition) : 'N/A'}}
-            </h3>
-            
-            <div
-              v-if="member.house?.thumb"
-              class="flex items-center"
-            >
+          <div
+            class="flex items-center justify-center flex-col "
+          >
+          <!-- Avatar -->
               <img
-                :src="`/houses_flags/${member.house.thumb}`"
-                alt="Casa"                
-                class="w-12 h-12 object-contain rounded-full border-2 bg-white/50 border-purple-400 shadow"
+                :src="member.avatar || '/user.png'"
+                alt="Avatar"
+                class="w-24 h-24 lg:w-20 lg:h-20 rounded-full border-2 border-purple-300 object-cover shadow cursor-pointer"
+                @click="handleGetProfile(member.user)"
               />
-            </div>
 
-            <div
-              v-else
-            >
-              <div
-                class="w-8 lg:w-6 lg:h-6 h-12 bg-violet-200 rounded-b-full shadow-sm text-purple-400 flex items-center justify-center text-xs rounded"
-              >
-                —
+              <!-- Nome + Username -->
+              <div>
+                <h2 class="text-lg lg:text-sm font-semibold text-purple-200 leading-tight mt-4">
+                  {{ member.name }}
+                </h2>
+                <p class="text-sm lg:text-xs text-violet-300">@{{ member.user }}</p>
               </div>
             </div>
 
-            <p class="text-[10px] mt-1 lg:text-[10px] font-medium text-purple-300">
-              {{ capitalize(member.house?.name) || 'Sem casa' }}
-            </p>
 
-            <p 
-              v-if="member.house"
-              class="flex items-center justify-center text-[10px] font-medium text-purple-300"
-            >
-              <Lucide
-                 icon="Bitcoin" 
-                 class="w-2.5 h-2.5 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
-                 /> {{ member.house.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
-            </p>
 
-          </div>
 
-          <div class="grid grid-cols-2 text-start w-full text-sm lg:text-[11px] text-gray-700 mt-4 ml-2">
-            <!-- Cargo -->
-            <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-300">
-                <Lucide icon="BadgeCheck" class="w-3 h-3" />
-                Cargo:
-              </span>
-              <span class="font-medium text-violet-300 ml-2">
-                {{ member.role === 'admin' || member.role === 'superadmin' ? 'Adm' : 'Membro' }}
-              </span>
-            </div>
-
-            <!-- Ranking -->
-            <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-300">
-                <Lucide icon="Trophy" class="w-3 h-3" />
-                Ranking:
-              </span>
-              <span 
-                class="flex items-center font-medium ml-2 px-2 rounded-br-xl text-[11px] rounded-tl-xl"
-                :class="member.tier?.colorClass || 'text-white bg-red-600'"
+            
+            <!-- Casa -->
+            <div class="flex flex-col items-center absolute left-4 top-6 lg:left-3 ">
+              <h3 class="text-[10px] mb-1 font-semibold text-purple-300 ">
+                {{ member?.house ? formatRankingPosition(member?.house?.rankingPosition) : 'N/A'}}
+              </h3>
+              
+              <div
+                v-if="member.house?.thumb"
+                class="flex items-center"
               >
-                {{ member.tier?.fullLabel || 'N/A' }}
-              </span>
+                <img
+                  :src="`/houses_flags/${member.house.thumb}`"
+                  alt="Casa"                
+                  class="w-12 h-12 object-contain rounded-full border-2 bg-white/50 border-purple-400 shadow"
+                />
+              </div>
+
+              <div
+                v-else
+              >
+                <div
+                  class="w-8 lg:w-6 lg:h-6 h-12 bg-violet-200 rounded-b-full shadow-sm text-purple-400 flex items-center justify-center text-xs rounded"
+                >
+                  —
+                </div>
+              </div>
+
+              <p class="text-[10px] mt-1 lg:text-[10px] font-medium text-purple-300">
+                {{ capitalize(member.house?.name) || 'Sem casa' }}
+              </p>
+
+              <p 
+                v-if="member.house"
+                class="flex items-center justify-center text-[10px] font-medium text-purple-300"
+              >
+                <Lucide
+                  icon="Bitcoin" 
+                  class="w-2.5 h-2.5 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
+                  /> {{ member.house.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
+              </p>
             </div>
 
-            <!-- Obras publicadas -->
-            <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-300">
-                <Lucide icon="BookOpenText" class="w-3 h-3" />
-                Obras:
-              </span>
-              <span class="font-medium text-violet-300 ml-2">
-                {{ member.numStoriesPublished }}
-              </span>
+            <div class="grid grid-cols-2 text-start w-full text-sm lg:text-[11px] text-gray-700 mt-4 ml-2">
+              <!-- Cargo -->
+              <div class="flex w-full">
+                <span class="flex items-center gap-1 font-medium text-purple-300">
+                  <Lucide icon="BadgeCheck" class="w-3 h-3" />
+                  Cargo:
+                </span>
+                <span class="font-medium text-violet-300 ml-2">
+                  {{ member.role === 'admin' || member.role === 'superadmin' ? 'Adm' : 'Membro' }}
+                </span>
+              </div>
+
+              <!-- Ranking -->
+              <div class="flex w-full">
+                <span class="flex items-center gap-1 font-medium text-purple-300">
+                  <Lucide icon="Trophy" class="w-3 h-3" />
+                  Ranking:
+                </span>
+                <span 
+                  class="flex items-center font-medium ml-2 px-2 rounded-br-xl text-[11px] rounded-tl-xl"
+                  :class="member.tier?.colorClass || 'text-white bg-red-600'"
+                >
+                  {{ member.tier?.fullLabel || 'N/A' }}
+                </span>
+              </div>
+
+              <!-- Obras publicadas -->
+              <div class="flex w-full">
+                <span class="flex items-center gap-1 font-medium text-purple-300">
+                  <Lucide icon="BookOpenText" class="w-3 h-3" />
+                  Obras:
+                </span>
+                <span class="font-medium text-violet-300 ml-2">
+                  {{ member.numStoriesPublished }}
+                </span>
+              </div>
+
+              <!-- Pontos -->
+              <div class="flex w-full">
+                <span class="flex items-center gap-1 font-medium text-purple-300">
+                  <Lucide icon="Star" class="w-3 h-3" />
+                  Pontos:
+                </span>
+                <span class="font-medium text-violet-300 ml-2">
+                  {{ member?.points?.toLocaleString('pt-br') }}
+                </span>
+              </div>
+
+              <!-- Medalhas -->
+              <div class="flex w-full">
+                <span class="flex items-center gap-1 font-medium text-purple-300">
+                  <Lucide icon="Medal" class="w-3 h-3" />
+                  Medalha:
+                </span>
+                <span class="font-medium text-violet-300 ml-2">
+                  0
+                </span>
+              </div>
+
+              <!-- Conquistas -->
+              <div class="flex w-full">
+                <span class="flex items-center gap-1 font-medium text-purple-300">
+                  <Lucide icon="BadgeCheck" class="w-3 h-3" />
+                  Conquistas:
+                </span>
+                <span class="font-medium text-violet-300 ml-2">
+                  0
+                </span>
+              </div>
             </div>
 
-            <!-- Pontos -->
-            <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-300">
-                <Lucide icon="Star" class="w-3 h-3" />
-                Pontos:
-              </span>
-              <span class="font-medium text-violet-300 ml-2">
-                {{ member?.tierPoints?.toLocaleString('pt-br') }}
-              </span>
-            </div>
-
-            <!-- Medalhas -->
-            <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-300">
-                <Lucide icon="Medal" class="w-3 h-3" />
-                Medalha:
-              </span>
-              <span class="font-medium text-violet-300 ml-2">
-                0
-              </span>
-            </div>
-
-            <!-- Conquistas -->
-            <div class="flex w-full">
-              <span class="flex items-center gap-1 font-medium text-purple-300">
-                <Lucide icon="BadgeCheck" class="w-3 h-3" />
-                Conquistas:
-              </span>
-              <span class="font-medium text-violet-300 ml-2">
-                0
-              </span>
-            </div>
+            <!-- Link para o perfil -->
+            <a
+              :href="member.deeplink"
+              target="_blank"
+              class="flex items-center justify-center gap-1 text-xs font-semibold text-purple-300 hover:underline mt-6"
+            >
+            Ver no Wattpad
+            <Lucide icon="ExternalLink" class="w-3 h-3" />
+            </a>
           </div>
 
-          <!-- Link para o perfil -->
-          <a
-            :href="member.deeplink"
-            target="_blank"
-            class="flex items-center justify-center gap-1 text-xs font-semibold text-purple-300 hover:underline mt-6"
-          >
-          Ver no Wattpad
-          <Lucide icon="ExternalLink" class="w-3 h-3" />
-          </a>
-        </div>
-      </div>
+          <SettingsMember 
+            v-if="ShowConfigMember === member.user"
+            class="fixed z-50 top-14"
+            :data="{
+              house: member.house?.name || '',
+              role: member.role || 'member',
+              points: member.points || 0
+            }"
+            @close="ShowConfigMember = null"
+            @save="saveSettings()"
+            @deleted="reload()"
+            :User="member.user"
+          />
+        </div>        
 
     </div>
   </div>

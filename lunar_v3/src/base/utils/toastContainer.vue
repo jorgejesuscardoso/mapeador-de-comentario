@@ -28,7 +28,7 @@ const toasts = useToasts()
       <div
         v-for="t in toasts"
         :key="t.id"
-        class="justify-center min-w-60 w-fit px-3 h-14 rounded-xl shadow-lg text-white text-xl font-minimun flex items-center"
+        class="justify-center min-w-60 w-fit px-3 h-14 rounded-xl shadow-lg text-white text-sm font-minimun flex items-center"
         :class="t.type === 'success' ? 'bg-green-600/70' : t.type === 'warning' ? 'bg-orange-600/70' :'bg-red-600/70'"
       >
         <Lucide :icon="t.type === 'success' ? 'CheckCircle2' : 'XCircle'" class="w-5 h-5 text-white mr-2" />

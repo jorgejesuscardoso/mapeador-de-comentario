@@ -350,7 +350,8 @@ user.get('/:id', async (req: Request, res: Response) => {
 user.put('/:user', async (req: Request, res: Response) => {
   const userParam = req.params.user;
   const { data } = req.body;
-  
+  console.log(data);
+
   if (!data) {
     return res.status(400).json({ error: 'Dados ausentes!' });
   }
@@ -362,7 +363,7 @@ user.put('/:user', async (req: Request, res: Response) => {
         Key: { user: userParam }
       })
     );
-    
+
     const existingUser = result.Item;
     if (!existingUser || existingUser.deletedAt) {
       return res.status(404).json({ error: 'Usuário não encontrado!' });
@@ -374,42 +375,55 @@ user.put('/:user', async (req: Request, res: Response) => {
       updatedPassword = await generateHash(data.newpassword);
     }
 
-    let currentTierPoints = result?.Item?.tierPoints 
-
-    if(data.tierPointsPlus){
-      currentTierPoints += data.tierPointsPlus
-    } else if (data.tierPointsMinus) {
-      if (data.tierPointsMinus > currentTierPoints) {
-        currentTierPoints = 0;
-      } else {
-        currentTierPoints -= data.tierPointsMinus;
-      }
+    // Manipulação de tierPoints
+    let currentTierPoints = existingUser.tierPoints ?? 0;
+    if (data.tierPointsPlus) {
+      currentTierPoints += data.tierPointsPlus;
+    }
+    if (data.tierPointsMinus) {
+      currentTierPoints = Math.max(0, currentTierPoints - data.tierPointsMinus);
     }
 
-    let currentPoints = result?.Item?.points;
-    
-    if(data.pointsPlus){
-      currentPoints += data.pointsPlus
-    } else if (data.pointsMinus) {
-      if (data.pointsMinus > currentPoints) {
-        currentPoints = 0;
-      } else {
-        currentPoints -= data.pointsMinus;
-      }
+    // Manipulação de points
+    let currentPoints = existingUser.points ?? 0;
+    if (data.pointsPlus) {
+      currentPoints += data.pointsPlus;
     }
-    
+    if (data.pointsMinus) {
+      currentPoints = Math.max(0, currentPoints - data.pointsMinus);
+    }
+
+    // Agora usa UpdateCommand
     await db.send(
-      new PutCommand({
+      new UpdateCommand({
         TableName: 'dbLunar2',
-        Item: {
-          ...existingUser, // mantém os campos que não foram modificados
-          ...data,
-          username: data.username || existingUser.username,
-          points: currentPoints,
-          password: updatedPassword,
-          role: data.role || existingUser.role,
-          tierPoints: currentTierPoints,
-          updatedAt: new Date().toISOString()
+        Key: { user: userParam },
+        UpdateExpression: `
+          SET #username = :username,
+              #password = :password,
+              #role = :role,
+              #house = :house,
+              #updatedAt = :updatedAt,
+              #points = :points,
+              #tierPoints = :tierPoints
+        `,
+        ExpressionAttributeNames: {
+          '#username': 'username',
+          '#password': 'password',
+          '#role': 'role',
+          '#house': 'house',
+          '#points': 'points',
+          '#tierPoints': 'tierPoints',
+          '#updatedAt': 'updatedAt'
+        },
+        ExpressionAttributeValues: {
+          ':username': data.username ?? existingUser.username ?? userParam,
+          ':password': updatedPassword,
+          ':role': data.role ?? existingUser.role,
+          ':house': data.house ?? existingUser.house ?? '',
+          ':updatedAt': new Date().toISOString(),
+          ':points': currentPoints,        // ✅ agora usa currentPoints
+          ':tierPoints': currentTierPoints // ✅ tierPoints certo
         }
       })
     );
@@ -420,6 +434,7 @@ user.put('/:user', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro ao atualizar usuário!' });
   }
 });
+
 
 user.put('/promo/:user', async (req: Request, res: Response) => {
   const userParam = req.params.user;
@@ -464,9 +479,10 @@ user.put('/promo/:user', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro ao atualizar usuário!' });
   }
 });
-
 user.delete('/:user', async (req: Request, res: Response) => {
   const { user: userParam } = req.params;
+  const deletedBy = req.headers['x-user'] || 'sistema'; 
+  // 👆 Exemplo: pega do header (ou do token JWT)
 
   try {
     const result = await db.send(
@@ -476,7 +492,7 @@ user.delete('/:user', async (req: Request, res: Response) => {
       })
     );
 
-    if (!result.Item || result.Item.deletedAt) {
+    if (!result.Item || result.Item.isDeleted) {
       return res.status(404).json({ error: 'Usuário não encontrado!' });
     }
 
@@ -485,17 +501,20 @@ user.delete('/:user', async (req: Request, res: Response) => {
         TableName: 'dbLunar2',
         Item: {
           ...result.Item,
-          deletedAt: new Date().toISOString()
+          isDeleted: true,                        // flag de soft delete
+          deletedAt: new Date().toISOString(),    // quando foi deletado
+          deletedBy                               // quem deletou
         }
       })
     );
-
+ 
     res.json({ message: 'Usuário deletado (soft delete) com sucesso!' });
   } catch (err) {
     console.error('Erro ao deletar usuário:', err);
     res.status(500).json({ error: 'Erro ao deletar usuário!' });
   }
 });
+
 
 
 export default user;

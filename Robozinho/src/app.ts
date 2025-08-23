@@ -19,7 +19,7 @@ class App {
         this.app.use(cors({
             origin: '*', // REMOVA as barras finais "/"
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-            allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+            allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept', 'x-user'],
             credentials: true,
         }));
 

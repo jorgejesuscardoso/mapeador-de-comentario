@@ -169,3 +169,21 @@ export const updateUser = async (user: string, data: any) => {
     throw new Error(msg)
   }
 }
+
+export const deleteUser = async (user: string, adminUser: string) => {
+  try {
+    const controller = new AbortController()
+
+    const response = await axios(`${endPoint}/users/${user}`, {
+      method: "DELETE",
+      signal: controller.signal,
+      headers: {
+        "x-user": adminUser, // 👈 passa o nome/id do admin aqui
+      },
+    })
+
+    return response.data
+  } catch (err: any) {
+    throw err.response?.data?.message || "Erro inesperado"
+  }
+}
