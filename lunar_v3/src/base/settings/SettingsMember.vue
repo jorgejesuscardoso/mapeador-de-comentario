@@ -39,7 +39,8 @@ const props = defineProps<{
   data: {
     house: string,
     role: string,
-    points: number
+    points: number,
+    subs: string[]
   }
 }>()
 
@@ -56,6 +57,7 @@ watch(
 onMounted(async () => {
   data.value.house = props.data.house
   data.value.role = props.data.role
+  data.value.subs = props.data.subs || []
   
   try {
     const houses = await getHouses()
@@ -82,6 +84,7 @@ const updateMember = async () => {
   try {
     const response = await updateUser(props.User, payload)
     console.log("✅ Atualizado:", response)
+    toast.success("Usuário atualizado com sucesso!") 
     emit("save", response)
   } catch (err) {
     console.error("❌ Erro ao atualizar usuário:", err)
@@ -93,7 +96,7 @@ const confirmDelete = async () => {
   const parsedUser = getUserStore ? JSON.parse(getUserStore) : null
 
   if (!parsedUser) {
-    toast.error("❌ Usuário não autenticado!")
+    toast.error("Usuário não autenticado!")
     showDeleteConfirm.value = false
     return
   }
@@ -106,13 +109,14 @@ const confirmDelete = async () => {
   try {
     const response = await deleteUser(props.User, parsedUser.user) // chamada de API
 
-    toast.success("✅ Usuário excluído com sucesso!")
+    toast.success("Usuário excluído com sucesso!")
 
     console.log("🗑️ Usuário excluído:", response)
     emit("close")
     emit('deleted')
   } catch (err) {
     console.error("❌ Erro ao excluir usuário:", err)
+    toast.error("Erro ao excluir usuário.")
   }
 }
 </script>
@@ -125,7 +129,7 @@ const confirmDelete = async () => {
 >
   <!-- modal -->
   <div
-    class="relative bg-[rgba(0,0,0,0.85)] border border-purple-700 rounded-xl shadow-xl p-4 text-purple-200 w-full max-w-lg flex flex-col max-h-[90vh] "
+    class="relative bg-[rgba(0,0,0,0.85)] border border-purple-700 rounded-xl mt-20 shadow-xl p-4 text-purple-200 w-full max-w-lg flex flex-col max-h-[190vh] "
   >
       <!-- título + botão fechar -->
       <div class="flex justify-between items-center mb-2">

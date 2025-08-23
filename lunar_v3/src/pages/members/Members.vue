@@ -434,6 +434,27 @@ const reload = async () => {
                   0
                 </span>
               </div>
+
+              <!--Subs-->
+              <div class="flex w-full">
+                <span class="flex items-center gap-1 font-medium text-purple-300">
+                  <Lucide icon="Users" class="w-3 h-3" />
+                  Subs:
+                </span>
+                <span 
+                  v-if="member.subs && member.subs.length === 0 || !member.subs"
+                  class="font-medium text-violet-300 ml-2"
+                >
+                  Nenhum
+                </span>
+                <span 
+                  v-else
+                  v-for="sub in member.subs"
+                  class="font-medium text-violet-300 ml-2 after:content-[','] last:after:content-['.']"
+                >
+                  {{ sub }}
+                </span>
+              </div>
             </div>
 
             <!-- Link para o perfil -->
@@ -453,7 +474,8 @@ const reload = async () => {
             :data="{
               house: member.house?.name || '',
               role: member.role || 'member',
-              points: member.points || 0
+              points: member.points || 0,
+              subs: member.subs || []
             }"
             @close="ShowConfigMember = null"
             @save="saveSettings()"

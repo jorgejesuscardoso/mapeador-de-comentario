@@ -25,7 +25,7 @@ const userData = ref({
   numPublished: 0,
   userName: '',
   votesReceived: 0,
-  promo: []
+  promo: [],
 })
 
 const route = useRoute();
@@ -90,7 +90,7 @@ onMounted(async () => {
       perfilWtpd: data.deeplink,
       userName: data.username,
       votesReceived: data.votesReceived,
-      promo: data.promo
+      promo: data.promo,
     }
   }
 
@@ -198,9 +198,25 @@ onMounted(async () => {
                 class="flex items-start justify-center mt-4 w-full"
               >
 
-                <div>
+                <div
+                  class="flex flex-col items-center"
+                >
                   <h2 class="text-lg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
                   <p class="text-sm text-indigo-400 mb-2">@{{ userData.userName }}</p>
+                  <div
+                    class="flex flex-wrap flex-row w-full justify-center mb-2 gap-2"
+                  >                  
+                    <p                      
+                      class="text-sm font-semibold text-purple-400"
+                    >
+                      Subs:
+                    </p>
+                    <p 
+                      v-for="sub in tierData?.subs || []"
+                      class="text-sm text-fuchsia-300 after:content-[','] last:after:content-['.']">
+                      {{ sub }}
+                    </p>
+                  </div>
                   <p class="text-sm text-fuchsia-300 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
                   <a
                     :href="userData.perfilWtpd"

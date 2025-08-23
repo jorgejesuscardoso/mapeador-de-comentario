@@ -94,12 +94,13 @@ onMounted(async () => {
       perfilWtpd: data.deeplink,
       userName: data.username,
       votesReceived: data.votesReceived,
-      promo: data.promo
+      promo: data.promo,
     }
   }
 
   const tier = await getUserById(parsed.user)
   tierData.value = tier
+  console.log(tierData.value)
   isLoading.value = false
 })
 </script>
@@ -224,15 +225,31 @@ onMounted(async () => {
 
                 <div>
                   <h2 class="text-lg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
-                  <!-- Botão de editar perfil -->
+                 
                   <p class="text-sm text-indigo-400">@{{ userData.userName }}</p>
-                <button
-                  class="m-4 inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-md transition-all duration-300 group"
-                  @click="router.push('/profile/edit')"
-                >
-                  <Lucide icon="Edit" class="w-4 h-4 text-white group-hover:rotate-12 transition-transform duration-300" />
-                  Editar Perfil
-                </button>
+                  <div
+                    class="flex flex-wrap flex-row w-full justify-center my-3 gap-2"
+                  >
+                    <p                      
+                      class="text-sm font-semibold text-purple-400"
+                    >
+                      Subs:
+                    </p>
+                    <p 
+                      v-for="sub in tierData?.subs || []"
+                      class="text-sm text-fuchsia-400 after:content-[','] last:after:content-['.']">
+                      {{ sub }}
+                    </p>
+                  </div>
+                  
+                  <!-- Botão de editar perfil -->
+                  <button
+                    class="my-2 inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-md transition-all duration-300 group"
+                    @click="router.push('/profile/edit')"
+                  >
+                    <Lucide icon="Edit" class="w-4 h-4 text-white group-hover:rotate-12 transition-transform duration-300" />
+                    Editar Perfil
+                  </button>
                   <p class="text-sm text-violet-300 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
                   <a
                     :href="userData.perfilWtpd"
