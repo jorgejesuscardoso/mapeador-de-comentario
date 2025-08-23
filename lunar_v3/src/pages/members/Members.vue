@@ -298,7 +298,7 @@ const toggleShowConfigMember = () => {
             >              
               <Lucide
                 icon="Settings2"
-                class="w-8 h-8 object-contain rounded-full p-1.5 bg-white/10 shadow"
+                class="w-8 h-8 object-contain rounded-full p-1.5 bg-white/10 shadow cursor-pointer"
                 title="Configurações do membro"
                 @click="toggleConfig(member.user)"
               />
