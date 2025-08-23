@@ -449,7 +449,7 @@ const reload = async () => {
 
           <SettingsMember 
             v-if="ShowConfigMember === member.user"
-            class="fixed z-50 top-14"
+            class="fixed z-50 top-14 xl:top-10 overflow-auto py-20"
             :data="{
               house: member.house?.name || '',
               role: member.role || 'member',

@@ -405,7 +405,8 @@ user.put('/:user', async (req: Request, res: Response) => {
               #house = :house,
               #updatedAt = :updatedAt,
               #points = :points,
-              #tierPoints = :tierPoints
+              #tierPoints = :tierPoints,
+              #subs = :subs
         `,
         ExpressionAttributeNames: {
           '#username': 'username',
@@ -414,7 +415,8 @@ user.put('/:user', async (req: Request, res: Response) => {
           '#house': 'house',
           '#points': 'points',
           '#tierPoints': 'tierPoints',
-          '#updatedAt': 'updatedAt'
+          '#updatedAt': 'updatedAt',
+          '#subs': 'subs'
         },
         ExpressionAttributeValues: {
           ':username': data.username ?? existingUser.username ?? userParam,
@@ -423,7 +425,8 @@ user.put('/:user', async (req: Request, res: Response) => {
           ':house': data.house ?? existingUser.house ?? '',
           ':updatedAt': new Date().toISOString(),
           ':points': currentPoints,        // ✅ agora usa currentPoints
-          ':tierPoints': currentTierPoints // ✅ tierPoints certo
+          ':tierPoints': currentTierPoints, // ✅ tierPoints certo
+          ':subs': data.subs || existingUser.subs || []
         }
       })
     );
@@ -479,6 +482,7 @@ user.put('/promo/:user', async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Erro ao atualizar usuário!' });
   }
 });
+
 user.delete('/:user', async (req: Request, res: Response) => {
   const { user: userParam } = req.params;
   const deletedBy = req.headers['x-user'] || 'sistema'; 

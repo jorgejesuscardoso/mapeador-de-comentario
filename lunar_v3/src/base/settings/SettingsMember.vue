@@ -7,7 +7,7 @@ import { toast } from "../utils/toast"
 
 const data = ref({
   house: "",
-  role: "membro",
+  role: "",
   points: 0,
   plus: null,
   subs: [] as string[]
@@ -70,6 +70,7 @@ const updateMember = async () => {
   const payload = {
     house: data.value.house || null,
     role: data.value.role,
+    subs: data.value.subs
   }
 
   if(data.value.plus) {
@@ -118,13 +119,14 @@ const confirmDelete = async () => {
 
 <template>
   <!-- overlay -->
+ <!-- overlay -->
+<div
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[999] p-4"
+>
+  <!-- modal -->
   <div
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm rounded-lg flex items-center justify-center z-[999]"
+    class="relative bg-[rgba(0,0,0,0.85)] border border-purple-700 rounded-xl shadow-xl p-4 text-purple-200 w-full max-w-lg flex flex-col max-h-[90vh] "
   >
-    <!-- modal -->
-    <div
-      class="relative bg-[rgba(0,0,0,0.85)] border border-purple-700 rounded-xl p-6 max-w-lg shadow-xl text-purple-200 w-full"
-    >
       <!-- título + botão fechar -->
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-semibold text-violet-200">
