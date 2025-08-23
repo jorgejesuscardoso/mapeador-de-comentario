@@ -382,7 +382,7 @@ const handleDeleteClick = () => {
             v-model.number="data.points"
             type="number"
             min="0"
-            class="w-full rounded-lg border bg-black/40 text-purple-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
+            class="w-full rounded-lg border bg-black/40 text-purple-100 px-3 py-2 text-sm focus:outline-none focus:ring-0 focus:ring-purple-400"
             :class="{
               'border-red-500': data.plus === false,
               'border-green-500': data.plus === true,
