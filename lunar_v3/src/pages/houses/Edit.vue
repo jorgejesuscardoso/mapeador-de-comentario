@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { deleteHouse, updateHouse } from '@/API/HouseApi'
 import { toast } from '@/base/utils/toast'
@@ -41,30 +41,24 @@ const emit = defineEmits(['close', 'save'])
 const form = ref({
   name: props.house.name,
   points: props.house.points,
+  newpoints: 0,
   description: props.house.description,
   theme: props.house.theme,
   tags: [...props.house.tags],
   members: props.house.members
 })
 
-// proxy formatado
-const pointsFormatted = computed({
-  get() {
-    return form.value.points?.toLocaleString('pt-BR') || ''
-  },
-  set(value: string) {
-    // limpa tudo que não seja dígito
-    const numeric = value.replace(/\D/g, '')
-    form.value.points = numeric ? Number(numeric) : 0
+watch(() => props.house, (newHouse) => {
+  form.value = {
+    name: newHouse.name,
+    points: newHouse.points,
+    newpoints: 0,
+    description: newHouse.description,
+    theme: newHouse.theme,
+    tags: [...newHouse.tags],
+    members: newHouse.members
   }
-})
-
-// evita letras no input
-const blockNonNumeric = (e: KeyboardEvent) => {
-  if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete') {
-    e.preventDefault()
-  }
-}
+}, { immediate: true})
 
 // para adicionar tag nova
 const newTag = ref('')
@@ -82,7 +76,10 @@ const removeTag = (tag: string) => {
 const saveChanges = async () => {
   const payload = {
     description: form.value.description,
-    points: form.value.points,
+    points: {
+      operation: plus.value === null ? 'none' : (plus.value ? 'add' : 'subtract'),
+      value: form.value.newpoints
+    },
     theme: form.value.theme,
     tags: form.value.tags,
     members: form.value.members
@@ -97,7 +94,6 @@ const saveChanges = async () => {
     console.error(err)
   }
 }
-
 
 const toggleSwitch = () => {  
   if (!isSuperAdmin.value) {
@@ -126,8 +122,6 @@ const addMember = () => {
     newMember.value = ''
   }
 }
-
-
 
 const removeMember = (member: string) => {
   form.value.members = form.value.members.filter(m => m !== member)
@@ -233,7 +227,7 @@ onMounted(() => {
             <span
               class="text-xs text-gray-500 italic"
             >
-              (Atual: {{ form.points.toLocaleString('pt-br') }} pts)
+              (Atual: {{ form.points ? form.points.toLocaleString('pt-br') : 0 }} pts)
             </span>
           </span>
 
@@ -245,11 +239,10 @@ onMounted(() => {
           />
 
          <input
-            v-model="pointsFormatted"
-            type="text"
-            inputmode="numeric"
+            v-model="form.newpoints"
+            type="number"
             pattern="[0-9]*"
-            @keypress="blockNonNumeric":class="{
+            :class="{
               'border-red-500': plus === false,
               'border-green-500': plus === true,
               'border-gray-500 cursor-not-allowed': plus === null

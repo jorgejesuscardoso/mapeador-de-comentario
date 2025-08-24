@@ -152,10 +152,21 @@ house.put('/:id', async (req: Request, res: Response) => {
       })
     );
 
+    if(points.operation && points.operation !== 'none' && existingHouse.Item) {
+      let newPoints = existingHouse.Item.points || 0;
+      if(points.operation === 'add') {
+        newPoints += points.value;
+      } else if(points.operation === 'subtract') {
+        newPoints -= points.value;
+        if(newPoints < 0) newPoints = 0; // Evita pontos negativos
+      }
+      existingHouse.Item.points = newPoints;
+    }
+
     const updateData = {
       ...(existingHouse.Item || {}),
       ...(description !== undefined && { description }),
-      ...(points !== undefined && { points }),
+      ...(points !== undefined && { points: existingHouse?.Item?.points }),
       ...(theme !== undefined && { theme }),
       ...(tags !== undefined && { tags }),
       ...(members !== undefined && { members }),

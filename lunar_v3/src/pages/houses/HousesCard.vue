@@ -44,12 +44,15 @@ watch(houses, (val) => {
   console.log('🔍 Casas carregadas:')
 })
 
+const getHouse = async () => {  
+  const response = await getHouses()
+  houses.value = response
+}
+
 onMounted(async () => {
   try {
     isLoading.value = true
-    const response = await getHouses()
-    houses.value = response
-
+    await getHouse()
   } catch (e) {
     fetchError.value = true
     console.error('❌ Erro ao buscar casas:', e)
@@ -121,7 +124,7 @@ onMounted(async () => {
               {{ capitalize(house.name) }}
             </h2>
             <p class="text-violet-300 text-xs">
-              Nível {{ house.level }} • {{ house.points.toLocaleString('pt-br') }} pts
+              Nível {{ house.level }} • {{ house.points ? house.points.toLocaleString('pt-br') : 0 }} pts
             </p>
           </div>
 
@@ -211,6 +214,7 @@ onMounted(async () => {
       @close="showSettings = false"
       :house="houseBeingEdited"
       :show="showSettings"
+      @save="getHouse()"
     />
   </div>
 </template>
