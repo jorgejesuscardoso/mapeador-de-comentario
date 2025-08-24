@@ -4,6 +4,7 @@ import Lucide from "@/base/lucide/Lucide.vue"
 import { deleteUser, updateUser } from "@/API/UserApi"
 import { getHouses } from "@/API/HouseApi"
 import { toast } from "../utils/toast"
+import SwitchModule from "@/base/switch/switch_1.vue"
 
 const data = ref({
   house: "",
@@ -158,6 +159,7 @@ const confirmDelete = async () => {
     toast.error("Erro ao excluir usuário.")
   }
 }
+
 const toggleSwitch = () => {  
   if (!isSuperAdmin.value) {
     toast.error("Você não tem permissão para esta ação.")
@@ -315,59 +317,15 @@ const handleDeleteClick = () => {
           Área com acesso restrito
 
         </h3>
-        <div>
-          <label class="text-xs font-semibold inline-block text-purple-300 w-full text-start mb-4">
-            Adicionar ou Remover Pontos
-          </label>
-
-          <div class="flex flex-col items-start gap-3">
-            <!-- switch -->
-           <div
-              class="flex items-center gap-3"
-           >
-             <button
-                type="button"
-                class="relative inline-flex h-6 w-12 items-center rounded-full transition-colors duration-300 focus:outline-none"
-                :class="{
-                  'bg-green-500': data.plus === true,
-                  'bg-red-500': data.plus === false,
-                  'bg-gray-600': data.plus === null
-                }"
-                @click="toggleSwitch"
-              >
-                <span
-                  class="inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-300"
-                  :class="{
-                    'translate-x-7': data.plus === true,
-                    'translate-x-1': data.plus === false,
-                    'translate-x-3': data.plus === null
-                  }"
-                />
-              </button>
-
-              <!-- texto dinâmico -->
-              <span
-                class="text-sm font-medium"
-                :class="{
-                  'text-green-400': data.plus === true,
-                  'text-red-400': data.plus === false,
-                  'text-gray-400': data.plus === null
-                }"
-              >
-                {{ data.plus === true ? "Adicionar pontos" : data.plus === false ? "Remover pontos" : "Nenhum" }}
-              </span>
-           </div>
-
-            <!-- reset -->
-            <button
-              v-if="data.plus !== null"
-              @click="data.plus = null"
-              class="text-xs px-2 py-1 rounded bg-gray-700 hover:bg-gray-600 text-gray-300"
-            >
-              Resetar
-            </button>
-          </div>
-        </div>
+        
+        <SwitchModule
+          @click="toggleSwitch"
+          :disabled="!isSuperAdmin"
+          v-model="data.plus"
+          label="Adicionar ou Remover Pontos"
+          :texts="{ add: 'Adicionar pontos', remove: 'Remover pontos', none: 'Nenhum' }"
+          input-type="number"
+        />
 
 
         <!-- Pontos -->

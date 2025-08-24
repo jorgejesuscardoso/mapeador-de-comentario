@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, inject } from 'vue'
 import Loading from '@/base/loading/Loading.vue'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { getHouses } from '@/API/HouseApi'
 import { capitalize } from '@/base/helpers/capitalize'
 import { useRouter } from 'vue-router'
+import Edit from './Edit.vue'
 
 const router = useRouter()
+
 interface House {
   name: string
   description: string
@@ -17,13 +19,26 @@ interface House {
   rankingPosition: number
   level: number
   leader: string
+  subLeader: string
+  memberCount: number
+  members: string[]
   achievements: string[]
   tags: string[]
 }
 
+const isAdmin = inject('isAdmin')
+const showSettings = ref(false)
+const houseBeingEdited = ref<House | null>(null)
 const houses = ref<House[]>([])
 const isLoading = ref(true)
 const fetchError = ref(false)
+const currentUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).user : ''
+
+// Dado da casa para ser editado
+const houseToEdit = (h) => {
+  showSettings.value = true
+  houseBeingEdited.value = h
+}
 
 watch(houses, (val) => {
   console.log('🔍 Casas carregadas:')
@@ -34,6 +49,7 @@ onMounted(async () => {
     isLoading.value = true
     const response = await getHouses()
     houses.value = response
+
   } catch (e) {
     fetchError.value = true
     console.error('❌ Erro ao buscar casas:', e)
@@ -41,6 +57,7 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
+
 </script>
 
 <template>
@@ -70,7 +87,7 @@ onMounted(async () => {
       <div
         v-for="house in houses"
         :key="house.name"
-        class="bg-[rgba(0,0,0,0.8)] rounded-xl p-3 shadow-md hover:shadow-xl text-white flex flex-col relative"
+        class="bg-[rgba(0,0,0,0.8)] rounded-xl p-3 shadow-md hover:shadow-xl text-white flex flex-col relative pb-6"
       >
         <!-- Ranking -->
         <div 
@@ -107,6 +124,19 @@ onMounted(async () => {
               Nível {{ house.level }} • {{ house.points.toLocaleString('pt-br') }} pts
             </p>
           </div>
+
+          <!-- Configurações -->
+          <div
+            v-if="isAdmin || house.leader === currentUser || house.subLeader === currentUser" 
+            class="ml-auto mr-5 bg-purple-100/10 p-1 rounded-full flex items-center justify-center"
+            title="Configurações da casa"
+            @click="() => houseToEdit(house)"
+          >
+            <Lucide 
+              icon="Settings2" 
+              class="w-6 h-6 text-purple-400 hover:text-purple-200 cursor-pointer"
+            />
+          </div>
         </div>
 
         <!-- Líder -->
@@ -115,8 +145,25 @@ onMounted(async () => {
           Líder: <span class="ml-1 text-violet-300 font-medium">@{{ house.leader }}</span>
         </p>
 
+        <!-- Sub-Líder -->
+        <p class="mt-1 text-sm text-purple-300 flex items-center gap-1">
+          <Lucide icon="UserPlus" class="w-4 h-4" />
+          Sub-Líder: 
+          <span class="ml-1 text-violet-300 font-medium">
+            @{{ house.subLeader || 'Nenhum' }}
+          </span>
+        </p>
+        <!-- Membros -->
+        <p class="mt-1 text-sm text-purple-300 flex items-center gap-1">
+          <Lucide icon="Users" class="w-4 h-4" />
+          Membros: 
+          <span class="ml-1 text-violet-300 font-medium">
+            {{ house.members.length }}
+          </span>
+        </p>
+
         <!-- Tema -->
-        <p class="mt-2 text-sm italic text-gray-300">"{{ house.theme }}"</p>
+        <p class="mt-4 text-sm italic text-gray-300">"{{ house.theme }}"</p>
 
         <!-- Descrição -->
         <p
@@ -138,15 +185,32 @@ onMounted(async () => {
         </div>
 
         <!-- Conquistas -->
-        <div v-if="house.achievements?.length" class="mt-4">
+        <!-- <div v-if="house.achievements?.length" class="mt-4">
           <h4 class="text-purple-300 text-xs font-semibold mb-1">Conquistas:</h4>
           <ul class="list-disc list-inside text-sm text-violet-200">
             <li v-for="(achievement, i) in house.achievements" :key="i">
               {{ achievement }}
             </li>
           </ul>
-        </div>
+        </div> -->
+
+        <!--Membros-->
+        <div v-if="house.members?.length" class="mt-4">
+          <h4 class="text-purple-300 text-xs font-semibold mb-1">Membros:</h4>
+          <div class="grid grid-cols-2 mt-2 text-sm text-violet-200 max-h-24 overflow-y-auto">
+            <span v-for="(member, i) in house.members" :key="i" class="break-all text-xs">
+              @{{ member }}
+            </span>
+          </div>
+        </div>  
       </div>
     </div>
+
+    <Edit 
+      v-if="showSettings"
+      @close="showSettings = false"
+      :house="houseBeingEdited"
+      :show="showSettings"
+    />
   </div>
 </template>

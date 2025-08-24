@@ -330,7 +330,7 @@ const toggleShowConfigMember = () => {
 
             
             <!-- Casa -->
-            <div class="flex flex-col items-center absolute left-4 top-6 lg:left-3 ">
+            <!-- <div class="flex flex-col items-center absolute left-4 top-6 lg:left-3 ">
               <h3 class="text-[10px] mb-1 font-semibold text-purple-300 ">
                 {{ member?.house ? formatRankingPosition(member?.house?.rankingPosition) : 'N/A'}}
               </h3>
@@ -369,7 +369,7 @@ const toggleShowConfigMember = () => {
                   class="w-2.5 h-2.5 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
                   /> {{ member.house.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
               </p>
-            </div>
+            </div> -->
 
             <div class="grid grid-cols-2 text-start w-full text-sm lg:text-[11px] text-gray-700 mt-4 ml-2">
               <!-- Cargo -->

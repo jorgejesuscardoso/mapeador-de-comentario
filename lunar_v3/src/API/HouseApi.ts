@@ -4,29 +4,16 @@ import axios from 'axios'
 
 const endPoint = UrlBase.prod
 
-export type TRegister = {
-  user: string,
-  password: string,
-  name: string,
-  age: number
-}
 
-export const Register = async (data: TRegister) => {
+export const createHouse = async (data: any) => {
   try {
     const controller = new AbortController()
 
-    const response = await axios(`${endPoint}/users/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: JSON.stringify(data),
-      signal: controller.signal,
-    })
-    console.log(response)
+    const response = await axios.post(`${endPoint}/houses/`, data)
+
     return response.data
   } catch (err: any) {
-    throw err.response?.data?.message || 'Erro inesperado no login'
+    throw err.response?.data?.message || 'Erro inesperado'
   }
 }
 
@@ -42,14 +29,11 @@ export const getHouses = async () => {
   }
 }
 
-export const getUserById = async (id: string) => {
+export const getHouseById = async (id: string) => {
   try {
     const controller = new AbortController()
 
-    const response = await axios(`${endPoint}/users/${id}`, {
-      method: 'GET',
-      signal: controller.signal,
-    })
+    const response = await axios(`${endPoint}/houses/${id}`)
 
     return response.data
   } catch (err: any) {
@@ -57,52 +41,30 @@ export const getUserById = async (id: string) => {
   }
 }
 
-export const updateTierPoints = async (user: string, points: number, type: any) => {
+export const updateHouse = async (id: string, data: any) => {
   try {
     const controller = new AbortController()
-    const plusOrMinus = type === 'plus' ? "tierPointsPlus" : 'tierPointsMinus'
-    const data = {
-      [plusOrMinus]: points
-    }
-    const response = await axios(`${endPoint}/users/${user}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-      signal: controller.signal,
-    })
+
+    console.log(data)
+
+    const response = await axios.put(`${endPoint}/houses/${id}`, data)
 
     return response.data
-
   } catch (err: any) {
-    // Se o backend envia uma mensagem de erro, ela será capturada aqui
-    const msg = err?.response?.data?.error || 'Erro inesperado no login'
-    throw new Error(msg)
+    throw err.response?.data?.message || 'Erro inesperado'
   }
 }
 
-export const updatePromotionalTierPoints = async (user: string) => {
+export const deleteHouse = async (id: string) => {
   try {
     const controller = new AbortController()
-    const data = {
-      tierPointsPlus: 10,
-      promo: 'start'
-    }
-    const response = await axios(`${endPoint}/users/promo/${user}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-      signal: controller.signal,
-    })
+
+    const response = await axios.delete(`${endPoint}/houses/${id}`)
 
     return response.data
-
   } catch (err: any) {
-    // Se o backend envia uma mensagem de erro, ela será capturada aqui
-    const msg = err?.response?.data?.error || 'Erro inesperado no login'
-    throw new Error(msg)
+    throw err.response?.data?.message || 'Erro inesperado'
   }
 }
+
+

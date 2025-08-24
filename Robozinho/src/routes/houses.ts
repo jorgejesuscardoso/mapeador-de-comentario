@@ -48,60 +48,59 @@ function parsePhpArray(str: string) {
   return result;
 }
 
+house.post('/', async (req: Request, res: Response) => {
+  const { name, description, points, theme, tags } = req.body;
 
-
-house.post('/register', async (req: Request, res: Response) => {
-  const { house, password, name, age, role, subrole } = req.body;
-
-  if (!house || !password) {
-    return res.status(400).json({ error: 'Usuário ou senha ausente!' });
+  if (!name) {
+    return res.status(400).json({ error: 'O campo "name" é obrigatório' });
   }
 
   try {
-    // Verifica se já existe
+    // verifica se já existe
     const existing = await db.send(
       new GetCommand({
-        TableName: 'dbLunar2',
-        Key: { house }
+        TableName: 'house',
+        Key: { name }
       })
     );
 
-    if (existing.Item) {
-      return res.status(200).json({ error: 'Usuário já existe!' });
+    if (existing.Item && !existing.Item.deletedAt) {
+      return res.status(409).json({ error: 'Já existe uma casa com esse nome' });
     }
 
-    const hashedPassword = await generateHash(password);
+    const newHouse = {
+      name,
+      description: description || '',
+      points: points || 0,
+      theme: theme || '',
+      tags: tags || [],
+      createdAt: new Date().toISOString(),
+      isDeleted: false,
+      deletedAt: null,
+      deletedBy: null,
+    };
 
-    // ✅ Aqui está o segredo: usar `new PutCommand`
     await db.send(
       new PutCommand({
-        TableName: 'dbLunar2',
-        Item: {
-          house,
-          password: hashedPassword,
-          name,
-          age,
-          role,
-          subrole,
-          promo:[],
-          tierPoints: 0,
-          createdAt: new Date().toISOString(),
-        }
+        TableName: 'house',
+        Item: newHouse,
       })
     );
 
-    res.status(201).json({ message: 'Usuário criado com sucesso!' });
+    res.status(201).json({ message: 'Casa registrada com sucesso', house: newHouse });
   } catch (err) {
-    console.error('Erro no registro:', err);
-    res.status(500).json({ error: 'Erro ao registrar usuário!' });
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao registrar a casa' });
   }
 });
+
 
 house.get('/', async (req: Request, res: Response) => {
   try {
     const result = await db.send(
       new ScanCommand({
         TableName: 'house',
+        FilterExpression: 'attribute_not_exists(isDeleted)',
       })
     )
 
@@ -114,238 +113,108 @@ house.get('/', async (req: Request, res: Response) => {
   }
 });
 
-
-house.get('/wtpd/:id', async (req: Request, res: Response) => {
-  const { id: userParam } = req.params;
-  const url = `https://www.wattpad.com/api/v3/users/${userParam}`;
-
-  
+house.get('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  console.log("ID recebido:", id);
   try {
-    const response = await axios.get(url, {
-      headers: { Accept: 'text/plain' },
-      responseType: 'text',
-    });
+    const result = await db.send(
+      new GetCommand({
+        TableName: 'house',
+        Key: { name: id }
+      })
+    );
 
-    const parsed = parsePhpArray(response.data);
-
-    if (!parsed?.username) {
-      return res.status(201).json({ message: 'Usuário não encontrado no Wattpad' });
+    if (!result.Item) {
+      return res.status(404).json({ error: 'Casa não encontrada' });
     }
- 
-    const formatted = {
-      username: parsed.username,
-      avatar: parsed.avatar,
-      description: parsed.description,
-      gender: parsed.gender,
-      name: parsed.name,
-      createDate: parsed.createDate,
-      modifyDate: parsed.modifyDate,
-      numFollowers: parsed.numFollowers || 0,
-      numFollowing: parsed.numFollowing || 0,
-      numLists: parsed.numLists || 0,
-      numStoriesPublished: parsed.numStoriesPublished || 0,
-      votesReceived: parsed.votesReceived || 0,
-      deeplink: parsed.deeplink,
+
+    let houseData = result.Item;
+
+
+    res.status(200).json(houseData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao acessar o DynamoDB' });
+  }
+});
+
+// Rota para atualizar ou criar uma casa
+house.put('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { description, points, theme, tags, members } = req.body;
+
+  console.log(req.body);
+  try {
+    const existingHouse = await db.send(
+      new GetCommand({
+        TableName: 'house',
+        Key: { name: id }
+      })
+    );
+
+    const updateData = {
+      ...(existingHouse.Item || {}),
+      ...(description !== undefined && { description }),
+      ...(points !== undefined && { points }),
+      ...(theme !== undefined && { theme }),
+      ...(tags !== undefined && { tags }),
+      ...(members !== undefined && { members }),
     };
 
-    return res.json(formatted);
-  } catch (err) {
-    console.error('Erro ao buscar usuário:', err);
-    return res.status(500).json({ error: 'Erro ao buscar usuário!' });
-  }
-});
-
-house.get('/:id', async (req: Request, res: Response) => {
-  const { id: userParam } = req.params;
-  
-  try {
-    const result = await db.send(
-      new GetCommand({
-        TableName: 'dbLunar2',
-        Key: { house: userParam }
-      })
-    );
-
-    
-    if (!result.Item || result.Item.deletedAt) {
-      return res.status(404).json({ error: 'Usuário não encontrado' });
-    }
-
-    const tier = calculateUserTierByPoints(result.Item.tierPoints)
-
-    let houseData = {}
-
-    if (result.Item.house && result.Item.house.trim() !== '') {
-      try {
-        const houseResult = await db.send(
-          new GetCommand({
-            TableName: 'house',
-            Key: { name: result.Item.house }
-          })
-        )
-        houseData = houseResult.Item || ''
-      } catch (err) {
-        console.warn(`Erro ao buscar house "${result.Item.house}":`, err)
-      }
-    }
-
-    result.Item.house = houseData
-    const userData = { ...tier, ...result.Item}
-
-    res.json(userData);
-  } catch (err) {
-    console.error('Erro ao buscar usuário:', err);
-    res.status(500).json({ error: 'Erro ao buscar usuário!' });
-  }
-});
-
-house.put('/:house', async (req: Request, res: Response) => {
-  const userParam = req.params.house;
-  const { data } = req.body;
-  
-    
-  if (!data) {
-    return res.status(400).json({ error: 'Dados ausentes!' });
-  }
-
-  try {
-    const result = await db.send(
-      new GetCommand({
-        TableName: 'dbLunar2',
-        Key: { house: userParam }
-      })
-    );
-    
-    const existingUser = result.Item;
-    if (!existingUser || existingUser.deletedAt) {
-      return res.status(404).json({ error: 'Usuário não encontrado!' });
-    }
-
-    // Atualiza senha se houver
-    let updatedPassword = existingUser.password;
-    if (data.password) {
-      updatedPassword = await generateHash(data.password);
-    }
-    let currentTierPoints = result?.Item?.tierPoints 
-    if(data.tierPointsPlus){
-      currentTierPoints += data.tierPointsPlus
-    } else if (data.tierPointsMinus) {
-      if (data.tierPointsMinus > currentTierPoints) {
-        currentTierPoints = 0;
-      } else {
-        currentTierPoints -= data.tierPointsMinus;
-      }
-    }
-
-    let currentPoints = result?.Item?.points;
-    
-    if(data.pointsPlus){
-      currentPoints += data.pointsPlus
-    } else if (data.pointsMinus) {
-      if (data.pointsMinus > currentPoints) {
-        currentPoints = 0;
-      } else {
-        currentPoints -= data.pointsMinus;
-      }
-    }
-    
     await db.send(
       new PutCommand({
-        TableName: 'dbLunar2',
-        Item: {
-          ...existingUser, // mantém os campos que não foram modificados
-          ...data,
-          points: currentPoints,
-          password: updatedPassword,
-          role: data.role || existingUser.role,
-          tierPoints: currentTierPoints,
-          updatedAt: new Date().toISOString()
-        }
+        TableName: 'house',
+        Item: updateData
       })
     );
 
-    res.json({ message: 'Usuário atualizado com sucesso!' });
+    res.status(existingHouse.Item ? 200 : 201).json({
+      message: existingHouse.Item
+        ? 'Casa atualizada com sucesso'
+        : 'Casa criada com sucesso'
+    });
   } catch (err) {
-    console.error('Erro ao atualizar usuário:', err);
-    res.status(500).json({ error: 'Erro ao atualizar usuário!' });
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao acessar o DynamoDB' });
   }
 });
 
-house.put('/promo/:house', async (req: Request, res: Response) => {
-  const userParam = req.params.house;
-  const data = req.body;
-  
-  if (!data) {
-    return res.status(400).json({ error: 'Dados ausentes!' });
-  }
+// SOFT DELETE
+house.delete('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const adminUser = req.headers['x-admin-user'] as string || 'desconhecido';
 
   try {
     const result = await db.send(
       new GetCommand({
-        TableName: 'dbLunar2',
-        Key: { house: userParam }
+        TableName: 'house',
+        Key: { name: id }
       })
     );
 
-    const existingUser = result.Item;
-    if (!existingUser || existingUser.deletedAt) {
-      return res.status(404).json({ error: 'Usuário não encontrado!' });
+    if (!result.Item || result.Item.isDeleted) {
+      return res.status(404).json({ error: 'Casa não encontrada ou já deletada' });
     }
 
-    let currentTierPoints = (Number(result?.Item?.tierPoints) || 0) + (Number(data?.tierPointsPlus) || 0);
-
-    
+    const deletedHouse = {
+      ...result.Item,
+      isDeleted: true,
+      deletedAt: new Date().toISOString(),
+      deletedBy: adminUser,
+    };
 
     await db.send(
       new PutCommand({
-        TableName: 'dbLunar2',
-        Item: {
-          ...existingUser, // mantém os campos que não foram modificados
-          tierPoints: currentTierPoints,
-          updatedAt: new Date().toISOString(),
-          promo: [data.promo]
-        }
+        TableName: 'house',
+        Item: deletedHouse,
       })
     );
 
-    res.json({ message: 'Usuário atualizado com sucesso!' });
+    res.json({ message: 'Casa deletada (soft delete) com sucesso' });
   } catch (err) {
-    console.error('Erro ao atualizar usuário:', err);
-    res.status(500).json({ error: 'Erro ao atualizar usuário!' });
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao deletar a casa' });
   }
 });
-
-house.delete('/:house', async (req: Request, res: Response) => {
-  const { house: userParam } = req.params;
-
-  try {
-    const result = await db.send(
-      new GetCommand({
-        TableName: 'dbLunar2',
-        Key: { house: userParam }
-      })
-    );
-
-    if (!result.Item || result.Item.deletedAt) {
-      return res.status(404).json({ error: 'Usuário não encontrado!' });
-    }
-
-    await db.send(
-      new PutCommand({
-        TableName: 'dbLunar2',
-        Item: {
-          ...result.Item,
-          deletedAt: new Date().toISOString()
-        }
-      })
-    );
-
-    res.json({ message: 'Usuário deletado (soft delete) com sucesso!' });
-  } catch (err) {
-    console.error('Erro ao deletar usuário:', err);
-    res.status(500).json({ error: 'Erro ao deletar usuário!' });
-  }
-});
-
 
 export default house;

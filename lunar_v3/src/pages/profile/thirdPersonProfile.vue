@@ -163,7 +163,7 @@ onMounted(async () => {
 
 
               <!--House-->
-              <div
+              <!-- <div
                 v-if="tierData?.house?.thumb"
                 class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16"
               >
@@ -192,7 +192,7 @@ onMounted(async () => {
                     class="w-3 h-3 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
                     /> {{ tierData.house?.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
                 </p>
-              </div>
+              </div> -->
 
               <div
                 class="flex items-start justify-center mt-4 w-full"
