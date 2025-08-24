@@ -28,6 +28,10 @@ const selectOption = (option: string) => {
   search.value = ""
   isOpen.value = false
 }
+
+const closeDropdown = () => {
+  isOpen.value = false
+}
 </script>
 
 <template>
@@ -37,6 +41,7 @@ const selectOption = (option: string) => {
       v-model="search"
       :placeholder="placeholder || 'Pesquisar usuário...'"
       @focus="isOpen = true"
+      @blur="closeDropdown"
       class="w-full px-3 py-2 rounded bg-gray-800 border border-gray-700 
              focus:border-purple-500 outline-none"
     />
