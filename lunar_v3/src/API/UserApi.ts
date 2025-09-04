@@ -187,3 +187,26 @@ export const deleteUser = async (user: string, adminUser: string) => {
     throw err.response?.data?.message || "Erro inesperado"
   }
 }
+
+
+export const ResetPassword = async (user: string, code: string, newPassword: string) => {
+  try {
+    const controller = new AbortController()
+    const data = { user, code, newpassword: newPassword } // ⚡ nome do campo do backend
+    console.log(data)
+    const response = await axios(`${endPoint}/auth/reset`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+      signal: controller.signal,
+    })
+
+    return response.data
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado ao redefinir senha'
+    throw new Error(msg)
+  }
+}
+

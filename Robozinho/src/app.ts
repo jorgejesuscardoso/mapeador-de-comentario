@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import Routes from './routes';
 
+import path from 'path';
+
 dotenv.config();
 
 class App {
@@ -38,7 +40,16 @@ class App {
             next();
         });
 
+        const resp = {
+            launcher: "5.0.0.0",
+            otc: "1.0.0.0",
+            classic: "1.0.0.0"
+        }
         this.app.use(express.json());
+        this.app.use('/static', express.static(path.join(__dirname, '../public')));
+        this.app.get('/versions', (req, res) => {
+            res.json(resp);
+        });
     }
 
     // Configuração de rotas
