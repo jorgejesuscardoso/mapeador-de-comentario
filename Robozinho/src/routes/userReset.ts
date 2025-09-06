@@ -40,7 +40,7 @@ userReset.put('/reset', async (req: Request, res: Response) => {
     }
 
     // Valida código de confirmação
-    if (code !== 'resetedira123') {
+    if (code !== 'resete123') {
       return res.status(401).json({ error: 'Código inválido!' });
     }
 
