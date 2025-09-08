@@ -33,7 +33,7 @@ const submitReset = async () => {
 
     if(response.message === "Senha redefinida com sucesso!") {
       toast.success("Senha redefinida com sucesso!")
-      //router.push('/login')
+      router.push('/login')
     } else {
       toast.warning(response.message || "Erro ao redefinir senha!")
     }
