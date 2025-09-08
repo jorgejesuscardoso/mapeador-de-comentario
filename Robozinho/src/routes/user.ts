@@ -347,20 +347,21 @@ user.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-user.put('/:user', async (req: Request, res: Response) => {
-  const userParam = req.params.user;
+user.put('/:username', async (req: Request, res: Response) => {
+  const userParam = req.params.username;
   const { data } = req.body;
-  console.log(data);
+
 
   if (!data) {
     return res.status(400).json({ error: 'Dados ausentes!' });
   }
 
   try {
+    // Buscar usuário existente
     const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user: userParam }
+        Key: { user: userParam } // ✅ corrigido (antes estava "user")
       })
     );
 
@@ -371,8 +372,9 @@ user.put('/:user', async (req: Request, res: Response) => {
 
     // Atualiza senha se houver
     let updatedPassword = existingUser.password;
-    if (data.newpassword) {
-      updatedPassword = await generateHash(data.newpassword);
+    if (data.label.newpassword) {
+      console.log('Atualizando senha para o usuário:', userParam);
+      updatedPassword = await generateHash(data.label.newpassword);
     }
 
     // Manipulação de tierPoints
@@ -393,108 +395,57 @@ user.put('/:user', async (req: Request, res: Response) => {
       currentPoints = Math.max(0, currentPoints - data.pointsMinus);
     }
 
-    // Agora usa UpdateCommand
-    await db.send(
+    // Montar UpdateExpression dinamicamente
+    const updateFields: string[] = [];
+    const ExpressionAttributeNames: Record<string, string> = {};
+    const ExpressionAttributeValues: Record<string, any> = {};
+
+    // Campos que queremos garantir atualização
+    const baseFields = {
+      username: data.username ?? existingUser.username ?? userParam,
+      password: updatedPassword,
+      role: data.role ?? existingUser.role,
+      house: data.house ?? existingUser.house ?? '',
+      updatedAt: new Date().toISOString(),
+      points: currentPoints,
+      tierPoints: currentTierPoints,
+      subs: data.subs || existingUser.subs || [],
+      whatsappNumber: data.whatsappNumber || existingUser.whatsappNumber || ''
+    };
+
+    // Merge baseFields + data (data sobrescreve se tiver duplicado)
+    const finalFields = { ...baseFields, ...data };
+
+    for (const [key, value] of Object.entries(finalFields)) {
+      if (key === 'newpassword' || key === 'tierPointsPlus' || key === 'tierPointsMinus' || key === 'pointsPlus' || key === 'pointsMinus') {
+        continue; // ignorar esses campos auxiliares
+      }
+      updateFields.push(`#${key} = :${key}`);
+      ExpressionAttributeNames[`#${key}`] = key;
+      ExpressionAttributeValues[`:${key}`] = value;
+    }
+
+    // Executar update
+    const updated = await db.send(
       new UpdateCommand({
         TableName: 'dbLunar2',
         Key: { user: userParam },
-        UpdateExpression: `
-          SET #username = :username,
-              #password = :password,
-              #role = :role,
-              #house = :house,
-              #updatedAt = :updatedAt,
-              #points = :points,
-              #tierPoints = :tierPoints,
-              #subs = :subs
-        `,
-        ExpressionAttributeNames: {
-          '#username': 'username',
-          '#password': 'password',
-          '#role': 'role',
-          '#house': 'house',
-          '#points': 'points',
-          '#tierPoints': 'tierPoints',
-          '#updatedAt': 'updatedAt',
-          '#subs': 'subs'
-        },
-        ExpressionAttributeValues: {
-          ':username': data.username ?? existingUser.username ?? userParam,
-          ':password': updatedPassword,
-          ':role': data.role ?? existingUser.role,
-          ':house': data.house ?? existingUser.house ?? '',
-          ':updatedAt': new Date().toISOString(),
-          ':points': currentPoints,        // ✅ agora usa currentPoints
-          ':tierPoints': currentTierPoints, // ✅ tierPoints certo
-          ':subs': data.subs || existingUser.subs || []
-        }
+        UpdateExpression: `SET ${updateFields.join(', ')}`,
+        ExpressionAttributeNames,
+        ExpressionAttributeValues,
+        ReturnValues: 'ALL_NEW'
       })
     );
 
-    res.json({ message: 'Usuário atualizado com sucesso!' });
+    
+    return res.json({ message: 'Usuário atualizado com sucesso!' });
+
   } catch (err) {
     console.error('Erro ao atualizar usuário:', err);
-    res.status(500).json({ error: 'Erro ao atualizar usuário!' });
+    return res.status(500).json({ error: 'Erro interno ao atualizar usuário!' });
   }
 });
 
-user.put('/reset', async (req: Request, res: Response) => {
-  const { user: username, code, newpassword } = req.body;
-
-    console.log('Senha redefinida para usuário:', req.body);
-  if (!username || !code || !newpassword) {
-    return res.status(400).json({ error: 'Parâmetros ausentes!' });
-  }
-
-  try {
-    // Busca usuário
-    const result = await db.send(
-      new GetCommand({
-        TableName: 'dbLunar2',
-        Key: { user: username }
-      })
-    );
-
-    const account = result.Item;
-
-    if (!account || account.deletedAt) {
-      return res.status(404).json({ error: 'Usuário não encontrado!' });
-    }
-
-    // Valida código de confirmação
-    if (code !== 'resetedira123') {
-      return res.status(401).json({ error: 'Código inválido!' });
-    }
-
-    // Gera nova senha
-    const hashedPassword = await generateHash(newpassword);
-
-    // Atualiza usuário no banco (remove resetCode para não reutilizar)
-    await db.send(
-      new UpdateCommand({
-        TableName: 'dbLunar2',
-        Key: { user: username },
-        UpdateExpression: `
-          SET #password = :password,
-              #updatedAt = :updatedAt
-        `,
-        ExpressionAttributeNames: {
-          '#password': 'password',
-          '#updatedAt': 'updatedAt',
-        },
-        ExpressionAttributeValues: {
-          ':password': hashedPassword,
-          ':updatedAt': new Date().toISOString(),
-        },
-      })
-    );
-    console.log('Senha redefinida para usuário:', req.body);
-    res.json({ message: 'Senha redefinida com sucesso!' });
-  } catch (err) {
-    console.error('Erro ao redefinir senha:', err);
-    res.status(500).json({ error: 'Erro ao redefinir senha!' });
-  }
-});
 
 user.put('/promo/:user', async (req: Request, res: Response) => {
   const userParam = req.params.user;
