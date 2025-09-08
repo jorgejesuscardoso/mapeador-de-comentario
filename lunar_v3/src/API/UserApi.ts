@@ -188,12 +188,31 @@ export const deleteUser = async (user: string, adminUser: string) => {
   }
 }
 
+export const RequestPasswordReset = async (user: string) => {
+  try {
+    const controller = new AbortController()
+    const data = { user }
+    const response = await axios(`${endPoint}/auth/request`, {
+      method: 'POST',
+      headers: {  
+        'Content-Type': 'application/json',
+      },
+      data: data,
+      signal: controller.signal,
+    })
+    console.log(response)
+    return response
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado ao solicitar código'
+    throw new Error(msg)
+  }
+}
 
 export const ResetPassword = async (user: string, code: string, newPassword: string) => {
   try {
     const controller = new AbortController()
     const data = { user, code, newpassword: newPassword } // ⚡ nome do campo do backend
-    console.log(data)
+    
     const response = await axios(`${endPoint}/auth/reset`, {
       method: 'PUT',
       headers: {

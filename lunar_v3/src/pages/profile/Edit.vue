@@ -14,7 +14,7 @@ const router = useRouter()
 // Schema de validação
 const schema = yup.object({
   username: yup.string().nullable(),
-  phone: yup
+  whatsappNumber: yup
   .string()
   .nullable()
   .transform((value) => (value === '' ? null : value))
@@ -59,7 +59,7 @@ const { handleSubmit, errors } = useForm({
   validationSchema: schema,
   initialValues: {
     username: '',
-    phone: '',
+    whatsappNumber: '',
     newpassword: '',
     confirmPassword: '',
     selectedObraId: null,
@@ -75,7 +75,7 @@ const { handleSubmit, errors } = useForm({
 })
 
 const { value: username } = useField('username')
-const { value: phone } = useField('phone')
+const { value: whatsappNumber } = useField('whatsappNumber')
 const { value: newpassword } = useField('newpassword')
 const { value: confirmPassword } = useField('confirmPassword')
 const { value: selectedObraId } = useField<string>('selectedObraId')
@@ -95,6 +95,8 @@ const isSaving = ref(false)
 const isLoading = ref(true)
 const books = ref()
 const prevData = ref()
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 const submitForm = handleSubmit(async (values) => {
   const userStore = localStorage.getItem('user')
@@ -119,7 +121,7 @@ const submitForm = handleSubmit(async (values) => {
     values.userHasTrigger
 
   // Se nada foi preenchido, só envia se senha ou telefone foram alterados
-  if (!answeredOptional && !values.newpassword && !values.phone) {
+  if (!answeredOptional && !values.newpassword && !values.whatsappNumber) {
     toast.warning('Nenhuma alteração foi feita.')
     return
   }
@@ -127,10 +129,10 @@ const submitForm = handleSubmit(async (values) => {
   isSaving.value = true
 
   try {
-    const record = { username: values.username, label: values }
+    const record = { username: values.username, whatsappNumber: values.whatsappNumber, label: values }
     const response = await updateUser(parsed.user, record)
     toast.success('Dados alterados com sucesso!')
-    router.push('/profile')
+    //router.push('/profile')
     console.log('response', response)
   } catch (error) {
     console.error('Erro ao atualizar:', error)
@@ -152,7 +154,7 @@ onMounted(async () => {
 
     // Popular os campos
     username.value = data.username || ''
-    phone.value = data?.label?.phone || ''
+    whatsappNumber.value = data?.whatsappNumber || ''
     selectedObraId.value = data?.label?.selectedObraId || null
     isPoesia.value = !!data?.label?.isPoesia
     workHasLongPart.value = !!data?.label?.workHasLongPart
@@ -192,7 +194,7 @@ onMounted(async () => {
       <div v-if="isLoading" class="space-y-4">
         <div class="h-6 w-32 skeleton"></div> <!-- título -->
         <div class="h-10 w-full skeleton"></div> <!-- username -->
-        <div class="h-10 w-full skeleton"></div> <!-- phone -->
+        <div class="h-10 w-full skeleton"></div> <!-- whatsappNumber -->
         <div class="h-10 w-full skeleton"></div> <!-- newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- confirm newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- botão -->
@@ -200,7 +202,7 @@ onMounted(async () => {
         
         <div class="h-6 w-32 skeleton"></div> <!-- título -->
         <div class="h-10 w-full skeleton"></div> <!-- username -->
-        <div class="h-10 w-full skeleton"></div> <!-- phone -->
+        <div class="h-10 w-full skeleton"></div> <!-- whatsappNumber -->
         <div class="h-10 w-full skeleton"></div> <!-- newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- confirm newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- botão -->
@@ -208,7 +210,7 @@ onMounted(async () => {
         
         <div class="h-6 w-32 skeleton"></div> <!-- título -->
         <div class="h-10 w-full skeleton"></div> <!-- username -->
-        <div class="h-10 w-full skeleton"></div> <!-- phone -->
+        <div class="h-10 w-full skeleton"></div> <!-- whatsappNumber -->
         <div class="h-10 w-full skeleton"></div> <!-- newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- confirm newpassword -->
         <div class="h-10 w-full skeleton"></div> <!-- botão -->
@@ -241,39 +243,58 @@ onMounted(async () => {
 
         <!-- Username -->
         <div class="flex flex-col gap-1">
-          <label for="phone" class="text-sm text-purple-300">Telefone <strong class="text-xs">(Whatsapp)</strong></label>
+          <label for="whatsappNumber" class="text-sm text-purple-300">Telefone <strong class="text-xs">(Whatsapp)</strong></label>
           <input
-            v-model="phone"
+            v-model="whatsappNumber"
             v-mask="'(##) # ####-####'"
             type="text"
-            id="phone"
+            id="whatsappNumber"
             class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
             placeholder="(11) 9 1234-5678"
           />
-          <span class="text-xs text-red-400">{{ errors.phone }}</span>
+          <span class="text-xs text-red-400">{{ errors.whatsappNumber }}</span>
         </div>
 
         <!-- Senha -->
         <div class="flex flex-col gap-1">
           <label for="newpassword" class="text-sm text-purple-300">Nova Senha</label>
-          <input
-            v-model="newpassword"
-            type="newpassword"
-            id="newpassword"
-            class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
-          />
+          <div
+            class="relative flex items-center w-full"
+          >
+            <input
+              v-model="newpassword"
+              :type="showPassword ? 'text' : 'password'"
+              id="newpassword"
+              class="w-full bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600 relative"
+            />            
+            <Lucide
+              :icon="showPassword ? 'EyeOff' : 'Eye'"
+              class="w-5 h-5 absolute right-0 cursor-pointer mr-3 text-purple-400"
+              @click="showPassword = !showPassword"
+            />
+          </div>
+
           <span class="text-xs text-red-400">{{ errors.newpassword }}</span>
         </div>
 
         <!-- Confirme Senha -->
         <div class="flex flex-col gap-1">
           <label for="confirmPassword" class="text-sm text-purple-300">Confirme a Senha</label>
-          <input
-            v-model="confirmPassword"
-            type="newpassword"
-            id="confirmPassword"
-            class="bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
-          />
+          <div
+            class="relative flex items-center w-full"
+          >
+            <input
+              v-model="confirmPassword"
+              :type="showConfirmPassword ? 'text' : 'password'"
+              id="confirmPassword"
+              class="w-full bg-black/40 border border-purple-400 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-600"
+            />
+            <Lucide
+              :icon="showConfirmPassword ? 'EyeOff' : 'Eye'"
+              class="w-5 h-5 absolute right-0 cursor-pointer mr-3 text-purple-400"
+              @click="showConfirmPassword = !showConfirmPassword"
+            />
+          </div>
           <span class="text-xs text-red-400">{{ errors.confirmPassword }}</span>
         </div>
 

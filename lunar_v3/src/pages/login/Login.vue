@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import { Mail, Lock, User } from 'lucide-vue-next'
 import { Login, ResetPassword } from '@/API/UserApi' // ⚡ adicione ResetPassword
 import { useRouter } from 'vue-router'
+import ResetPasswordModal from './ResetPasswordModal.vue'
+import RequestPasswordReset from './RequestPasswordReset.vue'
 
 const router = useRouter()
 const user = ref('')
@@ -116,49 +118,9 @@ onMounted(() => {
     <!-- Modal: Reset de senha -->
     <div
       v-if="modalReset"
-      class="absolute inset-0 bg-[rgb(0,0,0,0.8)] flex items-center justify-center z-50 p-4"
+      class="absolute inset-0 bg-[rgb(0,0,0,0.8)] flex items-center justify-center z-50"
     >
-      <div class="bg-[rgb(0,0,0,0.9)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5 text-white">
-        <h3 class="text-2xl font-bold text-center text-fuchsia-400 mb-4">Redefinir Senha</h3>
-        
-        <input
-          v-model="resetCode"
-          type="text"
-          placeholder="Código de confirmação"
-          class="w-full pl-3 pr-3 py-2 bg-transparent border border-fuchsia-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-400 text-white"
-        />
-
-        <input
-          v-model="userToReset"
-          type="text"
-          placeholder="Usuário"
-          class="w-full pl-3 pr-3 py-2 bg-transparent border border-fuchsia-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-400 text-white"
-        />
-        
-        <input
-          v-model="newPassword"
-          type="password"
-          placeholder="Nova senha"
-          class="w-full pl-3 pr-3 py-2 bg-transparent border border-fuchsia-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-fuchsia-400 text-white"
-        />
-        
-        <div class="flex justify-between mt-4 gap-2">
-          <button
-            :disabled="loading"
-            class="flex-1 py-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white rounded-xl transition duration-200"
-            @click="submitReset"
-          >
-            {{ loading ? 'Processando...' : 'Confirmar' }}
-          </button>
-
-          <button
-            class="flex-1 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition duration-200"
-            @click="modalReset = false"
-          >
-            Cancelar
-          </button>
-        </div>
-      </div>
+      <RequestPasswordReset @close="modalReset = false" />
     </div>
 
   </div>
