@@ -37,10 +37,8 @@ const firstAndLastComments = ref<{
 
 const paragraphStats = ref({
   '1º início': 0,
-  '2º meio início': 0,
-  '3º meio': 0,
-  '4º meio fim': 0,
-  '5º fim': 0
+  '2º meio': 0,
+  '3º fim': 0
 })
 
 
@@ -89,24 +87,20 @@ watch([paragraphs, idRefsToParagraphs], () => {
   if (!paragraphs.value.length || !idRefsToParagraphs.value.length) return;
 
   const total = paragraphs.value.length;
-  const sliceSize = Math.floor(total / 5);
+  const sliceSize = Math.floor(total / 3); // agora dividido por 3
 
   const slices = [
-    paragraphs.value.slice(0, sliceSize),
-    paragraphs.value.slice(sliceSize, sliceSize * 2),
-    paragraphs.value.slice(sliceSize * 2, sliceSize * 3),
-    paragraphs.value.slice(sliceSize * 3, sliceSize * 4),
-    paragraphs.value.slice(sliceSize * 4)
+    paragraphs.value.slice(0, sliceSize), // 1ª parte
+    paragraphs.value.slice(sliceSize, sliceSize * 2), // 2ª parte
+    paragraphs.value.slice(sliceSize * 2) // 3ª parte pega o restante
   ];
 
-  const labels = ['1º início', '2º meio início', '3º meio', '4º meio fim', '5º fim'];
+  const labels = ['1º início', '2º meio', '3º fim'];
 
   const counters: any = {
     '1º início': 0,
-    '2º meio início': 0,
-    '3º meio': 0,
-    '4º meio fim': 0,
-    '5º fim': 0
+    '2º meio': 0,
+    '3º fim': 0
   };
 
   // Transforma os slices em conjuntos de IDs dos parágrafos
@@ -115,7 +109,7 @@ watch([paragraphs, idRefsToParagraphs], () => {
   );
 
   // Agora compara os ids dos comentários com os ids dos parágrafos de cada bloco
-  const splited = idRefsToParagraphs.value.map((s) => s.split('_',2)[1])
+  const splited = idRefsToParagraphs.value.map((s) => s.split('_', 2)[1]);
   splited.forEach((refId) => {
     sliceIdSets.forEach((idSet, index) => {
       if (idSet.has(refId)) {
@@ -127,12 +121,12 @@ watch([paragraphs, idRefsToParagraphs], () => {
   paragraphStats.value = counters;
 
   const inicio = counters['1º início'] > 0;
-  const meio = counters['3º meio'] > 0;
-  const fim = counters['5º fim'] > 0;
+  const meio = counters['2º meio'] > 0;
+  const fim = counters['3º fim'] > 0;
 
   goodDivision.value = inicio && meio && fim;
-
 });
+
 
 
 function formatDate(dataISO: string): string {
@@ -158,7 +152,7 @@ function formatDate(dataISO: string): string {
 }
 
 function estimateReadTime(length: number): string {
-    const avgWordLength = 5;
+    const avgWordLength = 5; // média de caracteres por palavra
   const wordsPerMinute = 250;
 
   const words = length / avgWordLength;
