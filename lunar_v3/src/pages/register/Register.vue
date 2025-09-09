@@ -84,7 +84,7 @@ onMounted(() =>{
 
       <form @submit.prevent="submit" class="space-y-4">
         <div class="relative">
-          <Mail class="absolute top-3.5 left-3 h-5 w-5 text-gray-400" />
+          <User class="absolute top-3.5 left-3 h-5 w-5 text-gray-400" />
           <input
             v-model="userWattpad"
             type="text"
