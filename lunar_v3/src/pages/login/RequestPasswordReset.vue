@@ -42,7 +42,7 @@ const requestCode = async () => {
     v-if="!nextStep"
     class="min-h-screen flex items-center justify-center bg-[rgb(0,0,0,0.7)]"
   >
-    <div
+    <form
       class="bg-[rgb(0,0,0,0.3)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5 text-white"
     >
       <h3 class="text-2xl font-bold text-center text-fuchsia-400 mb-4">
@@ -61,6 +61,7 @@ const requestCode = async () => {
       />
 
       <button
+        type="submit"
         :disabled="loading"
         class="w-full py-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white rounded-xl transition duration-200"
         @click="requestCode"
@@ -69,12 +70,13 @@ const requestCode = async () => {
       </button>
 
       <button
+        type="button"
         class="w-full py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-xl transition duration-200"
         @click="$emit('close')"
       >
         Voltar ao Login
       </button>
-    </div>
+    </form>
   </div>
   <ResetPasswordModal 
     v-else
