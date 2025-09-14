@@ -9,6 +9,7 @@ import { getRoleDisplay } from '@/base/helpers/roleDisplay';
 import { getTierInfo, getTierProgressLabel, rankingTiers } from '@/base/gamification/tier';
 import { capitalize } from '@/base/helpers/capitalize';
 import { formatRankingPosition } from '@/base/utils/houseRankingFormat';
+import WarningPassReset from '@/base/modals/warningPassReset.vue';
 
 const router = useRouter();
 const userData = ref({
@@ -35,6 +36,7 @@ const isLoadingLibrary = ref(false)
 const roleTag = ref() 
 const promosActived = ref([])
 const tierData = ref()
+const warningModal = ref(false)
 
 const showReward = ref(false)
 
@@ -73,10 +75,12 @@ onMounted(async () => {
   
   if(!parsed) return router.push('/login')
 
+  const tier = await getUserById(parsed.user)
+  const zap  = tier?.whatsappNumber
+
   const data = await getUserWtpd(parsed.user)
   userLogged.value = parsed
 
-  console.log(data)
   if(!data) return isLoading.value = false
 
   if(data){
@@ -98,14 +102,25 @@ onMounted(async () => {
     }
   }
 
-  const tier = await getUserById(parsed.user)
   tierData.value = tier
-  console.log(tierData.value)
   isLoading.value = false
+  const zapModalShowed = JSON.parse(localStorage.getItem('zapModal'))
+  if(!zap && !zapModalShowed) {
+    warningModal.value = true
+    const showModal = { show: true }
+    localStorage.setItem('zapModal', JSON.stringify(showModal))
+  }
 })
 </script>
 
 <template>
+  <div
+    v-if="warningModal"
+  >
+    <WarningPassReset
+      @close="warningModal = false"
+    />
+  </div>
   <div class="flex flex-col justify-center items-center w-full min-h-screen  px-1 lg:px-4 relative">
     <div
         class="top-0 lg:top-6 py-4 px-1 absolute z-10 left-0"

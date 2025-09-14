@@ -48,6 +48,10 @@ const requestCode = async () => {
       <h3 class="text-2xl font-bold text-center text-fuchsia-400 mb-4">
         Solicitar Código
       </h3>
+      <p class="text-sm text-center text-gray-300 mb-4">
+        ⚠️ Para recuperar sua senha, você precisa ter um número de WhatsApp cadastrado no seu perfil. 
+        Se não houver número registrado, não será possível enviar o código de confirmação.
+      </p>
 
       <div v-if="error" class="text-red-500 text-sm text-center">
         {{ error }}

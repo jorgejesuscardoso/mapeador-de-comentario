@@ -32,6 +32,7 @@ const scrollToTop = () => {
 const handleLogout = () => {
 	if(isLogged){
 		localStorage.removeItem('user')
+		localStorage.removeItem('zapModal')
 		window.location.reload()
 	} else {
 		return

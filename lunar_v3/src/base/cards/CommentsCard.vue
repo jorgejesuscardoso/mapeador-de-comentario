@@ -12,7 +12,7 @@ const title = route.query.title as string;
 const bookName = route.query.bookName as string;
 const length = route.query.length as string;
 
-const isAdm = ref(inject('in'))
+const isAdm = ref(inject('isAdmin'))
 const isLoading = ref(false)
 const data = ref<any[]>([]);
 const router = useRouter();
@@ -30,7 +30,7 @@ const times = ref({
 const firstAndLastComments = ref<{
   first: any | null,
   last: any | null
-}>({
+ }>({
   first: null,
   last: null
 });
@@ -176,6 +176,7 @@ function estimateReadTime(length: number): string {
 const handleGetComments = async () => {
   isLoading.value = true;
 
+  if(!wUser) return
   const comments = await getComments(wUser.trim(), id); // já filtra por user se quiser
   comments.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
   await getParagraphs();
@@ -271,6 +272,9 @@ watch([times, data],() => {
 }, {deep: true})
 
 onMounted(async () => {
+  if(!isAdm.value) {
+    router.push('/login')
+  }
   await handleGetComments()
 });
 
