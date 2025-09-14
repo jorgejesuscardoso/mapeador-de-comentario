@@ -104,11 +104,18 @@ onMounted(async () => {
 
   tierData.value = tier
   isLoading.value = false
-  const zapModalShowed = JSON.parse(localStorage.getItem('zapModal'))
-  if(!zap && !zapModalShowed) {
-    warningModal.value = true
-    const showModal = { show: true }
-    localStorage.setItem('zapModal', JSON.stringify(showModal))
+
+  const zapModalShowed = JSON.parse(localStorage.getItem('zapModal') || 'null')
+
+  if(!zap) {
+    const now = new Date().getTime()
+    
+    if(!zapModalShowed || (now - zapModalShowed.showIn) >= (60 * 1000)) {
+      // abre modal
+      warningModal.value = true
+      // salva hora atual
+      localStorage.setItem('zapModal', JSON.stringify({ showIn: now }))
+    }
   }
 })
 </script>
