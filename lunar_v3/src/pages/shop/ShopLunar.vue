@@ -89,13 +89,21 @@ function removeFromCart(id: string) {
 
 <template>
   <div class="min-h-screen bg-gradient-to-b from-purple-950/80 to-black/90 text-white p-6 mt-2 lg:mt-10">
-    <h1 class="text-3xl font-bold text-center mb-6">Lojinha Lunar</h1>
-
+    <h1 class="text-3xl font-bold text-center mb-6">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
 
     <div    
-      class="h-14 w-14 fixed top-0 right-5"
-    >      
-      <Lucide icon="ArrowLeft" class="w-6 h-6" />
+      class="flex items-center justify-center rounded-full h-10 w-10 fixed lg:top-12 lg:right-3 right-1 top-16 bg-purple-600 z-10"
+    >
+      <div
+        class="relative"
+      >
+        <span
+          class="flex text-xs items-center justify-center min-w-4 min-h-4 absolute -top-3 -right-1 bg-white rounded-full text-red-600"
+        >
+          {{ cart.length }}
+        </span>
+        <Lucide icon="ShoppingCart" class="w-6 h-6" />
+      </div>
     </div>
 
 
