@@ -110,7 +110,7 @@ onMounted(async () => {
   if(!zap) {
     const now = new Date().getTime()
     
-    if(!zapModalShowed || (now - zapModalShowed.showIn) >= (60 * 1000)) {
+    if(!zapModalShowed || (now - zapModalShowed.showIn) >= (10 * 60 * 1000)) {
       // abre modal
       warningModal.value = true
       // salva hora atual
@@ -127,6 +127,7 @@ onMounted(async () => {
     <WarningPassReset
       @close="warningModal = false"
     />
+    
   </div>
   <div class="flex flex-col justify-center items-center w-full min-h-screen  px-1 lg:px-4 relative">
     <div

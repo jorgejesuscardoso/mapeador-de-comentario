@@ -13,6 +13,7 @@ import Members from '@/pages/members/Members.vue';
 import ThirdPersonProfile from '@/pages/profile/thirdPersonProfile.vue';
 import TierList from '@/base/gamification/tierList.vue';
 import HousesCard from '@/pages/houses/HousesCard.vue';
+import ShopLunar from '@/pages/shop/ShopLunar.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -40,9 +41,9 @@ const routes: RouteRecordRaw[] = [
         component: ThirdPersonProfile,
       },
       { 
-        path: '/bot', 
-        name: 'bot',
-        component: Robot,
+        path: '/shop', 
+        name: 'shop',
+        component: ShopLunar,
       },
       { 
         path: '/work/:id', 

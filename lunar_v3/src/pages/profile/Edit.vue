@@ -133,7 +133,6 @@ const submitForm = handleSubmit(async (values) => {
     const response = await updateUser(parsed.user, record)
     toast.success('Dados alterados com sucesso!')
     //router.push('/profile')
-    console.log('response', response)
   } catch (error) {
     console.error('Erro ao atualizar:', error)
     toast.error('Ocorreu um erro ao salvar. Tente novamente.')
