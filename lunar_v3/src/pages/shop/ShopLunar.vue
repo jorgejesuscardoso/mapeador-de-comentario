@@ -10,6 +10,8 @@ interface Service {
   icon: string
 }
 
+const showCart = ref(false)
+
 const services = ref<Service[]>([
   {
     id: "lunar",
@@ -85,25 +87,46 @@ function addToCart(service: Service) {
 function removeFromCart(id: string) {
   cart.value = cart.value.filter(s => s.id !== id)
 }
+
+function toggleCart(service: Service) {
+  const exists = cart.value.some(s => s.id === service.id)
+
+  if (exists) {
+    removeFromCart(service.id)
+  } else {
+    addToCart(service)
+  }
+}
+
+function clearCart() {
+  cart.value = []
+}
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-purple-950/80 to-black/90 text-white p-6 mt-2 lg:mt-10">
+  <div class="min-h-screen bg-gradient-to-b from-purple-950/80 to-black/90 text-white p-6 mt-2 lg:mt-10 pb-16">
     <h1 class="text-3xl font-bold text-center mb-6">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
 
     <div    
-      class="flex items-center justify-center rounded-full h-10 w-10 fixed lg:top-12 lg:right-3 right-1 top-16 bg-purple-600 z-10"
+      class="relative cursor-pointer"
+      @click="showCart = !showCart"
     >
       <div
-        class="relative"
+        v-if="!showCart"
+        class="flex items-center justify-center rounded-full h-10 w-10 fixed lg:top-12 lg:right-3 right-1 top-16 bg-purple-600 z-10"
       >
         <span
-          class="flex text-xs items-center justify-center min-w-4 min-h-4 absolute -top-3 -right-1 bg-white rounded-full text-red-600"
+          class="flex text-xs items-center justify-center min-w-4 min-h-4 absolute top-0 -right-1 bg-white rounded-full text-red-600"
         >
           {{ cart.length }}
         </span>
         <Lucide icon="ShoppingCart" class="w-6 h-6" />
       </div>
+      <Lucide
+        v-if="showCart"        
+        icon="X" 
+        class="flex items-center justify-center rounded-full h-6 w-6 fixed lg:top-12 right-3 top-16 z-10"
+      />
     </div>
 
 
@@ -119,15 +142,18 @@ function removeFromCart(id: string) {
         <p class="text-purple-400 font-bold mb-3">PL {{ service.price }},00</p>
         <button
           class="bg-purple-600 hover:bg-purple-700 px-3 py-1 rounded-lg text-sm font-semibold"
-          @click="addToCart(service)"
+          @click="toggleCart(service)"
         >
-          Adicionar
+          {{ cart.some(s => s.id === service.id) ? 'Remover' : 'Adicionar' }}
         </button>
       </div>
     </div>
 
     <!-- Carrinho -->
-    <div v-if="cart.length" class="mt-10 bg-black/50 p-6 rounded-xl shadow-lg">
+    <div 
+      v-if="showCart"
+      class="mt-10 bg-black/90 p-6 rounded-xl shadow-lg fixed lg:top-0 lg:right-2 lg:w-10/12 w-full inset-0 lg:inset-auto lg:h-screen"
+    >
       <h2 class="text-xl font-bold mb-4">🛒 Carrinho</h2>
       <ul class="space-y-2">
         <li
@@ -148,5 +174,29 @@ function removeFromCart(id: string) {
         Finalizar Pedido
       </button>
     </div>
+
+    <!-- Rodapé fixo -->
+    <footer 
+      v-if="cart.length && !showCart"
+      class="fixed bottom-0 left-0 w-full bg-purple-950/90 text-white shadow-xl p-4 flex justify-between items-center z-20"
+    >
+      <div class="flex gap-2">
+        <button 
+          @click="clearCart"
+          class="p-2 rounded-lg font-bold text-xs text-red-700 bg-purple-300"
+        >
+          Limpar Carrinho
+        </button>        
+        <button 
+          @click="showCart = true"
+          class="p-2 rounded-lg font-bold text-xs text-green-700 bg-green-300"
+        >
+          Finalizar pedido
+        </button>
+      </div>
+      <span class="font-semibold">
+        Total: R$ {{ cart.reduce((sum, s) => sum + s.price, 0) }},00
+      </span>
+    </footer>
   </div>
 </template>
