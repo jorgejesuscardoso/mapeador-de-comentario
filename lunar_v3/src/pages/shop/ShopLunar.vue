@@ -113,7 +113,7 @@ function clearCart() {
     >
       <div
         v-if="!showCart"
-        class="flex items-center justify-center rounded-full h-10 w-10 fixed lg:top-12 lg:right-3 right-1 top-16 bg-purple-600 z-10"
+        class="flex items-center justify-center rounded-full h-10 w-10 fixed lg:top-12 lg:right-3 right-2 top-16 bg-purple-600 z-10"
       >
         <span
           class="flex text-xs items-center justify-center min-w-4 min-h-4 absolute top-0 right-0 bg-white rounded-full text-red-600"
