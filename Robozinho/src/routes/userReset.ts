@@ -114,7 +114,7 @@ userReset.post('/request', async (req: Request, res: Response) => {
       expiresAt: Date.now() + 15 * 60 * 1000 // Expira em 15 minutos
     }
     // chama api do bot do whatsapp para enviar o código
-    const fetch = await axios.post('https://f795836719c8.ngrok-free.app/sendCode', {
+    const fetch = await axios.post('https://4302e23559b6.ngrok-free.app/sendCode', {
       code: resetCode,
       expiresAt: Date.now() + 15 * 60 * 1000,
       whatsappNumber: whatsAppNumber
