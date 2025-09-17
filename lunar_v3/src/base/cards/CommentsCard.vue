@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { getComments, getParagraph } from '@/API/Api.v3';
-import { ref, onMounted, watch, inject } from 'vue';
+import { ref, onMounted, watch, inject, computed } from 'vue';
 import { useRouter, useRoute} from 'vue-router';
 import LoadCard from '../loading/LoadCard.vue';
 import Lucide from '../lucide/Lucide.vue';
 import { toast } from '../utils/toast';
 
 const route = useRoute();
-const id = route.query.id as string;
-const wUser = route.query.user as string;
-const title = route.query.title as string;
-const bookName = route.query.bookName as string;
-const length = route.query.length as string;
+const id = computed(() => route.query.id as string);
+const wUser = computed(() => route.query.user as string);
+const title = computed(() => route.query.title as string);
+const bookName = computed(() => route.query.bookName as string);
+const length = computed(() => route.query.length as string);
 const allCaps = ref([])
 
 const isAdm = ref(inject('isAdmin'))
@@ -54,7 +54,7 @@ const goNext = async () => {
   // pega a lista linear (se você guardou array dentro de array no localStorage, pode precisar de .flat())
   const capsList = allCaps.value.flat ? allCaps.value.flat() : allCaps.value  
 
-  const currentIndex = capsList.findIndex(c => c === id)
+  const currentIndex = capsList.findIndex(c => c.url === id.value)
   if (currentIndex === -1) return toast.warning('ID atual não encontrado no allCaps')
 
   const nextIndex = currentIndex + 1
@@ -64,15 +64,14 @@ const goNext = async () => {
   }
 
   const nextId = capsList[nextIndex]
-
   // Atualiza a URL com o próximo id
   router.push({
     query: { 
-      id: nextId, 
-      user: wUser, 
-      title, 
-      bookName, 
-      length: length 
+      id: nextId.url, 
+      user: wUser.value, 
+      title: nextId.title, 
+      bookName: bookName.value, 
+      length: length.value 
     }
   })
 
@@ -82,7 +81,7 @@ const goNext = async () => {
 }
 
 async function getParagraphs() {
-  const rawHtml = await getParagraph(id);
+  const rawHtml = await getParagraph(id.value);
 
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = rawHtml;
@@ -211,21 +210,31 @@ function estimateReadTime(length: number): string {
 const handleGetComments = async () => {
   isLoading.value = true;
 
-  if(!wUser) return
-  const comments = await getComments(wUser.trim(), id); // já filtra por user se quiser
-  
+  // 🔄 resetar antes de buscar
+  readingApproved.value = false
+  msgReadingPending.value = 'carregando...'
+  data.value = []
+  paragraphs.value = []
+  idRefsToParagraphs.value = []
+  firstAndLastComments.value = { first: null, last: null }
+  paragraphStats.value = { '1º início': 0, '2º meio': 0, '3º fim': 0 }
+  goodDivision.value = false
+  times.value = { est: 0, wast: 0 }
+
+  if (!wUser.value) {
+    isLoading.value = false
+    return
+  }
+
+  const comments = await getComments(wUser.value.trim(), id.value);
   comments.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
+  
   await getParagraphs();
-
-
   data.value = comments;
 
   if (comments.length > 0) {
     firstAndLastComments.value.first = comments[0];
     firstAndLastComments.value.last = comments[comments.length - 1];
-  } else {
-    firstAndLastComments.value.first = null;
-    firstAndLastComments.value.last = null;
   }
 
   window.scrollTo({ top: 0 });
@@ -280,6 +289,11 @@ watch(() => firstAndLastComments.value, (val) => {
   times.value.wast = totalSeconds;
 }, { deep: true });
 
+watch(id, async (newId) => {
+  if (newId) {
+    await handleGetComments()
+  }
+})
 
 watch([times, data],() => {
   const handleReadingApproved = () => {
@@ -456,7 +470,7 @@ onMounted(async () => {
               icon="ArrowLeft"
               class="w-4 h-4"
             />
-            Todos capítulos
+            Voltar
           </span>
           <span
             v-if="allCaps.length > 0"
