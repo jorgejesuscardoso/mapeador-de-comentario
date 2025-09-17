@@ -4,6 +4,7 @@ import { ref, onMounted, watch, inject } from 'vue';
 import { useRouter, useRoute} from 'vue-router';
 import LoadCard from '../loading/LoadCard.vue';
 import Lucide from '../lucide/Lucide.vue';
+import { toast } from '../utils/toast';
 
 const route = useRoute();
 const id = route.query.id as string;
@@ -11,6 +12,7 @@ const wUser = route.query.user as string;
 const title = route.query.title as string;
 const bookName = route.query.bookName as string;
 const length = route.query.length as string;
+const allCaps = ref([])
 
 const isAdm = ref(inject('isAdmin'))
 const isLoading = ref(false)
@@ -46,7 +48,36 @@ function goBack() {
   router.back();
 }
 
-const goNext = () => {
+const goNext = async () => {
+  if (!allCaps.value || allCaps.value.length === 0) return
+
+  // pega a lista linear (se você guardou array dentro de array no localStorage, pode precisar de .flat())
+  const capsList = allCaps.value.flat ? allCaps.value.flat() : allCaps.value  
+
+  const currentIndex = capsList.findIndex(c => c === id)
+  if (currentIndex === -1) return toast.warning('ID atual não encontrado no allCaps')
+
+  const nextIndex = currentIndex + 1
+  if (nextIndex >= capsList.length) {
+    console.log('Último capítulo, não há próximo.')
+    return
+  }
+
+  const nextId = capsList[nextIndex]
+
+  // Atualiza a URL com o próximo id
+  router.push({
+    query: { 
+      id: nextId, 
+      user: wUser, 
+      title, 
+      bookName, 
+      length: length 
+    }
+  })
+
+  // Atualiza variável reativa e busca comentários
+  await handleGetComments()
 
 }
 
@@ -182,7 +213,7 @@ const handleGetComments = async () => {
 
   if(!wUser) return
   const comments = await getComments(wUser.trim(), id); // já filtra por user se quiser
-  console.log(comments)
+  
   comments.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
   await getParagraphs();
 
@@ -277,7 +308,9 @@ watch([times, data],() => {
 }, {deep: true})
 
 onMounted(async () => {
+  const getAllCaps = JSON.parse(localStorage.getItem('capsNavigate'))
   await handleGetComments()
+  allCaps.value = getAllCaps
 });
 
 </script>
@@ -426,6 +459,7 @@ onMounted(async () => {
             Todos capítulos
           </span>
           <span
+            v-if="allCaps.length > 0"
             @click="goNext()"
             class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer gap-1"
           >

@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { getBookDetail } from '@/API/Api.v3';
 import LoadCard from '../../base/loading/LoadCard.vue';
 import Lucide from '@/base/lucide/Lucide.vue';
+import { toast } from '@/base/utils/toast';
 
 interface booksData {
   caps: capsData[];
@@ -74,8 +75,17 @@ function handleCapsId(cap: any) {
 }
 
 function handleSearchComments() {
-  if (!wUser.value) return alert('Informe o nome do usuário do Wattpad!');
-  router.push({ path: '/comments', query: { id: capsId.value, user: wUser.value, title: capToSearch.value, bookName: book.value.title, length: length.value } });
+  if (!wUser.value) return toast.warning('Informe o nome do usuário do Wattpad!');
+  router.push({ 
+    path: '/comments', 
+    query: { 
+      id: capsId.value, 
+      user: wUser.value, 
+      title: capToSearch.value, 
+      bookName: book.value.title, 
+      length: length.value 
+    }});
+    localStorage.setItem('capsNavigate', JSON.stringify(allCaps.value))
   showModal.value = false;
 }
 

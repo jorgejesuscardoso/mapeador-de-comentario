@@ -3,8 +3,6 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Layout from '@/base/layout/Layout.vue';
 import Home from '@/pages/home/Home.vue';
 import Robot from '@/pages/robot/Robot.vue';
-import WorkDetails from '@/pages/works/WorkDetails.vue';
-import CommentsCard from '@/base/cards/CommentsCard.vue';
 import Login from '@/pages/login/Login.vue';
 import Register from '@/pages/register/Register.vue';
 import Profile from '@/pages/profile/Profile.vue';
@@ -48,13 +46,15 @@ const routes: RouteRecordRaw[] = [
       { 
         path: '/work/:id', 
         name: 'workDetail',
-        component: WorkDetails,
+        component: () => import('@/pages/works/WorkDetails.vue'),
+        props: true
       },
 
       { 
         path: '/comments', 
         name: 'comments',
-        component: CommentsCard,
+        component: () => import('@/base/cards/CommentsCard.vue'),
+        props: true
       },  
       { 
         path: '/members', 
