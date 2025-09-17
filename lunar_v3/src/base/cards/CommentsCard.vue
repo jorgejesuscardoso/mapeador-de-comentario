@@ -46,6 +46,10 @@ function goBack() {
   router.back();
 }
 
+const goNext = () => {
+
+}
+
 async function getParagraphs() {
   const rawHtml = await getParagraph(id);
 
@@ -178,6 +182,7 @@ const handleGetComments = async () => {
 
   if(!wUser) return
   const comments = await getComments(wUser.trim(), id); // já filtra por user se quiser
+  console.log(comments)
   comments.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime());
   await getParagraphs();
 
@@ -272,9 +277,6 @@ watch([times, data],() => {
 }, {deep: true})
 
 onMounted(async () => {
-  if(!isAdm.value) {
-    router.push('/login')
-  }
   await handleGetComments()
 });
 
@@ -410,16 +412,30 @@ onMounted(async () => {
 
         </div>
 
-        <span
-          @click="goBack"
-          class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer"
-        >
-          <Lucide
-            icon="ArrowLeft"
-            class="w-4 h-4"
-          />
-          Voltar para todos capítulos
-        </span>
+       <div
+        class="flex align-center justify-between lg:pr-4"
+       >
+          <span
+            @click="goBack"
+            class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer gap-1"
+          >
+            <Lucide
+              icon="ArrowLeft"
+              class="w-4 h-4"
+            />
+            Todos capítulos
+          </span>
+          <span
+            @click="goNext()"
+            class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer gap-1"
+          >
+            Próximo capítulo
+            <Lucide
+              icon="ArrowRight"
+              class="w-4 h-4"
+            />
+          </span>
+       </div>
         <div
           class="w-full px-6 mt-6"
         >

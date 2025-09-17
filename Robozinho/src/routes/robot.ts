@@ -23,12 +23,21 @@ bot.post('/getComments', async (req: Request, res: Response) => {
 bot.get('/detail/:id', async (req, res) => {
   try {
     const { id } = req.params
-    
-
     const results = await FindBook(id);
+    
+    const normalizedCaps = results.caps.map(item => {
+      const match = item.url.match(/\/(\d+)-/);
+      return { 
+        ...item, 
+        url: match ? match[1] : item.url 
+      };
+    });
 
-    //console.log("############################################",results)
-    res.json(results);
+    const formatedData = {
+      ...results, caps: normalizedCaps
+    }
+
+    res.json(formatedData);
   } catch (error) {
     console.error('Erro geral ao buscar livros:', error);
     res.status(500).json({ error: 'Erro interno do servidor.' });

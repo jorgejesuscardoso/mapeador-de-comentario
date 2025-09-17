@@ -5,6 +5,7 @@ export const RobozinhoV3 = async (wUser: string, wId: string) => {
   async function Robot() {
     try {
       // Monta a URL base da API de comentários
+      console.log(wId)
       const baseUrl = `https://www.wattpad.com/v5/comments/namespaces/parts/resources/${wId}/comments`;
 
       let comentarios: any[] = [];

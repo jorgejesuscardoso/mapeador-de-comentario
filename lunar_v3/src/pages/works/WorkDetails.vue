@@ -6,7 +6,7 @@ import LoadCard from '../../base/loading/LoadCard.vue';
 import Lucide from '@/base/lucide/Lucide.vue';
 
 interface booksData {
-  caps: [];
+  caps: capsData[];
   comments: number;
   completed: boolean;
   cover: string;
@@ -45,11 +45,16 @@ const capToSearch = ref<any>('')
 const length = ref(0)
 const isAdm = ref(inject('isAdmin'))
 const modalRef = ref<HTMLElement | null>(null);
+const allCaps = ref([])
 
 onMounted(async () => {
   const id = route.params.id as string;
   isLoading.value = true;
   book.value = await getBookDetail(id);
+  if(book.value.caps.length > 0) {
+    const caps = book.value.caps.map(s => s.url)
+    allCaps.value.push(caps)
+  }
   isLoading.value = false;
   window.scrollTo({ top: 0, behavior: 'smooth' })
 });
@@ -63,10 +68,7 @@ const handleGetLength = (n: number) => {
 }
 
 function handleCapsId(cap: any) {
-  const getUrl = cap.url;
-  const splitId = getUrl.split('/')[3];
-  const getNumberId = splitId.split('-')[0];
-  capsId.value = getNumberId;
+  capsId.value = cap.url;
   showModal.value = true;
   capToSearch.value = cap.title
 }
