@@ -110,18 +110,18 @@ function finalizeOrder() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-purple-950/80 to-black/90 text-white p-6 mt-2 lg:mt-10 pb-16">
-    <h1 class="text-3xl font-bold mb-6">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
+  <div class="lg:w-11/12 bg-gradient-to-b rounded-lg from-purple-950/80 to-black/90 text-white lg:px-6 px-3 pt-3 mt-2 lg:mt-11">
+    <h1 class="text-3xl font-bold mb-3">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
 
     <!-- Toggle de moeda -->
-    <div class="flex flex-col justify-center gap-4 mb-6 px-1">
+    <div class="flex flex-col justify-center gap-2 mb-3 px-1">
       <p
         class="text-sm text-gray-300"
       >
         Escolha como deseja pagar.
       </p>
       <div
-        class="flex w-full justify-between items-center"
+        class="flex w-full justify-between lg:justify-start lg:gap-4 items-center text-sm"
       >
         <button
           @click="selectedCurrency = 'pl'"
@@ -140,39 +140,47 @@ function finalizeOrder() {
 
     <!-- Serviços -->
     <div
-      v-for="service in services"
-      :key="service.id"
-      class="bg-black/40 p-4 rounded-xl shadow-lg border border-purple-600 hover:scale-[1.02] transition relative flex flex-col justify-between gap-1 mb-2"
+      class="lg:grid xl:grid-cols-4 lg:grid-cols-3 lg:gap-x-2 max-h-[71vh] 2xl:max-h-[77vh] overflow-y-auto overflow-x-hidden pb-20"
     >
-      <Lucide
-        :icon="service.icon"
-        class="absolute top-2 right-2"
-      />
-      <div>
-        <h2 class="text-lg font-semibold mb-1">{{ service.name }}</h2>
-        <p class="text-sm text-gray-300 mb-3">{{ service.description }}</p>
+      <div
+        v-for="service in services"
+        :key="service.id"
+        class="bg-black/40 lg:p-4 p-3 rounded-xl shadow-lg border border-purple-600 hover:scale-[1.02] transition relative flex flex-col justify-between lg:gap-1 gap-2 mb-2"
+      >
+        <Lucide
+          :icon="service.icon"
+          class="absolute top-2 right-2"
+        />
+        <div
+          class="flex flex-col justify-between items-start h-full mb-3"
+        >
+          <div>
+            <h2 class="text-lg font-semibold lg:mb-1 mb-2">{{ service.name }}</h2>
+            <p class="text-sm text-gray-300 lg:mb-2">{{ service.description }}</p>
+          </div>
 
-        <!-- preços -->
-        <div class="mb-3">
-          <p class="text-purple-400 font-bold">{{ productPrice(service) }}</p>
-          <p class="text-xs text-gray-400">
-            ou {{ selectedCurrency === 'pl' ? formatBRL(service.price.rl) : formatPL(service.price.pl) }}
+          <!-- observações -->
+          <p v-if="service.obs" class="text-xs text-gray-400 italic mb-3">
+            {{ service.obs }}
           </p>
+
+          <!-- preços -->
+          <div class="lg:mb-1 mb-3">
+            <p class="text-purple-400 font-bold">{{ productPrice(service) }}</p>
+            <p class="text-xs text-gray-400">
+              ou {{ selectedCurrency === 'pl' ? formatBRL(service.price.rl) : formatPL(service.price.pl) }}
+            </p>
+          </div>
         </div>
 
-        <!-- observações -->
-        <p v-if="service.obs" class="text-xs text-gray-400 italic mb-3">
-          {{ service.obs }}
-        </p>
+        <!-- botão sempre no fim -->
+        <button
+          class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg text-sm font-semibold mt-auto"
+          @click="toggleCart(service)"
+        >
+          {{ cart.some(s => s.service.id === service.id) ? 'Remover do carrinho' : 'Adicionar ao carrinho' }}
+        </button>
       </div>
-
-      <!-- botão sempre no fim -->
-      <button
-        class="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-lg text-sm font-semibold mt-auto"
-        @click="toggleCart(service)"
-      >
-        {{ cart.some(s => s.service.id === service.id) ? 'Remover do carrinho' : 'Adicionar ao carrinho' }}
-      </button>
     </div>
 
     <!-- Carrinho -->
@@ -220,7 +228,7 @@ function finalizeOrder() {
     <!-- Rodapé fixo -->
     <footer 
       v-if="cart.length && !showCart"
-      class="fixed bottom-0 left-0 w-full bg-purple-900 text-white shadow-xl p-4 flex justify-between items-center z-20"
+      class="fixed lg:bottom-2 left-0 -bottom-1 lg:left-1/2 lg:-translate-x-1/3 bg-purple-900 text-white shadow-xl lg:rounded-lg p-4 flex justify-between items-center z-20 lg:w-1/2 w-full"
     >
       <div class="flex gap-2">
         <button 

@@ -12,6 +12,7 @@ const wUser = computed(() => route.query.user as string);
 const title = computed(() => route.query.title as string);
 const bookName = computed(() => route.query.bookName as string);
 const length = computed(() => route.query.length as string);
+const bookId = ref();
 const allCaps = ref([])
 
 const isAdm = ref(inject('isAdmin'))
@@ -45,25 +46,30 @@ const paragraphStats = ref({
 
 
 function goBack() {
-  router.back();
+  router.push(`/work/${bookId.value}`);
 }
 
 const goNext = async () => {
   if (!allCaps.value || allCaps.value.length === 0) return
 
-  // pega a lista linear (se você guardou array dentro de array no localStorage, pode precisar de .flat())
   const capsList = allCaps.value.flat ? allCaps.value.flat() : allCaps.value  
-
   const currentIndex = capsList.findIndex(c => c.url === id.value)
   if (currentIndex === -1) return toast.warning('ID atual não encontrado no allCaps')
 
   const nextIndex = currentIndex + 1
   if (nextIndex >= capsList.length) {
-    console.log('Último capítulo, não há próximo.')
+    toast.warning('Este é o último capítulo, não há próximo.')
     return
   }
 
   const nextId = capsList[nextIndex]
+
+  // 🔄 resetar ANTES de trocar a rota
+  firstAndLastComments.value = { first: null, last: null }
+  times.value.wast = 0
+  msgReadingPending.value = ''
+  readingApproved.value = false
+
   // Atualiza a URL com o próximo id
   router.push({
     query: { 
@@ -74,10 +80,39 @@ const goNext = async () => {
       length: length.value 
     }
   })
+}
 
-  // Atualiza variável reativa e busca comentários
-  await handleGetComments()
+const goPrev = async () => {
+  if (!allCaps.value || allCaps.value.length === 0) return
 
+  const capsList = allCaps.value.flat ? allCaps.value.flat() : allCaps.value  
+  const currentIndex = capsList.findIndex(c => c.url === id.value)
+  if (currentIndex === -1) return toast.warning('ID atual não encontrado no allCaps')
+
+  const prevIndex = currentIndex - 1
+  if (prevIndex < 0) {
+    toast.warning('Este é o primeiro capítulo, não há anterior.')
+    return
+  }
+
+  const nextId = capsList[prevIndex]
+
+  // 🔄 resetar ANTES de trocar a rota
+  firstAndLastComments.value = { first: null, last: null }
+  times.value.wast = 0
+  msgReadingPending.value = ''
+  readingApproved.value = false
+
+  // Atualiza a URL com o próximo id
+  router.push({
+    query: { 
+      id: nextId.url, 
+      user: wUser.value, 
+      title: nextId.title, 
+      bookName: bookName.value, 
+      length: length.value 
+    }
+  })
 }
 
 async function getParagraphs() {
@@ -291,6 +326,10 @@ watch(() => firstAndLastComments.value, (val) => {
 
 watch(id, async (newId) => {
   if (newId) {
+    firstAndLastComments.value = { first: null, last: null }
+    times.value.wast = 0
+    msgReadingPending.value = ''
+    readingApproved.value = false
     await handleGetComments()
   }
 })
@@ -325,6 +364,7 @@ onMounted(async () => {
   const getAllCaps = JSON.parse(localStorage.getItem('capsNavigate'))
   await handleGetComments()
   allCaps.value = getAllCaps
+  bookId.value = route.query.bookId
 });
 
 </script>
@@ -338,8 +378,17 @@ onMounted(async () => {
       class="w-full"
     >
       <div
-        class="flex flex-col bg-white sm:mx-4 my-1 py-4 px-2 rounded-xl shadow-lg"
+        class="flex flex-col bg-white sm:mx-4 my-1 py-4 px-2 rounded-xl shadow-lg relative"
       > 
+      <div
+        class="cursor-pointer"
+        @click="goBack"
+      >
+        <Lucide
+          icon="CornerUpLeft"
+          class="absolute right-6 top-4 text-pink-500"
+        />
+      </div>
         <div
           class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-0 w-full"
         >
@@ -348,7 +397,6 @@ onMounted(async () => {
             class="px-4"
           >
             <h3 class="font-semibold text-violet-800 text-sm">Detalhes do capítulo</h3>
-          
             <div
               class="flex flex-col items-start gap-1.5 mt-2"
             >
@@ -463,14 +511,14 @@ onMounted(async () => {
         class="flex align-center justify-between lg:pr-4"
        >
           <span
-            @click="goBack"
+            @click="goPrev"
             class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer gap-1"
           >
             <Lucide
               icon="ArrowLeft"
               class="w-4 h-4"
             />
-            Voltar
+            Anterior
           </span>
           <span
             v-if="allCaps.length > 0"

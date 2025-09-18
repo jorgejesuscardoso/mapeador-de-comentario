@@ -362,7 +362,7 @@ onMounted(async () => {
           <!-- Vai ler hot? -->
           <Switch
             v-model="userReadHot"
-            label="Você ler hot? "
+            label="Você lê hot? "
           />
 
           <!-- Tem gatilhos? -->

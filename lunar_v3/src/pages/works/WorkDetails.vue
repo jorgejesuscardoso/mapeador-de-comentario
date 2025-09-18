@@ -47,10 +47,12 @@ const length = ref(0)
 const isAdm = ref(inject('isAdmin'))
 const modalRef = ref<HTMLElement | null>(null);
 const allCaps = ref([])
+const bookId = ref('')
 
 onMounted(async () => {
   const id = route.params.id as string;
   isLoading.value = true;
+  bookId.value = id
   book.value = await getBookDetail(id);
   if(book.value.caps.length > 0) {
     const caps = book.value.caps.map(s => {
@@ -85,7 +87,8 @@ function handleSearchComments() {
       user: wUser.value, 
       title: capToSearch.value, 
       bookName: book.value.title, 
-      length: length.value 
+      length: length.value,
+      bookId: bookId.value
     }});
     localStorage.setItem('capsNavigate', JSON.stringify(allCaps.value))
   showModal.value = false;
