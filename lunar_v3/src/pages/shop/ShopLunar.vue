@@ -142,7 +142,7 @@ function finalizeOrder() {
     <div
       v-for="service in services"
       :key="service.id"
-      class="bg-black/40 p-4 rounded-xl shadow-lg border border-purple-600 hover:scale-[1.02] transition relative flex flex-col justify-between"
+      class="bg-black/40 p-4 rounded-xl shadow-lg border border-purple-600 hover:scale-[1.02] transition relative flex flex-col justify-between gap-1 mb-2"
     >
       <Lucide
         :icon="service.icon"
