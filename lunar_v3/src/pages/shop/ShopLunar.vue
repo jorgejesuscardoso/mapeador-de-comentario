@@ -111,7 +111,7 @@ function finalizeOrder() {
 
 <template>
   <div class="min-h-screen bg-gradient-to-b from-purple-950/80 to-black/90 text-white p-6 mt-2 lg:mt-10 pb-16">
-    <h1 class="text-3xl font-bold text-center mb-6">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
+    <h1 class="text-3xl font-bold mb-6">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
 
     <!-- Toggle de moeda -->
     <div class="flex flex-col justify-center gap-4 mb-6">
