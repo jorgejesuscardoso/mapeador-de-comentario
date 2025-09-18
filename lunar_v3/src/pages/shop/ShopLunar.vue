@@ -220,25 +220,28 @@ function finalizeOrder() {
     <!-- Rodapé fixo -->
     <footer 
       v-if="cart.length && !showCart"
-      class="fixed bottom-0 left-0 w-full bg-purple-950/90 text-white shadow-xl p-4 flex justify-between items-center z-20"
+      class="fixed bottom-0 left-0 w-full bg-purple-900 text-white shadow-xl p-4 flex justify-between items-center z-20"
     >
       <div class="flex gap-2">
         <button 
           @click="clearCart"
-          class="p-2 rounded-lg font-bold text-xs text-red-700 bg-purple-300"
+          class="px-3 py-2 rounded-lg font-bold text-xs bg-red-600 hover:bg-red-700 text-white"
         >
           Limpar Carrinho
         </button>        
         <button 
           @click="showCart = true"
-          class="p-2 rounded-lg font-bold text-xs text-green-700 bg-green-300"
+          class="px-3 py-2 rounded-lg font-bold text-xs bg-green-600 hover:bg-green-700 text-white"
         >
           Finalizar pedido
         </button>
       </div>
+
       <span class="text-sm font-semibold flex">
-        Total: <p class="ml-2 font-bold">{{ cartTotalFormatted }}</p>
+        Total: 
+        <p class="ml-2 font-bold text-purple-300">{{ cartTotalFormatted }}</p>
       </span>
     </footer>
+
   </div>
 </template>
