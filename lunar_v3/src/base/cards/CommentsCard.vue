@@ -380,7 +380,7 @@ onMounted(async () => {
       <div
         class="flex flex-col bg-white sm:mx-4 my-1 py-4 px-2 rounded-xl shadow-lg relative"
       > 
-      <div
+      <!-- <div
         class="cursor-pointer"
         @click="goBack"
       >
@@ -388,7 +388,7 @@ onMounted(async () => {
           icon="CornerUpLeft"
           class="absolute right-6 top-4 text-pink-500"
         />
-      </div>
+      </div> -->
         <div
           class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-0 w-full"
         >
@@ -520,8 +520,17 @@ onMounted(async () => {
             />
             Anterior
           </span>
+          
+          <div
+            class="cursor-pointer"
+            @click="goBack"
+          >
+            <Lucide
+              icon="Text"
+              class="absolute right-1/2 bottom-14 text-pink-500"
+            />
+          </div>
           <span
-            v-if="allCaps.length > 0"
             @click="goNext()"
             class="flex items-center justify-start ml-4 mt-6 text-xs text-pink-600 cursor-pointer gap-1"
           >
