@@ -94,7 +94,7 @@ onMounted(() => {
           <Lock class="absolute top-3.5 left-3 h-5 w-5 text-gray-400" />
           <input v-model="password" :type=" showPass ? 'password' : 'text'" placeholder="Senha" class="w-full pl-10 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
           <Lucide
-            :icon="showPass ? 'Eye' : 'EyeClosed'"
+            :icon="!showPass ? 'Eye' : 'EyeClosed'"
             class="absolute top-1/2 -translate-y-1/2 right-2"
             @click="showPass = !showPass"
           />
