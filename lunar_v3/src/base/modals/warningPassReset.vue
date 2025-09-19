@@ -30,10 +30,10 @@ const emit = defineEmits(["close"])
 
       <!-- Mensagem -->
       <p class="text-sm text-center text-gray-300 mb-5 leading-relaxed">
-        Caso você esqueça sua senha e precise recuperá-la, é necessário ter um número de 
+        Caso você esqueça sua senha e precise recuperá-la ou queira comprar algo na lojinha lunar, será necessário que você tenha um número de 
         <span class="text-green-400 font-semibold">WhatsApp</span> cadastrado no seu perfil. 
         <br /><br />
-        Sem esse número, não será possível enviar o código de confirmação. 
+        Sem esse número, não será possível enviar o pedido de compra nem o código de confirmação para resete de senha. 
         <span class="text-gray-400 block mt-2">🔒 Seu número é privado e visível apenas para você.</span>
       </p>
 

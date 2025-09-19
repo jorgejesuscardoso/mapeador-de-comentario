@@ -167,8 +167,9 @@ onMounted(async () => {
               <p class="text-white text-[10px] text-center">+10 pontos</p>
             </div>
 
+            <!-- Minhas compras -->
             <div
-              class="flex items-center justify-center flex-col absolute top-28 left-3 z-50 w-20"
+              class="flex items-center justify-center flex-col absolute top-28 left-3 w-20"
             >
               <button
                 class="w-9 h-9 rounded-full shadow-xl flex items-center justify-center cursor-pointer"
