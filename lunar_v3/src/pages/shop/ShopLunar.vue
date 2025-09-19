@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router'
 
 const route = useRouter()
 const isAdmin = inject<boolean>('isAdmin')
+const isLogged = ref(false)
 
 interface Service {
   id: string
@@ -98,11 +99,16 @@ function productPrice(service: Service) {
 
 // checkout simple validation
 const finalizeOrder = async () => {
+  const isUser = localStorage.getItem("user") || null
+  const userParsed = isUser ? JSON.parse(isUser) : ''
   if (!cart.value.length) {
     toast.error('Carrinho vazio — não tem o que finalizar.')
     return
   }
-  
+  if(!userParsed) {
+    toast.error('É nécessário estar logado para efetuar uma compra! ')
+    return
+  }
   const getUser = JSON.parse(localStorage.getItem('user'))
 
   // aqui você decide: se selectedCurrency === 'pl' -> pagar com pontos, senão gateway R$
@@ -344,7 +350,7 @@ watch(cart, (newVal) => {
           <button @click="clearCart" class="p-2 rounded-lg font-bold text-xs bg-red-700 ">
             Limpar Carrinho
           </button>
-          <button 
+          <!-- <button 
             @click="finalizeOrder" 
             class="p-2 rounded-lg font-bold text-xs  text-white"
             :class="{
@@ -352,9 +358,15 @@ watch(cart, (newVal) => {
               'bg-green-600': isAdmin
             }"
             :disabled="!isAdmin"
+          > -->
+
+          <button 
+            @click="finalizeOrder" 
+            class="p-2 rounded-lg font-bold text-xs  text-white bg-green-600"
           >
             Finalizar pedido
           </button>
+          
           <p
             class="text-sm"
           >
