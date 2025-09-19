@@ -100,6 +100,7 @@ function productPrice(service: Service) {
 // checkout simple validation
 const finalizeOrder = async () => {
   const isUser = localStorage.getItem("user") || null
+  const hasTest = localStorage.getItem("test") || null
   const userParsed = isUser ? JSON.parse(isUser) : ''
   if (!cart.value.length) {
     toast.error('Carrinho vazio — não tem o que finalizar.')
@@ -108,7 +109,11 @@ const finalizeOrder = async () => {
   if(!userParsed) {
     toast.error('É nécessário estar logado para efetuar uma compra! ')
     return
+  } else if(hasTest) {
+    toast.warning('Você já fez esse teste! Muito Obrigado!!')
+    return
   }
+
   const getUser = JSON.parse(localStorage.getItem('user'))
 
   // aqui você decide: se selectedCurrency === 'pl' -> pagar com pontos, senão gateway R$
@@ -170,6 +175,7 @@ const finalizeOrder = async () => {
       toast.success('Redirecionando!')
       cart.value = []
       showCart.value = false
+      localStorage.setItem('test', 'true')
     }, 5000)
 
     setTimeout(() => {      
@@ -366,7 +372,7 @@ watch(cart, (newVal) => {
           >
             Finalizar pedido
           </button>
-          
+
           <p
             class="text-sm"
           >
