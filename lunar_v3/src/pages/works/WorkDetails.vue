@@ -56,7 +56,7 @@ onMounted(async () => {
   book.value = await getBookDetail(id);
   if(book.value.caps.length > 0) {
     const caps = book.value.caps.map(s => {
-     return { url: s.url, title: s.title }
+     return { url: s.url, title: s.title, length: s.length }
     })
     allCaps.value.push(caps)
   }

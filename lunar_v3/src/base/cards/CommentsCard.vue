@@ -77,7 +77,7 @@ const goNext = async () => {
       user: wUser.value, 
       title: nextId.title, 
       bookName: bookName.value, 
-      length: length.value 
+      length: nextId.length 
     }
   })
 }
@@ -110,7 +110,7 @@ const goPrev = async () => {
       user: wUser.value, 
       title: nextId.title, 
       bookName: bookName.value, 
-      length: length.value 
+      length: nextId.length 
     }
   })
 }
@@ -326,10 +326,13 @@ watch(() => firstAndLastComments.value, (val) => {
 
 watch(id, async (newId) => {
   if (newId) {
+    const searchBookId = localStorage.getItem('bookId')
     firstAndLastComments.value = { first: null, last: null }
     times.value.wast = 0
+    times.value.est = 0
     msgReadingPending.value = ''
     readingApproved.value = false
+    bookId.value = searchBookId
     await handleGetComments()
   }
 })
@@ -362,9 +365,13 @@ watch([times, data],() => {
 
 onMounted(async () => {
   const getAllCaps = JSON.parse(localStorage.getItem('capsNavigate'))
+ 
   await handleGetComments()
   allCaps.value = getAllCaps
   bookId.value = route.query.bookId
+  if(bookId.value) {
+    localStorage.setItem('bookId',bookId.value)
+  } 
 });
 
 </script>
