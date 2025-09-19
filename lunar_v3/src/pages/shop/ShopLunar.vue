@@ -143,6 +143,7 @@ const finalizeOrder = async () => {
       return
     } 
     toast.success('Pedido criado com sucesso! Administração entrará em contato com você em breve.')
+    localStorage.setItem('test', 'true')
     setTimeout(() => {    
       toast.success('Redirecionando!')
       cart.value = []
@@ -171,11 +172,11 @@ const finalizeOrder = async () => {
       return
     } 
     toast.success('Pedido criado com sucesso! Administração entrará em contato com você em breve.')
+    localStorage.setItem('test', 'true')
     setTimeout(() => {    
       toast.success('Redirecionando!')
       cart.value = []
       showCart.value = false
-      localStorage.setItem('test', 'true')
     }, 5000)
 
     setTimeout(() => {      
