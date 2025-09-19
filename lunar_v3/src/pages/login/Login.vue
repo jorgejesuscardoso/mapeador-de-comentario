@@ -5,6 +5,7 @@ import { Login, ResetPassword } from '@/API/UserApi' // ⚡ adicione ResetPasswo
 import { useRouter } from 'vue-router'
 import ResetPasswordModal from './ResetPasswordModal.vue'
 import RequestPasswordReset from './RequestPasswordReset.vue'
+import Lucide from '@/base/lucide/Lucide.vue'
 
 const router = useRouter()
 const user = ref('')
@@ -12,6 +13,7 @@ const userToReset = ref('') // para reset
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
+const showPass = ref(false)
 
 const modalIsLogged = ref(false)
 const modalReset = ref(false) // modal de reset
@@ -90,7 +92,12 @@ onMounted(() => {
 
         <div class="relative">
           <Lock class="absolute top-3.5 left-3 h-5 w-5 text-gray-400" />
-          <input v-model="password" type="password" placeholder="Senha" class="w-full pl-10 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <input v-model="password" :type=" showPass ? 'password' : 'text'" placeholder="Senha" class="w-full pl-10 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+          <Lucide
+            :icon="showPass ? 'Eye' : 'EyeClosed'"
+            class="absolute top-1/2 -translate-y-1/2 right-2"
+            @click="showPass = !showPass"
+          />
         </div>
 
         <button :disabled="loading" class="w-full py-2 bg-[rgb(0,0,0,0.6)] hover:bg-purple-700 text-white rounded-xl transition duration-200 disabled:opacity-50">
