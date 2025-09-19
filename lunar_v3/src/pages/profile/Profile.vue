@@ -172,7 +172,7 @@ onMounted(async () => {
             >
               <button
                 class="w-9 h-9 rounded-full shadow-xl flex items-center justify-center cursor-pointer"
-                @click="showReward = !showReward"
+                @click="router.push('/profile/orders')"
               >
                 <Lucide icon="Store" class="w-6 h-6 text-gray-300 drop-shadow" />
               </button>
