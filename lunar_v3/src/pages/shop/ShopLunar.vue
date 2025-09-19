@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Lucide from '@/base/lucide/Lucide.vue'
-import { ref, computed, inject } from "vue"
+import { ref, computed, inject, onMounted, watch } from "vue"
 import { ShopItems } from './ShopItems'
 import { toast } from '@/base/utils/toast'
 import { ShopRequest } from '@/API/ShopLunar'
@@ -53,6 +53,7 @@ function addToCart(service: Service, qty = 1) {
   const idx = cart.value.findIndex(i => i.service.id === service.id)
   if (idx === -1) {
     cart.value.push({ service, qty })
+    localStorage.setItem('cart', JSON.stringify(cart.value))
   } else {
     cart.value[idx].qty += qty
   }
@@ -170,9 +171,21 @@ const finalizeOrder = async () => {
   }
 }
 
-// opcional: persistência local (se quiser)
-// localStorage.setItem('cart', JSON.stringify(cart.value)), etc.
-// e carregar no onMounted
+onMounted(() => {
+  const stored = localStorage.getItem("cart")
+  if (stored) {
+    try {
+      cart.value = JSON.parse(stored)
+    } catch (e) {
+      console.error("Erro ao parsear cart do localStorage", e)
+    }
+  }
+})
+
+// sempre salvar quando mudar
+watch(cart, (newVal) => {
+  localStorage.setItem("cart", JSON.stringify(newVal))
+}, { deep: true })
 </script>
 
 <template>
@@ -268,11 +281,18 @@ const finalizeOrder = async () => {
     <!-- Carrinho -->
     <div 
       v-if="showCart"
-      class="fixed inset-0 lg:inset-auto lg:top-0 lg:right-2 lg:w-10/12 w-full lg:mt-10 mt-11 h-[94vh] z-30 bg-black/90 rounded-xl shadow-lg flex flex-col"
+      class="fixed inset-0 lg:inset-auto lg:top-0 lg:right-2 lg:w-10/12 w-full lg:mt-10 mt-11 max-h-screen lg:max-h-[90vh] z-30 bg-black/90 pb-3 shadow-lg flex flex-col"
     >
       <!-- Header -->
       <div class="flex items-center justify-between p-4 border-b border-purple-800">
-        <h2 class="text-xl font-bold">🛒 Carrinho</h2>
+        <h2 class="text-xl font-bold">
+          🛒 Carrinho
+          <span
+            class="text-gray-300 text-xs font-thin"
+          >
+           ({{ cart.length }} itens)
+          </span>
+        </h2>
         <button @click="showCart = false" class="text-gray-300 hover:text-white">
           <Lucide icon="X" />
         </button>
@@ -287,7 +307,7 @@ const finalizeOrder = async () => {
       </div>
 
       <!-- Conteúdo scrollável -->
-      <div class="flex-1 overflow-y-auto p-4">
+      <div class="flex overflow-y-auto p-4 h-[90%]">
         <ul class="space-y-2">
           <li
             v-for="(item, i) in cart"
@@ -318,7 +338,7 @@ const finalizeOrder = async () => {
 
       <!-- Rodapé fixo -->
       <div class="px-4 pt-2 border-t border-purple-800">
-        <div class="flex items-center justify-between font-bold text-right mb-3">
+        <div class="flex items-center justify-between font-bold text-right">
           
           <button @click="clearCart" class="p-2 rounded-lg font-bold text-xs bg-red-700 ">
             Limpar Carrinho
@@ -337,7 +357,16 @@ const finalizeOrder = async () => {
           <p
             class="text-sm"
           >
-            Total: <span class="ml-2">{{ cartTotalFormatted }}</span>
+            Total: 
+            <span 
+              class="ml-2"
+              :class="{
+                'text-[#16A34A]': cartTotalFormatted.includes('R$'),
+                'text-purple-500': !cartTotalFormatted.includes('R$')
+              }"
+            >
+              {{ cartTotalFormatted }}
+            </span>
           </p>
         </div>
       </div>
