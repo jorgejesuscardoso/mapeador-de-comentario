@@ -12,6 +12,7 @@ import ThirdPersonProfile from '@/pages/profile/thirdPersonProfile.vue';
 import TierList from '@/base/gamification/tierList.vue';
 import HousesCard from '@/pages/houses/HousesCard.vue';
 import ShopLunar from '@/pages/shop/ShopLunar.vue';
+import Orders from '@/pages/shop/Orders.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -24,10 +25,15 @@ const routes: RouteRecordRaw[] = [
         component: Home,
       },
       { 
+        path: '/profile/orders', 
+        name: 'orders',
+        component: Orders,
+      }, 
+      { 
         path: '/profile', 
         name: 'profile',
         component: Profile,
-      },     
+      },    
       { 
         path: '/profile/edit', 
         name: 'profileEdit',

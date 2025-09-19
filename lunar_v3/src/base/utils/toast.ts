@@ -18,7 +18,7 @@ const createToast = (type: 'success' | 'error' | 'warning', message: string) => 
     if (index !== -1) {
       toasts.value.splice(index, 1)
     }
-  }, 2000)
+  }, 5000)
 }
 
 export const toast = {

@@ -164,6 +164,7 @@ user.post('/login', async (req: Request, res: Response) => {
       user: account.user,
       house: account.house,
       points: account.points,
+      whatsappNumber: account.whatsappNumber
     };
 
     res.status(200).json(userData);

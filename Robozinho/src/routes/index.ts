@@ -5,6 +5,7 @@ import books from './books';
 import house from './houses';
 import reset from './userReset';
 import botRoute from './bot';
+import userShop from './shop';
 
 const Routes = express.Router();
 Routes.use(bot);
@@ -13,5 +14,6 @@ Routes.use('/books',books);
 Routes.use('/houses',house);
 Routes.use('/auth',reset);
 Routes.use('/bot',botRoute);
+Routes.use('/shop', userShop)
 
 export default Routes;

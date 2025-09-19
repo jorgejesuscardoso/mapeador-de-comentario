@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import Lucide from '@/base/lucide/Lucide.vue'
-import { ref, computed } from "vue"
+import { ref, computed, inject } from "vue"
 import { ShopItems } from './ShopItems'
+import { toast } from '@/base/utils/toast'
+import { ShopRequest } from '@/API/ShopLunar'
+import { useRouter } from 'vue-router'
+
+const route = useRouter()
+const isAdmin = inject<boolean>('isAdmin')
 
 interface Service {
   id: string
@@ -90,17 +96,77 @@ function productPrice(service: Service) {
 }
 
 // checkout simple validation
-function finalizeOrder() {
+const finalizeOrder = async () => {
   if (!cart.value.length) {
-    alert('Carrinho vazio — não tem o que finalizar.')
+    toast.error('Carrinho vazio — não tem o que finalizar.')
     return
   }
+  
+  const getUser = JSON.parse(localStorage.getItem('user'))
+
   // aqui você decide: se selectedCurrency === 'pl' -> pagar com pontos, senão gateway R$
   // Exemplo simples:
+  
+  const data = {
+    user: getUser.user,
+    wtp: getUser.whatsappNumber,
+    date: new Date().toLocaleString('pt-br'),
+    total_order: cartTotalFormatted.value
+  }
   if (selectedCurrency.value === 'pl') {
-    alert(`Finalizando pedido em PONTOS — total ${cartTotalFormatted.value}`)
+    toast.success(`Finalizando pedido — total ${cartTotalFormatted.value}`)
+    const order = cart.value.map((s) => {
+      return {
+        service: s.service.name,
+        qtd: s.qty,
+        total: s.service.price.pl * s.qty + " Pontos Lunar"
+      }
+    })
+    const payload = {
+      ...data, orders: order
+    }
+    const response = await ShopRequest(payload)
+    if(response.status !== 200) {
+      toast.error('Erro durante a criação do seu pedido! Verifique seus dados e tenta novamente!')
+      return
+    } 
+    toast.success('Pedido criado com sucesso! Administração entrará em contato com você em breve.')
+    setTimeout(() => {    
+      toast.success('Redirecionando!')
+      cart.value = []
+      showCart.value = false
+    }, 5000)
+
+    setTimeout(() => {      
+      route.push('/profile/orders')
+    }, 7000)
   } else {
-    alert(`Redirecionando para pagamento em REAIS — total ${cartTotalFormatted.value}`)
+    toast.success(`Finalizando pedido — total ${cartTotalFormatted.value}`)
+    const order = cart.value.map((s) => {
+      return {
+        service: s.service.name,
+        qtd: s.qty,
+        total: s.service.price.rl * s.qty + " Reais"
+      }
+    })
+    const payload = {
+      ...data, orders: order
+    }
+    const response = await ShopRequest(payload)
+    if(response.status !== 200) {
+      toast.error('Erro durante a criação do seu pedido! Verifique seus dados e tenta novamente!')
+      return
+    } 
+    toast.success('Pedido criado com sucesso! Administração entrará em contato com você em breve.')
+    setTimeout(() => {    
+      toast.success('Redirecionando!')
+      cart.value = []
+      showCart.value = false
+    }, 5000)
+
+    setTimeout(() => {      
+      route.push('/profile/orders')
+    }, 7000)
   }
 }
 
@@ -110,8 +176,24 @@ function finalizeOrder() {
 </script>
 
 <template>
-  <div class="lg:w-11/12 bg-gradient-to-b rounded-lg from-purple-950/80 to-black/90 text-white lg:px-6 px-3 pt-3 mt-2 lg:mt-11">
+  <div class="lg:w-11/12 bg-gradient-to-b rounded-lg from-purple-950/80 to-black/90 text-white lg:px-6 px-3 pt-3 mt-2 lg:mt-11 relative">
     <h1 class="text-3xl font-bold mb-3">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
+
+    <div
+      class="flex justify-center items-center rounded-full h-8 w-8 p-1 bg-purple-500/50 absolute top-6 right-6 cursor-pointer"
+      @click="showCart = true"
+    >
+      <span
+        v-if="cart.length > 0"
+        class="flex items-center justify-center font-semibold absolute top-0 lg:top-0.5 right-0 bg-white text-green-700 rounded-full w-4 lg:w-3 h-4 lg:h-3 text-xs lg:text-[10px]"
+      >
+        {{ cart.length }}
+      </span>
+      <Lucide
+        icon="ShoppingCart"
+        :stroke-width="2"
+      />
+    </div>
 
     <!-- Toggle de moeda -->
     <div class="flex flex-col justify-center gap-2 mb-3 px-1">
@@ -186,70 +268,79 @@ function finalizeOrder() {
     <!-- Carrinho -->
     <div 
       v-if="showCart"
-      class="mt-10 bg-black/90 p-6 rounded-xl shadow-lg fixed lg:top-0 lg:right-2 lg:w-10/12 w-full inset-0 lg:inset-auto lg:h-screen z-30 overflow-auto"
+      class="fixed inset-0 lg:inset-auto lg:top-0 lg:right-2 lg:w-10/12 w-full lg:mt-10 mt-11 h-[94vh] z-30 bg-black/90 rounded-xl shadow-lg flex flex-col"
     >
-      <h2 class="text-xl font-bold mb-4">🛒 Carrinho</h2>
-      <ul class="space-y-2">
-        <li
-          v-for="(item, i) in cart"
-          :key="item.service.id"
-          class="flex justify-between items-center bg-purple-900/40 px-3 py-2 rounded-lg"
-        >
-          <div class="flex flex-col">
-            <span class="font-semibold">{{ item.service.name }}</span>
-            <span class="text-xs text-gray-300">{{ formatPriceForDisplay(item.service.price, selectedCurrency) }}</span>
-            <span class="text-xs text-gray-500">Subtotal: 
-              <strong>
-                {{ selectedCurrency === 'pl' ? `${item.service.price.pl * item.qty} PL` : formatBRL(item.service.price.rl * item.qty) }}
-              </strong>
-            </span>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button class="px-2 py-1 bg-gray-700 rounded" @click="updateQty(item.service.id, item.qty - 1)">-</button>
-            <span class="px-2">{{ item.qty }}</span>
-            <button class="px-2 py-1 bg-gray-700 rounded" @click="updateQty(item.service.id, item.qty + 1)">+</button>
-            <button class="text-red-400 text-xs ml-2" @click="removeFromCart(item.service.id)">Remover</button>
-          </div>
-        </li>
-      </ul>
-
-      <div class="mt-4 font-bold text-right">
-        Total: <span class="ml-2">{{ cartTotalFormatted }}</span>
-      </div>
-
-      <div class="flex gap-2 mt-4">
-        <button @click="clearCart" class="p-2 rounded-lg font-bold text-xs text-red-700 bg-purple-300">Limpar Carrinho</button>
-        <button @click="showCart = false" class="p-2 rounded-lg font-bold text-xs text-gray-800 bg-gray-200">Continuar comprando</button>
-        <button @click="finalizeOrder" class="ml-auto p-2 rounded-lg font-bold text-xs bg-green-600">Finalizar pedido</button>
-      </div>
-    </div>
-
-    <!-- Rodapé fixo -->
-    <footer 
-      v-if="cart.length && !showCart"
-      class="fixed lg:bottom-2 left-0 -bottom-1 lg:left-1/2 lg:-translate-x-1/3 bg-purple-900 text-white shadow-xl lg:rounded-lg p-4 flex justify-between items-center z-20 lg:w-1/2 w-full"
-    >
-      <div class="flex gap-2">
-        <button 
-          @click="clearCart"
-          class="px-3 py-2 rounded-lg font-bold text-xs bg-red-600 hover:bg-red-700 text-white"
-        >
-          Limpar Carrinho
-        </button>        
-        <button 
-          @click="showCart = true"
-          class="px-3 py-2 rounded-lg font-bold text-xs bg-green-600 hover:bg-green-700 text-white"
-        >
-          Finalizar pedido
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 border-b border-purple-800">
+        <h2 class="text-xl font-bold">🛒 Carrinho</h2>
+        <button @click="showCart = false" class="text-gray-300 hover:text-white">
+          <Lucide icon="X" />
         </button>
       </div>
+      <div 
+        v-if="cart.length <= 0"
+        class="flex flex-col items-center justify-center text-center text-gray-300 py-12"
+      >
+        <Lucide icon="ShoppingCart" class="w-12 h-12 text-purple-400 mb-3" />
+        <p class="text-lg font-semibold">Seu carrinho está vazio!</p>
+        <p class="text-sm text-gray-500">Adicione alguns serviços para continuar 🚀</p>
+      </div>
 
-      <span class="text-sm font-semibold flex">
-        Total: 
-        <p class="ml-2 font-bold text-purple-300">{{ cartTotalFormatted }}</p>
-      </span>
-    </footer>
+      <!-- Conteúdo scrollável -->
+      <div class="flex-1 overflow-y-auto p-4">
+        <ul class="space-y-2">
+          <li
+            v-for="(item, i) in cart"
+            :key="item.service.id"
+            class="flex justify-between items-center bg-purple-900/40 px-3 py-2 rounded-lg"
+          >
+            <div class="flex flex-col">
+              <span class="font-semibold">{{ item.service.name }}</span>
+              <span class="text-xs text-gray-300">{{ formatPriceForDisplay(item.service.price, selectedCurrency) }}</span>
+              <span class="text-xs text-gray-500">
+                Subtotal: <strong>
+                  {{ selectedCurrency === 'pl' 
+                    ? `${item.service.price.pl * item.qty} PL` 
+                    : formatBRL(item.service.price.rl * item.qty) }}
+                </strong>
+              </span>
+            </div>
 
+            <div class="flex items-center gap-2">
+              <button class="px-2 py-1 bg-gray-700 rounded" @click="updateQty(item.service.id, item.qty - 1)">-</button>
+              <span class="px-2">{{ item.qty }}</span>
+              <button class="px-2 py-1 bg-gray-700 rounded" @click="updateQty(item.service.id, item.qty + 1)">+</button>
+              <button class="text-red-400 text-xs ml-2" @click="removeFromCart(item.service.id)">Remover</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Rodapé fixo -->
+      <div class="px-4 pt-2 border-t border-purple-800">
+        <div class="flex items-center justify-between font-bold text-right mb-3">
+          
+          <button @click="clearCart" class="p-2 rounded-lg font-bold text-xs bg-red-700 ">
+            Limpar Carrinho
+          </button>
+          <button 
+            @click="finalizeOrder" 
+            class="p-2 rounded-lg font-bold text-xs  text-white"
+            :class="{
+              'bg-gray-300': !isAdmin,
+              'bg-green-600': isAdmin
+            }"
+            :disabled="!isAdmin"
+          >
+            Finalizar pedido
+          </button>
+          <p
+            class="text-sm"
+          >
+            Total: <span class="ml-2">{{ cartTotalFormatted }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

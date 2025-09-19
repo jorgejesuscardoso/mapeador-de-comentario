@@ -10,6 +10,7 @@ import { calculateUserTierByPoints } from "../gamification/tiers";
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { UpdateCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { GenerateResetCode } from "../utils/generateResetCode";
+import { ngrok } from "../ngrok";
 
 const client = new DynamoDBClient({ region: 'us-east-1' }); // ou tua região
 const docClient = DynamoDBDocumentClient.from(client);
@@ -114,7 +115,7 @@ userReset.post('/request', async (req: Request, res: Response) => {
       expiresAt: Date.now() + 15 * 60 * 1000 // Expira em 15 minutos
     }
     // chama api do bot do whatsapp para enviar o código
-    const fetch = await axios.post('https://633999ff1f51.ngrok-free.app/sendCode', {
+    const fetch = await axios.post(`${ngrok}/sendCode`, {
       code: resetCode,
       expiresAt: Date.now() + 15 * 60 * 1000,
       whatsappNumber: whatsAppNumber

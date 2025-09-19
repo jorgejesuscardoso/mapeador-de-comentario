@@ -167,6 +167,19 @@ onMounted(async () => {
               <p class="text-white text-[10px] text-center">+10 pontos</p>
             </div>
 
+            <div
+              class="flex items-center justify-center flex-col absolute top-28 left-3 z-50 w-20"
+            >
+              <button
+                class="w-9 h-9 rounded-full shadow-xl flex items-center justify-center cursor-pointer"
+                @click="showReward = !showReward"
+              >
+                <Lucide icon="Store" class="w-6 h-6 text-gray-300 drop-shadow" />
+              </button>
+
+              <p class="text-gray-300 text-[10px] text-center">Meus pedidos</p>
+            </div>
+
             <!-- TAG DE ROLE -->
               <div
                 class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.7)] rounded-2xl py-4"
