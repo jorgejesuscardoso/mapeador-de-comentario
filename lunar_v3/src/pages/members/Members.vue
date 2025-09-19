@@ -219,7 +219,7 @@ const toggleShowConfigMember = () => {
 <template>
     
   <div
-    class="mt-4 lg:mt-11 w-full px-2 lg:px-6"
+    class="w-full px-2 lg:px-6"
   >
     <!--Barra de pesquisa-->
     <div
@@ -295,10 +295,11 @@ const toggleShowConfigMember = () => {
             <!-- Botão de configurações -->
             <div
               v-if="isAdmin"
+              class="mt-10 relative"
             >              
               <Lucide
                 icon="Settings2"
-                class="w-8 h-8 object-contain rounded-full p-1.5 bg-white/10 shadow cursor-pointer"
+                class="w-6 h-6 object-contain rounded-full p-1.5 bg-white/10 shadow cursor-pointer absolute"
                 title="Configurações do membro"
                 @click="toggleConfig(member.user)"
               />

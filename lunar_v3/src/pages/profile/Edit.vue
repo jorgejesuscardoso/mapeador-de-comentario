@@ -172,16 +172,16 @@ onMounted(async () => {
 
 <template>
   <div
-    class="flex flex-col items-center justify-start w-full p-2 mt-2 min-h-screen"
+    class="flex flex-col items-center justify-start w-full min-h-screen relative"
   >
     <div
-      class="w-full"
+      class="top-0 left-4 px-1 absolute z-10"
     >
       <h2
-        class="text-lg font-bold text-purple-400 flex items-center gap-2"
+        class="text-lg font-bold text-purple-700 bg-purple-100 rounded-full p-0.5 flex items-center gap-2"
         @click="router.back()"
       >
-        <Lucide icon="ArrowLeft" class="w-6 h-6" />
+        <Lucide icon="ArrowLeft" class="w-4 h-4" />
       </h2>
     </div>
     <div class="bg-[rgb(0,0,0,0.7)] p-6 rounded-2xl shadow-md w-full max-w-md text-white space-y-4 mx-auto mt-2 border border-purple-500">

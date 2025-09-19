@@ -372,13 +372,13 @@ onMounted(async () => {
 
 <template>
   <div
-    class="flex flex-col items-center min-w-full justify-center mt-4 lg:mt-10"
+    class="flex flex-col items-start min-w-full justify-start"
   >
     <header
       class="w-full"
     >
       <div
-        class="flex flex-col bg-white sm:mx-4 my-1 py-4 px-2 rounded-xl shadow-lg relative"
+        class="flex flex-col bg-white sm:mx-4 my-1 py-4 px-2 lg:rounded-xl shadow-lg relative"
       > 
       <!-- <div
         class="cursor-pointer"

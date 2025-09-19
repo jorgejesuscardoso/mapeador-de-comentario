@@ -64,7 +64,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full px-4 lg:px-8 py-6 lg:mt-14 min-h-screen">
+  <div class="w-full px-4 lg:px-8 min-h-screen">
     <Loading :is-loading="isLoading">
       <template #title>Carregando as casas lunares</template>
       <template #description>Buscando dados do clã... 🛸</template>
@@ -73,12 +73,12 @@ onMounted(async () => {
       class="flex items-center justify-start mb-2"
     >
       <p
-        class="text-lg font-bold text-purple-400 flex items-center gap-2"
+        class="text-lg font-bold text-purple-700 bg-purple-100 rounded-full flex items-center gap-2"
         @click="router.back()"
       >
         <Lucide
           icon="ArrowLeft"
-          class="w-6 h-6"
+          class="w-5 h-5"
         />
       </p>
     </div>
@@ -137,7 +137,7 @@ onMounted(async () => {
           >
             <Lucide 
               icon="Settings2" 
-              class="w-6 h-6 text-purple-400 hover:text-purple-200 cursor-pointer"
+              class="w-4 h-4 text-purple-400 hover:text-purple-200 cursor-pointer"
             />
           </div>
         </div>

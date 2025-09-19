@@ -349,7 +349,7 @@ provide('isAdmin', isAdmin)
 			</div>
 
 			<main
-				class="flex w-full min-h-screen items-center justify-center lg:w-10/12 z-0 mt-12 lg:mt-0"
+				class="flex w-full min-h-screen items-start justify-center lg:w-10/12 z-0 pt-14 lg:mt-0"
 			>
 				<router-view />
 			</main>

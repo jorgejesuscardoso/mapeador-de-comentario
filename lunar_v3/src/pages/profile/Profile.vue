@@ -131,22 +131,23 @@ onMounted(async () => {
   </div>
   <div class="flex flex-col justify-center items-center w-full min-h-screen  px-1 lg:px-4 relative">
     <div
-        class="top-0 lg:top-6 py-4 px-1 absolute z-10 left-0"
+      v-if="!isLoading"
+      class="top-8 left-4 px-1 absolute z-10"
     >
       <h1
-        class="flex items-center text-purple-400 text-sm cursor-pointer"
+        class="flex items-center text-purple-700 p-0.5 bg-purple-100 rounded-full text-sm cursor-pointer"
         @click="router.back()"
       >
         <Lucide
             icon="ArrowLeft"
-            class="w-5 h-5"
+            class="w-4 h-4"
           />
       </h1>
     </div>
 
       <div
         v-if="!isLoading"
-        class="rounded-2xl lg:mt-8 mt-4 py-8  w-full mx-auto  shadow-sm text-gray-800 space-y-6"
+        class="rounded-2xl w-full mx-auto  shadow-sm text-gray-800 space-y-6"
       >
         <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
           <!-- Perfil à esquerda -->
