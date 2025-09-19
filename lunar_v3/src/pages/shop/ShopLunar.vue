@@ -136,11 +136,12 @@ const finalizeOrder = async () => {
       toast.success('Redirecionando!')
       cart.value = []
       showCart.value = false
-    }, 5000)
+      localStorage.removeItem('cart')
+    }, 2000)
 
     setTimeout(() => {      
       route.push('/profile/orders')
-    }, 7000)
+    }, 3000)
   } else {
     toast.success(`Finalizando pedido — total ${cartTotalFormatted.value}`)
     const order = cart.value.map((s) => {
