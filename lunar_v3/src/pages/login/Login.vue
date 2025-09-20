@@ -6,6 +6,8 @@ import { useRouter } from 'vue-router'
 import ResetPasswordModal from './ResetPasswordModal.vue'
 import RequestPasswordReset from './RequestPasswordReset.vue'
 import Lucide from '@/base/lucide/Lucide.vue'
+import { isMaintenance } from '@/maintenance'
+import { toast } from '@/base/utils/toast'
 
 const router = useRouter()
 const user = ref('')
@@ -14,7 +16,7 @@ const password = ref('')
 const loading = ref(false)
 const error = ref('')
 const showPass = ref(false)
-
+const maintenance = isMaintenance
 const modalIsLogged = ref(false)
 const modalReset = ref(false) // modal de reset
 const resetCode = ref('')
@@ -42,6 +44,10 @@ const submit = async () => {
   }
 }
 
+const toggleModalReset = () =>{
+  if(maintenance) return toast.warning('Esta função está em manuntenção! Tente novamente mais tarde!')
+  modalReset.value = !modalReset.value
+}
 // reset de senha
 const submitReset = async () => {
   // usa userToReset do modal
@@ -106,7 +112,7 @@ onMounted(() => {
       </form>
 
       <!-- Botão de reset -->
-      <p class="text-center text-sm text-fuchsia-300 cursor-pointer" @click="modalReset = true">
+      <p class="text-center text-sm text-fuchsia-300 cursor-pointer" @click="toggleModalReset">
         Esqueceu a senha? <span class="text-blue-300 underline">Recuperar</span>
       </p>
 

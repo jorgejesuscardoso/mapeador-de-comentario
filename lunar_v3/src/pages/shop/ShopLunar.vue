@@ -5,10 +5,12 @@ import { ShopItems } from './ShopItems'
 import { toast } from '@/base/utils/toast'
 import { ShopRequest } from '@/API/ShopLunar'
 import { useRouter } from 'vue-router'
+import { isMaintenance } from '@/maintenance'
 
 const route = useRouter()
 const isAdmin = inject<boolean>('isAdmin')
 const isLogged = ref(false)
+const maintenance = isMaintenance
 
 interface Service {
   id: string
@@ -78,6 +80,11 @@ function toggleCart(service: Service) {
   const exists = cart.value.some(s => s.service.id === service.id)
   if (exists) removeFromCart(service.id)
   else addToCart(service, 1)
+}
+
+const toggleShowCar = () =>{
+  if(maintenance) return toast.warning(`Esta função está em manuntenção! Tente novamente mais tarde!`)
+  showCart.value = !showCart.value
 }
 
 function clearCart() {
@@ -208,7 +215,7 @@ watch(cart, (newVal) => {
 
     <div
       class="flex justify-center items-center rounded-full h-8 w-8 p-1 bg-purple-500/50 absolute top-6 right-6 cursor-pointer"
-      @click="showCart = true"
+      @click="toggleShowCar"
     >
       <span
         v-if="cart.length > 0"
