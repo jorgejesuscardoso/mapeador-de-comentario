@@ -130,6 +130,7 @@ const submitForm = handleSubmit(async (values) => {
 
   try {
     const record = { username: values.username, whatsappNumber: values.whatsappNumber, label: values }
+    console.log(record)
     const response = await updateUser(parsed.user, record)
     toast.success('Dados alterados com sucesso!')
     //router.push('/profile')

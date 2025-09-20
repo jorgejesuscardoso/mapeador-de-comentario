@@ -352,7 +352,6 @@ user.put('/:username', async (req: Request, res: Response) => {
   const userParam = req.params.username;
   const { data } = req.body;
 
-
   if (!data) {
     return res.status(400).json({ error: 'Dados ausentes!' });
   }
@@ -400,22 +399,35 @@ user.put('/:username', async (req: Request, res: Response) => {
     const updateFields: string[] = [];
     const ExpressionAttributeNames: Record<string, string> = {};
     const ExpressionAttributeValues: Record<string, any> = {};
-
+    const defaultRole = existingUser.role ?? 'member';
     // Campos que queremos garantir atualização
+    const defaultUser = existingUser.username ?? userParam
+    const defaulHouse = data.house ?? existingUser.house
+
     const baseFields = {
-      username: data.username ?? existingUser.username ?? userParam,
+      username: data.username ? data.username : defaultUser,
       password: updatedPassword,
-      role: data.role ?? existingUser.role,
-      house: data.house ?? existingUser.house ?? '',
+      role: data.role ?? defaultRole,
+      house: defaulHouse ? defaulHouse : 'Sem Teto',
       updatedAt: new Date().toISOString(),
       points: currentPoints,
       tierPoints: currentTierPoints,
       subs: data.subs || existingUser.subs || [],
-      whatsappNumber: data.whatsappNumber || existingUser.whatsappNumber || ''
+      whatsappNumber: data.whatsappNumber || existingUser.whatsappNumber
     };
-
     // Merge baseFields + data (data sobrescreve se tiver duplicado)
-    const finalFields = { ...baseFields, ...data };
+    const finalFields = Object.fromEntries(
+      Object.entries({ ...baseFields, ...data })
+        .filter(([key, value]) => {
+          if (value === undefined || value === "") return false; // remove string vazia
+          if (Array.isArray(value) && value.length === 0) return false; // remove array vazio
+          if (key === "user" || key === "username") return false; // nunca atualiza PK
+          return true;
+        })
+    );
+
+
+    //console.log(baseFields)
 
     for (const [key, value] of Object.entries(finalFields)) {
       if (key === 'newpassword' || key === 'tierPointsPlus' || key === 'tierPointsMinus' || key === 'pointsPlus' || key === 'pointsMinus') {

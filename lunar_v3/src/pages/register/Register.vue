@@ -3,6 +3,7 @@ import { ref, computed, inject, onMounted } from 'vue'
 import { Mail, Lock, User, Calendar } from 'lucide-vue-next'
 import { Register, TRegister } from '@/API/UserApi'
 import { useRouter } from 'vue-router'
+import { toast } from '@/base/utils/toast'
 
 const router = useRouter()
 const userWattpad = ref('')
@@ -30,6 +31,15 @@ const submit = async () => {
       role: role.value,
       subrole: subrole.value
     } as TRegister
+
+    if(payload.user.startsWith('@')) {
+      toast.error(`User seu user wattpad normal, sem '@'. Se teu User inicia com '@', avise a administração!`)
+      return
+    } else if(payload.age > 80) {
+      toast.error(`Você realmente possui essa idade: ${payload.age} anos?`)
+      return
+    }
+
 
     const data = await Register(payload)
 

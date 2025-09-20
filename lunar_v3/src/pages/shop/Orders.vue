@@ -31,7 +31,7 @@ const fetchOrders = async () => {
     }
     const response = await getUserById(user.user)
     console.log(response)
-    orders.value = response.orders
+    orders.value = response.orders || []
   } catch (err) {
     toast.error("Erro ao buscar seus pedidos!")
     console.error(err)
@@ -42,15 +42,17 @@ const fetchOrders = async () => {
 
 // total geral de todos os pedidos
 const totalAllOrders = computed(() => {
-  return orders.value.reduce((sum, order) => {
+  const total = loading ? 0 : orders.value.reduce((sum, order) => {
     // remove tudo que não seja dígito ou ponto/virgula
     const cleaned = order.total.replace(/[^\d,.-]/g, '').replace(',', '.')
     const value = parseFloat(cleaned) || 0
     return sum + value
   }, 0)
+  return total
 })
 
 const formatCurrency = (value: number) => {
+  if(loading) return null
   if(orders.value.some((s) => s.total.includes('Pontos Lunar'))) {
     return `${value} PL`
   }
@@ -69,7 +71,7 @@ onMounted(fetchOrders)
         <Lucide icon="Package" /> 
         Meus Pedidos
       </p>
-      <span class="font-bold text-green-400 text-lg">
+      <span v-if="!loading" class="font-bold text-green-400 text-lg">
         {{ formatCurrency(totalAllOrders) ?? totalAllOrders.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
       </span>
     </h1>
@@ -108,7 +110,7 @@ onMounted(fetchOrders)
     </div>
 
     <!-- footer só aparece se houver pedidos -->
-    <footer v-if="orders.length > 0" class="mt-6 p-4 bg-purple-800 rounded-lg flex justify-between items-center">
+    <footer v-if="orders.length > 0 && !loading" class="mt-6 p-4 bg-purple-800 rounded-lg flex justify-between items-center">
       <span class="font-bold text-white text-lg">Total geral:</span>
       <span class="font-bold text-green-400 text-lg">
         {{ formatCurrency(totalAllOrders) ?? totalAllOrders.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
