@@ -83,7 +83,9 @@ function toggleCart(service: Service) {
 }
 
 const toggleShowCar = () =>{
-  if(maintenance) return toast.warning(`Esta função está em manuntenção! Tente novamente mais tarde!`)
+  const storage = JSON.parse(localStorage.getItem('user'));
+  const bushido = storage.user;
+  if(maintenance && bushido !== 'JcBushido') return toast.warning(`Esta função está em manuntenção! Tente novamente mais tarde!`)
   showCart.value = !showCart.value
 }
 
