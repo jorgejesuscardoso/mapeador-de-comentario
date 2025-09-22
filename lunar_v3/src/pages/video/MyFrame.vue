@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, watch, nextTick } from "vue"
 
 const currentIndex = ref(1)
-const casamentoObg = 'https://techmaisbr.com/shortseries/CASAMENTOOBRIGATORIO/CASAMENTOOBRIGATORIO'
+const casamentoObg = "https://techmaisbr.com/shortseries/CASAMENTOOBRIGATORIO/CASAMENTOOBRIGATORIO"
+
+const videoRef = ref<HTMLVideoElement | null>(null)
 
 function nextVideo() {
   if (currentIndex.value < 100) {
@@ -15,6 +17,15 @@ function prevVideo() {
     currentIndex.value--
   }
 }
+
+// sempre que o índice mudar, recarrega o vídeo
+watch(currentIndex, async () => {
+  await nextTick()
+  if (videoRef.value) {
+    videoRef.value.load()
+    videoRef.value.play()
+  }
+})
 </script>
 
 <template>
@@ -22,8 +33,9 @@ function prevVideo() {
     <h1 class="text-2xl font-bold mb-6">🎥 Playlist Dark</h1>
 
     <!-- player -->
-    <div class="relative w-[70vw] max-w-6xl h-[60vh] rounded-lg overflow-hidden shadow-lg border border-gray-700">
+    <div class="relative w-full max-w-6xl h-[60vh] rounded-lg overflow-hidden shadow-lg border border-gray-700">
       <video
+        ref="videoRef"
         class="w-full h-full"
         controls
         autoplay
