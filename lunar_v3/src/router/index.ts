@@ -13,6 +13,7 @@ import TierList from '@/base/gamification/tierList.vue';
 import HousesCard from '@/pages/houses/HousesCard.vue';
 import ShopLunar from '@/pages/shop/ShopLunar.vue';
 import Orders from '@/pages/shop/Orders.vue';
+import MyFrame from '@/pages/video/MyFrame.vue';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', 
@@ -76,6 +77,11 @@ const routes: RouteRecordRaw[] = [
         path: '/houses', 
         name: 'houses',
         component: HousesCard,
+      },   
+      { 
+        path: '/series', 
+        name: 'series',
+        component: MyFrame,
       }, 
     ]
   },  
