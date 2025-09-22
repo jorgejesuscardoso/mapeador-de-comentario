@@ -1,54 +1,37 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-const currentIndex = ref(1) // começa no vídeo 1
+const currentIndex = ref(1)
 const casamentoObg = 'https://techmaisbr.com/shortseries/CASAMENTOOBRIGATORIO/CASAMENTOOBRIGATORIO'
 
-const playerRef = ref<HTMLElement | null>(null)
-
 function nextVideo() {
-  if (currentIndex.value < 100) currentIndex.value++
+  if (currentIndex.value < 100) {
+    currentIndex.value++
+  }
 }
 
 function prevVideo() {
-  if (currentIndex.value > 1) currentIndex.value--
-}
-
-function toggleFullscreen() {
-  if (!playerRef.value) return
-
-  if (document.fullscreenElement) {
-    document.exitFullscreen()
-  } else {
-    playerRef.value.requestFullscreen()
+  if (currentIndex.value > 1) {
+    currentIndex.value--
   }
 }
 </script>
 
 <template>
-  <div class="bg-black flex flex-col items-center justify-center text-white px-4">
+  <div class="min-h-screen bg-black flex flex-col items-center justify-center text-white px-4">
     <h1 class="text-2xl font-bold mb-6">🎥 Playlist Dark</h1>
 
     <!-- player -->
-    <div
-      ref="playerRef"
-      class="relative w-[70vw] h-[56vh] rounded-lg overflow-hidden shadow-lg border border-gray-700"
-    >
-      <iframe
+    <div class="relative w-[70vw] max-w-6xl h-[60vh] rounded-lg overflow-hidden shadow-lg border border-gray-700">
+      <video
         class="w-full h-full"
-        :src="casamentoObg + currentIndex + '.mp4'"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-
-      <!-- botão tela cheia -->
-      <button
-        @click="toggleFullscreen"
-        class="absolute top-2 right-2 px-3 py-1 bg-black/60 rounded text-xs hover:bg-black/80"
+        controls
+        autoplay
+        @ended="nextVideo"
       >
-        ⛶
-      </button>
+        <source :src="casamentoObg + currentIndex + '.mp4'" type="video/mp4" />
+        Seu navegador não suporta vídeo.
+      </video>
     </div>
 
     <!-- botões -->
@@ -90,4 +73,3 @@ function toggleFullscreen() {
     </p>
   </div>
 </template>
-
