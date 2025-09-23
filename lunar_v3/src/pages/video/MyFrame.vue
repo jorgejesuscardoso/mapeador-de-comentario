@@ -2,9 +2,19 @@
 import { ref, watch, nextTick } from "vue"
 
 const currentIndex = ref(1)
-const casamentoObg = "https://techmaisbr.com/shortseries/CASAMENTOOBRIGATORIO/CASAMENTOOBRIGATORIO"
 
+const seriesArray = [
+  {
+    name: 'Casamento Obrigátorio',
+    src: "https://techmaisbr.com/shortseries/CASAMENTOOBRIGATORIO/CASAMENTOOBRIGATORIO"
+  },
+  {
+    name: '30 anos congelada 3 irmãos se arrependem',
+    src: 'https://techmaisbr.com/shortseries/30ANOSCONGELADA/30ANOSCONGELADA'
+  }
+]
 const videoRef = ref<HTMLVideoElement | null>(null)
+const serieToWatch = ref(seriesArray[0].src)
 
 function nextVideo() {
   if (currentIndex.value < 100) {
@@ -26,14 +36,21 @@ watch(currentIndex, async () => {
     videoRef.value.play()
   }
 })
+
+watch(serieToWatch, async () => {
+  await nextTick()
+  if (videoRef.value) {
+    videoRef.value.load()
+    videoRef.value.play()
+  }
+})
 </script>
 
 <template>
   <div class="min-h-screen bg-black flex flex-col items-center justify-center text-white px-4">
     <h1 class="text-2xl font-bold mb-6">🎥 Playlist Dark</h1>
-
     <!-- player -->
-    <div class="relative w-full max-w-6xl h-[60vh] rounded-lg overflow-hidden shadow-lg border border-gray-700">
+    <div class="relative w-full lg:w-[70vw] h-[60vh] rounded-lg overflow-hidden shadow-lg border border-gray-700">
       <video
         ref="videoRef"
         class="w-full h-full"
@@ -41,7 +58,8 @@ watch(currentIndex, async () => {
         autoplay
         @ended="nextVideo"
       >
-        <source :src="casamentoObg + currentIndex + '.mp4'" type="video/mp4" />
+        <source :src="serieToWatch + currentIndex + '.mp4'" type="video/mp4" />
+        
         Seu navegador não suporta vídeo.
       </video>
     </div>
@@ -74,14 +92,29 @@ watch(currentIndex, async () => {
         class="bg-gray-800 text-white px-3 py-2 rounded-md border border-gray-600"
       >
         <option v-for="n in 100" :key="n" :value="n">
-          Vídeo {{ n }}
+          Episódio {{ n }}
+        </option>
+      </select>
+    </div>
+
+    
+    <!-- seletor Serie-->
+    <div class="mt-6">
+      <label for="videoSelect" class="mr-2 text-gray-300">Serie:</label>
+      <select
+        id="videoSelect"
+        v-model="serieToWatch"
+        class="bg-gray-800 text-white px-3 py-2 rounded-md border border-gray-600"
+      >
+        <option v-for="n in seriesArray" :key="n.name" :value="n.src">
+          {{ n.name }}
         </option>
       </select>
     </div>
 
     <!-- indicador -->
     <p class="mt-3 text-gray-400 text-sm">
-      Índice atual: {{ currentIndex }}
+      Epsódio atual: {{ currentIndex }}
     </p>
   </div>
 </template>
