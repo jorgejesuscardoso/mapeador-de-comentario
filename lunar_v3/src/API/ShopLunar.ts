@@ -27,3 +27,45 @@ export const ShopRequest = async (data: any) => {
   }
 }
 
+
+export const getSales = async () => {
+  try {
+    const controller = new AbortController()
+
+    const response = await axios(`${endPoint}/shop/`, {
+      method: 'get',      
+      signal: controller.signal,
+    })
+    
+    return response
+  } catch (err: any) {
+   throw new Error(
+      err.response?.data?.error || err.response?.data?.message || 'Erro inesperado no registro'
+    )
+  }
+}
+
+
+export const ShopUpdate = async (data: any) => {
+  try {
+    const controller = new AbortController()
+
+    const response = await axios(`${endPoint}/shop/update`, {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data),
+      signal: controller.signal,
+    })
+
+    return response
+  } catch (err: any) {
+   throw new Error(
+      err.response?.data?.error || err.response?.data?.message || 'Erro inesperado no registro'
+    )
+  }
+}
+
+
+

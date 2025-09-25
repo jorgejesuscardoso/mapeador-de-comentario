@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, provide } from 'vue';
+import { onMounted, onUnmounted, ref, provide, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Lucide from '../lucide/Lucide.vue'
+import NotificationsContainer from '../notification/NotificationsContainer.vue';
+import { getSales } from '@/API/ShopLunar';
 
 interface userData {
 	role: string
@@ -12,16 +14,43 @@ const route = useRoute();
 const router = useRouter();
 
 const menuOpen = ref(false);
+const notification = ref(0)
+const showNotification = ref(false)
+const sales = ref()
 
 const isLogged = ref(false)
 const isAdmin = ref(false)
 
 const menuRef = ref<HTMLElement | null>(null);
 const menuRef2 = ref<HTMLElement | null>(null);
+const refNotification = ref<HTMLElement | null>(null);
+
+const refNotification2 = ref<HTMLElement | null>(null);
+
 
 const handleClickOutside = (event: MouseEvent) => {
-  if ((menuOpen.value && menuRef.value && menuRef2.value) && (!menuRef2.value.contains(event.target as Node) && !menuRef.value.contains(event.target as Node))) {
+  const target = event.target as Node;
+
+  // Fecha menu se clicar fora
+  if (
+    menuOpen.value &&
+    menuRef.value &&
+    menuRef2.value &&
+    !menuRef.value.contains(target) &&
+    !menuRef2.value.contains(target)
+  ) {
     menuOpen.value = false;
+  }
+
+  // Fecha notificações se clicar fora
+  if (
+    showNotification.value &&
+    refNotification.value &&
+    refNotification2.value &&
+    !refNotification.value.contains(target) &&
+    !refNotification2.value.contains(target)
+  ) {
+    showNotification.value = false;
   }
 };
 
@@ -39,7 +68,7 @@ const handleLogout = () => {
 	}
 }
 
-onMounted(() => {
+onMounted(async () => {
 	const storage = JSON.parse(localStorage.getItem('user')) as userData;
 	
 	if (storage) {
@@ -51,7 +80,12 @@ onMounted(() => {
 	}
   document.addEventListener('click', handleClickOutside);
 	window.scrollTo({top: 0})
-	console.log('é adm',isAdmin.value, 'está logado',isLogged.value)
+
+	// const response = await getSales()
+	// if(response.status === 200) {
+	// 	notification.value = 1		
+	// 	console.log(response)
+	// }
 });
 
 onUnmounted(() => {
@@ -221,6 +255,14 @@ provide('isAdmin', isAdmin)
 			<div class="lg:hidden w-full searchFilterBg text-white fixed top-0 left-0 z-20"
 				:class="{'border-b-2 border-fuchsia-300': menuOpen, 'border-0':!menuOpen}"
 			>
+				<div 
+					v-if="showNotification" 
+					ref="refNotification" 
+				>
+					<NotificationsContainer 
+						
+					/>
+				</div>
 				<div class="flex items-center justify-between p-4 bg-[rgb(0,0,0,0.3)]">
 					<h1 
 						class="text-base font-semibold whitespace-nowrap"
@@ -228,13 +270,34 @@ provide('isAdmin', isAdmin)
 					>
 						Projeto Lunar
 					</h1>
-					<button 
-						ref="menuRef2"
-						@click.stop="menuOpen = !menuOpen" 
-						aria-label="Abrir menu"
+					
+					<div
+						class="flex items-center justify-between w-1/5"
 					>
-						<Lucide :icon="menuOpen ? 'X' : 'Menu'" size="24" />
-					</button>
+						<!-- Notificações -->
+						<button 
+							ref="refNotification2"
+							@click="showNotification = !showNotification, menuOpen = false" 
+							aria-label="Abrir Notificações"
+							class="relative"
+						>
+							<Lucide icon="Bell" size="24" />
+							<span
+								v-if="notification > 0"
+								class="flex items-center justify-center bg-white text-red-700 text-xs font-semibold rounded-full h-4 w-4 absolute -top-1 -right-1"
+							>
+								{{ notification }}
+							</span>
+						</button>
+						<!-- Menu flutuante -->
+						<button 
+							ref="menuRef2"
+							@click.stop="menuOpen = !menuOpen, showNotification = false" 
+							aria-label="Abrir menu"
+						>
+							<Lucide :icon="menuOpen ? 'X' : 'Menu'" size="24" />
+						</button>
+					</div>
 				</div>
 
 				<transition name="fade">
