@@ -8,7 +8,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div v-if="isLoading" class="flex flex-col items-center justify-center lg:-translate-x-32 -translate-y-8 text-center text-purple-700 animate-pulse fixed z-10 lg:w-screen h-screen">
+  <div v-if="props.isLoading" class="flex flex-col items-center justify-center lg:-translate-x-32 -translate-y-8 text-center text-purple-700 animate-pulse fixed z-10 lg:w-screen w-full h-screen">
       <div class="bg-fuchsia-100/60 p-4 rounded-xl shadow w-11/12 max-w-md border border-purple-300">
         <div class="flex items-center justify-center gap-2 mb-2">
           <Lucide icon="Loader2" class="w-5 h-5 animate-spin text-purple-600" />

@@ -16,6 +16,7 @@ const router = useRouter();
 const menuOpen = ref(false);
 const notification = ref(0)
 const showNotification = ref(false)
+const showNotification2 = ref(false)
 const sales = ref()
 
 const isLogged = ref(false)
@@ -24,8 +25,9 @@ const isAdmin = ref(false)
 const menuRef = ref<HTMLElement | null>(null);
 const menuRef2 = ref<HTMLElement | null>(null);
 const refNotification = ref<HTMLElement | null>(null);
-
 const refNotification2 = ref<HTMLElement | null>(null);
+const refNotification3 = ref<HTMLElement | null>(null);
+const refNotification4 = ref<HTMLElement | null>(null);
 
 
 const handleClickOutside = (event: MouseEvent) => {
@@ -51,6 +53,17 @@ const handleClickOutside = (event: MouseEvent) => {
     !refNotification2.value.contains(target)
   ) {
     showNotification.value = false;
+  }
+
+	// Fecha notificações se clicar fora
+  if (
+    showNotification2.value &&
+    refNotification3.value &&
+    refNotification4.value &&
+    !refNotification3.value.contains(target) &&
+    !refNotification4.value.contains(target)
+  ) {
+    showNotification2.value = false;
   }
 };
 
@@ -81,11 +94,12 @@ onMounted(async () => {
   document.addEventListener('click', handleClickOutside);
 	window.scrollTo({top: 0})
 
-	// const response = await getSales()
-	// if(response.status === 200) {
-	// 	notification.value = 1		
-	// 	console.log(response)
-	// }
+	if(isAdmin){
+		const response = await getSales()
+		if(response.status === 200) {
+			notification.value = 1		
+		}
+	}
 });
 
 onUnmounted(() => {
@@ -99,157 +113,212 @@ provide('isAdmin', isAdmin)
 	<div
 		class="min-h-screen min-w-screen bg-fuchsia-200"
 	>
-		<header class="hidden lg:block w-full text-gray-50 overflow-hidden p-1 fixed z-10 searchFilterBg">
-			<div class="whitespace-nowrap text-center">
-				<h1 class="inline-block px-4 text-lg">
-					🌙✨ Seja muito bem-vindo ao Projeto Lunar ✨🌙
+		<header class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-50 searchFilterBg">
+			<div class="flex w-full h-full items-center justify-center whitespace-nowrap text-center p-1 bg-[rgba(0,0,0,0.2)]">
+				<h1 class="inline-block px-4 text-lg w-full text-start">
+					Projeto Lunar
 				</h1>
-			</div>
-		</header>
-
-
-		<div
-			class="flex items-center justify-end searchFilterBg2"
-		>
-			<div
-				class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0"
-			>
-				<nav
-					class="rounded-2xl p-4 min-w-52 h-[90vh] bg-[rgba(0,0,0,0.8)]"
-				>
-					<ul
-						class="flex flex-col w-full gap-1 text-violet-400 text-sm font-semibold"
+				<div
+						ref="refNotification4"
+						class="flex items-center justify-end"
 					>
-						<li>
-							<RouterLink 
-								to="/"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
-								:class="{
-									'bg-violet-100/10': route.path === '/',
-									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/'
-								}"
+						<!-- Notificações -->
+						<button 
+							@click="showNotification2 = !showNotification2, console.log(showNotification2)" 
+							aria-label="Abrir Notificações"
+							class="relative mr-4 border p-1 rounded-md"
+						>
+							<Lucide icon="Bell" size="14" />
+							<span
+								v-if="notification > 0"
+								class="flex items-center justify-center bg-white/90 text-red-700 text-[11px] font-semibold rounded-full h-2.5 w-2.5 absolute -top-0.5 -right-0.5"
 							>
-								<Lucide
-										icon="Home"
-										size="16"
-								/>
-								Home
-							</RouterLink>
-						</li>
-						
-							<li>
-								<RouterLink 
-									to="/houses"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 
-										'bg-violet-100/10': route.path === '/houses',
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/houses'
-									}"
-									
-								>
-									<Lucide icon="Moon" size="14" />
-									Casas lunar
-								</RouterLink>
-							</li>
-						<li>
-							<RouterLink 
-								to="/members"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
-								:class="{
-									'bg-violet-100/10': route.path === '/members',
-									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/members'
-								}"
-							>
-								<Lucide
-										icon="Users"
-										size="14"
-								/>
-								Membros
-							</RouterLink>
-						</li>
-						<li>
-							<RouterLink 
-								to=""
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive  text-xs"
-								:class="{
-									'bg-violet-100/10': route.path === '/subs',
-									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/subs'
-								}"
-							>
-								<Lucide
-										icon="List"
-										size="14"
-								/>
-								Subs
-							</RouterLink>
-						</li>
-						<li>
-							<RouterLink 
-								to="/shop"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
-								:class="{
-									'bg-violet-100/10': route.path === '/shop',
-									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
-								}"
-							>
-								<Lucide
-										icon="Store"
-										size="14"
-								/>
-								Lojinha Lunar
-							</RouterLink>
-						</li>
-						<li>
-							<RouterLink 
-								to="/profile"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
-								:class="{
-									'bg-violet-100/10': route.path === '/profile',
-									'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
-								}"
-							>
-								<Lucide
-										icon="CircleUserRound"
-										size="14"
-								/>
-								Perfil
-							</RouterLink>
-						</li>
-
-						
-							<li>
-								<RouterLink 
-									v-if="!isLogged"
-									to="/register"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-								>
-									<Lucide icon="FileInput" size="14" />
-									Registro
-								</RouterLink>
-							</li>
-
-						
-						<li
+								{{ notification }}
+							</span>
+						</button>
+						<div
 							@click="handleLogout "
+							class="mr-6"
 						>
 							<RouterLink 
 								:to="!isLogged ? '/login': ''"
-								class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
+								class="flex w-full p-1 items-center justify-start gap-1 rounded-md transition text-xs border"
 								:class="{
-									'hover:bg-green-100 text-green-800': !isLogged,
-									'hover:bg-red-100 text-red-800': isLogged
-								}"								
+									'hover:bg-green-700 hover:border-green-700 hover:text-white text-green-300 border-green-300': !isLogged,
+									'hover:bg-red-700 hover:border-red-700 hover:text-white text-red-300 border-red-300': isLogged
+								}"
+								:title="isLogged ? 'LogOut': 'LogIn'"
+								:aria-label="isLogged ? 'LogOut': 'LogIn'"						
 							>
 								<Lucide
 										:icon="isLogged ? 'LogOut': 'LogIn'"
 										size="14"
 								/>
-								{{ isLogged ? 'Sair' : 'Login' }}
 							</RouterLink>
-						</li>
-					</ul>
-				</nav>
+						</div>
+					</div>
 			</div>
+		</header>
+
+		
+		<div 
+			ref="refNotification3"
+			v-if="showNotification2" 
+			class="hidden lg:flex z-50"
+		>
+			<NotificationsContainer 
+				
+			/>
+		</div>
+
+		<div
+			class="flex items-center justify-end searchFilterBg2 "
+		>
+			<div
+				class="flex bg-[rgba(0,0,0,0.6)] w-full items-center justify-end"
+			>
+
+				<div
+					class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0"
+				>
+					<nav
+						class="rounded-2xl p-4 min-w-44 h-[50vh] bg-[rgba(0,0,0,0.8)]"
+					>
+						<ul
+							class="flex flex-col w-full gap-1 text-violet-400 font-semibold text-[11px]"
+						>
+							<li>
+								<RouterLink 
+									to="/"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
+									:class="{
+										'bg-violet-100/10': route.path === '/',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/'
+									}"
+								>
+									<Lucide
+											icon="Home"
+											size="16"
+									/>
+									Home
+								</RouterLink>
+							</li>
+							
+								<li>
+									<RouterLink 
+										to="/houses"
+										class="flex items-center gap-2 px-2 py-1 rounded-md"
+										:class="{ 
+											'bg-violet-100/10': route.path === '/houses',
+											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/houses'
+										}"
+										
+									>
+										<Lucide icon="Moon" size="14" />
+										Casas lunar
+									</RouterLink>
+								</li>
+							<li>
+								<RouterLink 
+									to="/members"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
+									:class="{
+										'bg-violet-100/10': route.path === '/members',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/members'
+									}"
+								>
+									<Lucide
+											icon="Users"
+											size="14"
+									/>
+									Membros
+								</RouterLink>
+							</li>
+							<li>
+								<RouterLink 
+									to=""
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
+									:class="{
+										'bg-violet-100/10': route.path === '/subs',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/subs'
+									}"
+								>
+									<Lucide
+											icon="List"
+											size="14"
+									/>
+									Subs
+								</RouterLink>
+							</li>
+							<li>
+								<RouterLink 
+									to="/shop"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
+									:class="{
+										'bg-violet-100/10': route.path === '/shop',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
+									}"
+								>
+									<Lucide
+											icon="Store"
+											size="14"
+									/>
+									Lojinha Lunar
+								</RouterLink>
+							</li>
+							<li>
+								<RouterLink 
+									to="/profile"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
+									:class="{
+										'bg-violet-100/10': route.path === '/profile',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
+									}"
+								>
+									<Lucide
+											icon="CircleUserRound"
+											size="14"
+									/>
+									Perfil
+								</RouterLink>
+							</li>
+
+							
+								<li>
+									<RouterLink 
+										v-if="!isLogged"
+										to="/register"
+										class="flex items-center gap-2 px-2 py-1 rounded-md"
+									>
+										<Lucide icon="FileInput" size="14" />
+										Registro
+									</RouterLink>
+								</li>
+
+								<li>
+									<RouterLink 
+										to="#"
+										class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+									>
+										<Lucide icon="Bell" size="14" />
+										Notificações
+									</RouterLink>
+								</li>
+
+								<li>
+									<RouterLink 
+										to="/profile/orders"
+										class="flex items-center gap-2 px-2 py-1 rounded-md"
+									>
+										<Lucide icon="Package" size="14" />
+										Meus pedidos
+									</RouterLink>
+								</li>
+							
+							
+						</ul>
+					</nav>
+				</div>
 
 			<!-- Mobile Nav -->
 			<div class="lg:hidden w-full searchFilterBg text-white fixed top-0 left-0 z-20"
@@ -306,7 +375,7 @@ provide('isAdmin', isAdmin)
 						v-show="menuOpen"
 						class="bg-white text-violet-300 searchFilterBg2"
 					>
-						<ul class="flex flex-col gap-2 font-semibold text-sm p-4 bg-[rgb(0,0,0,0.3)]">
+						<ul class="grid grid-cols-2 font-semibold text-sm p-4 bg-[rgb(0,0,0,0.3)]">
 							<li>
 								<RouterLink 
 									to="/"
@@ -377,14 +446,38 @@ provide('isAdmin', isAdmin)
 							</li>
 
 							
-							<li>
+							<li
+								v-if="!isLogged"
+							>
 								<RouterLink 
-									v-if="!isLogged"
 									to="/register"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 								>
 									<Lucide icon="FileInput" size="14" />
 									Registro
+								</RouterLink>
+							</li>
+
+							
+
+							<li>
+								<RouterLink 
+									to="#"									
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+								>
+									<Lucide icon="Bell" size="14" />
+									Notificações
+								</RouterLink>
+							</li>
+
+							<li>
+								<RouterLink 
+									to="/profile/orders"
+									:class="{ 'bg-violet-100/10': route.path === '/profile/orders' }"									
+									class="flex items-center gap-2 px-2 py-1 rounded-md"
+								>
+									<Lucide icon="Package" size="14" />
+									Meus pedidos
 								</RouterLink>
 							</li>
 							
@@ -412,25 +505,27 @@ provide('isAdmin', isAdmin)
 			</div>
 
 			<main
-				class="flex w-full min-h-screen items-start justify-center lg:w-10/12 z-0 pt-14 lg:mt-0"
+				class="flex w-full bg-red-90i0 min-h-screen items-start justify-center lg:w-[87vw] z-0 pt-14 lg:mt-0"
 			>
 				<router-view />
 			</main>
 
 			<div
-			class="fixed bottom-16 right-2 "
-		>
-			<button
-				class="bg-fuchsia-400 rounded-full p-1"
-			
+				class="fixed bottom-16 right-2 "
 			>
-				<Lucide
-					icon="ChevronUp"
-					class="w-7 h-7 text-white"
-					@click="scrollToTop"
-				/>
-			</button>
-		</div>
+				<button
+					class="bg-fuchsia-400 rounded-full p-1"
+				
+				>
+					<Lucide
+						icon="ChevronUp"
+						class="w-7 h-7 text-white"
+						@click="scrollToTop"
+					/>
+				</button>
+			</div>
+
+			</div>
 
 		</div>
 	</div>

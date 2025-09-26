@@ -212,7 +212,7 @@ watch(cart, (newVal) => {
 </script>
 
 <template>
-  <div class="lg:w-11/12 bg-gradient-to-b h-[92vh] lg:rounded-xl from-purple-950/80 to-black/90 text-white lg:px-6 px-3 pt-3 relative">
+  <div class="lg:w-[85vw] bg-[rgba(0,0,0,0.75)] lg:rounded-xl text-white lg:px-6 px-3 pt-3 relative">
     <h1 class="text-3xl font-bold mb-3">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
 
     <div

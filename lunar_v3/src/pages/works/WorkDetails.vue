@@ -121,7 +121,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="lg:px-6 mx-auto min-h-screen flex">
+  <div class="lg:px-10 mx-auto min-h-screen flex">
 
     <LoadCard v-if="isLoading" class="m-auto"/>
 
@@ -139,7 +139,7 @@ onBeforeUnmount(() => {
         <img
           :src="book.cover"
           alt="Capa do livro"
-          class="lg:w-70 h-2/3 lg:mt-6"
+          class="lg:w-80 h-2/3 lg:ml-8"
         />
         <div class="lg:px-6 flex-1 my-4">
           <div class="flex justify-between items-center">

@@ -58,22 +58,22 @@ onMounted(async () => {
     console.error('❌ Erro ao buscar casas:', e)
   } finally {
     isLoading.value = false
-  }
+  } 
 })
 
 </script>
 
 <template>
-  <div class="w-full px-4 lg:px-8 min-h-screen">
+  <div class="w-full p-2 lg:w-[85vw] lg:p-4 min-h-screen bg-[rgba(0,0,0,0.75)] lg:rounded-xl relative">
     <Loading :is-loading="isLoading">
       <template #title>Carregando as casas lunares</template>
       <template #description>Buscando dados do clã... 🛸</template>
     </Loading>
     <div
-      class="flex items-center justify-start mb-2"
+      class="flex items-center justify-start mb-3"
     >
       <p
-        class="text-lg font-bold text-purple-700 bg-purple-100 rounded-full flex items-center gap-2"
+        class="text-lg font-bold text-purple-800 bg-purple-100/70 rounded-full flex items-center gap-2"
         @click="router.back()"
       >
         <Lucide
@@ -86,11 +86,11 @@ onMounted(async () => {
     <div v-if="fetchError" class="text-red-400 font-medium mt-6">
       Não foi possível carregar as casas. Tente novamente mais tarde.
     </div>
-    <div v-if="!isLoading && !fetchError" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div v-if="!isLoading && !fetchError" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-1.5">
       <div
         v-for="house in houses"
         :key="house.name"
-        class="bg-[rgba(0,0,0,0.8)] rounded-xl p-3 shadow-md hover:shadow-xl text-white flex flex-col relative pb-6"
+        class=" bg-[rgba(0,0,0,0.9)] rounded-xl p-3 shadow-md hover:shadow-xl text-white flex flex-col relative pb-6"
       >
         <!-- Ranking -->
         <div 

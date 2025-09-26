@@ -219,11 +219,11 @@ const toggleShowConfigMember = () => {
 <template>
     
   <div
-    class="w-full px-2 lg:px-6"
+    class="w-full px-2 lg:px-6 lg:mt-0 bg-[rgba(0,0,0,0.8)] lg:w-[85vw] lg:rounded-xl"
   >
     <!--Barra de pesquisa-->
     <div
-      class="mb-2 relative px-4 pt-5 pb-3 rounded-xl bg-[rgba(0,0,0,0.4)]"
+      class="relative px-4 pt-5 pb-3 rounded-xl"
     >
       <div class="flex flex-col items-between justify-start gap-3">
         
@@ -263,7 +263,7 @@ const toggleShowConfigMember = () => {
         </div>
       </div>  
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full mx-auto mt-4 lg:mt-11">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full mx-auto mt-4">
 
       
       <Loading :is-loading="isLoading">

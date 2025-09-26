@@ -15,14 +15,14 @@ onMounted(() => {
 
 <template>	
 	<div
-		class="mt-5 lg:mt-1.5 relative w-screen flex items-center justify-center"
+		class="relative w-screen flex items-center justify-center"
 	>
 		<Header>
 		</Header>
 
 
 		<div
-			class="pb-6 w-full px-1 lg:px-8"
+			class="pb-6 w-full lg:w-[85vw]"
 		>
 			<AllbooksCard
 				@update-length="totalBooks = $event"

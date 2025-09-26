@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue"
+import { ref, onMounted, computed, watch } from "vue"
 import { toast } from "@/base/utils/toast"
 import { useRouter } from "vue-router"
 import Lucide from "@/base/lucide/Lucide.vue"
@@ -80,17 +80,18 @@ const handleConfirmDelet = (order: any) => {
 
 // total geral de todos os pedidos
 const totalAllOrders = computed(() => {
-  const total = loading ? 0 : orders.value.reduce((sum, order) => {
-    // remove tudo que não seja dígito ou ponto/virgula
+  if (loading.value) return 0
+
+  return orders.value.reduce((sum, order) => {
     const cleaned = order.total.replace(/[^\d,.-]/g, '').replace(',', '.')
     const value = parseFloat(cleaned) || 0
     return sum + value
   }, 0)
-  return total
 })
 
+
 const formatCurrency = (value: number) => {
-  if(loading) return null
+  if(loading.value) return null
   if(orders.value.some((s) => s.total.includes('Pontos Lunar'))) {
     return `${value} PL`
   }
@@ -101,7 +102,7 @@ onMounted(fetchOrders)
 </script>
 
 <template>
-  <div class="bg-gradient-to-b from-purple-950/80 to-black/90 text-white rounded-lg p-6 shadow-lg w-full min-h-screen">
+  <div class="lg:w-[85vw] bg-[rgba(0,0,0,0.75)] text-white rounded-lg p-6 shadow-lg w-full min-h-screen">
     <h1 class="text-2xl font-bold mb-4 flex items-center justify-between gap-2">
       <p
         class="flex items-center"

@@ -30,7 +30,7 @@ const clearAll = () => {
 
 <template>
   <div
-    class="absolute top-14 right-0 bg-white dark:bg-slate-900 shadow-lg rounded-lg w-72 overflow-hidden border border-slate-300 dark:border-slate-700"
+    class="top-14 right-0 lg:top-9 bg-white dark:bg-slate-900 shadow-lg rounded-lg w-72 overflow-hidden border border-slate-300 dark:border-slate-700 z-10 fixed"
   >
     <!-- Header -->
     <div class="flex items-center justify-between p-3 border-b border-slate-200 dark:border-slate-700">

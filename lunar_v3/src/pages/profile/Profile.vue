@@ -129,29 +129,14 @@ onMounted(async () => {
     />
     
   </div>
-  <div class="flex flex-col justify-center items-center w-full min-h-screen  px-1 lg:px-4 relative">
-    <div
-      v-if="!isLoading"
-      class="top-8 left-4 px-1 absolute z-10"
-    >
-      <h1
-        class="flex items-center text-purple-700 p-0.5 bg-purple-100 rounded-full text-sm cursor-pointer"
-        @click="router.back()"
-      >
-        <Lucide
-            icon="ArrowLeft"
-            class="w-4 h-4"
-          />
-      </h1>
-    </div>
-
+  <div class="flex flex-col justify-center items-center w-full lg:w-[85vw] lg:rounded-xl lg:p-4 p-1 min-h-screen relative b0g-[rgba(0,0,0,0.75)]">
       <div
         v-if="!isLoading"
         class="rounded-2xl w-full mx-auto  shadow-sm text-gray-800 space-y-6"
       >
-        <div class="flex flex-col lg:flex-row items-start min-h-full gap-8 w-full">
+        <div class="flex flex-col lg:flex-row items-start min-h-full gap-2 lg:gap-0 w-full lg:mb-2">
           <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard lg:shadow-lg rounded-xl">
+          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard border border-gray-800 lg:shadow-lg rounded-xl">
             
             <!-- Moeda promocional -->
             <div
@@ -166,20 +151,6 @@ onMounted(async () => {
               </button>
 
               <p class="text-white text-[10px] text-center">+10 pontos</p>
-            </div>
-
-            <!-- Minhas compras -->
-            <div
-              class="flex items-center justify-center flex-col absolute top-28 left-3 w-20"
-            >
-              <button
-                class="w-9 h-9 rounded-full shadow-xl flex items-center justify-center cursor-pointer"
-                @click="router.push('/profile/orders')"
-              >
-                <Lucide icon="Store" class="w-6 h-6 text-gray-300 drop-shadow" />
-              </button>
-
-              <p class="text-gray-300 text-[10px] text-center">Meus pedidos</p>
             </div>
 
             <!-- TAG DE ROLE -->
@@ -307,7 +278,7 @@ onMounted(async () => {
           </div>
 
           <!-- Estatísticas à direita -->
-          <div class="gap-6 w-full lg:w-5/12">
+          <div class="w-full lg:w-6/12">
             <div
               v-if="tierData?.tier"
               class="lg:px-6"
@@ -372,7 +343,7 @@ onMounted(async () => {
 
 
 
-            <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-3 lg:gap-6 lg:px-6">
+            <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-2 lg:px-6">
                <!-- Pontos tier -->
               <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
@@ -495,13 +466,13 @@ onMounted(async () => {
             <Lucide icon="Loader2" class="w-5 h-5 animate-spin text-purple-600" />
             <span class="text-base font-medium">Carregando perfil Lunar...</span>
           </div>
-          <p class="text-sm text-gray-600">Estamos alinhando os astros para exibir seu perfil com magia.</p>
+          <p class="text-sm text-gray-600">Estamos alinhando os astros para exibir seu perfil magicamente.</p>
         </div>
       </div>
         
     
       <div
-        class="w-full lg:hidden"
+        class="w-full lg:hidden mt-2 lg:mt-0"
       >
         <RegisterBook />
       </div>
