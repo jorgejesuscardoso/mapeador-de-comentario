@@ -385,7 +385,7 @@ onMounted(async () => {
       class="w-full"
     >
       <div
-        class="flex flex-col bg-white sm:mx-4 my-1 py-4 px-2 lg:rounded-xl shadow-lg relative"
+        class="flex flex-col bg-white sm:mx-4 py-4 px-2 lg:rounded-xl shadow-lg relative"
       > 
       <!-- <div
         class="cursor-pointer"
@@ -565,10 +565,10 @@ onMounted(async () => {
     </header>
 
     <div 
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 mt-4 sm:p-4 min-w-full"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 sm:p-4 min-w-full"
     >
       <div
-        v-if="!isLoading"
+        v-if="!isLoading && data.length > 0"
         v-for="(comment, index) in data"
         :key="index"
         class="bg-white rounded-xl shadow-lg p-4 flex flex-col gap-2 hover:shadow-xl transition duration-300"
@@ -595,10 +595,24 @@ onMounted(async () => {
           {{ comment.text }}
         </div>
       </div>
+      <!-- Empty state -->
+      <div 
+        v-else-if="!isLoading && data.length === 0" 
+        class="flex flex-col items-center lg:w-[85vw] bg-[rgba(0,0,0,0.75)] justify-center py-20 text-center text-white"
+      >
+        <Lucide
+          icon="MessageCircleQuestionMark"
+          class="h-14 w-14 "
+        />
+        <h2 class="text-lg font-semibold text-gray-500 mb-2">Nenhum comentário encontrado</h2>
+      </div>
     </div>
-		<LoadCard 
-			v-if="isLoading"
-		/>
+		<div
+      v-if="isLoading"
+      class="w-full lg:w-[85vw] h-[15vh] lg:h-[35vh] mt-4 flex items-center justify-center"
+    >
+      <LoadCard />
+    </div>
 
 	</div>
 </template>

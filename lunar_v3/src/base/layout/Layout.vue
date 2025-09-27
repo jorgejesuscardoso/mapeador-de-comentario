@@ -100,6 +100,32 @@ onMounted(async () => {
 			notification.value = 1		
 		}
 	}
+	 // Carrega GA4
+  const script = document.createElement('script')
+  script.async = true
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-36V74JCT4B'
+  document.head.appendChild(script)
+
+  script.onload = () => {
+    // Inicializa gtag
+    (window as any).dataLayer = (window as any).dataLayer || []
+    function gtag(...args: any[]) { (window as any).dataLayer.push(args) }
+    (window as any).gtag = gtag
+    gtag('js', new Date())
+    gtag('config', 'G-36V74JCT4B')
+  }
+
+  // Dispara page_view ao mudar de rota
+  watch(
+    () => router.currentRoute.value.fullPath,
+    (path) => {
+      if ((window as any).gtag) {
+        (window as any).gtag('event', 'page_view', { page_path: path })
+      }
+    },
+    { immediate: true }
+  )
+	
 });
 
 onUnmounted(() => {

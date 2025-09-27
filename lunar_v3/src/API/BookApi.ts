@@ -33,7 +33,7 @@ export const getBooksAws = async () => {
 
     const response = await axios(`${endPoint}/books/`, {
       method: 'GET'})
-
+ 
     return response.data
   } catch (err: any) {
    throw new Error(

@@ -131,7 +131,7 @@ books.get('/', async (req: Request, res: Response) => {
         TableName: 'books'
       })
     );
-
+ 
     const data = [] as any[]
 
     if (result.Items && result.Items.length > 0) {
