@@ -287,7 +287,7 @@ onBeforeUnmount(() => {
                 {{ isAdm ? 'Ou abra o capítulo:' : 'Acesse o capítulo no Wattpad:' }}
               </h3>
               <a
-                :href="`${(book?.caps.find((c: any) => c.title === capToSearch) as capsData )?.url }`"
+                :href="`https://www.wattpad.com/${(book?.caps.find((c: any) => c.title === capToSearch) as capsData )?.url }`"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="inline-block w-full text-center px-4 py-2 text-sm text-white bg-pink-600 hover:bg-green-700 rounded-md transition"
