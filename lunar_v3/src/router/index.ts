@@ -79,8 +79,8 @@ const routes: RouteRecordRaw[] = [
         component: HousesCard,
       },   
       { 
-        path: '/series', 
-        name: 'series',
+        path: '/stream', 
+        name: 'stream',
         component: MyFrame,
       }, 
     ]
