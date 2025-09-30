@@ -1,139 +1,92 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
+import { mock } from "./mock"
 
 interface Obra {
   id: number
   titulo: string
-  autor: string
   capa: string
-  descricao: string
-  genero: string
-  tags: string[]
-  comentarios: number
-  votos: number
   views: number
   adulto: boolean
-  ranking: number
+  genero: string
+  tags: string[]
 }
 
-const obras = ref<Obra[]>([
-  {
-    id: 1,
-    titulo: "A Canção da Lua",
-    autor: "Maria Silva",
-    capa: "https://placehold.co/300x420",
-    descricao: "Uma jornada mágica sob a luz de Lunara.",
-    genero: "Fantasia",
-    tags: ["Magia", "Romance", "Aventura"],
-    comentarios: 124,
-    votos: 980,
-    views: 13400,
-    adulto: false,
-    ranking: 1
-  },
-  {
-    id: 2,
-    titulo: "Sombras de Aelorian",
-    autor: "João Cardoso",
-    capa: "https://placehold.co/300x420",
-    descricao: "Segredos antigos despertam no reino perdido.",
-    genero: "Dark Fantasy",
-    tags: ["Mistério", "Guerras", "Traição"],
-    comentarios: 89,
-    votos: 770,
-    views: 9400,
-    adulto: true,
-    ranking: 2
-  },
-  {
-    id: 3,
-    titulo: "O Último Feiticeiro",
-    autor: "Ana Costa",
-    capa: "https://placehold.co/300x420",
-    descricao: "Entre batalhas e maldições, nasce uma lenda.",
-    genero: "Aventura",
-    tags: ["Feitiçaria", "Heroísmo", "Viagem"],
-    comentarios: 203,
-    votos: 1560,
-    views: 22400,
-    adulto: false,
-    ranking: 3
-  },
-  {
-    id: 4,
-    titulo: "Corações em Cinzas",
-    autor: "Lívia Torres",
-    capa: "https://placehold.co/300x420",
-    descricao: "Amor e dor se encontram em um mundo em ruínas.",
-    genero: "Romance",
-    tags: ["Drama", "Apocalipse", "Amor"],
-    comentarios: 42,
-    votos: 320,
-    views: 4200,
-    adulto: true,
-    ranking: 5
-  }
-])
+const obras = ref<Obra[]>(mock)
+
+// Agrupa as obras por gênero
+const generos = computed(() => {
+  const grupos: Record<string, Obra[]> = {}
+  obras.value.forEach((obra) => {
+    if (!grupos[obra.genero]) {
+      grupos[obra.genero] = []
+    }
+    grupos[obra.genero].push(obra)
+  })
+  return grupos
+})
 </script>
 
 <template>
-  <div class="w-full max-w-7xl mx-auto px-4 py-10">
-    <h2 class="text-2xl sm:text-3xl font-bold mb-8 text-center text-indigo-900">
-      Obras Originais Lunar <span class="text-sm text-indigo-200/30">(Em breve)</span>
-    </h2>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-      <div
-        v-for="obra in obras"
-        :key="obra.id"
-        class="bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden flex flex-col"
+  <div
+    class="w-full bg-gray-2000 absolute left-0 top-9 z-0 flex items-start justify-end px-6 min-h-[93vh]"
+  >
+    <div class="w-full lg:w-[83vw]">
+      <h2
+        class="text-2xl sm:text-3xl font-bold mb-1 text-center text-indigo-500"
       >
-        <!-- CAPA -->
-        <div class="relative">
-          <img
-            :src="obra.capa"
-            :alt="obra.titulo"
-            class="w-full h-56 object-cover"
-          />
-          <!-- Selo +18 -->
-          <span
-            v-if="obra.adulto"
-            class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded"
-          >
-            +18
-          </span>
-          <!-- Ranking -->
-          <span
-            class="absolute top-2 right-2 bg-indigo-700 text-white text-xs font-bold px-2 py-1 rounded"
-          >
-            #{{ obra.ranking }}
-          </span>
-        </div>
+        Obras Originais Lunar
+        <span class="text-sm text-indigo-400/80">(Em breve)</span>
+      </h2>
 
-        <!-- INFO -->
-        <div class="p-4 flex flex-col flex-grow">
-          <h3 class="font-semibold text-gray-800 text-base truncate">
-            {{ obra.titulo }}
+      <div
+        class="h-[87vh] overflow-y-auto"
+      >
+          <!-- Loop de GÊNEROS -->
+        <div v-for="(lista, genero) in generos" :key="genero" class="mb-2">
+          <!-- Título do gênero -->
+          <h3 class="font-semibold mb-1 text-indigo-600">
+            {{ genero }}
           </h3>
-          <p class="text-xs text-gray-500 mb-1">por {{ obra.autor }}</p>
-          <p class="text-xs text-indigo-600 font-medium mb-2">{{ obra.genero }}</p>
 
-          <!-- Tags -->
-          <div class="flex flex-wrap gap-1 mb-3">
-            <span
-              v-for="tag in obra.tags"
-              :key="tag"
-              class="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded"
+          <!-- Grid de obras -->
+          <div
+            class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-2 place-items-center"
+          >
+            <div
+              v-for="obra in lista"
+              :key="obra.id"
+              class="relative group w-full max-w-[180px] bg-white rounded-md"
             >
-              {{ tag }}
-            </span>
-          </div>
+              <!-- CAPA -->
+              <img
+                :src="obra.capa"
+                :alt="obra.titulo"
+                class="w-full aspect-[3/4] object-cover rounded-md shadow-md group-hover:shadow-xl transition"
+              />
+              <!-- Tag principal -->
+              <div
+                v-if="obra.tags?.length"
+                class="my-2 text-[11px] font-medium text-gray-800 truncate px-2"
+              >
+                #{{ obra.tags[0] }}
+              </div>
 
-          <!-- Stats -->
-          <div class="flex items-center justify-between text-xs text-gray-600 mt-auto">
-            <span>💬 {{ obra.comentarios }}</span>
-            <span>👍 {{ obra.votos }}</span>
-            <span>👁️ {{ obra.views }}</span>
+              <!-- Views -->
+              <div
+                class="text-gray-800 text-[11px] flex items-center gap-1 mb-1  px-2"
+              >
+                👁️ {{ obra.views.toLocaleString() }}
+              </div>
+
+              <!-- Badge +18 -->
+              <span
+                v-if="obra.adulto"
+                class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded"
+              >
+                +18
+              </span>
+            </div>
           </div>
         </div>
       </div>

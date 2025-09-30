@@ -205,7 +205,7 @@ provide('isAdmin', isAdmin)
 			>
 
 				<div
-					class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0"
+					class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0 z-50"
 				>
 					<nav
 						class="rounded-2xl p-4 min-w-44 h-[50vh] bg-[rgba(0,0,0,0.8)]"
