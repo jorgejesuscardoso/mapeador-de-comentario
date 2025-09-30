@@ -229,8 +229,23 @@ provide('isAdmin', isAdmin)
 									Home
 								</RouterLink>
 							</li>
-							
-								<li>
+
+							<li>
+								<RouterLink 
+									to="/originals-lunar"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-"
+									:class="{ 
+											'bg-violet-100/10': route.path === '/books-lunar',
+											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/books-lunar'
+										}"
+									@click.stop="menuOpen = false" 
+								>
+									<Lucide icon="BookOpen" size="16" />
+									Originais Lunar
+								</RouterLink>
+							</li>
+
+								<!-- <li>
 									<RouterLink 
 										to="/houses"
 										class="flex items-center gap-2 px-2 py-1 rounded-md"
@@ -243,7 +258,7 @@ provide('isAdmin', isAdmin)
 										<Lucide icon="Moon" size="14" />
 										Casas lunar
 									</RouterLink>
-								</li>
+								</li> -->
 							<li>
 								<RouterLink 
 									to="/members"
@@ -260,7 +275,7 @@ provide('isAdmin', isAdmin)
 									Membros
 								</RouterLink>
 							</li>
-							<li>
+							<!-- <li>
 								<RouterLink 
 									to=""
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
@@ -275,7 +290,7 @@ provide('isAdmin', isAdmin)
 									/>
 									Subs
 								</RouterLink>
-							</li>
+							</li> -->
 							<li>
 								<RouterLink 
 									to="/shop"
@@ -413,7 +428,17 @@ provide('isAdmin', isAdmin)
 									Home
 								</RouterLink>
 							</li>
-							<li 
+							<li>
+								<RouterLink 
+									to="#"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-inactive"
+									@click.stop="menuOpen = false" 
+								>
+									<Lucide icon="BookOpen" size="16" />
+									Originais Lunar
+								</RouterLink>
+							</li>
+							<!-- <li 
 								@click.stop="menuOpen = false" 
 							>
 								<RouterLink 
@@ -425,7 +450,7 @@ provide('isAdmin', isAdmin)
 									<Lucide icon="Moon" size="14" />
 									Casas lunar
 								</RouterLink>
-							</li>
+							</li> -->
 							<li>
 								<RouterLink 
 									to="/members"
@@ -437,7 +462,7 @@ provide('isAdmin', isAdmin)
 									Membros
 								</RouterLink>
 							</li>
-							<li>
+							<!-- <li>
 								<RouterLink 
 									to=""
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
@@ -447,7 +472,7 @@ provide('isAdmin', isAdmin)
 									<Lucide icon="List" size="14" />
 									Subs
 								</RouterLink>
-							</li>
+							</li> -->
 							<li>
 								<RouterLink 
 									to="/shop"

@@ -83,6 +83,11 @@ const routes: RouteRecordRaw[] = [
         name: 'stream',
         component: MyFrame,
       }, 
+      { 
+        path: '/originals-lunar', 
+        name: 'originalsLunar',
+        component: () => import('../pages/originals/OriginalsLunar.vue'),
+      }, 
     ]
   },  
 
