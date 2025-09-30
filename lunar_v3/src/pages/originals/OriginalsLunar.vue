@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { mock } from "./mock"
+import Lucide from "@/base/lucide/Lucide.vue"
 
 interface Obra {
   id: number
@@ -25,58 +26,59 @@ const generos = computed(() => {
   })
   return grupos
 })
+
 </script>
 
 <template>
   <div
-    class="w-full bg-gray-2000 absolute left-0 top-9 z-0 flex items-start justify-end px-6 min-h-[93vh]"
+    class="w-full bg-white absolute left-0 top-9 z-0 flex font items-start justify-end px-6"
   >
-    <div class="w-full lg:w-[83vw]">
-      <h2
-        class="text-2xl sm:text-3xl font-bold mb-1 text-center text-indigo-500"
-      >
-        Obras Originais Lunar
-        <span class="text-sm text-indigo-400/80">(Em breve)</span>
-      </h2>
+    <div class="w-full lg:w-[83vw] lg:mt-0 mt-14">
 
       <div
-        class="h-[87vh] overflow-y-auto seu-container"
+        class="pb-28 seu-container mt-6"
       >
           <!-- Loop de GÊNEROS -->
-        <div v-for="(lista, genero) in generos" :key="genero" class="mb-2">
+        <div v-for="(lista, genero) in generos" :key="genero" class="mb-10">
           <!-- Título do gênero -->
           <h3 class="font-semibold mb-1 text-indigo-600">
             {{ genero }}
           </h3>
+          <span>
+            
+          </span>
 
           <!-- Grid de obras -->
           <div
-            class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-2 place-items-center"
+            class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-2 place-items-center z-50"
           >
             <div
               v-for="obra in lista"
               :key="obra.id"
-              class="relative group w-full max-w-[180px] bg-white rounded-md"
+              class="relative group w-full max-w-[180px] cursor-pointer rounded-md"
             >
               <!-- CAPA -->
               <img
                 :src="obra.capa"
                 :alt="obra.titulo"
-                class="w-full aspect-[3/4] object-cover rounded-md shadow-md group-hover:shadow-xl transition"
+                class="w-full aspect-[3/4] object-cover cursor-pointer rounded-md shadow-md group-hover:shadow-xl transition"
               />
               <!-- Tag principal -->
               <div
                 v-if="obra.tags?.length"
-                class="my-2 text-[11px] font-medium text-gray-800 truncate px-2"
+                class="mt-2 mb-1 text-[11px] font-medium text-blue-800 truncate px-2"
               >
                 #{{ obra.tags[0] }}
               </div>
 
               <!-- Views -->
               <div
-                class="text-gray-800 text-[11px] flex items-center gap-1 mb-1  px-2"
+                class="text-gray-800 text-[10px] flex items-center gap-1 mb-1  px-2"
               >
-                👁️ {{ obra.views.toLocaleString() }}
+                <Lucide
+                  icon="Eye"
+                  class="w-4 h-4 text-gray-600"
+                /> {{ obra.views.toLocaleString() }}
               </div>
 
               <!-- Badge +18 -->

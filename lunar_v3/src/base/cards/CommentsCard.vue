@@ -149,7 +149,7 @@ watch(data, (val)=>{
 
 // watch(data, (val)=>{
 //   const v = idRefsToParagraphs.value.map((s) => s.split('_',2)[1])
-//   console.log(v)
+//   
 // })
 
 watch([paragraphs, idRefsToParagraphs], () => {
@@ -202,15 +202,22 @@ function formatDate(dataISO: string): string {
   const dataComentario = new Date(dataISO);
   const agora = new Date();
 
-  const diffMs = agora.getTime() - dataComentario.getTime(); // <- getTime() retorna number
-  const diffHoras = diffMs / (1000 * 60 * 60);
-
   const hora = String(dataComentario.getHours()).padStart(2, '0');
   const minuto = String(dataComentario.getMinutes()).padStart(2, '0');
 
-  if (diffHoras < 24) {
+  const mesmoDia =
+    dataComentario.getDate() === agora.getDate() &&
+    dataComentario.getMonth() === agora.getMonth() &&
+    dataComentario.getFullYear() === agora.getFullYear();
+
+  const ontem =
+    dataComentario.getDate() === agora.getDate() - 1 &&
+    dataComentario.getMonth() === agora.getMonth() &&
+    dataComentario.getFullYear() === agora.getFullYear();
+
+  if (mesmoDia) {
     return `Hoje às ${hora}:${minuto}`;
-  } else if (diffHoras < 48 && agora.getDate() !== dataComentario.getDate()) {
+  } else if (ontem) {
     return `Ontem às ${hora}:${minuto}`;
   } else {
     const dia = String(dataComentario.getDate()).padStart(2, '0');
@@ -341,7 +348,6 @@ watch([times, data],() => {
   const handleReadingApproved = () => {
     const est = times.value.est
     const wast = times.value.wast
-    console.log(est > wast)
     if(data.value.length === 0) {
       msgReadingPending.value = 'nenhum comentário encontrado.'
       return

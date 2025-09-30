@@ -140,47 +140,45 @@ provide('isAdmin', isAdmin)
 		class="min-h-screen min-w-screen bg-fuchsia-200"
 	>
 		<header class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-50 searchFilterBg">
-			<div class="flex w-full h-full items-center justify-center whitespace-nowrap text-center p-1 bg-[rgba(0,0,0,0.2)]">
-				<h1 class="inline-block px-4 text-lg w-full text-start">
+			<div class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 bg-[rgba(0,0,0,0.2)]">
+				<h1 class="inline-block font-serif px-4 text-lg text-start w-[20vw]">
 					Projeto Lunar
 				</h1>
 				<div
 						ref="refNotification4"
-						class="flex items-center justify-end"
+						class="flex items-center justify-between w-8/12 h-full"
 					>
-						<!-- Notificações -->
-						<button 
-							@click="showNotification2 = !showNotification2, console.log(showNotification2)" 
-							aria-label="Abrir Notificações"
-							class="relative mr-4 border p-1 rounded-md"
-						>
-							<Lucide icon="Bell" size="14" />
-							<span
-								v-if="notification > 0"
-								class="flex items-center justify-center bg-white/90 text-red-700 text-[11px] font-semibold rounded-full h-2.5 w-2.5 absolute -top-0.5 -right-0.5"
-							>
-								{{ notification }}
-							</span>
-						</button>
 						<div
-							@click="handleLogout "
-							class="mr-6"
+							class="w-2/6 h-full p-0.5 relative"
 						>
-							<RouterLink 
-								:to="!isLogged ? '/login': ''"
-								class="flex w-full p-1 items-center justify-start gap-1 rounded-md transition text-xs border"
-								:class="{
-									'hover:bg-green-700 hover:border-green-700 hover:text-white text-green-300 border-green-300': !isLogged,
-									'hover:bg-red-700 hover:border-red-700 hover:text-white text-red-300 border-red-300': isLogged
-								}"
-								:title="isLogged ? 'LogOut': 'LogIn'"
-								:aria-label="isLogged ? 'LogOut': 'LogIn'"						
+							<input 
+								type="text"
+								class="w-full h-full rounded-xl bg-transparent border border-gray-500 focus:outline-none focus:ring-0 pl-8 pr-4 text-sm text-gray-300"
+							/>
+							<Lucide
+								icon="Search"
+								class="h-5 w-5 absolute top-1/2 -translate-y-1/2 left-2 text-gray-500"
+							/>
+						</div>
+
+						<div
+							class="flex items-center pr-4 h-full gap-4"
+						>
+							<div
+								class="flex items-center justify-center h-full cursor-pointer"
 							>
-								<Lucide
-										:icon="isLogged ? 'LogOut': 'LogIn'"
-										size="14"
-								/>
-							</RouterLink>
+								<button
+									class="border border-gray-500 px-2 py-1 rounded-md text-sm text-gray-300 font-bold font-mono"
+								>
+									Escrever
+								</button>
+							</div>
+
+							<Lucide
+								icon="UserCircle"
+								class="h-9 w-9 text-gray-300"
+								:stroke-width="1"
+							/>
 						</div>
 					</div>
 			</div>
@@ -205,10 +203,13 @@ provide('isAdmin', isAdmin)
 			>
 
 				<div
-					class="hidden lg:flex w-3/12 h-full mt-1 fixed top-10 left-0 z-50"
+					class="hidden lg:flex h-full mt-1 fixed top-14 left-0 z-50"
 				>
 					<nav
-						class="rounded-2xl p-4 min-w-44 h-[50vh] bg-[rgba(0,0,0,0.8)]"
+						class="rounded-2xl p-4 min-w-44 h-[50vh]"
+						:class="{
+							'bg-[rgba(0,0,0,0.8)]': route.path !== '/originals-lunar'
+						}"
 					>
 						<ul
 							class="flex flex-col w-full gap-1 text-violet-400 font-semibold text-[11px]"
@@ -219,7 +220,8 @@ provide('isAdmin', isAdmin)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/',
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/'
+										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/' && route.path !== '/originals-lunar'
 									}"
 								>
 									<Lucide
@@ -235,7 +237,8 @@ provide('isAdmin', isAdmin)
 									to="/originals-lunar"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-"
 									:class="{ 
-											'bg-violet-100/10': route.path === '/books-lunar',
+											'bg-violet-900/30 text-violet-800': route.path === '/originals-lunar',
+											'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
 											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/books-lunar'
 										}"
 									@click.stop="menuOpen = false" 
@@ -265,6 +268,7 @@ provide('isAdmin', isAdmin)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/members',
+										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/members'
 									}"
 								>
@@ -297,6 +301,7 @@ provide('isAdmin', isAdmin)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/shop',
+										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
 									}"
 								>
@@ -313,6 +318,7 @@ provide('isAdmin', isAdmin)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/profile',
+										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
 									}"
 								>
@@ -339,7 +345,7 @@ provide('isAdmin', isAdmin)
 								<li>
 									<RouterLink 
 										to="#"
-										class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+										class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive line-through"
 									>
 										<Lucide icon="Bell" size="14" />
 										Notificações
@@ -349,7 +355,11 @@ provide('isAdmin', isAdmin)
 								<li>
 									<RouterLink 
 										to="/profile/orders"
-										class="flex items-center gap-2 px-2 py-1 rounded-md"
+										class="flex items-center gap-2 px-2 py-1 rounded-md":class="{
+										'bg-violet-100/10': route.path === '/profile/orders',
+										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile/orders'
+									}"
 									>
 										<Lucide icon="Package" size="14" />
 										Meus pedidos
@@ -556,7 +566,7 @@ provide('isAdmin', isAdmin)
 			</div>
 
 			<main
-				class="flex w-full bg-red-90i0 min-h-screen items-start justify-center lg:w-[87vw] z-0 pt-14 lg:mt-0"
+				class="flex w-full bg-red-90i0 min-h-screen items-start justify-center lg:w-[87vw] z-0 pt-14 lg:mt-4"
 			>
 				<router-view />
 			</main>
