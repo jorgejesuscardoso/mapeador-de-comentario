@@ -341,14 +341,17 @@ watch([times, data],() => {
   const handleReadingApproved = () => {
     const est = times.value.est
     const wast = times.value.wast
-    
+    console.log(est > wast)
     if(data.value.length === 0) {
       msgReadingPending.value = 'nenhum comentário encontrado.'
+      return
+    } else if(wast < est) {
+      msgReadingPending.value = 'Tempo muito abaixo do estimado.'
       return
     } else if (data.value.length < 6) {
       msgReadingPending.value = 'comentários insuficientes.'
       return
-    } else if(wast < est * 0.75) {
+    } else if(wast < est) {
       msgReadingPending.value = 'Tempo muito abaixo do estimado.'
       return
     } else if (!goodDivision.value) {
