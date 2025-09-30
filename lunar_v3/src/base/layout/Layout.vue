@@ -366,6 +366,24 @@ provide('isAdmin', isAdmin)
 									</RouterLink>
 								</li>
 							
+								<li
+									@click="handleLogout"
+								>
+									<RouterLink 
+										:to="!isLogged ? '/login': ''"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
+										:class="{
+											'hover:bg-green-100 text-green-400': !isLogged,
+											'hover:bg-red-100 text-red-600': isLogged
+										}"
+									>
+										<Lucide
+												:icon="isLogged ? 'LogOut': 'LogIn'"
+												size="14"
+										/>
+										{{ isLogged ? 'Sair' : 'Login' }}
+									</RouterLink>
+								</li>
 							
 						</ul>
 					</nav>
