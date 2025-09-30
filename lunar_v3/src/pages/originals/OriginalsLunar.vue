@@ -40,7 +40,7 @@ const generos = computed(() => {
       </h2>
 
       <div
-        class="h-[87vh] overflow-y-auto"
+        class="h-[87vh] overflow-y-auto seu-container"
       >
           <!-- Loop de GÊNEROS -->
         <div v-for="(lista, genero) in generos" :key="genero" class="mb-2">

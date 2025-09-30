@@ -34,3 +34,12 @@
     background-position: start;
     background-repeat: repeat;
 }
+
+.seu-container {
+  -ms-overflow-style: none; /* IE e Edge antigo */
+  scrollbar-width: none;    /* Firefox */
+}
+
+.seu-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari e Edge moderno */
+}
