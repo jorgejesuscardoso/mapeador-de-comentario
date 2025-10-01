@@ -26,7 +26,8 @@ const userData = ref({
   numPublished: 0,
   userName: '',
   votesReceived: 0,
-  promo: []
+  promo: [],
+  licenses: [] as string[]
 })
 
 const isLoading = ref(false)
@@ -68,6 +69,14 @@ const handleUpdate = async () => {
   window.location.reload()
 }
 
+const roleMap: Record<string, string> = {
+  dev: "Desenvolvedor",
+  beta_tester: "Usuário Beta",
+  admin: "Administrador",
+  premium: "Premium",
+  cine: "Cine Lunar"
+};
+
 onMounted(async () => {
   isLoading.value = true
   const store = localStorage.getItem('user')
@@ -99,6 +108,7 @@ onMounted(async () => {
       userName: data.username,
       votesReceived: data.votesReceived,
       promo: data.promo,
+      licenses: tier.licenses
     }
   }
 
@@ -118,6 +128,7 @@ onMounted(async () => {
     }
   }
 })
+
 </script>
 
 <template>
@@ -156,15 +167,34 @@ onMounted(async () => {
             <!-- TAG DE ROLE -->
               <div
                 class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.7)] rounded-2xl py-4"
-              >
+              > 
                 <div
-                  v-if="tierData?.role"
-                  class="absolute top-0 right-0 rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
-                  :class="roleTag.class "
+                  class="flex flex-col items-end gap-0.5 absolute top-0 right-0"
                 >
-                  {{
-                    roleTag.label
-                  }}
+                  <div
+                    v-if="tierData?.role"
+                    class="rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
+                    :class="roleTag.class "
+                  >
+                    {{
+                      roleTag.label
+                    }}
+                  </div>
+                  <div 
+                    v-if="userData?.licenses.length > 0"
+                    class="flex flex-col items-end gap-0.5"
+                  >
+                    <ul
+                      v-for="lin in userData?.licenses"
+                      :key="lin"
+                      class="rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md appearance-none"
+                      :class="roleTag.class"
+                    >
+                      <li>
+                        {{ roleMap[lin] ?? lin }}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
                 <!-- TAG DE TIER -->
                 <div
