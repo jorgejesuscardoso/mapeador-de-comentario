@@ -387,8 +387,8 @@ onMounted(async () => {
                 </div>
               </div>
 
-              <!-- Pontos tier -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <!-- Ranking casa -->
+              <!-- <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -398,7 +398,7 @@ onMounted(async () => {
                   </p>
                   <p class="text-sm text-gray-300">Ranking na Casa</p>
                 </div>
-              </div>
+              </div> -->
               <!-- Pontos Lunar -->
               <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
@@ -413,7 +413,7 @@ onMounted(async () => {
               </div>
 
               <!-- Pontos elo -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
+              <!-- <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
                 <div>
                   <p 
                     class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
@@ -423,7 +423,7 @@ onMounted(async () => {
                   </p>
                   <p class="text-sm text-gray-300">Pontos de Elo Total</p>
                 </div>
-              </div>
+              </div> -->
 
               
 

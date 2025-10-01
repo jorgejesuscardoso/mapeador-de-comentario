@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from "vue"
+import { ref, computed, watch, nextTick, onMounted } from "vue"
 import { FilmesList, SeriesList } from "./series"
+import { toast } from "@/base/utils/toast";
+import router from "@/router";
 
 type Mode = "series" | "filmes"
 interface SeriesItem { name: string; src: string; episodes?: number }
@@ -73,6 +75,15 @@ watch(mode, (m) => {
 
 function nextVideo() { if (currentIndex.value < episodesCount.value) currentIndex.value++ }
 function prevVideo() { if (currentIndex.value > 1) currentIndex.value-- }
+
+onMounted(() => {
+  const user = JSON.parse(localStorage.getItem('user'))
+  if(!user?.licenses?.some((s) => s === 'cine')) {
+    toast.error('Sem permissão!')
+    router.push('/')
+    return
+  }
+})
 </script>
 
 <template>

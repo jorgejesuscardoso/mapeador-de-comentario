@@ -164,6 +164,7 @@ user.post('/login', async (req: Request, res: Response) => {
       user: account.user,
       house: account.house,
       points: account.points,
+      licenses: account.licenses,
       whatsappNumber: account.whatsappNumber
     };
 
@@ -233,7 +234,7 @@ user.get('/', async (req: Request, res: Response) => {
               votesReceived: parsed.votesReceived || 0,
               deeplink: parsed.deeplink,
             };
-
+            
             return {
               ...formatted,
               ...rest,
@@ -314,7 +315,6 @@ user.get('/:id', async (req: Request, res: Response) => {
         Key: { user: userParam }
       })
     );
-
     
     if (!result.Item || result.Item.deletedAt) {
       return res.status(404).json({ error: 'Usuário não encontrado' });
@@ -340,7 +340,7 @@ user.get('/:id', async (req: Request, res: Response) => {
 
     result.Item.house = houseData
     const userData = { ...tier, ...result.Item}
-
+    
     res.json(userData);
   } catch (err) {
     console.error('Erro ao buscar usuário:', err);

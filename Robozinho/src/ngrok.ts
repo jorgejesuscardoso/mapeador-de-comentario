@@ -1,1 +1,1 @@
-export const ngrok = 'https://f8a7f44dc060.ngrok-free.app'
+export const ngrok = 'https://71b66c5581e7.ngrok-free.app'

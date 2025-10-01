@@ -48,6 +48,7 @@ const toggleModalReset = () =>{
   if(maintenance) return toast.warning('Esta função está em manuntenção! Tente novamente mais tarde!')
   modalReset.value = !modalReset.value
 }
+
 // reset de senha
 const submitReset = async () => {
   // usa userToReset do modal
@@ -60,7 +61,7 @@ const submitReset = async () => {
     error.value = ''
     loading.value = true
     await ResetPassword(userToReset.value.trim(), resetCode.value.trim(), newPassword.value.trim())
-    alert('Senha redefinida com sucesso!')
+    toast.success('Senha redefinida com sucesso!')
     
     // reset dos campos
     modalReset.value = false
