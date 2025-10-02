@@ -33,16 +33,30 @@ const generos = computed(() => {
   <div
     class="w-full bg-white absolute left-0 top-9 z-0 flex font items-start justify-end px-6"
   >
-    <div class="w-full lg:w-[83vw] lg:mt-0 mt-14">
+    <div class="w-full lg:w-[83vw] lg:mt-10 mt-14">
+      <header
+        class="relative"
+      >
+        <input 
+          type="text"
+          class="h-10 w-full border px-10 border-indigo-400 rounded-xl focus:ring-0 focus:outline-none text-indigo-600 placeholder:text-gray-500"
+          placeholder="Pesquisa ainda em fase de testes!!!"
+        >
 
+        <Lucide
+          icon="Search"
+          class="absolute top-1/2 -translate-y-1/2 left-2 text-indigo-500"
+          :stroke-width="1"
+        />
+      </header>
       <div
         class="pb-28 seu-container mt-6"
       >
           <!-- Loop de GÊNEROS -->
         <div v-for="(lista, genero) in generos" :key="genero" class="mb-10">
           <!-- Título do gênero -->
-          <h3 class="font-semibold mb-1 text-indigo-600">
-            {{ genero }}
+          <h3 class="font-semibold mb-1 text-gray-800">
+            {{ genero }}:
           </h3>
           <span>
             
@@ -66,7 +80,7 @@ const generos = computed(() => {
               <!-- Tag principal -->
               <div
                 v-if="obra.tags?.length"
-                class="mt-2 mb-1 text-[11px] font-medium text-blue-800 truncate px-2"
+                class="mt-2 mb-1 text-[11px] font-medium text-indigo-800 truncate px-2"
               >
                 #{{ obra.tags[0] }}
               </div>

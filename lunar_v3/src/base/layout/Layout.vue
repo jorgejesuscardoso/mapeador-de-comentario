@@ -139,10 +139,26 @@ provide('isAdmin', isAdmin)
 	<div
 		class="min-h-screen min-w-screen bg-fuchsia-200"
 	>
-		<header class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-50 searchFilterBg">
-			<div class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 bg-[rgba(0,0,0,0.2)]">
-				<h1 class="inline-block font-serif px-4 text-lg text-start w-[20vw]">
+		<header class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-50 ">
+			<div 
+				class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 "
+				:class="{
+					'bg-[rgba(255,255,255)] border-b border-violet-300 text-gray-600': route.path === '/originals-lunar',
+					'searchFilterBg bg-[rgba(0,0,0,0.2)]': route.path !== '/originals-lunar'
+				}"
+			>
+				<h1 
+					class="flex items-center justify-start gap-1 font-serif px-4 text-lg text-start w-[20vw]"
+					:class="{
+						' text-purple-800 font-bold text-xl italic': route.path === '/originals-lunar',
+					}"
+				>
 					Projeto Lunar
+					<Lucide
+						icon="MoonStar"
+						class="h-8 w-8"
+						:stroke-width="1"
+					/>
 				</h1>
 				<div
 						ref="refNotification4"
@@ -153,10 +169,11 @@ provide('isAdmin', isAdmin)
 						>
 							<input 
 								type="text"
-								class="w-full h-full rounded-xl bg-transparent border border-gray-500 focus:outline-none focus:ring-0 pl-8 pr-4 text-sm text-gray-300"
+								class="w-full h-full rounded-xl bg-transparent focus:outline-none focus:ring-0 pl-8 pr-4 text-sm text-gray-500"
+								disabled
 							/>
 							<Lucide
-								icon="Search"
+								icon="Searoch"
 								class="h-5 w-5 absolute top-1/2 -translate-y-1/2 left-2 text-gray-500"
 							/>
 						</div>
@@ -168,7 +185,7 @@ provide('isAdmin', isAdmin)
 								class="flex items-center justify-center h-full cursor-pointer"
 							>
 								<button
-									class="border border-gray-500 px-2 py-1 rounded-md text-sm text-gray-300 font-bold font-mono"
+									class="border border-gray-600 px-2 py-1 rounded-md text-sm text-gray-800 font-bold font-mono"
 								>
 									Escrever
 								</button>
@@ -176,8 +193,8 @@ provide('isAdmin', isAdmin)
 
 							<Lucide
 								icon="UserCircle"
-								class="h-9 w-9 text-gray-300"
-								:stroke-width="1"
+								class="h-9 w-9 text-gray-950"
+								:stroke-width="0.7	"
 							/>
 						</div>
 					</div>
@@ -403,10 +420,13 @@ provide('isAdmin', isAdmin)
 				</div>
 				<div class="flex items-center justify-between p-4 bg-[rgb(0,0,0,0.3)]">
 					<h1 
-						class="text-base font-semibold whitespace-nowrap"
+						class="flex items-center justify-start gap-1 text-base font-semibold whitespace-nowrap"
 						@click="router.push('/')"
 					>
 						Projeto Lunar
+						<Lucide
+							icon="MoonStar"
+						/>
 					</h1>
 					
 					<div
@@ -458,10 +478,12 @@ provide('isAdmin', isAdmin)
 							</li>
 							<li>
 								<RouterLink 
-									to="#"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-inactive"
-									@click.stop="menuOpen = false" 
-								>
+									to="/originals-lunar"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-"
+									:class="{ 
+											'bg-violet-100/10': route.path === '/originals-lunar',
+										}"
+									>
 									<Lucide icon="BookOpen" size="16" />
 									Originais Lunar
 								</RouterLink>
