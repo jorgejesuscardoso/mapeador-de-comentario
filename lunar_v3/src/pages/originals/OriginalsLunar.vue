@@ -4,7 +4,7 @@ import { mock } from "./mock"
 import Lucide from "@/base/lucide/Lucide.vue"
 import { useRouter } from "vue-router"
 
-const isBeta = inject<boolean>('isBeta')
+const isBeta = ref(inject('isBeta'))
 const router = useRouter()
 interface Obra {
   id: number
@@ -31,8 +31,8 @@ const generos = computed(() => {
 })
 
 onMounted(() => {
-  console.log(isBeta)
-  if(!isBeta) return router.push('/')
+  console.log(isBeta.value)
+  if(!isBeta.value) return router.push('/')
 })
 
 </script>
