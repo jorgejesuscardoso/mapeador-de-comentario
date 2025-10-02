@@ -233,7 +233,7 @@ provide('isCiner', isCiner)
 
 					<!-- CTA Premium -->
 					<div
-						v-if="storage && !storage.licenses.some((s) => s === 'premium')"
+						v-if="storage.licenses && !storage.licenses.some((s) => s === 'premium')"
 					>
 						<button
 							@click="handleGetPrmium" 
