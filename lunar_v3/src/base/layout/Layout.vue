@@ -140,11 +140,11 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
-provide('isAdmin', isAdmin)
-provide('isBeta', isBeta)
-provide('isPremium',isPremium)
-provide('isDev', isDev)
-provide('isCiner', isCiner)
+provide('isAdmin', isAdmin.value)
+provide('isBeta', isBeta.value)
+provide('isPremium',isPremium.value)
+provide('isDev', isDev.value)
+provide('isCiner', isCiner.value)
 </script>
 
 <template>
