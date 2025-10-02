@@ -14,7 +14,11 @@ interface userData {
 	licenses: string[]
 }
 
-const storage = JSON.parse(localStorage.getItem('user')) as userData;
+const storage = JSON.parse(localStorage.getItem('user') || null) as userData | null;
+
+const showPremiumButton = !(storage?.licenses?.includes('premium'));
+
+
 const route = useRoute();
 const router = useRouter();
 
@@ -22,7 +26,7 @@ const menuOpen = ref(false);
 const notification = ref(0)
 const showNotification = ref(false)
 const showNotification2 = ref(false)
-const userLocalData = ref()
+const userLocalData = ref(null)
 
 const isLogged = ref(false)
 const isAdmin = ref(false)
@@ -129,6 +133,8 @@ onMounted(async () => {
 			isBeta.value = true
 		}
 	}
+
+	if(!storage) return;
 	const response = await getUserWtpd(storage.user)
 	getWtpData.value = response
 
@@ -233,7 +239,7 @@ provide('isCiner', isCiner)
 
 					<!-- CTA Premium -->
 					<div
-						v-if="storage.licenses && !storage.licenses.some((s) => s === 'premium')"
+						v-if="showPremiumButton"
 					>
 						<button
 							@click="handleGetPrmium" 
@@ -245,7 +251,7 @@ provide('isCiner', isCiner)
 					</div>
 
 					<!-- Usuário -->
-					<div v-if="userLocalData">
+					<div v-if="userLocalData && isLogged">
 						<img 
 							:src="userLocalData.avatar"
 							alt="Foto de perfil"
@@ -256,6 +262,9 @@ provide('isCiner', isCiner)
 						v-else
 						icon="UserCircle"
 						class="h-10 w-10"
+						:class="{
+							'text-purple-500': isOriginalOrMyWork
+						}"
 						:stroke-width="0.7"
 					/>
 				</div>
@@ -283,8 +292,8 @@ provide('isCiner', isCiner)
 				<div
 					class=" h-full mt-1 fixed top-14 left-0 z-50"
 					:class="{
-						'hidden': isOriginalOrMyWork,
-						'hidden lg:flex': !isOriginalOrMyWork
+						'hidden': route.path === '/mywork/write',
+						'hidden lg:flex': route.path !== '/mywork/write'
 					}"
 				>
 					<nav
