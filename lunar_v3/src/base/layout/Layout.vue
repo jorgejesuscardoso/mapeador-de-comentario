@@ -7,7 +7,8 @@ import { getSales } from '@/API/ShopLunar';
 
 interface userData {
 	role: string
-	token: string,	
+	token: string,
+	licenses: string[]
 }
 
 const route = useRoute();
@@ -21,6 +22,10 @@ const sales = ref()
 
 const isLogged = ref(false)
 const isAdmin = ref(false)
+const isBeta = ref(false)
+const isPremium = ref(false)
+const isCiner = ref(false)
+const isDev = ref(false)
 
 const menuRef = ref<HTMLElement | null>(null);
 const menuRef2 = ref<HTMLElement | null>(null);
@@ -31,40 +36,40 @@ const refNotification4 = ref<HTMLElement | null>(null);
 
 
 const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as Node;
+	const target = event.target as Node;
 
-  // Fecha menu se clicar fora
-  if (
-    menuOpen.value &&
-    menuRef.value &&
-    menuRef2.value &&
-    !menuRef.value.contains(target) &&
-    !menuRef2.value.contains(target)
-  ) {
-    menuOpen.value = false;
-  }
-
-  // Fecha notificações se clicar fora
-  if (
-    showNotification.value &&
-    refNotification.value &&
-    refNotification2.value &&
-    !refNotification.value.contains(target) &&
-    !refNotification2.value.contains(target)
-  ) {
-    showNotification.value = false;
-  }
+	// Fecha menu se clicar fora
+	if (
+		menuOpen.value &&
+		menuRef.value &&
+		menuRef2.value &&
+		!menuRef.value.contains(target) &&
+		!menuRef2.value.contains(target)
+	) {
+		menuOpen.value = false;
+		}
 
 	// Fecha notificações se clicar fora
-  if (
-    showNotification2.value &&
-    refNotification3.value &&
-    refNotification4.value &&
-    !refNotification3.value.contains(target) &&
-    !refNotification4.value.contains(target)
-  ) {
-    showNotification2.value = false;
-  }
+	if (
+	showNotification.value &&
+	refNotification.value &&
+	refNotification2.value &&
+	!refNotification.value.contains(target) &&
+	!refNotification2.value.contains(target)
+	) {
+	showNotification.value = false;
+	}
+
+	// Fecha notificações se clicar fora
+	if (
+		showNotification2.value &&
+		refNotification3.value &&
+		refNotification4.value &&
+		!refNotification3.value.contains(target) &&
+		!refNotification4.value.contains(target)
+	) {
+		showNotification2.value = false;
+	}
 };
 
 const scrollToTop = () => {
@@ -89,6 +94,9 @@ onMounted(async () => {
 
 		if(storage.role === 'admin' || storage.role === 'superadmin'){
 			isAdmin.value = true
+		}
+		if(storage.licenses.some((s) => s === 'beta_tester')) {
+			isBeta.value = true
 		}
 	}
   document.addEventListener('click', handleClickOutside);
@@ -133,6 +141,10 @@ onUnmounted(() => {
 });
 
 provide('isAdmin', isAdmin)
+provide('isBeta', isBeta)
+provide('isPremium',isPremium)
+provide('isDev', isDev)
+provide('isCiner', isCiner)
 </script>
 
 <template>

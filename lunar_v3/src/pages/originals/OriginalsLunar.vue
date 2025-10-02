@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { ref, computed, onMounted, inject } from "vue"
 import { mock } from "./mock"
 import Lucide from "@/base/lucide/Lucide.vue"
+import { useRouter } from "vue-router"
 
+const isBeta = inject('isBeta')
+const router = useRouter()
 interface Obra {
   id: number
   titulo: string
@@ -25,6 +28,10 @@ const generos = computed(() => {
     grupos[obra.genero].push(obra)
   })
   return grupos
+})
+
+onMounted(() => {
+  if(!isBeta) return router.push('/')
 })
 
 </script>
