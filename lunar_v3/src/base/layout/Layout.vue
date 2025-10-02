@@ -95,7 +95,7 @@ onMounted(async () => {
 		if(storage.role === 'admin' || storage.role === 'superadmin'){
 			isAdmin.value = true
 		}
-		if(storage.licenses.some((s) => s === 'beta_tester')) {
+		if(storage.licenses && storage.licenses.some((s) => s === 'beta_tester')) {
 			isBeta.value = true
 		}
 	}

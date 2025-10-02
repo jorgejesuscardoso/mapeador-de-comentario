@@ -181,7 +181,7 @@ onMounted(async () => {
                     }}
                   </div>
                   <div 
-                    v-if="userData?.licenses.length > 0"
+                    v-if="userData?.licenses && userData?.licenses.length > 0"
                     class="flex flex-col items-end gap-0.5"
                   >
                     <ul
