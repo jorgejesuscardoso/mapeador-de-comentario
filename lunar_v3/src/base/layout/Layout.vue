@@ -272,11 +272,11 @@ provide('isCiner', isCiner)
 							<li>
 								<RouterLink 
 									to="/originals-lunar"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 
 											'bg-violet-900/30 text-violet-800': route.path === '/originals-lunar',
 											'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
-											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/books-lunar'
+											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/books-lunar',
 										}"
 									@click.stop="menuOpen = false" 
 								>

@@ -31,8 +31,7 @@ const generos = computed(() => {
 })
 
 onMounted(() => {
-  console.log(isBeta.value)
-  if(!isBeta.value) return router.push('/')
+
 })
 
 </script>
