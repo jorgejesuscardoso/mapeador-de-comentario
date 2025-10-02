@@ -197,7 +197,11 @@ provide('isCiner', isCiner)
 								class="flex items-center justify-center h-full cursor-pointer"
 							>
 								<button
-									class="border border-gray-600 px-2 py-1 rounded-md text-sm text-gray-800 font-bold font-mono"
+									class="border  px-2 py-1 rounded-md text-sm font-bold font-mono"
+									:class="{
+										'text-gray-800 border-gray-600': route.path === '/originals-lunar',
+										'text-purple-100 border-purple-400': route.path !== '/originals-lunar'
+									}"
 								>
 									Escrever
 								</button>
@@ -205,7 +209,11 @@ provide('isCiner', isCiner)
 
 							<Lucide
 								icon="UserCircle"
-								class="h-9 w-9 text-gray-950"
+								class="h-9 w-9"
+								:class="{
+									'text-gray-800':route.path === '/originals-lunar',
+									'text-purple-100 border-purple-400': route.path !== '/originals-lunar'
+								}"
 								:stroke-width="0.7	"
 							/>
 						</div>

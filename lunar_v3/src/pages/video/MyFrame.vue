@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onMounted } from "vue"
+import { ref, computed, watch, nextTick, onMounted, inject } from "vue"
 import { FilmesList, SeriesList } from "./series"
 import { toast } from "@/base/utils/toast";
 import router from "@/router";
+
+const isCiner = ref(inject('isCiner'))
 
 type Mode = "series" | "filmes"
 interface SeriesItem { name: string; src: string; episodes?: number }
