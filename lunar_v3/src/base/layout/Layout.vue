@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, provide, watch } from 'vue';
+import { onMounted, onUnmounted, ref, provide, watch, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Lucide from '../lucide/Lucide.vue'
 import NotificationsContainer from '../notification/NotificationsContainer.vue';
 import { getSales } from '@/API/ShopLunar';
+import { toast } from '../utils/toast';
+import { getUserById, getUserWtpd } from '@/API/UserApi';
 
 interface userData {
+	user: string
 	role: string
 	token: string,
 	licenses: string[]
 }
 
+const storage = JSON.parse(localStorage.getItem('user')) as userData;
 const route = useRoute();
 const router = useRouter();
 
@@ -18,7 +22,7 @@ const menuOpen = ref(false);
 const notification = ref(0)
 const showNotification = ref(false)
 const showNotification2 = ref(false)
-const sales = ref()
+const userLocalData = ref()
 
 const isLogged = ref(false)
 const isAdmin = ref(false)
@@ -34,43 +38,66 @@ const refNotification2 = ref<HTMLElement | null>(null);
 const refNotification3 = ref<HTMLElement | null>(null);
 const refNotification4 = ref<HTMLElement | null>(null);
 
+const getWtpData = ref()
+	
+watch(getWtpData,(val) => {
+	if(val) {
+		userLocalData.value = val
+	}
+}, {immediate: true })
 
 const handleClickOutside = (event: MouseEvent) => {
-	const target = event.target as Node;
+	try{
+		const target = event.target as Node;
 
-	// Fecha menu se clicar fora
-	if (
-		menuOpen.value &&
-		menuRef.value &&
-		menuRef2.value &&
-		!menuRef.value.contains(target) &&
-		!menuRef2.value.contains(target)
-	) {
-		menuOpen.value = false;
+		// Fecha menu se clicar fora
+		if (
+			menuOpen.value &&
+			menuRef.value &&
+			menuRef2.value &&
+			!menuRef.value.contains(target) &&
+			!menuRef2.value.contains(target)
+		) {
+			menuOpen.value = false;
+			}
+
+		// Fecha notificações se clicar fora
+		if (
+		showNotification.value &&
+		refNotification.value &&
+		refNotification2.value &&
+		!refNotification.value.contains(target) &&
+		!refNotification2.value.contains(target)
+		) {
+		showNotification.value = false;
 		}
 
-	// Fecha notificações se clicar fora
-	if (
-	showNotification.value &&
-	refNotification.value &&
-	refNotification2.value &&
-	!refNotification.value.contains(target) &&
-	!refNotification2.value.contains(target)
-	) {
-	showNotification.value = false;
-	}
-
-	// Fecha notificações se clicar fora
-	if (
-		showNotification2.value &&
-		refNotification3.value &&
-		refNotification4.value &&
-		!refNotification3.value.contains(target) &&
-		!refNotification4.value.contains(target)
-	) {
-		showNotification2.value = false;
+		// Fecha notificações se clicar fora
+		if (
+			showNotification2.value &&
+			refNotification3.value &&
+			refNotification4.value &&
+			!refNotification3.value.contains(target) &&
+			!refNotification4.value.contains(target)
+		) {
+			showNotification2.value = false;
+		}
+	} catch(err) {
+		console.error(err)
 	}
 };
+
+const handlewrite = () => {
+  if (!isBeta.value) {
+    toast.info('🚧 Esta função está em Beta! Somente testadores têm acesso no momento.')
+		return
+  }
+	router.push('/mywork/write')
+}
+
+const handleGetPrmium = () => {
+	toast.info('Em breve!')
+}
 
 const scrollToTop = () => {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -86,8 +113,11 @@ const handleLogout = () => {
 	}
 }
 
+const isOriginalOrMyWork = computed(() => {
+  return route.path === '/originals-lunar' || route.path.startsWith('/mywork')
+})
+
 onMounted(async () => {
-	const storage = JSON.parse(localStorage.getItem('user')) as userData;
 	
 	if (storage) {
 		isLogged.value = true
@@ -99,6 +129,9 @@ onMounted(async () => {
 			isBeta.value = true
 		}
 	}
+	const response = await getUserWtpd(storage.user)
+	getWtpData.value = response
+
   document.addEventListener('click', handleClickOutside);
 	window.scrollTo({top: 0})
 
@@ -151,19 +184,26 @@ provide('isCiner', isCiner)
 	<div
 		class="min-h-screen min-w-screen bg-fuchsia-200"
 	>
-		<header class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-50 ">
+		<header 
+			class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-50 "
+			:class="{
+				'searchFilterBg2': !isOriginalOrMyWork,
+				'bg-white border border-b-purple-200': isOriginalOrMyWork
+			}"
+		>
 			<div 
 				class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 "
 				:class="{
-					'bg-[rgba(255,255,255)] border-b border-indigo-200 text-gray-600': route.path === '/originals-lunar',
-					'searchFilterBg bg-[rgba(0,0,0,0.2)]': route.path !== '/originals-lunar'
-				}"
+					'': isOriginalOrMyWork,
+					'bg-[rgba(0,0,0,0.7)]': !isOriginalOrMyWork,				}"
 			>
 				<h1 
-					class="flex items-center justify-start gap-1 font-serif px-4 text-lg text-start w-[20vw]"
+					class="flex items-center justify-start gap-1 font-serif px-4 text-start w-[20vw] font-bold text-xl italic cursor-pointer"
 					:class="{
-						' text-purple-800 font-bold text-xl italic': route.path === '/originals-lunar',
+						'text-purple-700': isOriginalOrMyWork,
+						'text-white': !isOriginalOrMyWork
 					}"
+					@click="router.push('/')"
 				>
 					Projeto Lunar
 					<Lucide
@@ -172,52 +212,53 @@ provide('isCiner', isCiner)
 						:stroke-width="1"
 					/>
 				</h1>
-				<div
-						ref="refNotification4"
-						class="flex items-center justify-between w-8/12 h-full"
+				<!-- Ações -->
+				<div class="flex items-center pr-4 h-full gap-4">
+
+					<!-- Escrever -->
+					<div
+						class="flex items-center justify-center h-full cursor-pointer"
+						@click="handlewrite"
 					>
-						<div
-							class="w-2/6 h-full p-0.5 relative"
+						<button
+							class="flex items-center justify-center gap-1 border px-2 py-1.5 rounded-md text-[10px] font-bold font-serif"
+							:class="{
+								'text-purple-700 border-purple-500': isOriginalOrMyWork,
+								'text-white': !isOriginalOrMyWork,							}"
 						>
-							<input 
-								type="text"
-								class="w-full h-full rounded-xl bg-transparent focus:outline-none focus:ring-0 pl-8 pr-4 text-sm text-gray-500"
-								disabled
-							/>
-							<Lucide
-								icon="Searoch"
-								class="h-5 w-5 absolute top-1/2 -translate-y-1/2 left-2 text-gray-500"
-							/>
-						</div>
-
-						<div
-							class="flex items-center pr-4 h-full gap-4"
-						>
-							<div
-								class="flex items-center justify-center h-full cursor-pointer"
-							>
-								<button
-									class="border  px-2 py-1 rounded-md text-sm font-bold font-mono"
-									:class="{
-										'text-gray-800 border-gray-600': route.path === '/originals-lunar',
-										'text-purple-100 border-purple-400': route.path !== '/originals-lunar'
-									}"
-								>
-									Escrever
-								</button>
-							</div>
-
-							<Lucide
-								icon="UserCircle"
-								class="h-9 w-9"
-								:class="{
-									'text-gray-800':route.path === '/originals-lunar',
-									'text-purple-100 border-purple-400': route.path !== '/originals-lunar'
-								}"
-								:stroke-width="0.7	"
-							/>
-						</div>
+							Escrever
+							<Lucide icon="PencilLine" class="h-4 w-4" />
+						</button>
 					</div>
+
+					<!-- CTA Premium -->
+					<div
+						v-if="storage && !storage.licenses.some((s) => s === 'premium')"
+					>
+						<button
+							@click="handleGetPrmium" 
+							class="bg-gradient-to-r from-fuchsia-500 to-purple-700 hover:from-fuchsia-600 hover:to-purple-800 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1 transition"
+						>
+							<Lucide icon="Star" class="w-4 h-4 text-white" />
+							Premium
+						</button>
+					</div>
+
+					<!-- Usuário -->
+					<div v-if="userLocalData">
+						<img 
+							:src="userLocalData.avatar"
+							alt="Foto de perfil"
+							class="h-10 w-10 rounded-full"
+						>
+					</div>
+					<Lucide
+						v-else
+						icon="UserCircle"
+						class="h-10 w-10"
+						:stroke-width="0.7"
+					/>
+				</div>
 			</div>
 		</header>
 
@@ -240,13 +281,16 @@ provide('isCiner', isCiner)
 			>
 
 				<div
-					class="hidden lg:flex h-full mt-1 fixed top-14 left-0 z-50"
+					class=" h-full mt-1 fixed top-14 left-0 z-50"
+					:class="{
+						'hidden': isOriginalOrMyWork,
+						'hidden lg:flex': !isOriginalOrMyWork
+					}"
 				>
 					<nav
 						class="rounded-2xl p-4 min-w-44 h-[50vh]"
 						:class="{
-							'bg-[rgba(0,0,0,0.8)]': route.path !== '/originals-lunar'
-						}"
+							'bg-[rgba(0,0,0,0.8)]': !isOriginalOrMyWork,						}"
 					>
 						<ul
 							class="flex flex-col w-full gap-1 text-violet-400 font-semibold text-[11px]"
@@ -257,9 +301,8 @@ provide('isCiner', isCiner)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/',
-										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/' && route.path !== '/originals-lunar'
-									}"
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-600':  route.path === '/originals-lunar',
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/' && !isOriginalOrMyWork,									}"
 								>
 									<Lucide
 											icon="Home"
@@ -274,8 +317,8 @@ provide('isCiner', isCiner)
 									to="/originals-lunar"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 
-											'bg-violet-900/30 text-violet-800': route.path === '/originals-lunar',
-											'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
+											'bg-gray-900/10 text-gray-800': isOriginalOrMyWork,
+											'hover:bg-gray-300 hover:text-gray-800 text-gray-600':  route.path === '/originals-lunar',
 											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/books-lunar',
 										}"
 									@click.stop="menuOpen = false" 
@@ -305,7 +348,7 @@ provide('isCiner', isCiner)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/members',
-										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-600':  route.path === '/originals-lunar',
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/members'
 									}"
 								>
@@ -338,7 +381,7 @@ provide('isCiner', isCiner)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/shop',
-										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-600':  route.path === '/originals-lunar',
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
 									}"
 								>
@@ -355,7 +398,7 @@ provide('isCiner', isCiner)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/profile',
-										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-600':  route.path === '/originals-lunar',
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
 									}"
 								>
@@ -394,7 +437,7 @@ provide('isCiner', isCiner)
 										to="/profile/orders"
 										class="flex items-center gap-2 px-2 py-1 rounded-md":class="{
 										'bg-violet-100/10': route.path === '/profile/orders',
-										'hover:bg-gray-300 hover:text-violet-800 text-gray-600':  route.path === '/originals-lunar',
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-600':  route.path === '/originals-lunar',
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile/orders'
 									}"
 									>
@@ -448,10 +491,20 @@ provide('isCiner', isCiner)
 							icon="MoonStar"
 						/>
 					</h1>
-					
+
 					<div
-						class="flex items-center justify-between w-1/5"
+						class="flex items-center justify-between w-4/12"
 					>
+						<!-- Escrever -->
+						<button
+							class="flex items-center justify-center boroder rounded-md text-white font-bold font-serif"
+							@click="handlewrite"
+						>
+							<Lucide 
+								icon="PencilLine"
+								size="24"
+							/>
+						</button>
 						<!-- Notificações -->
 						<button 
 							ref="refNotification2"
@@ -501,7 +554,7 @@ provide('isCiner', isCiner)
 									to="/originals-lunar"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-"
 									:class="{ 
-											'bg-violet-100/10': route.path === '/originals-lunar',
+											'bg-violet-100/10': isOriginalOrMyWork,
 										}"
 									>
 									<Lucide icon="BookOpen" size="16" />
@@ -626,7 +679,11 @@ provide('isCiner', isCiner)
 			</div>
 
 			<main
-				class="flex w-full bg-red-90i0 min-h-screen items-start justify-center lg:w-[87vw] z-0 pt-14 lg:mt-4"
+				class="flex bg-red-90i0 items-start justify-center z-0"
+				:class="{
+					'w-full': route.path === '/mywork/write',
+					'lg:w-[87vw] w-full min-h-screen pt-14 lg:mt-4': route.path !== '/mywork/write'
+				}"
 			>
 				<router-view />
 			</main>
