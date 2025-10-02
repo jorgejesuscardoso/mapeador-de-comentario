@@ -46,13 +46,13 @@ onMounted(() => {
       >
         <input 
           type="text"
-          class="h-10 w-full border px-10 border-indigo-400 rounded-xl focus:ring-0 focus:outline-none text-indigo-600 placeholder:text-gray-500"
+          class="h-10 w-full border px-10 border-gray-500/45 rounded-xl focus:ring-0 focus:outline-none text-gray-600 placeholder:text-gray-500"
           placeholder="Pesquisa ainda em fase de testes!!!"
         >
 
         <Lucide
           icon="Search"
-          class="absolute top-1/2 -translate-y-1/2 left-2 text-indigo-500"
+          class="absolute top-1/2 -translate-y-1/2 left-2 text-gray-400"
           :stroke-width="1"
         />
       </header>

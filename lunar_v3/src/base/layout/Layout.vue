@@ -155,7 +155,7 @@ provide('isCiner', isCiner)
 			<div 
 				class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 "
 				:class="{
-					'bg-[rgba(255,255,255)] border-b border-violet-300 text-gray-600': route.path === '/originals-lunar',
+					'bg-[rgba(255,255,255)] border-b border-indigo-200 text-gray-600': route.path === '/originals-lunar',
 					'searchFilterBg bg-[rgba(0,0,0,0.2)]': route.path !== '/originals-lunar'
 				}"
 			>
