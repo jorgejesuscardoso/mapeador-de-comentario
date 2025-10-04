@@ -56,6 +56,27 @@ export const getBookLunarById = async (bookId: string) => {
   }
 };
 
+export const getBookLunar = async () => {
+  try {
+    const controller = new AbortController();
+
+    const response = await axios.get(
+      `${endPoint}`,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        signal: controller.signal
+      }
+    );
+    
+    return response;
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado ao buscar os livros!';
+    throw new Error(msg);
+  }
+};
+
 export const getBookLunarAuthor = async (author: string) => {
   try {
     const controller = new AbortController();
@@ -69,7 +90,7 @@ export const getBookLunarAuthor = async (author: string) => {
         signal: controller.signal
       }
     );
-    console.log(response)
+
     return response;
   } catch (err: any) {
     const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';

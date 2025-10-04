@@ -8,7 +8,7 @@ export const SeriesList = [
     src: 'https://techmaisbr.com/shortseries/30ANOSCONGELADA/30ANOSCONGELADA'
   },
   {
-    name: 'Sinto A sua falta depois do adeus',
+    name: 'Sinto a sua falta depois do adeus',
     src: 'https://techmaisbr.com/shortseries/SINTOTUAFALTADUBLADO/SINTOTUAFALTADUBLADO'
   },
 ]

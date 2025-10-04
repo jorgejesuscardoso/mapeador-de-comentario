@@ -27,7 +27,7 @@ const submit = async () => {
   try {
     error.value = ''
     loading.value = true
-
+ 
     const data = await Login(user.value.trim(), password.value.trim())
 
     if (!data.token) {

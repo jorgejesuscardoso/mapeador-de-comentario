@@ -53,7 +53,10 @@ function parsePhpArray(str: string) {
   return result;
 }
 
-
+user.get('/auth', async (req: Request, res: Response) => {
+  const {token} = req.params
+  res.status(200).json({msg: token})
+})
 
 user.post('/register', async (req: Request, res: Response) => {
   const { user, password, name, age, role, subrole } = req.body;

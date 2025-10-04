@@ -41,8 +41,8 @@ const menuRef = ref<HTMLElement | null>(null);
 const menuRef2 = ref<HTMLElement | null>(null);
 const refNotification = ref<HTMLElement | null>(null);
 const refNotification2 = ref<HTMLElement | null>(null);
-const refNotification3 = ref<HTMLElement | null>(null);
-const refNotification4 = ref<HTMLElement | null>(null);
+const refShowWriteMenu = ref<HTMLElement | null>(null);
+const refShowWriteMenu2 = ref<HTMLElement | null>(null);
 
 const getWtpData = ref()
 	
@@ -80,13 +80,13 @@ const handleClickOutside = (event: MouseEvent) => {
 
 		// Fecha notificações se clicar fora
 		if (
-			showNotification2.value &&
-			refNotification3.value &&
-			refNotification4.value &&
-			!refNotification3.value.contains(target) &&
-			!refNotification4.value.contains(target)
+			showWriteMenu.value &&
+			refShowWriteMenu.value &&
+			refShowWriteMenu2.value &&
+			!refShowWriteMenu.value.contains(target) &&
+			!refShowWriteMenu2.value.contains(target)
 		) {
-			showNotification2.value = false;
+			showWriteMenu.value = false;
 		}
 	} catch(err) {
 		console.error(err)
@@ -230,6 +230,7 @@ provide('isCiner', isCiner)
 
 						<!-- Escrever -->
 						<div
+							ref="refShowWriteMenu2"
 							class="flex items-center justify-center h-full cursor-pointer"
 							@click="showWriteMenu = !showWriteMenu"
 						>
@@ -280,7 +281,7 @@ provide('isCiner', isCiner)
 		</div>	
 		
 		<div 
-			ref="refNotification3"
+			ref="refShowWriteMenu"
 			v-if="showNotification2" 
 			class="hidden lg:flex z-50"
 		>
@@ -704,6 +705,7 @@ provide('isCiner', isCiner)
 				<!-- Menu flutuante --> 
 				<transition name="fade"> 
 					<div 
+						ref="refShowWriteMenu"
 						v-if="showWriteMenu" 
 						class="fixed top-11 right-0 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2" 
 					> 

@@ -2,7 +2,7 @@
 import { getBookLunarAuthor } from '@/API/OriginalLunarApi'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { toast } from '@/base/utils/toast'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 export interface Book {
@@ -23,27 +23,30 @@ export interface Book {
   
   // Possíveis extensões futuras
   status?: 'draft' | 'published' | 'archived'  // Estado da obra
-  rating?: number          // Média de avaliação (1-5)
   contestEntry?: boolean   // Se participa do Lunar Contest
 }
 
+const hasUser = ref(JSON.parse(localStorage.getItem('user')))
+
 const books = ref<Book[]>([])
 const loading = ref(true)
+const user= ref('')
 const router = useRouter()
 
 async function fetchBooks() {
   try {
     loading.value = true
-    const res = await getBookLunarAuthor('Bushido') // <-- endpoint que retorna livros do user
-   if(res.status !== 200){
-    toast.warning("Nenhum livro encontrado!")
-    return
-   }
+    const res = await getBookLunarAuthor(user.value)
 
-   books.value = res.data
+    if (res.status !== 200 || !Array.isArray(res.data) || res.data.length === 0) {
+      books.value = [] // <-- limpa sempre
+      return
+    }
 
+    books.value = res.data.filter(b => b && b.id) // só entra livro válido
   } catch (err) {
     console.error('Erro ao carregar livros', err)
+    books.value = [] // evita lixo
   } finally {
     loading.value = false
   }
@@ -53,8 +56,25 @@ function goToChapters(bookId: string) {
   router.push(`/books/${bookId}/chapters`) // redireciona para exibição dos capítulos
 }
 
+watch(hasUser, (val) => {
+  if (!val?.token) {
+    toast.error("Logue para poder acessar as suas histórias!")
+    router.push('/login')
+    return
+  }
+
+  user.value = val.user
+  if (user.value) {
+    fetchBooks()
+  }
+}, { immediate: true })
+
+
 onMounted(() => {
-  fetchBooks()
+  if (!hasUser.value?.token) {
+    toast.error("Logue para poder acessar as suas histórias!")
+    router.push('/login')
+  }
 })
 </script>
 
@@ -70,7 +90,13 @@ onMounted(() => {
       </div>
 
       <!-- Sem livros -->
-      <div v-else-if="books.length === 0" class="text-gray-400">Nenhuma obra encontrada.</div>
+      <div v-else-if="books.length === 0" class="flex flex-col items-center justify-center py-20 text-gray-400">
+        <Lucide icon="BookOpen" class="w-12 h-12 mb-4 text-gray-300" />
+        <p class="text-center text-sm">
+          Nenhuma obra encontrada por enquanto. <br />
+          Quando você criar suas histórias, elas aparecerão aqui ✨
+        </p>
+      </div>
 
       <!-- Grid de livros -->
       <ul v-else class="flex gap-8 lg:w-1/2">
@@ -135,13 +161,13 @@ onMounted(() => {
             <!-- métricas -->
             <div class="w-fit gap-2 mt-auto flex justify-between text-[10px] text-gray-700 border-t font-bold0 pt-1">
               <span class="flex items-center gap-1">
-                <Lucide icon="Star" class="w-3 h-3" /> {{ book.votes.toLocaleString() }}
+                <Lucide icon="Star" class="w-3 h-3" /> {{  book.votes ? book.votes.toLocaleString() : 0 }}
               </span>
               <span class="flex items-center gap-1">
-                <Lucide icon="MessageCircleMore" class="w-3 h-3" /> {{ book.commentsTotal.toLocaleString() }}
+                <Lucide icon="MessageCircleMore" class="w-3 h-3" /> {{ book.commentsTotal ? book.commentsTotal.toLocaleString() : 0 }}
               </span>
               <span class="flex items-center gap-1">
-                <Lucide icon="Eye" class="w-3 h-3" /> {{ book.views.toLocaleString() }}
+                <Lucide icon="Eye" class="w-3 h-3" /> {{ book.views ? book.views.toLocaleString() : 0 }}
               </span>
             </div>
           </div>

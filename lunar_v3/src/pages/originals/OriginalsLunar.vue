@@ -1,36 +1,67 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, inject } from "vue"
+import { ref, computed, onMounted, inject, watch } from "vue"
 import { mock } from "./mock"
 import Lucide from "@/base/lucide/Lucide.vue"
 import { useRouter } from "vue-router"
+import { getBookLunar } from "@/API/OriginalLunarApi"
 
 const isBeta = ref(inject('isBeta'))
 const router = useRouter()
-interface Obra {
-  id: number
-  titulo: string
-  capa: string
-  views: number
-  adulto: boolean
-  genero: string
-  tags: string[]
+
+export interface Book {
+  id: string                // Identificador único (PK)
+  name: string              // Título do livro
+  cover: string             // URL da capa
+  sinopse: string           // Resumo da história
+  author: string            // Autor da obra
+  genre: string             // Gênero literário principal
+  tags: string[]            // Lista de tags para busca e categorização
+
+  votes: number             // Quantidade de votos/curtidas
+  commentsTotal: number          // Número de comentários
+  views: number             // Contagem de visualizações
+
+  createdAt: string         // Data de criação (ISO string)
+  updatedAt: string         // Última atualização (ISO string)
+
+  mature: boolean
+  
+  // Possíveis extensões futuras
+  status?: string  // Estado da obra
+  contestEntry?: boolean   // Se participa do Lunar Contest
 }
 
-const obras = ref<Obra[]>(mock)
+const obras = ref<Book[]>(mock)
+const apiData = ref(null)
 
 // Agrupa as obras por gênero
 const generos = computed(() => {
-  const grupos: Record<string, Obra[]> = {}
+  const grupos: Record<string, Book[]> = {}
+
   obras.value.forEach((obra) => {
-    if (!grupos[obra.genero]) {
-      grupos[obra.genero] = []
-    }
-    grupos[obra.genero].push(obra)
+    if (!grupos[obra.genre]) grupos[obra.genre] = []
+    grupos[obra.genre].push(obra)
   })
+
+  // Ordena cada grupo pelo maior views primeiro
+  Object.keys(grupos).forEach((genre) => {
+    grupos[genre].sort((a, b) => b.views - a.views)
+  })
+
   return grupos
 })
 
-onMounted(() => {
+watch(apiData, (val) => {
+  if(val) {
+    obras.value.push(...val) // junta mock + api
+  }
+}, {immediate:true})
+
+onMounted(async () => {
+  const response = await getBookLunar()
+  if(response.status === 200) {
+    apiData.value = response.data
+  }
 
 })
 
@@ -80,14 +111,22 @@ onMounted(() => {
             >
               <!-- CAPA -->
               <img
-                :src="obra.capa"
-                :alt="obra.titulo"
+                :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
+                :alt="obra.name"
                 class="w-full aspect-[3/4] object-cover cursor-pointer rounded-md shadow-md group-hover:shadow-xl transition"
               />
+
+              <!-- Autor -->
+               <div
+                v-if="obra.tags?.length"
+                class="my-1 text-[10px] font-medium text-gray-500 truncate px-2"
+              >
+                por: <span class="text-blue-700">{{ obra.author || 'Anônimo'}}</span>
+              </div>
               <!-- Tag principal -->
               <div
                 v-if="obra.tags?.length"
-                class="mt-2 mb-1 text-[11px] font-medium text-indigo-800 truncate px-2"
+                class="mb-1 text-[11px] font-medium text-indigo-800 truncate px-2 capitalize"
               >
                 #{{ obra.tags[0] }}
               </div>
@@ -104,7 +143,7 @@ onMounted(() => {
 
               <!-- Badge +18 -->
               <span
-                v-if="obra.adulto"
+                v-if="obra.mature"
                 class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded"
               >
                 +18

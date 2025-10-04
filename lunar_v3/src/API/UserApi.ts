@@ -54,6 +54,17 @@ export const Register = async (data: TRegister) => {
   }
 }
 
+export const tokenValidate = async (token: string) => {
+  try {
+    const controller = new AbortController()
+
+    const response = await axios(`${endPoint}/auth?token=${token}`)    
+
+    return response
+  } catch (err: any) {
+    throw err.response?.data?.message || 'Erro ao validar token!'
+  }
+}
 
 export const getUser = async () => {
   try {
