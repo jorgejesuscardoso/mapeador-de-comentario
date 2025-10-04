@@ -7,6 +7,10 @@ export const SeriesList = [
     name: '30 anos congelada 3 irmãos se arrependem',
     src: 'https://techmaisbr.com/shortseries/30ANOSCONGELADA/30ANOSCONGELADA'
   },
+  {
+    name: 'Sinto A sua falta depois do adeus',
+    src: 'https://techmaisbr.com/shortseries/SINTOTUAFALTADUBLADO/SINTOTUAFALTADUBLADO'
+  },
 ]
 
 export const FilmesList = [

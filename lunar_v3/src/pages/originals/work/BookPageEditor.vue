@@ -1,224 +1,363 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { toast } from '@/base/utils/toast'
+import Lucide from '@/base/lucide/Lucide.vue'
+import { getBookLunarById, getChapterLunarById, updateChapterLunarById } from '@/API/OriginalLunarApi'
+import { useRoute, useRouter } from 'vue-router'
 
-// props
-const props = defineProps<{
-  bookId?: string
-  pageId?: string
-  autosaveDelay?: number
-}>()
-
-const autosaveDelay = props.autosaveDelay ?? 10000
-
-// chave storage
-const key = computed(() => {
-  const b = props.bookId ?? 'draft'
-  const p = props.pageId ?? 'page'
-  return `lunar:book:${b}:page:${p}`
-})
+const route = useRoute()
+const router = useRouter()
 
 const title = ref('')
 const content = ref('')
-const isSaving = ref(false)
+
 const lastSaved = ref<number | null>(null)
-const saveIndicator = ref('')
-const textareaRef = ref<HTMLTextAreaElement | null>(null)
-const caret = ref<number | null>(null)
+const saving = ref(false)
+const editor = ref<HTMLElement | null>(null)
+const editorText = ref('')
+const bookData = ref(null)
+
+
+const bookId = 'b1a2c3d4-5678-90ab-cdef-1234567890ab'
+const chapterId = 'c1d2e3f4-1234-5678-90ab-cdef12345678'
 
 let inactivityTimer: ReturnType<typeof setTimeout> | null = null
-let pendingSavePromise: Promise<void> | null = null
 
-const charCount = computed(() => content.value.length)
-const wordCount = computed(() => {
-  const s = content.value.trim()
-  if (!s) return 0
-  const matches = s.match(/\b[\w']+\b/g)
-  return matches ? matches.length : 0
-})
+// contadores
+// contadores reativos
+const wordCount = computed(() =>
+  editorText.value.trim().split(/\s+/).filter(Boolean).length
+)
+const charCount = computed(() => editorText.value.length)
 
-async function performSave() {
-  try {
-    isSaving.value = true
-    saveIndicator.value = 'Salvando...'
-    const payload = {
-      title: title.value,
-      content: content.value,
-      savedAt: Date.now(),
-      caret: caret.value
+// ids
+let paragraphIdCounter = 0
+function generateId() {
+  paragraphIdCounter++
+  return `coment-paragraph-${Date.now()}-${paragraphIdCounter}`
+}
+
+// ========================
+// Utils DOM / caret
+// ========================
+function setCaretToStart(node: Node) {
+  const r = document.createRange()
+  r.setStart(node, 0)
+  r.collapse(true)
+  const s = window.getSelection()
+  s?.removeAllRanges()
+  s?.addRange(r)
+}
+
+function setCaretAfter(node: Node) {
+  const r = document.createRange()
+  r.setStartAfter(node)
+  r.collapse(true)
+  const s = window.getSelection()
+  s?.removeAllRanges()
+  s?.addRange(r)
+}
+
+function isCaretAtEnd(el: HTMLElement, range: Range | null): boolean {
+  if (!range) return false
+  const temp = range.cloneRange()
+  const endRange = document.createRange()
+  endRange.selectNodeContents(el)
+  endRange.collapse(false) // end
+  return temp.compareBoundaryPoints(Range.START_TO_END, endRange) === 0
+}
+
+// ========================
+// Normalização / inicialização
+// ========================
+function ensureInitialParagraph() {
+  if (!editor.value) return
+  const text = editor.value.innerText || ''
+  if (!text.trim()) {
+    // placeholder br tem attribute data-placeholder="true"
+    editor.value.innerHTML = '<p><br data-placeholder="true"></p>'
+    return
+  }
+  normalizeEditor()
+}
+
+function normalizeEditor() {
+  if (!editor.value) return
+
+  // transformar nós soltos em <p>
+  let i = 0
+  while (i < editor.value.childNodes.length) {
+    const node = editor.value.childNodes[i] as ChildNode
+    if (node.nodeType === Node.ELEMENT_NODE && (node as Element).nodeName === 'P') {
+      i++
+      continue
     }
-    await new Promise(r => setTimeout(r, 150))
-    localStorage.setItem(key.value, JSON.stringify(payload))
-    lastSaved.value = payload.savedAt
-    saveIndicator.value = 'Salvo'
-    setTimeout(() => {
-      if (saveIndicator.value === 'Salvo') saveIndicator.value = ''
-    }, 2500)
-  } catch (err) {
-    console.error('Erro ao salvar', err)
-    saveIndicator.value = 'Erro ao salvar'
-  } finally {
-    isSaving.value = false
+    // cria um <p> e agrupa nós não-P contíguos
+    const p = document.createElement('p')
+    while (i < editor.value.childNodes.length) {
+      const current = editor.value.childNodes[i] as ChildNode
+      if (current.nodeType === Node.ELEMENT_NODE && (current as Element).nodeName === 'P') break
+      p.appendChild(current) // move o nó para dentro do p
+    }
+    // garantir placeholder se vazio
+    if (!p.textContent?.trim()) p.innerHTML = '<br data-placeholder="true">'
+    editor.value.insertBefore(p, editor.value.childNodes[i] || null)
+    i++
+  }
+
+  // remove p vazios redundantes e assegura que cada p seja só p
+  const ps = Array.from(editor.value.querySelectorAll('p'))
+  ps.forEach(p => {
+    // se p está vazio (apenas whitespace) e não tem br placeholder, transforma em placeholder
+    if (!(p.textContent || '').trim()) {
+      // limpar filhos e colocar placeholder
+      p.innerHTML = '<br data-placeholder="true">'
+      delete p.dataset.hadBr
+      // não atribuir id a parágrafo vazio
+      if (p.id) p.removeAttribute('id')
+    } else {
+      // Se tem texto, garante id (se ainda não tiver)
+      if (!p.id) p.id = generateId()
+    }
+  })
+}
+
+// ========================
+// Seleção / parágrafo atual
+// ========================
+function getCurrentParagraph(): HTMLElement | null {
+  if (!editor.value) return null
+  const sel = window.getSelection()
+  if (!sel?.focusNode) return null
+  let node: Node | null = sel.focusNode
+  while (node && node !== editor.value) {
+    if ((node as HTMLElement).nodeName === 'P') return node as HTMLElement
+    node = node.parentNode
+  }
+  return null
+}
+
+// Se não houver P no foco, tenta criar/garantir um P ao redor do foco
+function ensureParagraphAtSelection(): HTMLElement | null {
+  if (!editor.value) return null
+  const sel = window.getSelection()
+  if (!sel || !sel.focusNode) return null
+
+  let p = getCurrentParagraph()
+  if (p) return p
+
+  // Se o focusNode for a própria editor div, cria um novo p
+  if (sel.focusNode === editor.value) {
+    const newP = document.createElement('p')
+    newP.innerHTML = '<br data-placeholder="true">'
+    editor.value.appendChild(newP)
+    setCaretToStart(newP)
+    return newP
+  }
+
+  // se for um textNode solto, wrap no topo
+  // achar o filho top-level do editor que contém o foco
+  let top: Node | null = sel.focusNode
+  while (top && top.parentNode && top.parentNode !== editor.value) top = top.parentNode
+  if (!top) return null
+
+  const wrapper = document.createElement('p')
+  wrapper.appendChild(top.cloneNode(true))
+  editor.value.replaceChild(wrapper, top)
+  setCaretToStart(wrapper)
+  return wrapper
+}
+
+// ========================
+// Enter handling (correção)
+// ========================
+function onKeyDown(e: KeyboardEvent) {
+  if (e.key === 'Enter' && e.shiftKey) {
+    e.preventDefault()
+    // chama tua função aqui
+    handleShiftEnter()
+  } else if (e.key === 'Enter') {
+    handleEnter()
+    scheduleSave()
+  }
+}
+function handleShiftEnter() {
+  if (!editor.value) return
+  const sel = window.getSelection()
+  if (!sel || !sel.rangeCount) return
+  const range = sel.getRangeAt(0)
+
+  let currentP = getCurrentParagraph()
+  if (!currentP) currentP = ensureParagraphAtSelection()
+  if (!currentP) return
+
+  // Caso: apenas quebra de linha dentro do P
+  const br1 = document.createElement('br')
+  const br2 = document.createElement('br')
+  range.insertNode(br1)
+  range.insertNode(br2)
+  range.setStartAfter(br1)
+  range.setEndAfter(br1)
+  sel.removeAllRanges()
+  sel.addRange(range)
+}
+
+function handleEnter() {
+  if (!editor.value) return
+  const sel = window.getSelection()
+  if (!sel || !sel.rangeCount) return
+  const range = sel.getRangeAt(0)
+
+  let currentP = getCurrentParagraph()
+  if (!currentP) currentP = ensureParagraphAtSelection()
+  if (!currentP) return
+
+  const html = currentP.innerHTML
+
+  // Detecta se já terminou com <br> => significa que é o segundo Enter
+  if (html.endsWith('<br><br>')) {
+    // aplica id se necessário
+    if (!currentP.id && (currentP.textContent || '').trim()) {
+      currentP.id = generateId()
+    }
+
+    // cria novo P
+    const newP = document.createElement('p')
+    currentP.insertAdjacentElement('afterend', newP)
+
+    setCaretToStart(newP)
+    return
+  }
+
+  // Caso: apenas quebra de linha dentro do P
+  const br1 = document.createElement('br')
+  const br2 = document.createElement('br')
+  range.insertNode(br1)
+  range.insertNode(br2)
+  range.setStartAfter(br1)
+  range.setEndAfter(br1)
+  sel.removeAllRanges()
+  sel.addRange(range)
+
+  // garante id se houver texto
+  if (!currentP.id && (currentP.textContent || '').trim()) {
+    currentP.id = generateId()
   }
 }
 
-async function saveNow() {
-  if (inactivityTimer) {
-    clearTimeout(inactivityTimer)
-    inactivityTimer = null
-  }
-  pendingSavePromise = performSave()
-  await pendingSavePromise
-  pendingSavePromise = null
-}
+// ========================
+// Salvamento & autosave
+// ========================
+function onInput() {
+  normalizeEditor()
 
-function scheduleAutoSave() {
-  if (inactivityTimer) clearTimeout(inactivityTimer)
-  inactivityTimer = setTimeout(async () => {
-    await performSave()
-    inactivityTimer = null
-  }, autosaveDelay)
-}
-
-function restore() {
-  try {
-    const raw = localStorage.getItem(key.value)
-    if (!raw) return
-    const parsed = JSON.parse(raw)
-    title.value = parsed.title ?? title.value
-    content.value = parsed.content ?? content.value
-    lastSaved.value = parsed.savedAt ?? lastSaved.value
-    caret.value = typeof parsed.caret === 'number' ? parsed.caret : null
-    nextTick(() => {
-      if (textareaRef.value && caret.value !== null) {
-        try {
-          textareaRef.value.selectionStart = textareaRef.value.selectionEnd = caret.value
-          textareaRef.value.focus()
-        } catch {}
+  if (editor.value) {
+    editorText.value = editor.value.innerText  // <-- atualiza aqui
+    Array.from(editor.value.querySelectorAll('p')).forEach(p => {
+      if ((p.textContent || '').trim() && !p.id) p.id = generateId()
+      if (!(p.textContent || '').trim()) {
+        p.innerHTML = '<br data-placeholder="true">'
+        if (p.id) p.removeAttribute('id')
+        delete p.dataset.hadBr
       }
     })
-  } catch (err) {
-    console.error('Erro ao restaurar rascunho', err)
   }
+
+  scheduleSave()
 }
 
-function onInputText(e: Event) {
-  const el = e.target as HTMLTextAreaElement
-  caret.value = el.selectionStart
-  scheduleAutoSave()
-}
+async function save() {
+  if (!editor.value) return
+  normalizeEditor() // garante IDs e estrutura antes de salvar
 
-async function onBlurSave() {
-  const isEqual = JSON.parse(localStorage.getItem(key.value))
+  // pega todos os <p> e salva o elemento completo (outerHTML)
+  const ps = Array.from(editor.value.querySelectorAll('p'))
+  const fullHtml = ps.map(p => p.outerHTML).join('')
 
-  if(isEqual && (isEqual.title === title.value && isEqual.content === content.value)) return
-  await saveNow()
-}
-
-function handleBeforeUnload() {
-  if (inactivityTimer) {
-    try {
-      const payload = {
-        title: title.value,
-        content: content.value,
-        savedAt: Date.now(),
-        caret: caret.value
-      }
-      localStorage.setItem(key.value, JSON.stringify(payload))
-      lastSaved.value = payload.savedAt
-    } catch (err) {
-      console.error('Erro ao salvar antes de unload', err)
-    }
+  const payload = {
+    title: title.value,
+    paragraphs: fullHtml,
   }
+
+  await updateChapterLunarById(bookId, chapterId, payload)
+  
+  saving.value = true
+  setTimeout(() => { saving.value = false }, 1000)
 }
 
-onMounted(() => {
-  restore()
-  window.addEventListener('beforeunload', handleBeforeUnload)
+function scheduleSave() {
+  if (inactivityTimer) clearTimeout(inactivityTimer)
+  inactivityTimer = setTimeout(() => {
+    save()
+    inactivityTimer = null
+  }, 3000)
+}
+
+const cancelEdit = () => router.push('/v1/mywork/list')
+
+// ========================
+// lifecycle
+// ========================
+onMounted(async () => {
+  const response = await getChapterLunarById(bookId,chapterId) 
+
+  if(response.status === 200){
+    bookData.value = response.data
+    title.value = response.data.title
+    normalizeEditor()
+    editor.value.innerHTML = response.data.paragraphs
+  }
+  
+  if (editor.value && !editor.value.innerHTML.trim()) {
+    editor.value.innerHTML = '<p><br></p>'
+  }
+  setTimeout(() => ensureInitialParagraph(), 0)
 })
+
+watch(title, () => scheduleSave())
 
 onUnmounted(() => {
-  if (inactivityTimer) {
-    clearTimeout(inactivityTimer)
-    inactivityTimer = null
-    try {
-      const payload = {
-        title: title.value,
-        content: content.value,
-        savedAt: Date.now(),
-        caret: caret.value
-      }
-      localStorage.setItem(key.value, JSON.stringify(payload))
-      lastSaved.value = payload.savedAt
-    } catch (err) {
-      console.error('Erro ao salvar no unmount', err)
-    }
-  }
-  window.removeEventListener('beforeunload', handleBeforeUnload)
+  if (inactivityTimer) clearTimeout(inactivityTimer)
 })
-
-function formatTimestamp(ts: number | null) {
-  if (!ts) return '-'
-  const d = new Date(ts)
-  return d.toLocaleString()
-}
 </script>
 
 <template>
-  <div class="h-screen w-screen flex flex-col bg-gray-50">
-    <!-- Top Bar -->
-    <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 mt-10 lg:mt-12 bg-white shadow-md border-b gap-3">
-      <div class="flex-1 w-full">
-        <input
-          v-model="title"
-          type="text"          
-          @blur="onBlurSave"
-          placeholder="Título da página / capítulo"
-          class="w-full bg-transparent border-b border-gray-300 focus:outline-none py-2 text-xl font-semibold placeholder-gray-400"
-        />
-        <div class="text-xs text-gray-500 mt-1">
-          LocalStorage: <span class="font-mono">{{ key }}</span>
+  <div class="w-full min-h-screen flex flex-col bg-white">
+    <header class="w-full sticky top-0 z-20 bg-white border-b shadow-sm px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="relative w-10 h-14">
+          <img :src="bookData ? bookData?.cover : ''" alt="Capa do livro" class="w-full h-full object-cover rounded-md border"/>
+        </div>
+        <div>
+          <div class="font-bold text-gray-800 text-lg">{{ bookData?.bookName }}</div>
+          <div class="font-semibold text-gray-800 text-sm">{{ title || 'Capítulo: ??' }}</div>
+          <div class="text-xs text-gray-500">{{ wordCount }} palavras • {{ charCount }} caracteres</div>
+        </div>
+        <div v-if="saving" class="flex items-center justify-center text-green-500 gap-1">
+          <p class="text-sm">Salvando...</p>
+          <Lucide icon="RefreshCw" class="h-5 w-5 animate-spin" :stroke-width="1" />
         </div>
       </div>
-
-      <div class="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end">
-        <div class="text-xs text-gray-600">
-          <div>Palavras: <span class="font-semibold">{{ wordCount }}</span></div>
-          <div>Caracteres: <span class="font-semibold">{{ charCount }}</span></div>
-        </div>
-
-        <div class="flex flex-col items-end">
-          <button
-            @click="saveNow"
-            :disabled="isSaving"
-            class="px-4 py-2 rounded-md bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold shadow-sm transition-colors"
-          >
-            {{ isSaving ? 'Salvando...' : 'Salvar' }}
-          </button>
-          <div class="text-xs text-gray-400 mt-1">
-            {{ saveIndicator || (lastSaved ? 'Último: ' + formatTimestamp(lastSaved) : 'Nunca salvo') }}
-          </div>
-        </div>
+      <div class="flex gap-2">
+        <button @click="save" class="px-4 py-2 rounded-md bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold shadow-sm">Salvar</button>
+        <button @click="cancelEdit" class="px-4 py-2 rounded-md border text-sm text-gray-600 hover:bg-gray-50">Cancelar</button>
       </div>
     </header>
 
-    <!-- Editor -->
-    <main class="flex-1 overflow-hidden">
-      <textarea
-        ref="textareaRef"
-        v-model="content"
-        @input="onInputText"
-        @blur="onBlurSave"
-        placeholder="Escreva aqui sua página... (autosave após 10s de inatividade)"
-        class="w-full h-full resize-none p-6 bg-white focus:outline-none focus:ring-0 text-base leading-relaxed font-serif"
-      ></textarea>
-    </main>
+    <section class="w-full px-6 py-6 flex justify-center bg-white">
+      <input v-model="title" type="text" placeholder="Título do capítulo..." class="w-full bg-transparent border-b border-gray-300 focus:outline-none py-2 text-3xl font-bold text-center placeholder-gray-400"/>
+    </section>
 
-    <!-- Footer -->
-    <footer class="flex items-center justify-between px-6 py-3 text-xs text-gray-500 bg-gray-100 border-t">
-      <div>Dica: alterações são salvas automaticamente após {{ autosaveDelay/1000 }}s de inatividade.</div>
-      <button @click="() => { content = ''; title = ''; }" class="text-red-500 hover:underline">
-        Limpar rascunho
-      </button>
-    </footer>
+    <main class="flex-1 px-6 pb-12 flex justify-center bg-white">
+      <div
+        ref="editor"
+        contenteditable="true"
+        class="w-full max-w-3xl min-h-[80vh] bg-white p-6 text-base leading-relaxed font-serif focus:outline-none outline-none pb-96"
+        @keydown="onKeyDown"
+        @input="onInput"
+      >
+      </div>
+    </main>
   </div>
 </template>
+

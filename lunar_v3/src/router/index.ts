@@ -92,6 +92,16 @@ const routes: RouteRecordRaw[] = [
         path: '/mywork/write',
         name: 'wireMyWork',
         component: () => import('../pages/originals/work/BookPageEditor.vue')
+      },
+      {
+        path: '/mywork/cover',
+        name: 'wireMyWorkCover',
+        component: () => import('../pages/originals/work/UploadCover.vue')
+      },
+      {
+        path: '/v1/mywork/list',
+        name: 'myWorkList',
+        component: () => import('../pages/originals/work/List.vue')
       }
     ]
   },  
