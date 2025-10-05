@@ -14,9 +14,9 @@ interface userData {
 	licenses: string[]
 }
 
-const storage = JSON.parse(localStorage.getItem('user') || null) as userData | null;
+const storage = ref(JSON.parse(localStorage.getItem('user') || null) as userData | null);
 
-const showPremiumButton = !(storage?.licenses?.includes('premium'));
+const showPremiumButton = !(storage?.value?.licenses?.includes('premium'));
 
 
 const route = useRoute();
@@ -47,6 +47,7 @@ const refShowWriteMenu2 = ref<HTMLElement | null>(null);
 const getWtpData = ref()
 	
 watch(getWtpData,(val) => {
+
 	if(val) {
 		userLocalData.value = val
 	}
@@ -120,24 +121,24 @@ const handleLogout = () => {
 }
 
 const isOriginalOrMyWork = computed(() => {
-  return route.path === '/originals-lunar' || route.path.startsWith('/mywork') || route.path.startsWith('/v1')
+  return route.path === '/v1/originals-lunar' || route.path.startsWith('/v1')
 })
 
 onMounted(async () => {
 	
-	if (storage) {
+	if (storage?.value) {
 		isLogged.value = true
 
-		if(storage.role === 'admin' || storage.role === 'superadmin'){
+		if(storage?.value?.role === 'admin' || storage?.value?.role === 'superadmin'){
 			isAdmin.value = true
 		}
-		if(storage.licenses && storage.licenses.some((s) => s === 'beta_tester')) {
+		if(storage?.value?.licenses && storage?.value?.licenses.some((s) => s === 'beta_tester')) {
 			isBeta.value = true
 		}
 	}
 
-	if(!storage) return;
-	const response = await getUserWtpd(storage.user)
+	if(!storage?.value) return;
+	const response = await getUserWtpd(storage?.value?.user)
 	getWtpData.value = response
 
   document.addEventListener('click', handleClickOutside);
@@ -235,7 +236,7 @@ provide('isCiner', isCiner)
 							@click="showWriteMenu = !showWriteMenu"
 						>
 							<p
-								class="flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-[11px] font-bold font-mono"
+								class="flex items-center justify-center gap-1 px-4 py-1.5 rounded-md text-[11px] font-bold font-mono"
 								:class="{
 									'text-black border-gray-500': isOriginalOrMyWork,
 									'text-white': !isOriginalOrMyWork,							}"
@@ -261,7 +262,7 @@ provide('isCiner', isCiner)
 						<!-- Usuário -->
 						<div v-if="userLocalData && isLogged">
 							<img 
-								:src="userLocalData.avatar"
+								:src="userLocalData?.avatar"
 								alt="Foto de perfil"
 								class="h-10 w-10 rounded-full"
 							>
@@ -300,8 +301,8 @@ provide('isCiner', isCiner)
 				<div
 					class=" h-full mt-1 fixed top-14 left-0 z-50"
 					:class="{
-						'hidden': route.path === '/mywork/write',
-						'hidden lg:flex': route.path !== '/mywork/write'
+						'hidden': route.path === '/v1/mywork/write',
+						'hidden lg:flex': route.path !== '/v1/mywork/write'
 					}"
 				>
 					<nav
@@ -707,7 +708,11 @@ provide('isCiner', isCiner)
 					<div 
 						ref="refShowWriteMenu"
 						v-if="showWriteMenu" 
-						class="fixed top-11 right-0 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2" 
+						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2"
+						:class="{
+							'right-0': storage?.licenses?.includes('premium'),
+							'right-10': !storage?.licenses?.includes('premium')
+						}"
 					> 
 						<ul
 							class="text-sm font-mono font-bold"

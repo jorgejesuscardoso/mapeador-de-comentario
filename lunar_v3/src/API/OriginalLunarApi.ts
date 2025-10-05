@@ -113,7 +113,7 @@ export const getChapterLunarById = async (bookId: string, chapterId: string) => 
         },
         signal: controller.signal
       }
-    );
+    ); 
     return response;
   } catch (err: any) {
     const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';

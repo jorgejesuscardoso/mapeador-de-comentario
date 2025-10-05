@@ -84,17 +84,17 @@ const routes: RouteRecordRaw[] = [
         component: MyFrame,
       }, 
       { 
-        path: '/originals-lunar', 
+        path: '/v1/originals-lunar', 
         name: 'originalsLunar',
         component: () => import('../pages/originals/OriginalsLunar.vue'),
       },
       {
-        path: '/mywork/write',
+        path: '/v1/mywork/write',
         name: 'wireMyWork',
         component: () => import('../pages/originals/work/BookPageEditor.vue')
       },
       {
-        path: '/mywork/cover',
+        path: '/v1/mywork/cover',
         name: 'wireMyWorkCover',
         component: () => import('../pages/originals/work/UploadCover.vue')
       },

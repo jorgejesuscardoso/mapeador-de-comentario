@@ -649,3 +649,36 @@ export const mock = [
     mature: false
   }
 ];
+
+export const notification = [
+  { id: 1, type: 'vote', message: 'Alguém votou na sua obra "Ecos do Passado"', read: false, date: new Date().toISOString(), link: '/books/1/chapters' },
+  { id: 2, type: 'comment', message: 'Novo comentário em "A Última Profecia"', read: false, date: new Date(Date.now() - 60_000).toISOString(), link: '/books/2/chapters' },
+  { id: 3, type: 'follower', message: 'Lunara começou a te seguir', read: false, date: new Date(Date.now() - 2*60_000).toISOString(), link: '/users/Lunara' },
+  { id: 4, type: 'directMessage', message: 'Nova mensagem direta de Arcturus', read: false, date: new Date(Date.now() - 3*60_000).toISOString(), link: '/messages' },
+  { id: 5, type: 'premium', message: 'Seu Premium expira em 3 dias', read: false, date: new Date(Date.now() - 4*60_000).toISOString(), link: '/account/premium' },
+  { id: 6, type: 'author', message: 'Nova obra publicada por @Lunara: "Sombras da Lua"', read: false, date: new Date(Date.now() - 5*60_000).toISOString(), link: '/books/3/chapters' },
+  { id: 7, type: 'system', message: 'O Lunar Contest começou! Confira as regras', read: false, date: new Date(Date.now() - 6*60_000).toISOString(), link: '/contest' },
+  { id: 8, type: 'vote', message: 'Alguém votou na sua obra "O Guardião"', read: false, date: new Date(Date.now() - 7*60_000).toISOString(), link: '/books/4/chapters' },
+  { id: 9, type: 'comment', message: 'Novo comentário em "Crônicas do Eclipse"', read: false, date: new Date(Date.now() - 8*60_000).toISOString(), link: '/books/5/chapters' },
+  { id: 10, type: 'admin', message: 'Atualização de sistema: melhorias de performance', read: false, date: new Date(Date.now() - 9*60_000).toISOString(), link: '/updates' },
+  { id: 11, type: 'follower', message: 'Orion começou a te seguir', read: false, date: new Date(Date.now() - 10*60_000).toISOString(), link: '/users/Orion' },
+  { id: 12, type: 'directMessage', message: 'Nova mensagem direta de Selene', read: false, date: new Date(Date.now() - 11*60_000).toISOString(), link: '/messages' },
+  { id: 13, type: 'premium', message: 'Promoção: Renove seu Premium e ganhe 20% off', read: false, date: new Date(Date.now() - 12*60_000).toISOString(), link: '/account/premium' },
+  { id: 14, type: 'author', message: 'Nova obra publicada por @Arcturus: "O Códice"', read: false, date: new Date(Date.now() - 13*60_000).toISOString(), link: '/books/6/chapters' },
+  { id: 15, type: 'system', message: 'Notas de atualização: nova interface de notificações', read: false, date: new Date(Date.now() - 14*60_000).toISOString(), link: '/updates' },
+  { id: 16, type: 'vote', message: 'Alguém votou na sua obra "A Jornada do Herói"', read: false, date: new Date(Date.now() - 15*60_000).toISOString(), link: '/books/7/chapters' },
+  { id: 17, type: 'comment', message: 'Novo comentário em "Crônicas da Aurora"', read: false, date: new Date(Date.now() - 16*60_000).toISOString(), link: '/books/8/chapters' },
+  { id: 18, type: 'admin', message: 'Sistema em manutenção prevista para amanhã', read: false, date: new Date(Date.now() - 17*60_000).toISOString(), link: '/updates' },
+  { id: 19, type: 'follower', message: 'Lyra começou a te seguir', read: false, date: new Date(Date.now() - 18*60_000).toISOString(), link: '/users/Lyra' },
+  { id: 20, type: 'directMessage', message: 'Nova mensagem direta de NovaUser', read: false, date: new Date(Date.now() - 19*60_000).toISOString(), link: '/messages' },
+  { id: 21, type: 'premium', message: 'Seu Premium está ativo até 15/10', read: false, date: new Date(Date.now() - 20*60_000).toISOString(), link: '/account/premium' },
+  { id: 22, type: 'author', message: 'Nova obra publicada por @NovaUser: "Lendas do Vazio"', read: false, date: new Date(Date.now() - 21*60_000).toISOString(), link: '/books/9/chapters' },
+  { id: 23, type: 'system', message: 'Evento Lunar: desafio de escrita começando amanhã', read: false, date: new Date(Date.now() - 22*60_000).toISOString(), link: '/events' },
+  { id: 24, type: 'vote', message: 'Alguém votou na sua obra "O Último Feiticeiro"', read: false, date: new Date(Date.now() - 23*60_000).toISOString(), link: '/books/10/chapters' },
+  { id: 25, type: 'comment', message: 'Novo comentário em "Diário das Estrelas"', read: false, date: new Date(Date.now() - 24*60_000).toISOString(), link: '/books/11/chapters' },
+  { id: 26, type: 'follower', message: 'NovaUser começou a te seguir', read: false, date: new Date(Date.now() - 25*60_000).toISOString(), link: '/users/NovaUser' },
+  { id: 27, type: 'directMessage', message: 'Nova mensagem direta de Arcturus', read: false, date: new Date(Date.now() - 26*60_000).toISOString(), link: '/messages' },
+  { id: 28, type: 'premium', message: 'Seu Premium expirará em 2 dias', read: false, date: new Date(Date.now() - 27*60_000).toISOString(), link: '/account/premium' },
+  { id: 29, type: 'author', message: 'Nova obra publicada por @Lyra: "Fragmentos do Caos"', read: false, date: new Date(Date.now() - 28*60_000).toISOString(), link: '/books/12/chapters' },
+  { id: 30, type: 'system', message: 'Atualização de sistema: performance melhorada', read: false, date: new Date(Date.now() - 29*60_000).toISOString(), link: '/updates' },
+]

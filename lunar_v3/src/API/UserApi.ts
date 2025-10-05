@@ -58,9 +58,9 @@ export const tokenValidate = async (token: string) => {
   try {
     const controller = new AbortController()
 
-    const response = await axios(`${endPoint}/auth?token=${token}`)    
+    const response = await axios(`${endPoint}/users/auth?token=${token}`)    
 
-    return response
+    return response.data
   } catch (err: any) {
     throw err.response?.data?.message || 'Erro ao validar token!'
   }

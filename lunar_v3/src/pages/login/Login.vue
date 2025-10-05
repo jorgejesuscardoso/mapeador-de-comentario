@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Mail, Lock, User } from 'lucide-vue-next'
-import { Login, ResetPassword } from '@/API/UserApi' // ⚡ adicione ResetPassword
+import { Login, ResetPassword, tokenValidate } from '@/API/UserApi' // ⚡ adicione ResetPassword
 import { useRouter } from 'vue-router'
 import ResetPasswordModal from './ResetPasswordModal.vue'
 import RequestPasswordReset from './RequestPasswordReset.vue'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { isMaintenance } from '@/maintenance'
 import { toast } from '@/base/utils/toast'
+import { startWebSocket } from '@/base/utils/ws'
 
 const router = useRouter()
 const user = ref('')
@@ -34,8 +35,13 @@ const submit = async () => {
       error.value = "Dados inválidos!"
       return
     }
-
-    localStorage.setItem('user', JSON.stringify(data))
+    const sessiontToken = await tokenValidate(data.token)
+    const getSessionToken = {
+      ...data,
+      token: sessiontToken.token
+    }
+    localStorage.setItem('user', JSON.stringify(getSessionToken))
+    startWebSocket()
     router.back()
   } catch (e: any) {
     error.value = e.message

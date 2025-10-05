@@ -18,7 +18,7 @@ const editorText = ref('')
 const bookData = ref(null)
 
 
-const bookId = 'b1a2c3d4-5678-90ab-cdef-1234567890ab'
+const bookId = 'b1a2g3d4-5078-99ab-cduf-42345678907b'
 const chapterId = 'c1d2e3f4-1234-5678-90ab-cdef12345678'
 
 let inactivityTimer: ReturnType<typeof setTimeout> | null = null
@@ -322,7 +322,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="w-full min-h-screen flex flex-col bg-white">
+  <div class="w-full min-h-screen flex flex-col bg-white mt-14">
     <header class="w-full sticky top-0 z-20 bg-white border-b shadow-sm px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="relative w-10 h-14">
