@@ -2,7 +2,6 @@
 import db from "../db";
 import express, { Request, Response } from 'express';
 import { GetCommand, ScanCommand, PutCommand, QueryCommand  } from '@aws-sdk/lib-dynamodb';
-import { generateToken, verifyToken } from "../configs/jwt";
 import { generateHash, verifyHash } from "../configs/bcrypt";
 import axios from "axios";
 import { parse } from 'php-array-parser';

@@ -5,7 +5,6 @@ import sharp from 'sharp';
 import { v2 as cloudinary } from 'cloudinary';
 import { v4 as uuid } from 'uuid'
 import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
-import { generateToken, verifyToken } from "../configs/jwt";
 
 const bookLunar = express.Router();
 const tableName = 'booksLunar';

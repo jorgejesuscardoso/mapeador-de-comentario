@@ -2,7 +2,6 @@
 import db from "../db";
 import express, { Request, Response } from 'express';
 import { GetCommand, ScanCommand, PutCommand, UpdateCommand  } from '@aws-sdk/lib-dynamodb';
-import { generateToken, verifyToken } from "../configs/jwt";
 
 const books = express.Router(); 
 

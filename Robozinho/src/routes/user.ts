@@ -2,7 +2,7 @@
 import db from "../db";
 import express, { Request, Response } from 'express';
 import { GetCommand, ScanCommand, PutCommand, QueryCommand  } from '@aws-sdk/lib-dynamodb';
-import { generateToken, verifyToken } from "../configs/jwt";
+import { decodeToken, generatePreToken, generateSessionToken, verifyPreToken, verifySessionToken } from "../configs/jwt";
 import { generateHash, verifyHash } from "../configs/bcrypt";
 import axios from "axios";
 import { parse } from 'php-array-parser';
@@ -51,60 +51,50 @@ function parsePhpArray(str: string) {
   }
 
   return result;
-}
+} 
 
 user.get('/auth', async (req: Request, res: Response) => {
-  const {token} = req.params
-  res.status(200).json({msg: token})
-})
-
-user.post('/register', async (req: Request, res: Response) => {
-  const { user, password, name, age, role, subrole } = req.body;
-
-  if (!user || !password) {
-    return res.status(400).json({ error: 'Usuário ou senha ausente!' });
+  const {token} = req.query
+  const verify = verifyPreToken(token as string)
+  
+  if(!verify) {
+    return res.status(401).json({error: 'Pré token inválido!'})
   }
-
-  try {
-    // Verifica se já existe
-    const existing = await db.send(
+  const dec = decodeToken(token as string) as unknown as any
+  if(!dec) {    
+    return res.status(401).json({error: 'Pré token inválido!'})
+  }
+  const userDecoded = dec.user
+  const result = await db.send(
       new GetCommand({
         TableName: 'dbLunar2',
-        Key: { user }
+        Key: { user: userDecoded },
       })
     );
 
-    if (existing.Item) {
-      return res.status(200).json({ error: 'Usuário já existe!' });
-    }
-
-    const hashedPassword = await generateHash(password);
-
-    // ✅ Aqui está o segredo: usar `new PutCommand`
-    await db.send(
-      new PutCommand({
-        TableName: 'dbLunar2',
-        Item: {
-          user,
-          password: hashedPassword,
-          name,
-          age,
-          role,
-          subrole,
-          promo:[],
-          tierPoints: 0,
-          house: '',
-          createdAt: new Date().toISOString(),
-        }
-      })
-    );
-
-    res.status(201).json({ message: 'Usuário criado com sucesso!' });
-  } catch (err) {
-    console.error('Erro no registro:', err);
-    res.status(500).json({ error: 'Erro ao registrar usuário!' });
+  if(!result.Item) {    
+    return res.status(401).json({error: 'Usuário não encontrado!'})
   }
-});
+  await db.send(
+    new UpdateCommand({
+      TableName: 'dbLunar2',
+      Key: { user: userDecoded },
+      UpdateExpression: 'SET isLogged = :true, lastPing = :ping',
+      ExpressionAttributeValues: {
+        ':true': 0,
+        ':ping': new Date().toISOString()
+      }
+    }
+  ))
+  const ispremium = result.Item.licenses ? result.Item.licenses.some((s) => s === 'premium') : false
+  const dataDecoded = {
+    user: result.Item.user,
+    role: result.Item.role,
+    premium: ispremium
+  }
+  const sessionToken = generateSessionToken(dataDecoded)
+  res.status(200).json(sessionToken)
+})
 
 user.post('/login', async (req: Request, res: Response) => {
   const { user, password } = req.body;
@@ -156,16 +146,27 @@ user.post('/login', async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Dados inválidos!' });
     }
 
-    const tier = calculateUserTierByPoints(account.tierPoints);
-    const getToken = generateToken({ user: account.user, role: account.role });
+    //const tier = calculateUserTierByPoints(account.tierPoints);
+    const getToken = generatePreToken({ user: account.user, role: account.role });    
+    const url = `https://www.wattpad.com/api/v3/users/${account.user}`;
+    const response = await axios.get(url, {
+      headers: { Accept: 'text/plain' },
+      responseType: 'text',
+    });
+
+    
+    const parsed = parsePhpArray(response.data);
 
     const userData = {
-      ...tier,
       token: getToken.token,
       role: account.role,
+      description: parsed.description,
+      avatar: parsed.avatar,
+      gender: parsed.gender,
+      name: parsed.name,
       subrole: account.subrole,
       user: account.user,
-      house: account.house,
+      username: account.username,
       points: account.points,
       licenses: account.licenses,
       whatsappNumber: account.whatsappNumber
@@ -175,6 +176,54 @@ user.post('/login', async (req: Request, res: Response) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao acessar o DynamoDB' });
+  }
+});
+
+user.post('/register', async (req: Request, res: Response) => {
+  const { user, password, name, age, role, subrole } = req.body;
+
+  if (!user || !password) {
+    return res.status(400).json({ error: 'Usuário ou senha ausente!' });
+  }
+
+  try {
+    // Verifica se já existe
+    const existing = await db.send(
+      new GetCommand({
+        TableName: 'dbLunar2',
+        Key: { user }
+      })
+    );
+
+    if (existing.Item) {
+      return res.status(200).json({ error: 'Usuário já existe!' });
+    }
+
+    const hashedPassword = await generateHash(password);
+
+    // ✅ Aqui está o segredo: usar `new PutCommand`
+    await db.send(
+      new PutCommand({
+        TableName: 'dbLunar2',
+        Item: {
+          user,
+          password: hashedPassword,
+          name,
+          age,
+          role,
+          subrole,
+          promo:[],
+          tierPoints: 0,
+          house: '',
+          createdAt: new Date().toISOString(),
+        }
+      })
+    );
+
+    res.status(201).json({ message: 'Usuário criado com sucesso!' });
+  } catch (err) {
+    console.error('Erro no registro:', err);
+    res.status(500).json({ error: 'Erro ao registrar usuário!' });
   }
 });
 

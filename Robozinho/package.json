@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon src/main.ts",
+    "dev": "nodemon src/ws/ws-server.ts",
     "start": "nodemon src/main.ts",
+    "starts": "npm run main && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -38,7 +39,8 @@
     "sharp": "^0.34.4",
     "sweet-alert": "^2.0.5",
     "sweetalert2": "^11.15.10",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@types/node": "^22.13.1",

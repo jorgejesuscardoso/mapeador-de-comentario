@@ -102,6 +102,11 @@ const handlewrite = () => {
 	router.push('/v1/mywork/list')
 }
 
+const handlePermission = () => {
+	if(!isBeta) return toast.error("Acesso antecipado apenas para testadores beta!")
+	router.push('/v1/mywork/write')
+}
+
 const handleGetPrmium = () => {
 	toast.info('Em breve!')
 }
@@ -187,6 +192,7 @@ provide('isBeta', isBeta)
 provide('isPremium',isPremium)
 provide('isDev', isDev)
 provide('isCiner', isCiner)
+
 </script>
 
 <template>
@@ -719,6 +725,7 @@ provide('isCiner', isCiner)
 						> 
 							<li
 								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+								@click="handlePermission"
 							>
 							<Lucide 
 									icon="PencilLine" 
