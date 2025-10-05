@@ -24,7 +24,7 @@ export function startWebSocket() {
     if (data.type === 'auth' && data.status === 'invalid') {
       // Token inválido → limpa sessão e avisa
       localStorage.removeItem('user');
-      toast.warning("Você foi desconectado, relogue por favor!");
+      //toast.warning("Você foi desconectado, relogue por favor!");
       if (ws) {
         ws.close();
         ws = null;
@@ -39,7 +39,7 @@ export function startWebSocket() {
     ws = null;
 
     //localStorage.removeItem('user');
-    toast.warning("Você foi desconectado, relogue por favor!");
+    //toast.warning("Você foi desconectado, relogue por favor!");
     if (ws) {
       ws.close();
       ws = null;
