@@ -103,7 +103,8 @@ const handlewrite = () => {
 }
 
 const handlePermission = () => {
-	if(!isBeta) return toast.error("Acesso antecipado apenas para testadores beta!")
+	console.log(isBeta)
+	if(!isBeta.value) return toast.error("Acesso antecipado apenas para testadores beta!")
 	router.push('/v1/mywork/write')
 }
 
