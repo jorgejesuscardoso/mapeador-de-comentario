@@ -5,7 +5,7 @@ import { decodeToken, verifyPreToken, verifySessionToken, verifyWsToken } from '
 const SECRET_KEY = process.env.LUNAR_KEY || '0800';
 const PORT = 8080;
 
-const wss = new WebSocketServer({ port: PORT });
+export const wss = new WebSocketServer({ port: PORT });
 
 interface WSData {
   type: string;

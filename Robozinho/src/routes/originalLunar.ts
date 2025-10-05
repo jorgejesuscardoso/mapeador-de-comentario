@@ -9,7 +9,7 @@ import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand } from
 const bookLunar = express.Router();
 const tableName = 'booksLunar';
 const tableChapterName = 'chaptersBookLunar'
-const randomId = uuid()
+const randomId = Date.now().toString(36)
 // configura Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

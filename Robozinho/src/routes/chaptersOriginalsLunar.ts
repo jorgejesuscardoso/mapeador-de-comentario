@@ -9,7 +9,8 @@ import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand } from
 const chaptersLunar = express.Router();
 const tableName = 'booksLunar';
 const tableChapterName = 'chaptersBookLunar'
-const randomId = uuid()
+const randomId = Date.now().toString(36)
+
 // configura Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -72,7 +73,7 @@ chaptersLunar.post('/:bookId/create', async (req: Request, res: Response) => {
       id,
       title,
       paragraphs, // string ou array<string> dependendo de como você salvar
-      words_count: wordsCount,
+      wordsCount: wordsCount,
       comments: [],
       votes: 0,
       views: 0,

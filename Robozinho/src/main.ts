@@ -1,4 +1,5 @@
 import app from './app';
+import './ws/ws-server'
 
 const port = 6060;
 
