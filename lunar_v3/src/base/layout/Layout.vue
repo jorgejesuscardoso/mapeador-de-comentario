@@ -154,6 +154,10 @@ onMounted(async () => {
 		if(storage?.value?.licenses && storage?.value?.licenses.some((s) => s === 'beta_tester')) {
 			isBeta.value = true
 		}
+		if(storage?.value?.licenses && storage?.value?.licenses.some((s) => s === 'premium')) {
+			isPremium.value = true
+			console.log(isPremium.value)
+		}
 	}
 
 	if(!storage?.value) return;
@@ -225,7 +229,7 @@ provide('isCiner', isCiner)
 	>
 		<div
 			:class="{
-				'hidden': route.path === '/v1/origins/mywork/write' || route.path === '/v1/origins/work/create'
+				'hidden': route.path.startsWith('/v1/origins/mywork/write') || route.path === '/v1/origins/work/create'
 			}"
 		>
 			<header 
@@ -244,7 +248,7 @@ provide('isCiner', isCiner)
 					<h1 
 						class="flex items-center gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
 						:class="{
-							'text-purple-700': isRouteOrigins,
+							'bg-standard bg-clip-text text-transparent': isRouteOrigins,
 							'text-white': !isRouteOrigins
 						}"
 						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
@@ -363,8 +367,8 @@ provide('isCiner', isCiner)
 				<div
 					class=" h-full mt-1 fixed top-16 left-0 z-50"
 					:class="{
-						'hidden': route.path === '/v1/origins/mywork/write' || route.path === '/v1/origins/work/create',
-						'hidden lg:flex': route.path !== '/v1/origins/mywork/write' && route.path !== '/v1/origins/work/create'
+						'hidden': route.path.startsWith('/v1/origins/mywork/write') || route.path === '/v1/origins/work/create',
+						'hidden lg:flex': !route.path.startsWith('/v1/origins/mywork/write') && route.path !== '/v1/origins/work/create'
 					}"
 				>
 					<nav

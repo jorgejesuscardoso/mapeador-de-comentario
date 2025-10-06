@@ -89,8 +89,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/originals/OriginalsLunar.vue'),
       },
       {
-        path: '/v1/origins/mywork/write',
-        name: 'wireMyWork',
+        path: '/v1/origins/mywork/write/:bookId/:chapterId',
+        name: 'wiretMyWork',
         component: () => import('../pages/originals/work/BookPageEditor.vue')
       },
       {

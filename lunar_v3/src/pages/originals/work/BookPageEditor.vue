@@ -17,9 +17,11 @@ const editor = ref<HTMLElement | null>(null)
 const editorText = ref('')
 const bookData = ref(null)
 
+let holdPrevSave = 0
 
-const bookId = 'b1a2g3d4-5078-99ab-cduf-42345678907b'
-const chapterId = 'c1d2e3f4-1234-5678-90ab-cdef12345678'
+const bookId = route.params.bookId as string
+
+const chapterId = route.params.chapterId as string
 
 let inactivityTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -276,6 +278,7 @@ async function save() {
 
   const payload = {
     title: title.value,
+    wordsCount: wordCount.value,
     paragraphs: fullHtml,
   }
 
@@ -293,7 +296,7 @@ function scheduleSave() {
   }, 3000)
 }
 
-const cancelEdit = () => router.push('/v1/mywork/list')
+const cancelEdit = () => router.back()
 
 // ========================
 // lifecycle
@@ -314,7 +317,10 @@ onMounted(async () => {
   setTimeout(() => ensureInitialParagraph(), 0)
 })
 
-watch(title, () => scheduleSave())
+watch(title, () =>{
+  if(holdPrevSave > 0) return  scheduleSave()
+  holdPrevSave++
+})
 
 onUnmounted(() => {
   if (inactivityTimer) clearTimeout(inactivityTimer)
@@ -322,7 +328,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="w-full min-h-screen flex flex-col bg-white mt-14">
+  <div class="w-full min-h-screen flex flex-col bg-white">
     <header class="w-full sticky top-0 z-20 bg-white border-b shadow-sm px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="relative w-10 h-14">
@@ -352,7 +358,7 @@ onUnmounted(() => {
       <div
         ref="editor"
         contenteditable="true"
-        class="w-full max-w-3xl min-h-[80vh] bg-white p-6 text-base leading-relaxed font-serif focus:outline-none outline-none pb-96"
+        class="w-full max-w-xl min-h-[80vh] bg-white p-6 text-base leading-relaxed font-serif focus:outline-none outline-none pb-96"
         @keydown="onKeyDown"
         @input="onInput"
       >

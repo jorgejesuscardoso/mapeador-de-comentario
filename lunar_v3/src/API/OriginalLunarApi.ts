@@ -158,7 +158,7 @@ export const updateChapterLunarById = async (bookId: string, chapterId: string, 
 
     return response;
   } catch (err: any) {
-    const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';
+    const msg = err?.response?.data?.error || 'Erro inesperado no salvamento do capítulo.';
     throw new Error(msg);
   }
 };

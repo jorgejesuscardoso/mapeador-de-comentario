@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, inject, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { toast } from '@/base/utils/toast'
 import { getBookLunarById } from '@/API/OriginalLunarApi'
 
-// Interfaces
 interface Chapter {
   id: string
   bookId: string
@@ -20,6 +19,13 @@ interface Chapter {
   wordsCount: number
 }
 
+const premium =ref(inject('isPremium'))
+const isPremium = ref(false)
+
+watch(premium,(val)=> {  
+  if(val) return isPremium.value = val as boolean
+})
+
 interface Book {
   id: string
   author: string
@@ -33,46 +39,36 @@ interface Book {
   mature: boolean
 }
 
-// Estado
 const route = useRoute()
 const router = useRouter()
 const bookId = route.params.bookId as string
 
-const book = ref<Book>({
-  id: '',
-  name: '',
-  author: '',
-  cover: '',
-  sinopse: '',
-  tags: [],
-  genre: '',
-  createdAt: '',
-  mature: false,
-  updatedAt: ''
-})
+const goToChapter = (data: any) => {
+  console.log(data)
+  router.push(`/v1/origins/mywork/write/${bookId}/${data.id}`)
+}
 
+const book = ref<Book | null>(null)
 const chapters = ref<Chapter[]>([])
 const loading = ref(true)
 
-// API
 async function fetchBook() {
   try {
     loading.value = true
     const res = await getBookLunarById(bookId)
     if (res.status === 200 && res.data) {
-      const work = {
+      book.value = {
+        id: res.data.id,
         author: res.data.author,
         cover: res.data.cover,
         createdAt: res.data.createdAt,
         genre: res.data.genre,
-        id: res.data.id,
         mature: res.data.mature,
         name: res.data.name,
         sinopse: res.data.sinopse,
         tags: res.data.tags,
-        updatedAt: res.data.updatedAt        
-      } as Book
-      book.value = work
+        updatedAt: res.data.updatedAt
+      }
       chapters.value = res.data.chapters
     } else {
       toast.error('Erro ao carregar o livro ou capítulos')
@@ -85,66 +81,57 @@ async function fetchBook() {
   }
 }
 
-// Ações do capítulo
-function editChapter(chapterId: string) {
-  router.push(`/v1/mywork/edit/${chapterId}`)
-}
-
-function togglePublish(chapter: Chapter) {
-  chapter.status = chapter.status === 'published' ? 'draft' : 'published'
-  toast.success(`Capítulo ${chapter.status === 'published' ? 'publicado' : 'despublicado'}!`)
-}
-
-function deleteChapter(chapterId: string) {
-  chapters.value = chapters.value.filter(c => c.id !== chapterId)
-  toast.success('Capítulo deletado!')
-}
-
-// Inicializa
-onMounted(() => {
-  fetchBook()
-})
+onMounted(fetchBook)
 </script>
 
 <template>
-  <div class="flex items-start justify-end w-full mt-14 p-6 bg-gray-50 min-h-screen">
-    <!-- Container principal em duas colunas -->
-    <div class="flex flex-col lg:flex-row gap-8 w-full lg:w-[80vw] xl:w-[85vw]">
+  <div class="flex items-start justify-end w-full mt-14 bg-white gray-50 min-h-screen">
+    <!-- Wrapper -->
+    <div class="flex flex-col justify-end lg:flex-row gap-8 w-full lg:w-[85vw] p-6">
       
-      <!-- Aside do livro -->
-      <aside class="lg:w-1/2 w-full bg-white p-4 rounded-md shadow flex flex-col gap-4">
-        <h2 class="text-xl font-bold text-gray-800 mb-2">Detalhes do Livro</h2>
-        
-        <!-- Capa -->
-        <div class="flex justify-center mb-4">
-          <img :src="book?.cover" alt="Capa do livro" class="w-32 h-48 object-cover rounded-md border"/>
-        </div>
-
-        <!-- Título -->
-        <input v-model="book.name" type="text" placeholder="Título" class="border px-2 py-1 rounded w-full text-gray-800"/>
-
-        <!-- Sinopse -->
-        <textarea v-model="book.sinopse" placeholder="Sinopse" class="border px-2 py-1 rounded w-full text-gray-800 resize-none"></textarea>
-
-        <!-- Tags -->
-        <input 
-          v-model="book.tags" 
-          type="text" 
-          placeholder="Tags (separadas por vírgula)" 
-          class="border px-2 py-1 rounded w-full text-gray-800"
+      <!-- Capa -->
+      <aside class="flex flex-col lg:w-1/4 xl:w-1/5 w-full justify-start max-h-[95vh]">
+        <img 
+          :src="book?.cover" 
+          alt="Capa do livro" 
+          class="w-full max-w-md shadow-lg object-cover border shadow-gray-500"
         />
 
-        <!-- Gênero -->
-        <input v-model="book.genre" type="text" placeholder="Gênero" class="border px-2 py-1 rounded w-full text-gray-800"/>
-
-        <button class="bg-violet-600 hover:bg-violet-700 text-white py-2 rounded mt-2">
-          Salvar Alterações
-        </button>
+        <!-- CTA Premium -->
+        <div 
+          v-if="!isPremium"
+          class="w-full max-w-sm bg-standard rounded-lg shadow-md p-4 text-center"
+        >
+          <h3 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-50">
+            Seja Premium 🚀
+          </h3>
+          <p class="text-sm text-white/90 mt-1">
+            Ganhe mais visibilidade, vitrine exclusiva, destaque em campanhas e acesso antecipado às novidades.
+          </p>
+          <button 
+            class="mt-3 px-4 py-2 rounded-md text-sm font-semibold bg-white text-violet-700 hover:bg-gray-100 transition"
+          >
+            Conheça as vantagens
+          </button>
+        </div>
       </aside>
 
       <!-- Lista de capítulos -->
-      <main class="lg:w-2/3 w-full flex flex-col gap-4">
-        <h2 class="text-xl font-bold text-gray-800 mb-2">Capítulos</h2>
+      <main class="lg:w-2/3 w-full min-h-screen flex flex-col gap-4 bg-white p-6 shadow-xl shadow-gray-400 border border-gray-100 rounded-lg">
+        <div
+          class="flex items-center justify-between pb-2 mb-2 border-b"
+        >
+          <h2 class="text-2xl font-semibold text-gray-700">Capítulos:</h2>
+          <button
+            class="flex items-center justify-center text-xs px-2 py-1 bg-standard text-white rounded font-semibold"
+          >
+            <Lucide
+              icon="Plus"
+              class="h-4 w-4"
+            />
+            NOVO CAPÍTULO
+          </button>
+        </div>
 
         <div v-if="loading" class="flex items-center justify-center text-violet-600 py-20">
           <Lucide icon="RefreshCw" class="w-12 h-12 animate-spin"/>
@@ -154,30 +141,44 @@ onMounted(() => {
           <li 
             v-for="chapter in chapters" 
             :key="chapter.id" 
-            class="bg-white rounded-md shadow p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-lg transition"
+            class="bg-white rounded shadow border border-gray-100 gap-6 p-3 flex items-center justify-between hover:shadow-xl transition"
           >
-            <!-- infos -->
-            <div class="flex flex-col flex-1 gap-1">
-              <h3 class="text-lg font-semibold text-gray-800">{{ chapter.title }}</h3>
-              <p class="text-xs text-gray-500">Criado: {{ new Date(chapter.createdAt).toLocaleDateString() }}</p>
-              <p class="text-xs text-gray-500">Atualizado: {{ new Date(chapter.updatedAt).toLocaleDateString() }}</p>
-              <p class="text-xs text-gray-500">Palavras: {{ chapter.wordsCount }}</p>
+            <div>
+              <Lucide
+                icon="Menu"
+                :stroke-width="2"
+                class="h-8 w-8 text-violet-600"
+              />
             </div>
+          
+            <!-- título -->
+            <div
+              class="w-full"
+            >
+              <h3 
+                @click="goToChapter(chapter)"
+                class="text-lg font-semibold text-gray-800"
+              >
+                {{ chapter.title }}
+              </h3>
+              
 
-            <!-- métricas -->
-            <div class="flex gap-4 text-gray-700 text-xs items-center">
-              <span class="flex items-center gap-1"><Lucide icon="Eye" class="w-3 h-3"/> {{ chapter.views }}</span>
-              <span class="flex items-center gap-1"><Lucide icon="Star" class="w-3 h-3"/> {{ chapter.votes }}</span>
-              <span class="flex items-center gap-1"><Lucide icon="MessageCircleMore" class="w-3 h-3"/> {{ chapter.comments.length }}</span>
-            </div>
-
-            <!-- ações -->
-            <div class="flex gap-2 text-xs">
-              <button @click="editChapter(chapter.id)" class="text-blue-600 hover:underline">Editar</button>
-              <button @click="togglePublish(chapter)" class="text-green-600 hover:underline">
-                {{ chapter.status === 'published' ? 'Despublicar' : 'Publicar' }}
-              </button>
-              <button @click="deleteChapter(chapter.id)" class="text-red-600 hover:underline">Deletar</button>
+              <!-- métricas -->
+              <div class="flex flex-wrap gap-6 text-sm text-gray-500 mt-2">
+                <span class="flex items-center gap-1">
+                  <Lucide icon="Eye" fill="#eee" class="w-4 h-4"/> {{ chapter.views.toLocaleString() }}
+                </span>
+                <span class="flex items-center gap-1">
+                  <Lucide icon="Star" fill="gray" class="w-4 h-4"/> {{ chapter.votes.toLocaleString() }}
+                </span>
+                <span class="flex items-center gap-1 ">
+                  <Lucide icon="MessageCircleMore" fill="#eee" class="w-4 h-4"/> {{ chapter.comments.length.toLocaleString() }}
+                </span>
+                <span class="flex items-center font-semibold gap-1">
+                  {{ chapter.status === 'published' ? 'Publicado' : 'Rascunho' }}: {{ new Date(chapter.updatedAt).toLocaleDateString() }}
+                </span>
+                <span>Palavras: {{ chapter.wordsCount }}</span>
+              </div>
             </div>
           </li>
         </ul>
@@ -189,7 +190,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-textarea { min-height: 80px; }
-</style>

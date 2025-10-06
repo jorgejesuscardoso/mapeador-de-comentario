@@ -1,19 +1,48 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Lucide from '@/base/lucide/Lucide.vue'
+import { toast } from '@/base/utils/toast'
+import { getBookLunarById } from '@/API/OriginalLunarApi'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
-import { toast } from '@/base/utils/toast'
-import Lucide from '@/base/lucide/Lucide.vue'
 import { subgenres, genres } from './genres'
 import Switch from '@/base/utils/Switch.vue'
-import { useRouter } from 'vue-router'
 import { createBook } from '@/API/OriginalLunarApi'
+
+// Interfaces
+interface Chapter {
+  id: string
+  bookId: string
+  title: string
+  views: number
+  votes: number
+  comments: {}[]
+  paragraphs: string
+  createdAt: string
+  updatedAt: string
+  status: string 
+  wordsCount: number
+}
+
+interface Book {
+  id: string
+  author: string
+  name: string
+  cover: string
+  sinopse: string
+  tags: string[]
+  genre: string
+  createdAt: string
+  updatedAt: string
+  mature: boolean
+}
 
 const info = ref(false)
 const saving = ref(false)
-const router = useRouter()
 const coverFile = ref<File | null>(null)
 const user = ref()
+
 // Schema de validação com Yup
 const schema = yup.object({
   name: yup.string().required('O título é obrigatório'),
@@ -122,46 +151,78 @@ onMounted(() => {
   if(!getUser || !getUser.token || !getUser.user) return router.push('/v1/origins')
   user.value = getUser.user
 })
+// Estado
+const route = useRoute()
+const router = useRouter()
+const bookId = route.params.bookId as string
+
+const book = ref<Book>({
+  id: '',
+  name: '',
+  author: '',
+  cover: '',
+  sinopse: '',
+  tags: [],
+  genre: '',
+  createdAt: '',
+  mature: false,
+  updatedAt: ''
+})
+
+const chapters = ref<Chapter[]>([])
+const loading = ref(true)
+
+// API
+async function fetchBook() {
+  try {
+    loading.value = true
+    const res = await getBookLunarById(bookId)
+    if (res.status === 200 && res.data) {
+      const work = {
+        author: res.data.author,
+        cover: res.data.cover,
+        createdAt: res.data.createdAt,
+        genre: res.data.genre,
+        id: res.data.id,
+        mature: res.data.mature,
+        name: res.data.name,
+        sinopse: res.data.sinopse,
+        tags: res.data.tags,
+        updatedAt: res.data.updatedAt        
+      } as Book
+      book.value = work
+      chapters.value = res.data.chapters
+    } else {
+      toast.error('Erro ao carregar o livro ou capítulos')
+    }
+  } catch (err) {
+    console.error(err)
+    toast.error('Erro ao carregar dados do livro')
+  } finally {
+    loading.value = false
+  }
+}
+
+// Ações do capítulo
+function editChapter(chapterId: string) {
+  router.push(`/v1/mywork/edit/${chapterId}`)
+}
+
+function togglePublish(chapter: Chapter) {
+  chapter.status = chapter.status === 'published' ? 'draft' : 'published'
+  toast.success(`Capítulo ${chapter.status === 'published' ? 'publicado' : 'despublicado'}!`)
+}
+
+// Inicializa
+onMounted(() => {
+  fetchBook()
+})
 </script>
 
 <template>
-  <div class="flex flex-col items-start justify-center w-full bg-white min-h-screen">
-    <header class="w-full sticky top-0 z-20 bg-white border-b border-violet-200 shadow-md px-6 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div>
-          <div class="font-bold text-gray-800 text-lg">{{ name || 'História sem título' }}</div>
-          <div class="font-semibold text-gray-800 text-sm">Adicione as informações do seu novo livro!</div>
-        </div>
-        <div v-if="saving" class="flex items-center justify-center text-green-500 gap-1">
-          <p class="text-sm">Salvando...</p>
-          <Lucide icon="RefreshCw" class="h-5 w-5 animate-spin" :stroke-width="1" />
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button 
-          @click="onSubmit" 
-          class="px-8 py-2 rounded-md text-white text-sm font-bold shadow-md transition-all duration-300"
-          :class="{
-            'bg-gray-400 cursor-not-allowed': saving,
-            'bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 hover:from-violet-700 hover:via-purple-700 hover:to-fuchsia-700': !saving
-          }"
-          :disabled="saving"
-        >          
-          {{ saving ? 'Criando' : 'Criar' }}
-        </button>
-        <button  
-          @click="router.back()"
-          class="px-4 py-2 rounded-md border text-sm":class="{
-            'bg-gray-400 cursor-not-allowed text-white': saving,
-            'text-gray-600 hover:bg-gray-50': !saving
-          }"
-        >
-          Cancelar
-        </button>
-      </div>
-    </header>
+  <div class="flex flex-col items-end justify-center w-full bg-white min-h-screen">
     <form @submit.prevent="onSubmit" 
-      class="flex flex-col gap-4 rounded-lg p-4 w-full"
+      class="flex flex-col gap-4 rounded-lg p-4 w-full lg:w-[85vw] mt-14"
     >
 
       <div
@@ -379,3 +440,7 @@ onMounted(() => {
     </form>
   </div>
 </template>
+
+<style scoped>
+textarea { min-height: 80px; }
+</style>
