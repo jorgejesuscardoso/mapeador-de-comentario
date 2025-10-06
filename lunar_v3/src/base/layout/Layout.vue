@@ -782,7 +782,7 @@ provide('isCiner', isCiner)
 			</main>
 
 			<div
-				class="fixed bottom-10 right-2 "
+				class="fixed bottom-10 right-2 z-10"
 			>
 				<button
 					class="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 rounded-full p-1"
