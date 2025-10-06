@@ -35,6 +35,27 @@ export const upLoadCover = async (formdata: FormData, bookId: string, bookName: 
   }
 };
 
+export const createBook = async (formdata: FormData) => {
+  try {
+    const controller = new AbortController();
+
+    const response = await axios.post(
+      `${endPoint}/create`,
+      formdata,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        signal: controller.signal
+      }
+    );
+    return response;
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';
+    throw new Error(msg);
+  }
+};
+
 export const getBookLunarById = async (bookId: string) => {
   try {
     const controller = new AbortController();

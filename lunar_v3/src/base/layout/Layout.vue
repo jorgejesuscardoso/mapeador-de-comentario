@@ -50,7 +50,7 @@ const refShowWriteMenuNav2 = ref<HTMLElement | null>(null);
 const getWtpData = ref()
 	
 watch(getWtpData,(val) => {
-
+	
 	if(val) {
 		userLocalData.value = val
 	}
@@ -201,6 +201,16 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
+watch(
+  () => route.fullPath,
+  () => {
+    showWriteMenu.value = false
+    showWriteMenuNav.value = false
+    menuOpen.value = false
+    showNotification.value = false
+    showNotification2.value = false
+  }
+)
 provide('isAdmin', isAdmin)
 provide('isBeta', isBeta)
 provide('isPremium',isPremium)

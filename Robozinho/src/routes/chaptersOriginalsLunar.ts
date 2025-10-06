@@ -9,7 +9,6 @@ import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand } from
 const chaptersLunar = express.Router();
 const tableName = 'booksLunar';
 const tableChapterName = 'chaptersBookLunar'
-const randomId = Date.now().toString(36)
 
 // configura Cloudinary
 cloudinary.config({
@@ -44,7 +43,8 @@ async function uploadImage(buffer: Buffer, fileName: string) {
 
 //create
 chaptersLunar.post('/:bookId/create', async (req: Request, res: Response) => {
-  try {
+  try {    
+    const randomId = Date.now().toString(36)
     const { bookId } = req.params;
     const { title, paragraphs, wordsCount } = req.body;
 

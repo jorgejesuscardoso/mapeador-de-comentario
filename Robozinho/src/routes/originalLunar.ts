@@ -9,7 +9,6 @@ import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand } from
 const bookLunar = express.Router();
 const tableName = 'booksLunar';
 const tableChapterName = 'chaptersBookLunar'
-const randomId = Date.now().toString(36)
 // configura Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -41,41 +40,37 @@ async function uploadImage(buffer: Buffer, fileName: string) {
   });
 }
 
-bookLunar.post('/create', async (req: Request, res: Response) => {
-  try {
-    const { title, author, sinopse, tags, genre, mature } = req.body;
-
-    if (!title || !author || !sinopse || !tags || !genre || !mature) {
-      return res.status(400).json({ error: 'Campos obrigatórios faltando' });
+bookLunar.post('/create', upload.single('cover'), async (req: Request, res: Response) => {
+  try {    
+    const randomId = Date.now().toString(36)
+    const file = (req as any).file;
+    const data = req.body
+    data.id = randomId
+    let fileName = ''
+    let url = ''
+    if (file) {
+      // Gera um nome único para o arquivo
+      fileName = file.randomId;
+      url = await uploadImage(file.buffer, fileName);
     }
 
-    const id = randomId;
-    const now = new Date().toISOString();
+    // Faz upload da imagem
+    data.cover = url
+    // Atualiza cover no DynamoDB
 
-    const item = {
-      id: id,
-      name: title,
-      author: author,
-      sinopse: sinopse,
-      tags: tags,
-      genre: genre,
-      mature: mature,
-      createdAt: now,
-      updatedAt: now,
-      cover: 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp' // capa default
-    };
+    await db.send(new PutCommand({
+      TableName: tableName,
+      Item: {
+        ...data,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    }))
 
-    await db.send(
-      new PutCommand({
-        TableName: tableName,
-        Item: item
-      })
-    );
-
-    res.status(201).json({ id, ...req.body, cover: item.cover, createdAt: now });
+    res.status(200).json({ data });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Erro ao criar livro' });
+    res.status(500).json({ error: 'Falha ao enviar a capa' });
   }
 });
 

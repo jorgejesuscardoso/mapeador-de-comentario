@@ -4,6 +4,7 @@ import { mock } from "./mock"
 import Lucide from "@/base/lucide/Lucide.vue"
 import { useRouter } from "vue-router"
 import { getBookLunar } from "@/API/OriginalLunarApi"
+import { genres } from "./work/genres"
 
 const isBeta = ref(inject('isBeta'))
 const router = useRouter()
@@ -31,28 +32,43 @@ export interface Book {
   contestEntry?: boolean   // Se participa do Lunar Contest
 }
 
-const obras = ref<Book[]>(mock)
+const obras = ref<Book[]>([])
 const apiData = ref(null)
+
+// Map de lookup de value => label
+const genreMap: Record<string,string> = Object.fromEntries(genres.map(g => [g.value, g.label]));
+const normalize = (str: string) => str?.trim().toLowerCase();
 
 // Agrupa as obras por gênero
 const generos = computed(() => {
-  const grupos: Record<string, Book[]> = {}
+  const grupos: Record<string, { label: string; books: Book[] }> = {};
 
   obras.value.forEach((obra) => {
-    if (!grupos[obra.genre]) grupos[obra.genre] = []
-    grupos[obra.genre].push(obra)
-  })
+    const key = normalize(obra.genre); // força lowercase
+    if (!grupos[key]) {
+      grupos[key] = { 
+        label: genreMap[key] || obra.genre, // pega label correta
+        books: [] 
+      };
+    }
+    grupos[key].books.push(obra);
+  });
 
   // Ordena cada grupo pelo maior views primeiro
   Object.keys(grupos).forEach((genre) => {
-    grupos[genre].sort((a, b) => b.views - a.views)
-  })
+    grupos[genre].books.sort((a, b) => b.views - a.views);
+  });
 
-  return grupos
-})
+  return grupos;
+});
+
+const hasObras = computed(() => obras.value.length > 0)
+
 
 watch(apiData, (val) => {
+
   if(val) {
+    obras.value = []
     obras.value.push(...val) // junta mock + api
   }
 }, {immediate:true})
@@ -69,7 +85,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="w-full bg-white absolute left-0 top-9 z-0 flex font items-start justify-end px-6"
+    class="w-full bg-white min-h-screen absolute left-0 top-9 z-0 flex font items-start justify-end px-6"
   >
     <div class="w-full lg:w-[83vw] lg:mt-10 mt-14">
       <header
@@ -90,67 +106,43 @@ onMounted(async () => {
       <div
         class="pb-28 seu-container mt-6"
       >
-          <!-- Loop de GÊNEROS -->
-        <div v-for="(lista, genero) in generos" :key="genero" class="mb-10">
-          <!-- Título do gênero -->
-          <h3 class="font-semibold mb-1 text-gray-800">
-            {{ genero }}:
-          </h3>
-          <span>
-            
-          </span>
 
-          <!-- Grid de obras -->
-          <div
-            class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-2 place-items-center z-50"
+        <!-- EMPTY STATE -->
+        <div v-if="!hasObras" class="flex flex-col items-center justify-center py-20 text-center text-gray-500">
+          <Lucide icon="BookX" class="w-16 h-16 text-gray-400 mb-4"/>
+          <p class="text-lg font-semibold text-gray-700">Nenhuma obra encontrada</p>
+          <p class="text-sm text-gray-500">Que tal começar criando a sua primeira história?</p>
+          <button 
+            @click="router.push('/v1/origins/work/create')" 
+            class="mt-4 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-md shadow-md"
           >
-            <div
-              v-for="obra in lista"
-              :key="obra.id"
-              class="relative group w-full max-w-[180px] cursor-pointer rounded-md"
-            >
-              <!-- CAPA -->
-              <img
-                :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
-                :alt="obra.name"
-                class="w-full aspect-[3/4] object-cover cursor-pointer rounded-md shadow-md group-hover:shadow-xl transition"
-              />
+            Criar obra
+          </button>
+        </div>
+              <!-- Loop de GÊNEROS -->
+        <div v-for="(grupo, key) in generos" :key="key" class="mb-10">
+          <h3 class="font-semibold mb-1 text-gray-800">
+            {{ grupo.label }}:
+          </h3>
 
-              <!-- Autor -->
-               <div
-                v-if="obra.tags?.length"
-                class="my-1 text-[10px] font-medium text-gray-500 truncate px-2"
-              >
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-2 place-items-center z-50">
+            <div v-for="obra in grupo.books" :key="obra.id" class="relative group w-full max-w-[180px] cursor-pointer rounded-md">
+              <img :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="obra.name" class="w-full h-[210px] object-contai cursor-pointer shadow-md group-hover:shadow-xl transition"/>
+              
+              <div v-if="obra.tags?.length" class="my-1 text-[10px] font-medium text-gray-500 truncate px-2">
                 por: <span class="text-blue-700">{{ obra.author || 'Anônimo'}}</span>
               </div>
-              <!-- Tag principal -->
-              <div
-                v-if="obra.tags?.length"
-                class="mb-1 text-[11px] font-medium text-indigo-800 truncate px-2 capitalize"
-              >
+              <div v-if="obra.tags?.length" class="mb-1 text-[11px] font-medium text-indigo-800 truncate px-2 capitalize">
                 #{{ obra.tags[0] }}
               </div>
-
-              <!-- Views -->
-              <div
-                class="text-gray-800 text-[10px] flex items-center gap-1 mb-1  px-2"
-              >
-                <Lucide
-                  icon="Eye"
-                  class="w-4 h-4 text-gray-600"
-                /> {{ obra.views.toLocaleString() }}
+              <div class="text-gray-800 text-[10px] flex items-center gap-1 mb-1  px-2">
+                <Lucide icon="Eye" class="w-4 h-4 text-gray-600"/> {{ obra.views.toLocaleString() }}
               </div>
-
-              <!-- Badge +18 -->
-              <span
-                v-if="obra.mature"
-                class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded"
-              >
-                +18
-              </span>
+              <span v-if="obra.mature" class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded">+18</span>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

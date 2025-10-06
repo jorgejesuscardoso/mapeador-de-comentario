@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import { toast } from '@/base/utils/toast'
@@ -7,10 +7,13 @@ import Lucide from '@/base/lucide/Lucide.vue'
 import { subgenres, genres } from './genres'
 import Switch from '@/base/utils/Switch.vue'
 import { useRouter } from 'vue-router'
+import { createBook } from '@/API/OriginalLunarApi'
 
 const info = ref(false)
 const saving = ref(false)
 const router = useRouter()
+const coverFile = ref<File | null>(null)
+const user = ref()
 // Schema de validação com Yup
 const schema = yup.object({
   name: yup.string().required('O título é obrigatório'),
@@ -48,6 +51,7 @@ const uploading = ref(false)
 function onCoverChange(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (file) {
+    coverFile.value = file
     coverPreview.value = URL.createObjectURL(file)
   }
 }
@@ -57,29 +61,54 @@ const onSubmit = handleSubmit(async (values) => {
   uploading.value = true
   saving.value = true
   try {
-    const payload = {
-      id: crypto.randomUUID(),
-      author: 'Você',
-      name: values.name,
-      sinopse: values.sinopse,
-      genre: values.genre,
-      subgenre: values.subgenre,
-      target: values.target,
-      type: values.type,
-      mature: values.mature || false,
-      tags: values.tags.split(',').map(t => t.trim()),
-      cover: coverPreview.value || ''
+    const formData = new FormData()
+
+    // adiciona os campos normais
+    formData.append('author', user.value)
+    formData.append('name', values.name)
+    formData.append('sinopse', values.sinopse)
+    formData.append('genre', values.genre)
+    formData.append('subgenre', values.subgenre)
+    formData.append('target', values.target)
+    formData.append('type', values.type)
+    formData.append('mature', String(values.mature || false))
+    
+    values.tags.split(',')
+    .map(t => t.trim())
+    .filter(Boolean)
+    .forEach(tag => formData.append('tags[]', tag))
+
+    // adiciona o arquivo da capa, se existir
+    if (coverFile.value) {
+      formData.append('cover', coverFile.value)
     }
 
-    // API
-    // await createBookLunar(payload)
-    console.log(payload)
+    // chamada para API — precisa aceitar multipart/form-data
+
+    const response = await createBook(formData)
+    if(response.status !== 200) {
+      toast.error("Falha na criação do livro, tente novamente mais tarde!")
+      return
+    }
     toast.success('Livro criado com sucesso!')
+    console.log('response', response)
+    saving.value = false
+    setTimeout(() => {
+      router.push(`/v1/origins/user/${user.value}`)
+    }, 2000);
   } catch (e) {
     toast.error('Erro ao criar o livro!')
+    saving.value = false
   } finally {
     uploading.value = false
+    saving.value = false
   }
+})
+
+onMounted(() => {
+  const getUser = JSON.parse(localStorage.getItem('user')) || {}
+  if(!getUser || !getUser.token || !getUser.user) return router.push('/v1/origins')
+  user.value = getUser.user
 })
 </script>
 
