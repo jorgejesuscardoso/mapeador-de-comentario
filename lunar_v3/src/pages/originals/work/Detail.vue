@@ -20,6 +20,7 @@ interface Chapter {
 }
 
 const isPremium = ref(false)
+const isBeta = ref(false)
 
 interface Book {
   id: string
@@ -126,6 +127,7 @@ onMounted(() => {
   const storage = JSON.parse(localStorage.getItem('user')) || {}
   if(!storage || !storage.token || !storage.user) return
   isPremium.value = storage.licenses.some((s) => s === 'premium')
+  isBeta.value = storage.licenses.some((s) => s === 'ebeta_tester')
   fetchBook()
 })
 </script>

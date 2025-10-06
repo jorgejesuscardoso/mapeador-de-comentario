@@ -40,6 +40,8 @@ interface Notification {
 const notifications = ref<Notification[]>(notification)
 
 const hasUser = ref(JSON.parse(localStorage.getItem('user')) || {})
+const isBeta = ref(false)
+const isPremium = ref(false)
 
 const books = ref<Book[]>([])
 const loading = ref(true)
@@ -120,9 +122,20 @@ watch(hasUser, (val) => {
 }, { immediate: true })
 
 
+const handlePermission = () => {
+	if(!isBeta.value) return toast.error("Acesso antecipado apenas para testadores beta!")
+	router.push('/v1/origins/work/create')
+}
+
+onMounted(() => {
+})
+
 onMounted(() => {
   checkUser()
   fetchBooks()
+  if(!hasUser || !hasUser.value.token || !hasUser.value.user) return
+  isPremium.value = hasUser.value.licenses.some((s) => s === 'premium')
+  isBeta.value = hasUser.value.licenses.some((s) => s === 'beta_tester')
 })
 </script>
 
@@ -240,6 +253,7 @@ onMounted(() => {
             icon="Plus"
             class="w-5 h-5 cursor-pointer"
             :stroke-width="3"
+            @click="handlePermission"
           />
           <Lucide
             icon="Ellipsis"
