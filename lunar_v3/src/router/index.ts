@@ -84,24 +84,39 @@ const routes: RouteRecordRaw[] = [
         component: MyFrame,
       }, 
       { 
-        path: '/v1/originals-lunar', 
+        path: '/v1/origins', 
         name: 'originalsLunar',
         component: () => import('../pages/originals/OriginalsLunar.vue'),
       },
       {
-        path: '/v1/mywork/write',
+        path: '/v1/origins/mywork/write',
         name: 'wireMyWork',
         component: () => import('../pages/originals/work/BookPageEditor.vue')
       },
       {
-        path: '/v1/mywork/cover',
+        path: '/v1/origins/mywork/cover',
         name: 'wireMyWorkCover',
         component: () => import('../pages/originals/work/UploadCover.vue')
       },
       {
-        path: '/v1/mywork/list',
+        path: '/v1/origins/user/:user',
+        name: 'myOriginProfile',
+        component: () => import('../pages/originals/OriginsProfile.vue')
+      },
+      {
+        path: '/v1/origins/mywork/detail/:bookId',
+        name: 'myWorkDetail',
+        component: () => import('../pages/originals/work/Detail.vue')
+      },
+      {
+        path: '/v1/origins/mywork/list',
         name: 'myWorkList',
-        component: () => import('../pages/originals/work/List.vue')
+        component: () => import('../pages/originals/OriginsProfile.vue')
+      },
+      {
+        path: '/v1/origins/work/create',
+        name: 'workCreate',
+        component: () => import('../pages/originals/work/Create.vue')
       }
     ]
   },  

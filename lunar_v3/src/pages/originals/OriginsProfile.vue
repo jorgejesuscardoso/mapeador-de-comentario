@@ -3,9 +3,9 @@ import { getBookLunarAuthor } from '@/API/OriginalLunarApi'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { formatDate } from '@/base/utils/FormatDate'
 import { toast } from '@/base/utils/toast'
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { notification } from '../mock'
+import { notification } from './mock'
 
 export interface Book {
   id: string                // Identificador único (PK)
@@ -39,13 +39,14 @@ interface Notification {
 // Mock de 20 notificações com data/hora
 const notifications = ref<Notification[]>(notification)
 
-const hasUser = ref(JSON.parse(localStorage.getItem('user')))
+const hasUser = ref(JSON.parse(localStorage.getItem('user')) || {})
 
 const books = ref<Book[]>([])
 const loading = ref(true)
 const user= ref('')
 const router = useRouter()
-const showNotify = ref(false)
+
+const showAll = ref(false)
 
 async function fetchBooks() {
   try {
@@ -65,10 +66,19 @@ async function fetchBooks() {
   }
 }
 
-function goToChapters(bookId: string) {
-  router.push(`/books/${bookId}/chapters`) // redireciona para exibição dos capítulos
+function goToDetail(bookId: string) {
+  router.push(`/v1/origins/mywork/detail/${bookId}`) // redireciona para exibição dos capítulos
 }
 
+function checkUser() {
+  if (!hasUser.value?.token) {
+    toast.error("Logue para poder acessar as suas histórias!")
+    router.push('/login')
+    return false
+  }
+  user.value = hasUser.value.user
+  return true
+}
 
 let totalUnreadMessage = ref(0);
 
@@ -84,6 +94,15 @@ function markAsRead(id: number) {
   }
 }
 
+const limitedNotifications = computed(() => {
+  if (showAll.value) return notifications.value
+  return notifications.value.slice(0, 3)
+})
+
+function toggleShowAll() {
+  showAll.value = !showAll.value
+}
+
 // inicializa contador
 updateUnreadCount();
 
@@ -93,12 +112,7 @@ watch(notifications, () => {
 });
 
 watch(hasUser, (val) => {
-  console.log(hasUser)
-  if (!val?.token) {
-    toast.error("Logue para poder acessar as suas histórias!")
-    router.push('/login')
-    return
-  }
+  checkUser()
   user.value = val.user
   if (user.value) {
     fetchBooks()
@@ -107,11 +121,7 @@ watch(hasUser, (val) => {
 
 
 onMounted(() => {
-  if (!hasUser.value?.token) {
-    toast.error("Logue para poder acessar as suas histórias!")
-    router.push('/login')
-    return
-  }
+  checkUser()
   fetchBooks()
 })
 </script>
@@ -169,46 +179,49 @@ onMounted(() => {
         </div>
 
         <!-- notificações -->
-        <div class="border-t-2 py-6 sm:border-0 md:border-t w-full sm:w-1/2 md:w-full md:mt-4 relative">
-          <h4 class="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-1">
+        <div class="border-t-2 py-6 sm:border-0 md:border-t w-full sm:w-1/2 md:w-full md:mt-4  relative">
+          <h4 class="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-1 border-b-2 pb-2">
             <Lucide icon="Bell" class="w-4 h-4 text-violet-700" /> 
             Notificações
-            <span class="text-gray-400">({{ totalUnreadMessage }})</span>
+            <span class="text-gray-400">({{ totalUnreadMessage }}) fase de testes<span class="text-red-600">*</span></span>
           </h4>
-          <div
-            @click="showNotify = !showNotify"
-          >
-            <Lucide
-              :icon="showNotify ? 'ChevronUp' : 'ChevronDown'"
-              class="absolute right-4"
-              :class="{
-                'top-1/2 -translate-y-1/2': !showNotify,
-                'top-2 translate-y-1/2': showNotify
-              }"
-            />
-          </div>
 
-          <ul 
-            class="flex bg-black/40 rounded border-y-2 border-gray-300 p-1 flex-col gap-2 overflow-y-auto"
-            :class="{
-              'h-[60vh] lg:min-h-80': showNotify,
-              'hidden': !showNotify
-            }"
-          >
+          <ul class="flex flex-col gap-1 rounded overflow-y-auto">
             <li
-              v-for="notif in notifications"
+              v-for="notif in limitedNotifications"
               :key="notif.id"
               @click="notif.link && markAsRead(notif.id)"
-              class="text-xs"
-              :class="['cursor-pointer p-2 rounded-md flex flex-col justify-between', notif.read ? 'bg-white text-gray-500' : 'bg-gray-300 text-gray-900']"
+              class="text-xs relative cursor-pointer p-2 rounded-md flex flex-col justify-between"
+              :class="notif.read 
+                ? 'bg-white text-gray-600 border border-gray-300' 
+                : 'bg-gray-200 text-gray-900'"
             >
-              <div class="flex justify-between items-center">
-                <span>{{ notif.message }}</span>
-                <Lucide icon="ArrowRight" class="w-3 h-3 text-gray-500" />
+              <div>
+                <Lucide :icon="notif.read ? 'MailOpen' : 'Mail'" class="h-3 w-3 mb-2" />
               </div>
-              <span class="text-[10px] text-gray-600 mt-1">{{ formatDate(notif.date) }}</span>
+              <div class="flex justify-between items-center">
+                <span class="px-2">{{ notif.message }}</span>
+                <Lucide icon="ArrowRight" class="w-3 h-3 text-gray-600" />
+              </div>
+              <span class="text-[10px] text-gray-400 mt-3">{{ formatDate(notif.date) }}</span>
+              <span
+                v-if="notif.read"
+                class="text-[9px] font-light text-gray-500 absolute bottom-1 right-2"
+              >
+                Lido
+              </span>
             </li>
           </ul>
+
+          <!-- botão ver mais -->
+          <div v-if="notifications.length > 10" class="flex justify-center mt-2">
+            <button
+              @click="toggleShowAll"
+              class="text-xs font-semibold text-violet-700 hover:text-violet-900"
+            >
+              {{ showAll ? 'Ver menos' : 'Ver todas' }}
+            </button>
+          </div>
 
           <p v-if="notifications.length === 0" class="text-xs text-gray-400 mt-2 text-center">
             Nenhuma notificação por enquanto.
@@ -217,8 +230,23 @@ onMounted(() => {
       </aside>
 
       <!-- seção das obras (já existente) -->
-      <div class="lg:w-7/12 w-full xl:w-2/3 md:w-1/2 pb-24 md:pb-0">
-        <h2 class="text-2xl font-bold mb-8 text-gray-800">Minhas Obras Originais Lunar</h2>
+      <div class="lg:w-7/12 w-full xl:w-2/3 md:w-1/2 pb-24 md:pb-0 relative">
+        <h2 class="text-2xl font-bold mb-8 text-gray-800 border-b pb-2">Minhas Obras</h2>
+
+        <div
+          class="flex gap-5 absolute top-1 right-10"
+        >
+          <Lucide
+            icon="Plus"
+            class="w-5 h-5 cursor-pointer"
+            :stroke-width="3"
+          />
+          <Lucide
+            icon="Ellipsis"
+            class="cursor-pointer"
+            :stroke-width="2"
+          />
+        </div>
 
         <!-- Loading -->
         <div v-if="loading" class="flex flex-col items-center justify-center w-full h-1/2 text-violet-600">
@@ -245,7 +273,7 @@ onMounted(() => {
             <!-- capa -->
             <div
               class="relative overflow-hidden group cursor-pointer"
-              @click="goToChapters(book.id)"
+              @click="goToDetail(book.id)"
             >
               <img
                 :src="book.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
@@ -260,14 +288,14 @@ onMounted(() => {
               <div class="flex flex-col h-full">
                 <h3
                   class="text-lg font-semibold text-gray-800 hover:underline cursor-pointer mb-1"
-                  @click="goToChapters(book.id)"
+                  @click="goToDetail(book.id)"
                 >
                   {{ book.name }}
                 </h3>
                 <p class="text-[10px] text-gray-700 font-medium">
                   Genêro: <span class="text-[#10f] font-semibold ml-1">{{ book.genre }}</span> 
                 </p>
-                <p class="text-xs text-gray-700 font-light font-mono mt-2 line-clamp-3">
+                <p class="text-xs text-gray-700 font-normal mt-2 line-clamp-3">
                   {{ book.sinopse }}
                 </p>
               </div>

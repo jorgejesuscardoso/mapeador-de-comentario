@@ -26,6 +26,7 @@ const menuOpen = ref(false);
 const notification = ref(0)
 const showNotification = ref(false)
 const showNotification2 = ref(false)
+const showWriteMenuNav = ref(false)
 const userLocalData = ref(null)
 
 const isLogged = ref(false)
@@ -43,6 +44,8 @@ const refNotification = ref<HTMLElement | null>(null);
 const refNotification2 = ref<HTMLElement | null>(null);
 const refShowWriteMenu = ref<HTMLElement | null>(null);
 const refShowWriteMenu2 = ref<HTMLElement | null>(null);
+const refShowWriteMenuNav = ref<HTMLElement | null>(null);
+const refShowWriteMenuNav2 = ref<HTMLElement | null>(null);
 
 const getWtpData = ref()
 	
@@ -89,6 +92,17 @@ const handleClickOutside = (event: MouseEvent) => {
 		) {
 			showWriteMenu.value = false;
 		}
+
+		// Fecha menu de escrita se clicar fora
+		if (
+			showWriteMenuNav.value &&
+			refShowWriteMenuNav.value &&
+			refShowWriteMenuNav2.value &&
+			!refShowWriteMenuNav.value.contains(target) &&
+			!refShowWriteMenuNav2.value.contains(target)
+		) {
+			showWriteMenuNav.value = false;
+		}
 	} catch(err) {
 		console.error(err)
 	}
@@ -104,7 +118,7 @@ const handlewrite = () => {
 
 const handlePermission = () => {
 	if(!isBeta.value) return toast.error("Acesso antecipado apenas para testadores beta!")
-	router.push('/v1/mywork/write')
+	router.push('/v1/origins/work/create')
 }
 
 const handleGetPrmium = () => {
@@ -125,8 +139,8 @@ const handleLogout = () => {
 	}
 }
 
-const isOriginalOrMyWork = computed(() => {
-  return route.path === '/v1/originals-lunar' || route.path.startsWith('/v1')
+const isRouteOrigins = computed(() => {
+  return route.path.startsWith('/v1/origins')
 })
 
 onMounted(async () => {
@@ -201,53 +215,85 @@ provide('isCiner', isCiner)
 	>
 		<div
 			:class="{
-				'hidden': route.path === '/mywork/write'
+				'hidden': route.path === '/v1/origins/mywork/write' || route.path === '/v1/origins/work/create'
 			}"
 		>
 			<header 
 				class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-40 "
 				:class="{
-					'searchFilterBg2': !isOriginalOrMyWork,
-					'bg-white border border-b-purple-200': isOriginalOrMyWork
+					'searchFilterBg2': !isRouteOrigins,
+					'bg-white border border-b-purple-200': isRouteOrigins
 				}"
 			>
 				<div 
 					class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 "
 					:class="{
-						'': isOriginalOrMyWork,
-						'bg-[rgba(0,0,0,0.7)]': !isOriginalOrMyWork,				}"
+						'': isRouteOrigins,
+						'bg-[rgba(0,0,0,0.7)]': !isRouteOrigins,				}"
 				>
 					<h1 
-						class="flex items-center justify-start gap-1 font-serif px-4 text-start w-[20vw] font-bold text-xl italic cursor-pointer"
+						class="flex items-center gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
 						:class="{
-							'text-purple-700': isOriginalOrMyWork,
-							'text-white': !isOriginalOrMyWork
+							'text-purple-700': isRouteOrigins,
+							'text-white': !isRouteOrigins
 						}"
-						@click="router.push('/')"
+						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
 					>
-						Projeto Lunar
+						<!-- Ícone principal -->
 						<Lucide
-							icon="MoonStar"
-							class="h-8 w-8"
-							:stroke-width="1"
+							:icon="isRouteOrigins ? 'Stars' : 'MoonStar'"
+							class="transition-all duration-300"
+							:class="{
+								'h-3 w-3 text-purple-700 absolute left-0 top-0': isRouteOrigins,
+								'h-7 w-7 text-yellow-400': !isRouteOrigins
+							}"
+							:stroke-width="1.5"
 						/>
+
+						<!-- Texto -->
+						<span
+							:class="{
+								'ml-3': isRouteOrigins
+							}"
+						>
+							{{ isRouteOrigins ? 'Luna Origins' : 'Projeto Lunar' }}
+						</span>
+						<Lucide
+							v-if="isRouteOrigins"
+							icon="Stars"
+							class="transition-all duration-300 h-3 w-3 text-purple-700 absolute right-36 bottom-0"
+							:stroke-width="1.5"
+						/>
+						<!-- Botão switch -->
+						<button
+							class="ml-5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200"
+							:class="{ 
+								'bg-purple-100 text-purple-700 hover:bg-purple-200': !isRouteOrigins,
+								'bg-gray-900 text-white hover:bg-gray-700': isRouteOrigins
+							}"
+							@click.stop="router.push(isRouteOrigins ? '/' : '/v1/origins')"
+						>
+							{{ isRouteOrigins ? 'Biblioteca Lunar' : 'Luna Origins' }}
+						</button>
 					</h1>
+
 					<!-- Ações -->
 					<div class="flex items-center pr-4 h-full gap-4">
 
 						<!-- Escrever -->
 						<div
+							v-if="isRouteOrigins"
 							ref="refShowWriteMenu2"
-							class="flex items-center justify-center h-full cursor-pointer"
+							class="flex items-center justify-center h-full cursor-pointer px-2"
 							@click="showWriteMenu = !showWriteMenu"
 						>
 							<p
-								class="flex items-center justify-center gap-1 px-4 py-1.5 rounded-md text-[11px] font-bold font-mono"
+								class="flex items-center justify-center gap-1 px-4 py-1.5 rounded-md font-bold font-mono"
 								:class="{
-									'text-black border-gray-500': isOriginalOrMyWork,
-									'text-white': !isOriginalOrMyWork,							}"
+									'text-black border-gray-500': isRouteOrigins,
+									'text-white': !isRouteOrigins,							}"
 							>
-								<Lucide icon="PencilLine" class="h-4 w-4" />
+								<Lucide icon="PencilLine" class="h-4 w-4 mr-2" />
 								<Lucide :icon="showWriteMenu ? 'ChevronUp' : 'ChevronDown'" class="h-4 w-4" />
 							</p>
 						</div>
@@ -278,7 +324,7 @@ provide('isCiner', isCiner)
 							icon="UserCircle"
 							class="h-10 w-10"
 							:class="{
-								'text-purple-500': isOriginalOrMyWork
+								'text-purple-500': isRouteOrigins
 							}"
 							:stroke-width="0.7"
 						/>
@@ -305,28 +351,30 @@ provide('isCiner', isCiner)
 			>
 
 				<div
-					class=" h-full mt-1 fixed top-14 left-0 z-50"
+					class=" h-full mt-1 fixed top-16 left-0 z-50"
 					:class="{
-						'hidden': route.path === '/v1/mywork/write',
-						'hidden lg:flex': route.path !== '/v1/mywork/write'
+						'hidden': route.path === '/v1/origins/mywork/write' || route.path === '/v1/origins/work/create',
+						'hidden lg:flex': route.path !== '/v1/origins/mywork/write' && route.path !== '/v1/origins/work/create'
 					}"
 				>
 					<nav
 						class="rounded-2xl p-4 min-w-44 h-[50vh]"
 						:class="{
-							'bg-[rgba(0,0,0,0.8)]': !isOriginalOrMyWork,						}"
+							'bg-[rgba(0,0,0,0.8)]': !isRouteOrigins,
+							'bg-white': isRouteOrigins
+						}"
 					>
 						<ul
 							class="flex flex-col w-full gap-1 text-violet-400 font-semibold text-[11px]"
 						>
 							<li>
 								<RouterLink 
-									to="/"
+									:to="isRouteOrigins ? '/v1/origins' : '/'"
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isOriginalOrMyWork,
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/' && !isOriginalOrMyWork,									}"
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
+										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/' && !isRouteOrigins,									}"
 								>
 									<Lucide
 											icon="Home"
@@ -335,77 +383,15 @@ provide('isCiner', isCiner)
 									Home
 								</RouterLink>
 							</li>
-
-							<li>
-								<RouterLink 
-									to="/originals-lunar"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 
-											'bg-gray-900/10 text-gray-800': isOriginalOrMyWork,
-											'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isOriginalOrMyWork,
-											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/books-lunar',
-										}"
-									@click.stop="menuOpen = false" 
-								>
-									<Lucide icon="BookOpen" size="16" />
-									Originais Lunar
-								</RouterLink>
-							</li>
-
-								<!-- <li>
-									<RouterLink 
-										to="/houses"
-										class="flex items-center gap-2 px-2 py-1 rounded-md"
-										:class="{ 
-											'bg-violet-100/10': route.path === '/houses',
-											'hover:bg-gray-100 hover:text-violet-800': route.path !== '/houses'
-										}"
-										
-									>
-										<Lucide icon="Moon" size="14" />
-										Casas lunar
-									</RouterLink>
-								</li> -->
-							<li>
-								<RouterLink 
-									to="/members"
-									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
-									:class="{
-										'bg-violet-100/10': route.path === '/members',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isOriginalOrMyWork,
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/members'
-									}"
-								>
-									<Lucide
-											icon="Users"
-											size="14"
-									/>
-									Membros
-								</RouterLink>
-							</li>
-							<!-- <li>
-								<RouterLink 
-									to=""
-									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-inactive"
-									:class="{
-										'bg-violet-100/10': route.path === '/subs',
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/subs'
-									}"
-								>
-									<Lucide
-											icon="List"
-											size="14"
-									/>
-									Subs
-								</RouterLink>
-							</li> -->
-							<li>
+							<li
+								v-if="!isRouteOrigins"
+							>
 								<RouterLink 
 									to="/shop"
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/shop',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isOriginalOrMyWork,
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
 									}"
 								>
@@ -418,11 +404,11 @@ provide('isCiner', isCiner)
 							</li>
 							<li>
 								<RouterLink 
-									to="/profile"
+									:to="isRouteOrigins ? `/v1/origins/user/${storage?.user}` || '' : '/profile'"
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/profile',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isOriginalOrMyWork,
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
 									}"
 								>
@@ -440,6 +426,7 @@ provide('isCiner', isCiner)
 										v-if="!isLogged"
 										to="/register"
 										class="flex items-center gap-2 px-2 py-1 rounded-md"
+										:class="{'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins}"
 									>
 										<Lucide icon="FileInput" size="14" />
 										Registro
@@ -456,12 +443,14 @@ provide('isCiner', isCiner)
 									</RouterLink>
 								</li>
 
-								<li>
+								<li
+									v-if="!isRouteOrigins"
+								>
 									<RouterLink 
 										to="/profile/orders"
 										class="flex items-center gap-2 px-2 py-1 rounded-md":class="{
 										'bg-violet-100/10': route.path === '/profile/orders',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isOriginalOrMyWork,
+										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile/orders'
 									}"
 									>
@@ -507,28 +496,65 @@ provide('isCiner', isCiner)
 				</div>
 				<div class="flex items-center justify-between p-4 bg-[rgb(0,0,0,0.3)]">
 					<h1 
-						class="flex items-center justify-start gap-1 text-base font-semibold whitespace-nowrap"
-						@click="router.push('/')"
+						class="flex items-center gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
+						:class="{
+							'text-purple-400': isRouteOrigins,
+							'text-white': !isRouteOrigins
+						}"
+						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
 					>
-						Projeto Lunar
+						<!-- Ícone principal -->
 						<Lucide
-							icon="MoonStar"
+							:icon="isRouteOrigins ? 'Stars' : 'MoonStar'"
+							class="transition-all duration-300"
+							:class="{
+								'h-3 w-3 text-white absolute left-0 top-0': isRouteOrigins,
+								'h-5 w-5 text-yellow-400': !isRouteOrigins
+							}"
+							:stroke-width="1.5"
 						/>
+
+						<!-- Texto -->
+						<span
+							class="text-xs"
+							:class="{
+								'ml-3': isRouteOrigins
+							}"
+						>
+							{{ isRouteOrigins ? 'Luna Origins' : 'Projeto Lunar' }}
+						</span>
+						<Lucide
+							v-if="isRouteOrigins"
+							icon="Stars"
+							class="transition-all duration-300 h-3 w-3 text-white absolute right-24 bottom-0"
+							:stroke-width="1.5"
+						/>
+						<!-- Botão switch -->
+						<button
+							class="ml-5 px-2 py-0.5 rounded-md text-xs font-semibold transition-all duration-200 bg-purple-800/70 border border-purple-600 text-purple-200"							
+							@click.stop="router.push(isRouteOrigins ? '/' : '/v1/origins')"
+						>
+							{{ isRouteOrigins ? 'Biblioteca' : 'Origins' }}
+						</button>
 					</h1>
 
 					<div
 						class="flex items-center justify-between w-4/12"
 					>
 						<!-- Escrever -->
-						<button
-							class="flex items-center justify-center boroder rounded-md text-white font-bold font-serif"
-							@click="handlewrite"
+						<div
+							v-if="isRouteOrigins"
+							ref="refShowWriteMenuNav2"
+							class="flex items-center justify-center h-full cursor-pointer px-2"
+							@click="showWriteMenuNav = !showWriteMenuNav"
 						>
-							<Lucide 
-								icon="PencilLine"
-								size="24"
-							/>
-						</button>
+							<p
+								class="flex items-center justify-center gap-1py-1.5 rounded-md font-bold font-mono"
+							>
+								<Lucide icon="PencilLine" class="h-4 w-4 mr-2" />
+								<Lucide :icon="showWriteMenuNav ? 'ChevronUp' : 'ChevronDown'" class="h-4 w-4" />
+							</p>
+						</div>
 						<!-- Notificações -->
 						<button 
 							ref="refNotification2"
@@ -549,6 +575,7 @@ provide('isCiner', isCiner)
 							ref="menuRef2"
 							@click.stop="menuOpen = !menuOpen, showNotification = false" 
 							aria-label="Abrir menu"
+							class="mx-3"
 						>
 							<Lucide :icon="menuOpen ? 'X' : 'Menu'" size="24" />
 						</button>
@@ -564,7 +591,7 @@ provide('isCiner', isCiner)
 						<ul class="grid grid-cols-2 font-semibold text-sm p-4 bg-[rgb(0,0,0,0.3)]">
 							<li>
 								<RouterLink 
-									to="/"
+									:to="isRouteOrigins ? '/v1/origins' : '/'"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-100/10': route.path === '/' }"
 									@click.stop="menuOpen = false" 
@@ -572,54 +599,7 @@ provide('isCiner', isCiner)
 									<Lucide icon="Home" size="16" />
 									Home
 								</RouterLink>
-							</li>
-							<li>
-								<RouterLink 
-									to="/originals-lunar"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs text-"
-									:class="{ 
-											'bg-violet-100/10': isOriginalOrMyWork,
-										}"
-									>
-									<Lucide icon="BookOpen" size="16" />
-									Originais Lunar
-								</RouterLink>
-							</li>
-							<!-- <li 
-								@click.stop="menuOpen = false" 
-							>
-								<RouterLink 
-									to="/houses"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-100/10': route.path === '/houses' }"
-									
-								>
-									<Lucide icon="Moon" size="14" />
-									Casas lunar
-								</RouterLink>
-							</li> -->
-							<li>
-								<RouterLink 
-									to="/members"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-100/10': route.path === '/members' }"
-									@click.stop="menuOpen = false" 
-								>
-									<Lucide icon="Users" size="14" />
-									Membros
-								</RouterLink>
-							</li>
-							<!-- <li>
-								<RouterLink 
-									to=""
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive text-xs"
-									:class="{ 'bg-violet-100/10': route.path === '/subs' }"
-									@click.stop="menuOpen = false" 
-								>
-									<Lucide icon="List" size="14" />
-									Subs
-								</RouterLink>
-							</li> -->
+							</li>							
 							<li>
 								<RouterLink 
 									to="/shop"
@@ -633,7 +613,7 @@ provide('isCiner', isCiner)
 							</li>
 							<li>
 								<RouterLink 
-									to="/profile"
+									:to="isRouteOrigins ? `/v1/origins/user/${storage?.user}` || '' : '/profile'"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
 									:class="{ 'bg-violet-100/10': route.path === '/profile' ||  route.path === `/profile/*` }"
 									@click.stop="menuOpen = false" 
@@ -705,8 +685,8 @@ provide('isCiner', isCiner)
 			<main
 				class="flex bg-red-90i0 items-start justify-center relative"
 				:class="{
-					'w-full': isOriginalOrMyWork,
-					'lg:w-[87vw] w-full min-h-screen pt-14 lg:mt-4': !isOriginalOrMyWork
+					'w-full': isRouteOrigins,
+					'lg:w-[87vw] w-full min-h-screen pt-14 lg:mt-4': !isRouteOrigins
 				}"
 			>
 				<!-- Menu flutuante --> 
@@ -735,7 +715,50 @@ provide('isCiner', isCiner)
 							</li> 
 							<li
 								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-								@click="router.push('/v1/mywork/list')"
+								@click="router.push(`/v1/origins/mywork/list`)"
+							> 
+								<Lucide 
+									icon="BookOpenText" 
+									class="h-4 w-4 text-gray-600" 
+								/> 
+									Minhas histórias
+							</li>
+							<li 
+								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer border-t"
+							>
+								<Lucide 
+									icon="Trophy" 
+									class="h-4 w-4 text-yellow-600"
+								/> 
+								Lunar Contest 
+							</li> 
+						</ul> 
+					</div> 
+				</transition>
+
+				<!-- Menu flutuante Nav -->
+				 <transition name="fade"> 
+					<div 
+						ref="refShowWriteMenuNav"
+						v-if="showWriteMenuNav" 
+						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2"
+					> 
+						<ul
+							class="text-sm font-mono font-bold"
+						> 
+							<li
+								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+								@click="handlePermission"
+							>
+							<Lucide 
+									icon="PencilLine" 
+									class="h-4 w-4 text-gray-800" 
+								/>
+								Criar nova história 
+							</li> 
+							<li
+								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+								@click="router.push('/v1/origins/mywork/list')"
 							> 
 								<Lucide 
 									icon="BookOpenText" 
@@ -759,10 +782,10 @@ provide('isCiner', isCiner)
 			</main>
 
 			<div
-				class="fixed bottom-16 right-2 "
+				class="fixed bottom-10 right-2 "
 			>
 				<button
-					class="bg-fuchsia-400 rounded-full p-1"
+					class="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 rounded-full p-1"
 				
 				>
 					<Lucide
