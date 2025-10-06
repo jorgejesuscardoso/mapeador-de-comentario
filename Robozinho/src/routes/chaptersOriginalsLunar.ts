@@ -42,15 +42,11 @@ async function uploadImage(buffer: Buffer, fileName: string) {
 }
 
 //create
-chaptersLunar.post('/:bookId/create', async (req: Request, res: Response) => {
+chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
   try {    
     const randomId = Date.now().toString(36)
     const { bookId } = req.params;
     const { title, paragraphs, wordsCount } = req.body;
-
-    if (!bookId || !title || !paragraphs) {
-      return res.status(400).json({ error: 'bookId, title e paragraphs são obrigatórios!' });
-    }
 
     // 1. Buscar o livro
     const bookResult = await db.send(
@@ -71,8 +67,8 @@ chaptersLunar.post('/:bookId/create', async (req: Request, res: Response) => {
     const newChapter = {
       bookId: bookId.trim(),
       id,
-      title,
-      paragraphs, // string ou array<string> dependendo de como você salvar
+      title: 'Capitulo sem nome',
+      paragraphs: '',
       wordsCount: wordsCount,
       comments: [],
       votes: 0,
@@ -88,7 +84,7 @@ chaptersLunar.post('/:bookId/create', async (req: Request, res: Response) => {
       })
     );
 
-    res.status(201).json(newChapter);
+    res.status(201).json(id);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao criar capítulo' });
@@ -181,6 +177,7 @@ chaptersLunar.patch('/:bookId/:chapterId', async (req: Request, res: Response) =
     const { bookId, chapterId } = req.params;
     const { body } = req.body; // pode conter title, paragraphs etc.
    
+    console.log(body)
     if (!bookId || !chapterId) {
       return res.status(400).json({ error: 'bookId e chapterId são obrigatórios!' });
     }

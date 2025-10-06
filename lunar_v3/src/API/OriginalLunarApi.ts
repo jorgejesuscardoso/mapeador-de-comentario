@@ -120,6 +120,26 @@ export const getBookLunarAuthor = async (author: string) => {
 
 
 //CHAPTERS
+export const createChapters = async (bookId: string) => {
+  try {
+    const controller = new AbortController();
+
+    const response = await axios.get(
+      `${endPointChapters}/create/${bookId}`,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        signal: controller.signal
+      }
+    ); 
+
+    return response;
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';
+    throw new Error(msg);
+  }
+};
 
 export const getChapterLunarById = async (bookId: string, chapterId: string) => {
   try {

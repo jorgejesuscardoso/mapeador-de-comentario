@@ -156,7 +156,6 @@ onMounted(async () => {
 		}
 		if(storage?.value?.licenses && storage?.value?.licenses.some((s) => s === 'premium')) {
 			isPremium.value = true
-			console.log(isPremium.value)
 		}
 	}
 

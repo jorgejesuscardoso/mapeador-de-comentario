@@ -3,7 +3,7 @@ import { ref, onMounted, inject, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { toast } from '@/base/utils/toast'
-import { getBookLunarById } from '@/API/OriginalLunarApi'
+import { createChapters, getBookLunarById } from '@/API/OriginalLunarApi'
 
 interface Chapter {
   id: string
@@ -19,12 +19,7 @@ interface Chapter {
   wordsCount: number
 }
 
-const premium =ref(inject('isPremium'))
 const isPremium = ref(false)
-
-watch(premium,(val)=> {  
-  if(val) return isPremium.value = val as boolean
-})
 
 interface Book {
   id: string
@@ -51,6 +46,7 @@ const goToChapter = (data: any) => {
 const book = ref<Book | null>(null)
 const chapters = ref<Chapter[]>([])
 const loading = ref(true)
+const newChapters = ref(false)
 
 async function fetchBook() {
   try {
@@ -81,17 +77,80 @@ async function fetchBook() {
   }
 }
 
-onMounted(fetchBook)
+const handleCreateNewChapters = async () => {
+  loading.value = true
+  newChapters.value = false
+  toast.warning('Criando seu novo capítulo!')
+  try {
+    const response = await createChapters(bookId)
+    if(response.status !== 201) {
+      toast.error("Falha na criação do seu novo capítulo!")
+      loading.value = false
+      return
+    }
+    toast.success("Capítulo criado com sucesso!!!")
+    loading.value = false
+    fetchBook()
+  } catch (err) {
+    console.error(err)
+    toast.error("Falha ao criar capítulo.")
+    loading.value = false
+  }
+
+}
+
+onMounted(() => {
+  const storage = JSON.parse(localStorage.getItem('user')) || {}
+  if(!storage || !storage.token || !storage.user) return
+  isPremium.value = storage.licenses.some((s) => s === 'premium')
+  fetchBook()
+})
 </script>
 
 <template>
   <div class="flex items-start justify-end w-full mt-14 bg-white gray-50 min-h-screen">
+    <!-- Modal de confirmação -->
+    <div
+      v-if="newChapters"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+    >
+      <div class="bg-white rounded-lg shadow-lg p-6 w-80 flex flex-col gap-4">
+        <h3 class="text-lg font-bold text-gray-800">Criar novo capítulo?</h3>
+        <p class="text-sm text-gray-600">
+          Você está prestes a criar um capítulo em branco. Deseja continuar?
+        </p>
+        <div class="flex justify-end gap-3 mt-4">
+          <button
+            @click="newChapters = false"
+            class="px-3 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="handleCreateNewChapters()"
+            class="px-3 py-1 rounded-md bg-violet-600 text-white hover:bg-violet-700 transition"
+          >
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
     <!-- Wrapper -->
     <div class="flex flex-col justify-end lg:flex-row gap-8 w-full lg:w-[85vw] p-6">
       
       <!-- Capa -->
       <aside class="flex flex-col lg:w-1/4 xl:w-1/5 w-full justify-start max-h-[95vh]">
+        <span
+          v-if="loading"
+          class="w-full max-w-md shadow-lg object-cover border gap-3 text-gray-500 h-72 flex flex-col items-center justify-center bg-gray-100"
+        >
+          <Lucide
+            icon="Image"
+          />
+          carregando a sua capa
+        </span>
         <img 
+          v-else
           :src="book?.cover" 
           alt="Capa do livro" 
           class="w-full max-w-md shadow-lg object-cover border shadow-gray-500"
@@ -124,6 +183,7 @@ onMounted(fetchBook)
           <h2 class="text-2xl font-semibold text-gray-700">Capítulos:</h2>
           <button
             class="flex items-center justify-center text-xs px-2 py-1 bg-standard text-white rounded font-semibold"
+            @click="newChapters = true"
           >
             <Lucide
               icon="Plus"
@@ -157,7 +217,7 @@ onMounted(fetchBook)
             >
               <h3 
                 @click="goToChapter(chapter)"
-                class="text-lg font-semibold text-gray-800"
+                class="text-lg font-semibold text-gray-800 cursor-pointer"
               >
                 {{ chapter.title }}
               </h3>

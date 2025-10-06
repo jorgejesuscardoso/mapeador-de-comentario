@@ -304,11 +304,18 @@ const cancelEdit = () => router.back()
 onMounted(async () => {
   const response = await getChapterLunarById(bookId,chapterId) 
 
-  if(response.status === 200){
+  if (response.status === 200) {
     bookData.value = response.data
     title.value = response.data.title
-    normalizeEditor()
-    editor.value.innerHTML = response.data.paragraphs
+    
+    // carrega o HTML no editor
+    if (editor.value) {
+      editor.value.innerHTML = response.data.paragraphs
+      normalizeEditor()
+
+      // ATUALIZA editorText logo depois
+      editorText.value = editor.value.innerText
+    }
   }
   
   if (editor.value && !editor.value.innerHTML.trim()) {
