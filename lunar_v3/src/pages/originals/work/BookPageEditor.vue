@@ -339,7 +339,7 @@ onUnmounted(() => {
     <header class="w-full sticky top-0 z-20 bg-white border-b shadow-sm px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="relative w-10 h-14">
-          <img :src="bookData ? bookData?.cover : ''" alt="Capa do livro" class="w-full h-full object-cover rounded-md border"/>
+          <img :src="bookData?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" alt="Capa do livro" class="w-full h-full object-cover rounded-md border"/>
         </div>
         <div>
           <div class="font-bold text-gray-800 text-lg">{{ bookData?.bookName }}</div>

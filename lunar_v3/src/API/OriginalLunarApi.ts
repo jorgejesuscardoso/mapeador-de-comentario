@@ -182,3 +182,24 @@ export const updateChapterLunarById = async (bookId: string, chapterId: string, 
     throw new Error(msg);
   }
 };
+
+export const deleteChapterLunarById = async (bookId: string, chapterId: string) => {
+  try {
+    const controller = new AbortController();
+
+    const response = await axios.delete(
+      `${endPointChapters}/${bookId}/${chapterId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        signal: controller.signal
+      }
+    );
+
+    return response;
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado ao excluir capítulo.';
+    throw new Error(msg);
+  }
+};

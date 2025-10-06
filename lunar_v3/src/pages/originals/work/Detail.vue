@@ -3,7 +3,7 @@ import { ref, onMounted, inject, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { toast } from '@/base/utils/toast'
-import { createChapters, getBookLunarById } from '@/API/OriginalLunarApi'
+import { createChapters, deleteChapterLunarById, getBookLunarById } from '@/API/OriginalLunarApi'
 
 interface Chapter {
   id: string
@@ -33,7 +33,7 @@ interface Book {
   updatedAt: string
   mature: boolean
 }
-
+const idTodelete = ref('')
 const route = useRoute()
 const router = useRouter()
 const bookId = route.params.bookId as string
@@ -43,10 +43,33 @@ const goToChapter = (data: any) => {
   router.push(`/v1/origins/mywork/write/${bookId}/${data.id}`)
 }
 
+const deleteChapter = async () => {
+  try {
+    if(!idTodelete.value) {
+      toast.error("Falha ao identificar o capítulo!")
+      return
+    }
+    const response = await deleteChapterLunarById(bookId, idTodelete.value)
+    if(response.status !== 200) {
+      toast.error("Falha ao deletar capítulo!")
+      isDelete.value = false
+      return
+    }
+    toast.success("Capítulo deletado com sucesso!")
+    isDelete.value = false
+    fetchBook()
+  } catch(err) {
+    toast.error("Falha ao deletar capítulo!")
+    isDelete.value = false
+    console.error(err)
+  }
+}
+
 const book = ref<Book | null>(null)
 const chapters = ref<Chapter[]>([])
 const loading = ref(true)
 const newChapters = ref(false)
+const isDelete = ref(false)
 
 async function fetchBook() {
   try {
@@ -111,10 +134,39 @@ onMounted(() => {
   <div class="flex items-start justify-end w-full mt-14 bg-white gray-50 min-h-screen">
     <!-- Modal de confirmação -->
     <div
-      v-if="newChapters"
+      v-if="isDelete"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
     >
       <div class="bg-white rounded-lg shadow-lg p-6 w-80 flex flex-col gap-4">
+        <h3 class="text-lg font-bold text-gray-800">Deletar o capítulo?</h3>
+        <p class="text-sm text-gray-600">
+          Você está prestes a deletar um capítulo. Deseja continuar?
+        </p>
+
+        <div class="flex justify-end gap-3 mt-4">
+          <button
+            @click="isDelete = false"
+            class="px-3 py-1 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="deleteChapter"
+            class="px-3 py-1 rounded-md bg-violet-600 text-white hover:bg-violet-700 transition"
+          >
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmação -->
+    <div
+      v-if="newChapters"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+    >
+      <div class="bg-white rounded-lg shadow-lg p-6 w-80 flex flex-col gap-4">        
+        
         <h3 class="text-lg font-bold text-gray-800">Criar novo capítulo?</h3>
         <p class="text-sm text-gray-600">
           Você está prestes a criar um capítulo em branco. Deseja continuar?
@@ -151,7 +203,7 @@ onMounted(() => {
         </span>
         <img 
           v-else
-          :src="book?.cover" 
+          :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" 
           alt="Capa do livro" 
           class="w-full max-w-md shadow-lg object-cover border shadow-gray-500"
         />
@@ -201,8 +253,18 @@ onMounted(() => {
           <li 
             v-for="chapter in chapters" 
             :key="chapter.id" 
-            class="bg-white rounded shadow border border-gray-100 gap-6 p-3 flex items-center justify-between hover:shadow-xl transition"
+            class="bg-white rounded shadow border border-gray-100 gap-6 p-3 flex items-center justify-between hover:shadow-xl transition relative"
           >
+            <div
+              class="absolute top-2 right-2 border border-red-100"
+              @click="isDelete = true, idTodelete = chapter.id"
+            >
+              <Lucide
+                icon="X"
+                :stroke-width="2"
+                class="h-4 w-4 text-red-600"
+              />
+            </div>
             <div>
               <Lucide
                 icon="Menu"

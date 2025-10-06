@@ -4,11 +4,11 @@ import multer from 'multer';
 import sharp from 'sharp';
 import { v2 as cloudinary } from 'cloudinary';
 import { v4 as uuid } from 'uuid'
-import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 
 const chaptersLunar = express.Router();
 const tableName = 'booksLunar';
-const tableChapterName = 'chaptersBookLunar'
+const tableChapterName = 'chaptersBookLunar2'
 
 // configura Cloudinary
 cloudinary.config({
@@ -67,7 +67,7 @@ chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
     const newChapter = {
       bookId: bookId.trim(),
       id,
-      title: 'Capitulo sem nome',
+      title: 'Capítulo sem nome',
       paragraphs: '',
       wordsCount: wordsCount,
       comments: [],
@@ -222,24 +222,19 @@ chaptersLunar.delete('/:bookId/:chapterId', async (req: Request, res: Response) 
     }
 
     const result = await db.send(
-      new UpdateCommand({
+      new DeleteCommand({
         TableName: tableChapterName,
-        Key: { bookId, chapterId },
-        UpdateExpression: "SET isDeleted = :true, updatedAt = :updatedAt",
-        ExpressionAttributeValues: {
-          ":true": true,
-          ":updatedAt": new Date().toISOString()
-        },
-        ReturnValues: "ALL_NEW"
+        Key: { bookId, id: chapterId }
       })
     );
 
-    res.status(200).json({ message: "Capítulo marcado como deletado", item: result.Attributes });
+    res.status(200).json({ message: "Capítulo deletado com sucesso", item: result });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Erro ao excluir capítulo' });
+    res.status(500).json({ error: 'Erro ao deletar capítulo' });
   }
-}); 
+});
+
 
 
 export default chaptersLunar;

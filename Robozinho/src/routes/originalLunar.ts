@@ -8,7 +8,7 @@ import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand } from
 
 const bookLunar = express.Router();
 const tableName = 'booksLunar';
-const tableChapterName = 'chaptersBookLunar'
+const tableChapterName = 'chaptersBookLunar2'
 // configura Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -47,7 +47,7 @@ bookLunar.post('/create', upload.single('cover'), async (req: Request, res: Resp
     const data = req.body
     data.id = randomId
     let fileName = ''
-    let url = ''
+    let url = 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'
     if (file) {
       // Gera um nome único para o arquivo
       fileName = file.randomId;
