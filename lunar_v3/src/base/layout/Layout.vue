@@ -46,6 +46,7 @@ const refShowWriteMenu = ref<HTMLElement | null>(null);
 const refShowWriteMenu2 = ref<HTMLElement | null>(null);
 const refShowWriteMenuNav = ref<HTMLElement | null>(null);
 const refShowWriteMenuNav2 = ref<HTMLElement | null>(null);
+const darkMode = ref(false)
 
 const getWtpData = ref()
 	
@@ -287,6 +288,13 @@ provide('isCiner', isCiner)
 							@click.stop="router.push(isRouteOrigins ? '/' : '/v1/origins')"
 						>
 							{{ isRouteOrigins ? 'Biblioteca Lunar' : 'Luna Origins' }}
+						</button>
+						<!-- Botão switch -->
+						<button
+							class="ml-5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200"
+							@click.stop="darkMode = !darkMode"
+						>
+							{{ darkMode ? "Modo claro" : "Modo Noturno" }}
 						</button>
 					</h1>
 

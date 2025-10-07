@@ -40,7 +40,6 @@ const router = useRouter()
 const bookId = route.params.bookId as string
 
 const goToChapter = (data: any) => {
-  console.log(data)
   router.push(`/v1/origins/mywork/write/${bookId}/${data.id}`)
 }
 
