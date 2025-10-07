@@ -1,3 +1,4 @@
 User-agent: *
-Disallow:
+Disallow: /pages/video/
 
+Sitemap: https://projetolunar.netlify.app/sitemap.xml
