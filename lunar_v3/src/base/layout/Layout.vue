@@ -221,11 +221,55 @@ provide('isPremium',isPremium)
 provide('isDev', isDev)
 provide('isCiner', isCiner)
 
+
+const STORAGE_KEY = 'pl-theme' // "dark" | "light" | "system"
+const theme = ref<'dark'|'light'|'system'>('system')
+const isDark = ref(false)
+
+// Aplica a classe `dark` no document.documentElement
+function applyThemeValue(value: 'dark'|'light') {
+  const el = document.documentElement
+  if (value === 'dark') el.classList.add('dark')
+  else el.classList.remove('dark')
+  isDark.value = value === 'dark'
+}
+
+// Lê preferência do sistema
+function preferedSystemIsDark() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
+// Carrega estado (prioridade: localStorage > system)
+onMounted(() => {
+  const saved = localStorage.getItem(STORAGE_KEY) as 'dark'|'light'|'system' | null
+  theme.value = saved || 'system'
+
+  if (theme.value === 'system') {
+    applyThemeValue(preferedSystemIsDark() ? 'dark' : 'light')
+  } else {
+    applyThemeValue(theme.value)
+  }
+
+  // Escuta mudanças do sistema caso o usuário escolha "system"
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (theme.value === 'system') applyThemeValue(e.matches ? 'dark' : 'light')
+    })
+  }
+})
+
+function toggle() {
+  // ciclo: light -> dark -> system -> light (opcional, aqui só alterna light/dark)
+  const next = isDark.value ? 'light' : 'dark'
+  theme.value = next
+  localStorage.setItem(STORAGE_KEY, next)
+  applyThemeValue(next)
+}
 </script>
 
 <template>
 	<div
-		class="min-h-screen min-w-screen bg-fuchsia-200"
+		class="min-h-screen min-w-screen dark:bg-gray-950"
 	>
 		<div
 			:class="{
@@ -236,7 +280,7 @@ provide('isCiner', isCiner)
 				class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-40 "
 				:class="{
 					'searchFilterBg2': !isRouteOrigins,
-					'bg-white border border-b-purple-200': isRouteOrigins
+					'dark:bg-gray-950 dark:border-gray-900 bg-white border-b border-purple-200': isRouteOrigins
 				}"
 			>
 				<div 
@@ -248,17 +292,16 @@ provide('isCiner', isCiner)
 					<h1 
 						class="flex items-center gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
 						:class="{
-							'bg-standard bg-clip-text text-transparent': isRouteOrigins,
+							'bg-standard bg-clip-text text-transparent ': isRouteOrigins,
 							'text-white': !isRouteOrigins
 						}"
-						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
 					>
 						<!-- Ícone principal -->
 						<Lucide
 							:icon="isRouteOrigins ? 'Stars' : 'MoonStar'"
 							class="transition-all duration-300"
 							:class="{
-								'h-3 w-3 text-purple-700 absolute left-0 top-0': isRouteOrigins,
+								'h-3 w-3 dark:text-white text-purple-700 absolute left-0 top-0': isRouteOrigins,
 								'h-7 w-7 text-yellow-400': !isRouteOrigins
 							}"
 							:stroke-width="1.5"
@@ -275,10 +318,11 @@ provide('isCiner', isCiner)
 						<Lucide
 							v-if="isRouteOrigins"
 							icon="Stars"
-							class="transition-all duration-300 h-3 w-3 text-purple-700 absolute right-36 bottom-0"
+							class="transition-all duration-300 h-3 w-3 dark:text-white text-purple-700 absolute left-36 bottom-0"
 							:stroke-width="1.5"
 						/>
 						<!-- Botão switch -->
+						
 						<button
 							class="ml-5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200"
 							:class="{ 
@@ -289,12 +333,18 @@ provide('isCiner', isCiner)
 						>
 							{{ isRouteOrigins ? 'Biblioteca Lunar' : 'Luna Origins' }}
 						</button>
-						<!-- Botão switch -->
+
+						<!-- Botão switch Modo -->
 						<button
-							class="ml-5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200"
-							@click.stop="darkMode = !darkMode"
+							@click="toggle"
+							:aria-pressed="isDark"
+							aria-label="Alternar modo noturno"
+							class="inline-flex items-center gap-3 p-1 rounded-full transition   backdrop-blur-sm text-gray-800 dark:text-white"
+							title="Alternar tema"
 						>
-							{{ darkMode ? "Modo claro" : "Modo Noturno" }}
+							<span class="flex items-center justify-center w-6 h-6">
+								<Lucide :icon="isDark ? 'Moon' : 'Sun' " class="w-5 h-5" />
+							</span>
 						</button>
 					</h1>
 
@@ -308,15 +358,19 @@ provide('isCiner', isCiner)
 							class="flex items-center justify-center h-full cursor-pointer px-2"
 							@click="showWriteMenu = !showWriteMenu"
 						>
-							<p
+							<button
 								class="flex items-center justify-center gap-1 px-4 py-1.5 rounded-md font-bold font-mono"
 								:class="{
-									'text-black border-gray-500': isRouteOrigins,
-									'text-white': !isRouteOrigins,							}"
+									'text-black dark:text-gray-300': isRouteOrigins,
+									'text-white': !isRouteOrigins
+								}"
 							>
 								<Lucide icon="PencilLine" class="h-4 w-4 mr-2" />
-								<Lucide :icon="showWriteMenu ? 'ChevronUp' : 'ChevronDown'" class="h-4 w-4" />
-							</p>
+								<Lucide 
+									:icon="'ChevronDown'" 
+									class="h-4 w-4" 
+								/>
+							</button>
 						</div>
 
 						<!-- CTA Premium -->
@@ -382,7 +436,7 @@ provide('isCiner', isCiner)
 						class="rounded-2xl p-4 min-w-44 h-[50vh]"
 						:class="{
 							'bg-[rgba(0,0,0,0.8)]': !isRouteOrigins,
-							'bg-white': isRouteOrigins
+							'bg-white dark:bg-transparent': isRouteOrigins
 						}"
 					>
 						<ul
@@ -394,7 +448,7 @@ provide('isCiner', isCiner)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
+										'hover:bg-gray-300 dark:hover:bg-[#ffffff10] hover:text-gray-800 text-gray-700 dark:text-gray-300':  isRouteOrigins,
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/' && !isRouteOrigins,									}"
 								>
 									<Lucide
@@ -429,7 +483,7 @@ provide('isCiner', isCiner)
 									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
 									:class="{
 										'bg-violet-100/10': route.path === '/profile',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
+										'hover:bg-gray-300 dark:hover:bg-[#ffffff10] hover:text-gray-800 text-gray-700 dark:text-gray-300':  isRouteOrigins,
 										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
 									}"
 								>
@@ -447,7 +501,7 @@ provide('isCiner', isCiner)
 										v-if="!isLogged"
 										to="/register"
 										class="flex items-center gap-2 px-2 py-1 rounded-md"
-										:class="{'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins}"
+										:class="{'hover:bg-gray-300 dark:hover:bg-[#ffffff10] hover:text-gray-800 text-gray-700 dark:text-gray-300':  isRouteOrigins}"
 									>
 										<Lucide icon="FileInput" size="14" />
 										Registro
@@ -488,7 +542,7 @@ provide('isCiner', isCiner)
 										class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
 										:class="{
 											'hover:bg-green-100 text-green-400': !isLogged,
-											'hover:bg-red-100 text-red-600': isLogged
+											'hover:bg-red-100 dark:hover:bg-[#ffffff10] text-red-600': isLogged
 										}"
 									>
 										<Lucide

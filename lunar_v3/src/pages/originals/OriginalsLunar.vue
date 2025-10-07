@@ -85,7 +85,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="w-full bg-white min-h-screen absolute left-0 top-9 z-0 flex font items-start justify-end px-6"
+    class="w-full dark:bg-[#000] bg-white min-h-screen absolute left-0 top-9 z-0 flex font items-start justify-end px-6"
   >
     <div class="w-full lg:w-[83vw] lg:mt-10 mt-14">
       <header
@@ -93,13 +93,13 @@ onMounted(async () => {
       >
         <input 
           type="text"
-          class="h-10 w-full border px-10 border-gray-500/45 rounded-xl focus:ring-0 focus:outline-none text-gray-600 placeholder:text-gray-500"
+          class="h-10 w-full dark:bg-gray-950 dark:border-gray-900 dark:text-gray-400 border px-10 border-gray-500/45 rounded-xl focus:ring-0 focus:outline-none text-gray-600 placeholder:text-gray-500 dark:placeholder:text-gray-700"
           placeholder="Pesquisa ainda em fase de testes!!!"
         >
 
         <Lucide
           icon="Search"
-          class="absolute top-1/2 -translate-y-1/2 left-2 text-gray-400"
+          class="absolute top-1/2 -translate-y-1/2 left-2 text-gray-400 dark:text-gray-700"
           :stroke-width="1"
         />
       </header>
@@ -121,22 +121,22 @@ onMounted(async () => {
         </div>
               <!-- Loop de GÊNEROS -->
         <div v-for="(grupo, key) in generos" :key="key" class="mb-10">
-          <h3 class="font-semibold mb-1 text-gray-800">
+          <h3 class="font-semibold mb-1 text-gray-800 dark:text-gray-300">
             {{ grupo.label }}:
           </h3>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-2 place-items-center z-50">
-            <div v-for="obra in grupo.books" :key="obra.id" class="relative group w-full max-w-[180px] cursor-pointer rounded-md">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 place-items-center z-50">
+            <div v-for="obra in grupo.books" :key="obra.id" class="relative group w-[160px] max-w-[180px] cursor-pointer  darpk:bg-[#ffffff05] ">
               <img :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="obra.name" class="w-full h-[210px] object-contai cursor-pointer shadow-md group-hover:shadow-xl transition"/>
               
-              <div v-if="obra.tags?.length" class="my-1 text-[10px] font-medium text-gray-500 truncate px-2">
-                por: <span class="text-blue-700">{{ obra.author || 'Anônimo'}}</span>
+              <div v-if="obra.tags?.length" class="my-1 text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate px-2">
+                por: <span class="text-blue-700 dark:text-blue-500">{{ obra.author || 'Anônimo'}}</span>
               </div>
-              <div v-if="obra.tags?.length" class="mb-1 text-[11px] font-medium text-indigo-800 truncate px-2 capitalize">
+              <div v-if="obra.tags?.length" class="mb-1 text-[11px] font-medium text-indigo-800 dark:text-indigo-500 truncate px-2 capitalize">
                 #{{ obra.tags[0] }}
               </div>
-              <div class="text-gray-800 text-[10px] flex items-center gap-1 mb-1  px-2">
-                <Lucide icon="Eye" class="w-4 h-4 text-gray-600"/> {{ obra.views.toLocaleString() }}
+              <div class="text-gray-800 dark:text-gray-400 text-[10px] flex items-center gap-1 mb-1  px-2">
+                <Lucide icon="Eye" class="w-4 h-4 text-gray-600 dark:text-gray-400"/> {{ obra.views.toLocaleString() }}
               </div>
               <span v-if="obra.mature" class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded">+18</span>
             </div>

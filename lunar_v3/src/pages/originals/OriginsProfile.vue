@@ -140,12 +140,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-start lg:justify-end justify-center w-full mt-7 md:mt-10 min-h-screen bg-gray-50 px-4 py-10">
+  <div class="flex dark:bg-[#000] items-start lg:justify-end justify-center w-full mt-7 md:mt-10 min-h-screen bg-gray-50 px-4 py-10">
     <!-- wrapper em grid/flex -->
     <div class="flex flex-col md:flex-row items-start justify-between w-full lg:w-[80vw] xl:w-[83vw]">
       
       <!-- seção do autor -->
-      <aside class="flex flex-col sm:flex-row md:flex-col w-full md:w-1/2 lg:w-[40%] xl:w-[30%] mb-6 md:mb-0 sm:pb-6 lg:pb-14 md:pb-0 md:min-h-screen min-h-[40vh] border-b-2 md:border-r-2 gap-x-4 md:gap-x-0 md:pr-6 md:mr-6">
+      <aside class="flex flex-col sm:flex-row md:flex-col w-full md:w-1/2 lg:w-[40%] xl:w-[30%] mb-6 md:mb-0 sm:pb-6 lg:pb-14 md:pb-0 md:min-h-screen min-h-[40vh] border-b-2 md:border-r-2 dark:border-[#ffffff10] gap-x-4 md:gap-x-0 md:pr-6 md:mr-6">
         <!-- avatar + nome -->
         <div
           class="flex flex-col w-full sm:w-1/2 md:w-full"
@@ -157,46 +157,46 @@ onMounted(() => {
               class="w-16 h-16 rounded-full border object-cover"
             />
             <div>
-              <h3 class="text-lg font-bold text-gray-800">@{{ user }}</h3>
-              <p class="text-sm text-gray-500">{{hasUser?.name || ''}}</p>
+              <h3 class="text-lg font-bold text-gray-800 dark:text-gray-300">@{{ user }}</h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{hasUser?.name || ''}}</p>
             </div>
           </div>
 
           <!-- bio -->
-          <p class="text-sm text-gray-600 leading-relaxed mt-2 mb-6">
+          <p class="text-sm text-gray-600 leading-relaxed mt-2 mb-6 dark:text-gray-400">
             {{ hasUser?.description }}
           </p>
 
           <!-- métricas -->
-          <div class="flex items-center justify-between max-w-52 text-sm font-semibold text-gray-700 mb-6">
+          <div class="flex items-center justify-between max-w-52 text-xs font-semibold text-gray-700 dark:text-gray-400 mb-6">
             <span class="flex items-center gap-1">
-              <Lucide icon="Users" class="w-4 h-4 text-violet-600" /> 1.2k seguidores
+              <Lucide icon="Users" class="w-4 h-4 text-violet-600 dark:text-violet-500" /> 1.2k seguidores
             </span>
             <span class="flex items-center gap-1">
-              <Lucide icon="ThumbsUp" class="w-4 h-4 text-violet-600" /> 3.4k likes
+              <Lucide icon="ThumbsUp" class="w-4 h-4 text-violet-600 dark:text-violet-500" /> 3.4k likes
             </span>
           </div>
 
           <!-- redes sociais -->
           <div class="flex gap-4 mb-6">
-            <a href="#" class="text-violet-600 hover:text-violet-800">
+            <a href="#" class="text-violet-600 hover:text-violet-800 dark:text-violet-500">
               <Lucide icon="Twitter" class="w-5 h-5" />
             </a>
-            <a href="#" class="text-violet-600 hover:text-violet-800">
+            <a href="#" class="text-violet-600 hover:text-violet-800 dark:text-violet-500">
               <Lucide icon="Instagram" class="w-5 h-5" />
             </a>
-            <a href="#" class="text-violet-600 hover:text-violet-800">
+            <a href="#" class="text-violet-600 hover:text-violet-800 dark:text-violet-500">
               <Lucide icon="Globe" class="w-5 h-5" />
             </a>
           </div>
         </div>
 
         <!-- notificações -->
-        <div class="border-t-2 py-6 sm:border-0 md:border-t w-full sm:w-1/2 md:w-full md:mt-4  relative">
-          <h4 class="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-1 border-b-2 pb-2">
-            <Lucide icon="Bell" class="w-4 h-4 text-violet-700" /> 
+        <div class="border-t-2 py-6 sm:border-0 md:border-t dark:border-[#ffffff10] w-full sm:w-1/2 md:w-full md:mt-4  relative">
+          <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-400 mb-2 flex items-center gap-1 border-b-2 pb-2 dark:border-[#ffffff10]">
+            <Lucide icon="Bell" class="w-4 h-4 text-violet-700 dark:text-violet-500" /> 
             Notificações
-            <span class="text-gray-400">({{ totalUnreadMessage }}) fase de testes<span class="text-red-600">*</span></span>
+            <span class="text-gray-400 dark:text-gray-700">({{ totalUnreadMessage }}) fase de testes<span class="text-red-600">*</span></span>
           </h4>
 
           <ul class="flex flex-col gap-1 rounded overflow-y-auto">
@@ -206,15 +206,15 @@ onMounted(() => {
               @click="notif.link && markAsRead(notif.id)"
               class="text-xs relative cursor-pointer p-2 rounded-md flex flex-col justify-between"
               :class="notif.read 
-                ? 'bg-white text-gray-600 border border-gray-300' 
-                : 'bg-gray-200 text-gray-900'"
+                ? 'bg-white text-gray-600 border border-gray-300 dark:border-none dark:text-gray-400 dark:bg-gray-700' 
+                : 'bg-gray-200 text-gray-900 dark:text-gray-300 dark:bg-gray-950'"
             >
               <div>
                 <Lucide :icon="notif.read ? 'MailOpen' : 'Mail'" class="h-3 w-3 mb-2" />
               </div>
               <div class="flex justify-between items-center">
                 <span class="px-2">{{ notif.message }}</span>
-                <Lucide icon="ArrowRight" class="w-3 h-3 text-gray-600" />
+                <Lucide icon="ArrowRight" class="w-3 h-3 text-gray-600 dark:text-gray-200" />
               </div>
               <span class="text-[10px] text-gray-400 mt-3">{{ formatDate(notif.date) }}</span>
               <span
@@ -244,10 +244,10 @@ onMounted(() => {
 
       <!-- seção das obras (já existente) -->
       <div class="lg:w-7/12 w-full xl:w-2/3 md:w-1/2 pb-24 md:pb-0 relative">
-        <h2 class="text-2xl font-bold mb-8 text-gray-800 border-b pb-2">Minhas Obras</h2>
+        <h2 class="text-2xl font-bold mb-8 text-gray-800 border-b pb-2 dark:border-[#ffffff10] dark:text-gray-400">Minhas Obras</h2>
 
         <div
-          class="flex gap-5 absolute top-1 right-10"
+          class="flex gap-5 absolute top-1 right-10 dark:text-gray-400"
         >
           <Lucide
             icon="Plus"
@@ -265,7 +265,7 @@ onMounted(() => {
         <!-- Loading -->
         <div v-if="loading" class="flex flex-col items-center justify-center w-full h-1/2 text-violet-600">
           <Lucide icon="RefreshCw" class="w-12 h-12 animate-spin" />
-          <span class="mt-3 text-sm">Carregando...</span>
+          <span class="mt-3 text-sm ">Carregando...</span>
         </div>
 
         <!-- Sem livros -->
@@ -278,11 +278,11 @@ onMounted(() => {
         </div>
 
         <!-- Grid de livros -->
-        <ul v-else class="flex flex-col gap-6 w-full">
+        <ul v-else class="flex flex-col gap-2 w-full">
           <li
             v-for="book in books"
             :key="book.id"
-            class="bg-white w-full shadow hover:shadow-lg transition overflow-hidden flex"
+            class="bg-white dark:bg-[#ffffff06] w-full shadow hover:shadow-lg transition overflow-hidden flex"
           >
             <!-- capa -->
             <div
@@ -301,15 +301,15 @@ onMounted(() => {
             <div class="px-4 pb-4 flex flex-col flex-1">
               <div class="flex flex-col h-full">
                 <h3
-                  class="text-lg font-semibold text-gray-800 hover:underline cursor-pointer mb-1"
+                  class="text-lg font-semibold text-gray-800 dark:text-gray-300 hover:underline cursor-pointer mb-1"
                   @click="goToDetail(book.id)"
                 >
                   {{ book.name }}
                 </h3>
-                <p class="text-[10px] text-gray-700 font-medium">
-                  Genêro: <span class="text-[#10f] font-semibold ml-1">{{ book.genre }}</span> 
+                <p class="text-[10px] text-gray-700 font-medium dark:text-gray-400">
+                  Genêro: <span class="text-[#10f] font-semibold ml-1 dark:text-blue-400">{{ book.genre }}</span> 
                 </p>
-                <p class="text-xs text-gray-700 font-normal mt-2 line-clamp-3">
+                <p class="text-xs text-gray-700 font-normal mt-2 line-clamp-3 dark:text-gray-500">
                   {{ book.sinopse }}
                 </p>
               </div>
@@ -326,7 +326,7 @@ onMounted(() => {
               </div>
 
               <!-- métricas -->
-              <div class="w-fit gap-4 mt-auto flex text-[10px] text-gray-700 border-t pt-1">
+              <div class="w-fit gap-4 mt-auto flex text-[10px] dark:text-gray-400 dark:border-[#ffffff40] text-gray-700 border-t pt-1">
                 <span class="flex items-center gap-1">
                   <Lucide icon="Star" class="w-3 h-3" /> {{ book.votes?.toLocaleString() || 0 }}
                 </span>

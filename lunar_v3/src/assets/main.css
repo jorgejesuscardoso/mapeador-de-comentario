@@ -16,6 +16,15 @@
     --dark-mode-btn-bg: #f3f3f3;
     --bg-dark-hover-cancel: #6b0000;
 }
+:root, .dark {
+  --bg: theme(colors.white);
+  --text: theme(colors.gray.900);
+}
+
+/* exemplo simples: */
+html, body, #app {
+  transition: background-color 250ms ease, color 250ms ease;
+}
 
 .userCard{
     background-image: url('/bgCard.png');

@@ -132,7 +132,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-start justify-end w-full mt-14 bg-white gray-50 min-h-screen">
+  <div class="flex items-start justify-end w-full mt-14 bg-white dark:bg-[#000] gray-50 min-h-screen">
     <!-- Modal de confirmação -->
     <div
       v-if="isDelete"
@@ -195,7 +195,7 @@ onMounted(() => {
       <aside class="flex flex-col lg:w-1/4 xl:w-1/5 w-full justify-start max-h-[95vh]">
         <span
           v-if="loading"
-          class="w-full max-w-md shadow-lg object-cover border gap-3 text-gray-500 h-72 flex flex-col items-center justify-center bg-gray-100"
+          class="w-full max-w-md  shadow-lg object-cover border gap-3 text-gray-500 h-72 flex flex-col items-center justify-center bg-gray-100"
         >
           <Lucide
             icon="Image"
@@ -206,13 +206,19 @@ onMounted(() => {
           v-else
           :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" 
           alt="Capa do livro" 
-          class="w-full max-w-md shadow-lg object-cover border shadow-gray-500"
-        />
+          class="w-full max-w-md shadow-lg dark:shadow-black dark:border-none object-cover border shadow-gray-500"
+        >
+          <div
+
+          >
+
+          </div>
+        </img>
 
         <!-- CTA Premium -->
         <div 
           v-if="!isPremium"
-          class="w-full max-w-sm bg-standard rounded-lg shadow-md p-4 text-center"
+          class="w-full max-w-sm bg-standard dark:bg-standard-dark rounded-lg shadow-md p-4 text-center relative mt-1"
         >
           <h3 class="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-yellow-50">
             Seja Premium 🚀
@@ -229,15 +235,20 @@ onMounted(() => {
       </aside>
 
       <!-- Lista de capítulos -->
-      <main class="lg:w-2/3 w-full min-h-screen flex flex-col gap-4 bg-white p-6 shadow-xl shadow-gray-400 border border-gray-100 rounded-lg">
+      <main class="lg:w-2/3 w-full min-h-screen flex flex-col gap-4 bg-white p-6 shadow-xl dark:shadow-none dark:bg-[#ffffff05] dark:border-none shadow-gray-400 border border-gray-100 rounded-lg">
         <div
-          class="flex items-center justify-between pb-2 mb-2 border-b"
+          class="flex items-center justify-between pb-2 mb-2 border-b dark:border-[#ffffff10]"
         >
-          <h2 class="text-2xl font-semibold text-gray-700">Capítulos:</h2>
+          <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-300">Capítulos:</h2>
           <button
-            class="flex items-center justify-center text-xs px-2 py-1 bg-standard text-white rounded font-semibold"
+            class="flex items-center justify-center text-xs px-2 py-1 bg-standard text-white rounded font-semibold relative"
             @click="newChapters = true"
           >
+            <div
+              class="hidden dark:flex bg-[#0002] hover:bg-[#00000005] w-full h-full absolute"
+            >
+                <!-- Empty state -->
+            </div>
             <Lucide
               icon="Plus"
               class="h-4 w-4"
@@ -254,23 +265,23 @@ onMounted(() => {
           <li 
             v-for="chapter in chapters" 
             :key="chapter.id" 
-            class="bg-white rounded shadow border border-gray-100 gap-6 p-3 flex items-center justify-between hover:shadow-xl transition relative"
+            class="bg-white rounded shadow dark:border-none dark:bg-[#ffffff05]  border border-gray-200 gap-6 p-3 flex items-center justify-between hover:shadow-xl transition relative"
           >
             <div
-              class="absolute top-2 right-2 border border-red-100"
+              class="absolute top-2 right-2"
               @click="isDelete = true, idTodelete = chapter.id"
             >
               <Lucide
                 icon="X"
                 :stroke-width="2"
-                class="h-4 w-4 text-red-600"
+                class="h-4 w-4 text-gray-600"
               />
             </div>
             <div>
               <Lucide
                 icon="Menu"
                 :stroke-width="2"
-                class="h-8 w-8 text-violet-600"
+                class="h-8 w-8 text-gray-600 dark:text-gray-400"
               />
             </div>
           
@@ -280,14 +291,14 @@ onMounted(() => {
             >
               <h3 
                 @click="goToChapter(chapter)"
-                class="text-lg font-semibold text-gray-800 cursor-pointer"
+                class="text-lg font-semibold text-gray-800 cursor-pointer dark:text-gray-400"
               >
                 {{ chapter.title }}
               </h3>
               
 
               <!-- métricas -->
-              <div class="flex flex-wrap gap-6 text-sm text-gray-500 mt-2">
+              <div class="flex flex-wrap gap-6 text-sm text-gray-500 mt-2 dark:text-gray-400">
                 <span class="flex items-center gap-1">
                   <Lucide icon="Eye" fill="#eee" class="w-4 h-4"/> {{ chapter.views.toLocaleString() }}
                 </span>

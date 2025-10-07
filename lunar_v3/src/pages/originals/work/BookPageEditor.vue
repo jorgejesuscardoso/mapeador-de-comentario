@@ -335,16 +335,16 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="w-full min-h-screen flex flex-col bg-white">
-    <header class="w-full sticky top-0 z-20 bg-white border-b shadow-sm px-6 py-3 flex items-center justify-between">
+  <div class="w-full min-h-screen flex flex-col bg-white dark:bg-[#000]">
+    <header class="w-full sticky top-0 z-20 bg-white border-b dark:border-[#ffffff10] shadow-sm px-6 py-3 flex items-center justify-between dark:bg-[#000]">
       <div class="flex items-center gap-3">
         <div class="relative w-10 h-14">
           <img :src="bookData?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" alt="Capa do livro" class="w-full h-full object-cover rounded-md border"/>
         </div>
         <div>
-          <div class="font-bold text-gray-800 text-lg">{{ bookData?.bookName }}</div>
-          <div class="font-semibold text-gray-800 text-sm">{{ title || 'Capítulo: ??' }}</div>
-          <div class="text-xs text-gray-500">{{ wordCount }} palavras • {{ charCount }} caracteres</div>
+          <div class="font-bold text-gray-800 text-lg dark:text-gray-300">{{ bookData?.bookName }}</div>
+          <div class="font-semibold text-gray-800 text-sm dark:text-gray-400">{{ title || 'Capítulo: ??' }}</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">{{ wordCount }} palavras • {{ charCount }} caracteres</div>
         </div>
         <div v-if="saving" class="flex items-center justify-center text-green-500 gap-1">
           <p class="text-sm">Salvando...</p>
@@ -352,20 +352,20 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="flex gap-2">
-        <button @click="save" class="px-4 py-2 rounded-md bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold shadow-sm">Salvar</button>
-        <button @click="cancelEdit" class="px-4 py-2 rounded-md border text-sm text-gray-600 hover:bg-gray-50">Cancelar</button>
+        <button @click="save" class="px-4 py-2 rounded-md bg-standard dark:bg-standard-dark dark:text-gray-300 dark:hover:text-white text-white text-sm font-bold shadow-sm">Salvar</button>
+        <button @click="cancelEdit" class="px-4 py-2 rounded-md border text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:hover:text-black">Cancelar</button>
       </div>
     </header>
 
-    <section class="w-full px-6 py-6 flex justify-center bg-white">
-      <input v-model="title" type="text" placeholder="Título do capítulo..." class="w-full bg-transparent border-b border-gray-300 focus:outline-none py-2 text-3xl font-bold text-center placeholder-gray-400"/>
+    <section class="w-full px-6 py-6 flex justify-center bg-white dark:bg-[#ffffff04]">
+      <input v-model="title" type="text" placeholder="Título do capítulo..." class="w-full bg-transparent border-b dark:border-[#ffffff20] border-gray-300 focus:outline-none py-2 text-3xl font-bold text-center placeholder-gray-400 dark:text-gray-400"/>
     </section>
 
-    <main class="flex-1 px-6 pb-12 flex justify-center bg-white">
+    <main class="flex-1 px-6 pb-12 flex justify-center bg-white dark:bg-[#ffffff04] ">
       <div
         ref="editor"
         contenteditable="true"
-        class="w-full max-w-xl min-h-[80vh] bg-white p-6 text-base leading-relaxed font-serif focus:outline-none outline-none pb-96"
+        class="w-full max-w-xl min-h-[80vh] p-6 text-base dark:text-[#bbb] leading-relaxed font-serif focus:outline-none outline-none pb-96"
         @keydown="onKeyDown"
         @input="onInput"
       >
