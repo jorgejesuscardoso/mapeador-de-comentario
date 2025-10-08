@@ -771,7 +771,7 @@ function toggle() {
 					<div 
 						ref="refShowWriteMenu"
 						v-if="showWriteMenu" 
-						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-none dark:text-[#ccc]"
+						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-[#2227] dark:text-[#ccc]"
 						:class="{
 							'right-0': storage?.licenses?.includes('premium'),
 							'right-10': !storage?.licenses?.includes('premium')
