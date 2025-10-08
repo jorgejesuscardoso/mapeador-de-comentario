@@ -15,12 +15,8 @@ onMounted(() => {
 
 <template>	
 	<div
-		class="relative w-screen flex items-center justify-center"
+		class="relative flex items-center justify-center pr-3"
 	>
-		<Header>
-		</Header>
-
-
 		<div
 			class="pb-6 w-full lg:w-[85vw]"
 		>

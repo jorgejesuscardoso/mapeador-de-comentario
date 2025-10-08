@@ -85,7 +85,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="w-full dark:bg-[#000] bg-white min-h-screen absolute left-0 top-9 z-0 flex font items-start justify-end px-6"
+    class="w-full dark:bg-[#000] bg-white min-h-screen mt-10 lg:mt-14 flex font items-start justify-end px-6"
   >
     <div class="w-full lg:w-[83vw] lg:mt-10 mt-14">
       <header
@@ -104,7 +104,7 @@ onMounted(async () => {
         />
       </header>
       <div
-        class="pb-28 seu-container mt-6"
+        class="pb-28 seu-container mt-14"
       >
 
         <!-- EMPTY STATE -->

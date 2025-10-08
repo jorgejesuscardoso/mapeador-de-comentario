@@ -8,6 +8,7 @@ import { subgenres, genres } from './genres'
 import Switch from '@/base/utils/Switch.vue'
 import { useRouter } from 'vue-router'
 import { createBook } from '@/API/OriginalLunarApi'
+import Select from '@/base/utils/Select.vue'
 
 const info = ref(false)
 const saving = ref(false)
@@ -122,22 +123,40 @@ onMounted(() => {
   if(!getUser || !getUser.token || !getUser.user) return router.push('/v1/origins')
   user.value = getUser.user
 })
+
+const open = ref(false)
+const selectedLabel = ref('')
+
+function selectGenre(g) {
+  genre.value = g.value
+  selectedLabel.value = g.label
+  open.value = false
+}
+
+const opensub = ref(false)
+const selectedLabelSub = ref('')
+
+function selectSubGenre(g) {
+  subgenre.value = g.value
+  selectedLabelSub.value = g.label
+  opensub.value = false
+}
 </script>
 
 <template>
-  <div class="flex flex-col items-start justify-center w-full bg-white dark:bg-black min-h-screen">
-    <header class="w-full sticky top-0 z-20 bg-white border-b border-violet-200 dark:bg-black dark:border-[#fff2] shadow-md px-6 py-3 flex items-center justify-between">
+  <div class="flex flex-col items-center justify-center lg:justify-end w-full bg-white dark:bg-black min-h-screen pb-24">
+    <header class="w-full sticky top-0 z-20 bg-white border-b border-violet-200 dark:bg-black dark:border-[#fff2] shadow-md px-2 md:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div>
-          <div class="font-bold text-gray-800 text-lg dark:text-gray-300">{{ name || 'História sem título' }}</div>
-          <div class="font-semibold text-gray-800 text-sm dark:text-gray-400">Adicione as informações do seu novo livro!</div>
+          <div class="font-bold text-gray-800 text-sm md:text-lg dark:text-gray-300">{{ name || 'História sem título' }}</div>
+          <div class="font-semibold text-gray-800 text-xs md:text-sm dark:text-gray-400">Adicione as informações do seu novo livro!</div>
         </div>
         <div v-if="saving" class="flex items-center justify-center text-green-500 gap-1">
           <p class="text-sm">Salvando...</p>
           <Lucide icon="RefreshCw" class="h-5 w-5 animate-spin" :stroke-width="1" />
         </div>
       </div>
-      <div class="flex gap-2">
+      <div class="flex flex-col md:flex-row gap-2 ">
         <button 
           @click="onSubmit" 
           class="px-8 py-2 rounded-md text-white text-sm font-bold shadow-md transition-all duration-300"
@@ -160,18 +179,19 @@ onMounted(() => {
         </button>
       </div>
     </header>
+
     <form @submit.prevent="onSubmit" 
-      class="flex flex-col gap-4 rounded-lg p-4 w-full"
+      class="flex flex-col gap-4 rounded-lg p-2 md:p-4 w-full lg:w-[80vw]"
     >
 
       <div
-        class="flex  items-start justify-center gap-5 px-6"
+        class="flex flex-col md:flex-row items-start justify-center gap-5 md:gap-0 md:px-6"
       >
         <!-- Coluna esquerda -->
-        <div class="flex flex-col shadow-xl">
+        <div class="flex flex-col shadow-xl w-full pb-6 md:pb-0 md:border-0 border-b border-white/20 items-center justify-center">
           <!-- Upload de capa -->
-          <div class="flex flex-col">
-            <label class="w-64 min-h-96 flex items-center justify-center border bg-gray-200 dark:bg-[#ffffff10] dark:border-none rounded-md cursor-pointer hover:bg-gray-100">
+          <div class="flex flex-col ">
+            <label class="md:w-64 w-72 min-h-96 flex items-center justify-center border bg-gray-200 dark:bg-[#ffffff10] dark:border-none rounded-md cursor-pointer hover:bg-gray-100">
               <span v-if="!coverPreview" class="flex flex-col items-center justify-center text-sm text-gray-500">
                 <Lucide
                   icon="FileImage"
@@ -199,7 +219,7 @@ onMounted(() => {
         </div>
 
         <!-- Coluna direita -->
-        <div class="flex flex-col gap-4 w-8/12 px-10 rounded-xl shadow-2xl bg-white border dark:bg-[#ffffff08] dark:border-none border-gray-200">
+        <div class="flex flex-col gap-4 px-3 md:px-10 rounded-xl shadow-2xl bg-white border dark:bg-[#ffffff08] dark:border-none border-gray-200">
           <h1
             class="font-bold border-b border-gray-300 pb-2 my-4 text-lg text-gray-800 dark:text-gray-300 dark:border-[#fff2]"
           >
@@ -243,13 +263,28 @@ onMounted(() => {
           <!-- Gênero -->
           <div>
             <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Gênero:</label>
-            <select 
-              v-model="genre" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
-            >
-              <option value="" class="text-black dark:text-black" >Selecione o gênero</option>
-              <option v-for="g in genres" :key="g.value" :value="g.value" class="dark:bg-black">{{ g.label }}</option>
-            </select>
+            <div class="relative">
+              <div 
+                @click="open = !open" 
+                class="border truncate max-h-10 border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
+              >
+                {{ selectedLabel || 'Selecione o gênero' }}
+              </div>
+
+              <ul 
+                v-if="open" 
+                class="absolute z-50 w-full bg-white dark:bg-gray-900 mt-1 max-h-60 overflow-y-auto rounded-xl shadow-lg"
+              >
+                <li 
+                  v-for="g in genres" 
+                  :key="g.value" 
+                  @click="selectGenre(g)" 
+                  class="dark:bg-black dark:text-white pl-2"
+                >
+                  {{ g.label }}
+                </li>
+              </ul>
+            </div>
             <p class="text-gray-500 text-xs mt-1">Gênero principal da sua obra.</p>
             <p v-if="errors.genre" class="text-red-500 text-sm mt-1">{{ errors.genre }}</p>
           </div>
@@ -257,13 +292,28 @@ onMounted(() => {
           <!-- Subgênero -->
           <div>
             <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Subgênero:</label>
-            <select 
-              v-model="subgenre" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
-            >
-              <option value="" class="text-black dark:text-black">Selecione o subgênero</option>
-              <option v-for="s in subgenres" :key="s.value" :value="s.value" class="dark:bg-black">{{ s.label }}</option>
-            </select>
+            <div class="relative">
+              <div 
+                @click="opensub = !opensub" 
+                class="border truncate max-h-10 border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
+              >
+                {{ selectedLabelSub || 'Selecione o gênero' }}
+              </div>
+
+              <ul 
+                v-if="opensub" 
+                class="absolute z-50 w-full bg-white dark:bg-gray-900 mt-1 max-h-60 overflow-y-auto rounded-xl shadow-lg"
+              >
+                <li 
+                  v-for="g in subgenres" 
+                  :key="g.value" 
+                  @click="selectSubGenre(g)" 
+                  class="dark:bg-black dark:text-white pl-2"
+                >
+                  {{ g.label }}
+                </li>
+              </ul>
+            </div>
             <p class="text-gray-500 text-xs mt-1">Gênero secundário da sua obra.</p>
             <p v-if="errors.subgenre" class="text-red-500 text-sm mt-1">{{ errors.subgenre }}</p>
           </div>
@@ -274,7 +324,7 @@ onMounted(() => {
           <div>
             <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Público Alvo:</label>
             <select v-model="target" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none">
-              <option value="" class="darK:text-black">Selecione o público alvo</option>
+              <option value="" class="dark:bg-black">Selecione o público alvo</option>
               <option value="infantil" class="dark:bg-black">Infantil (0-12 anos)</option>
               <option value="jovem-adulto" class="dark:bg-black">Jovem Adulto (13-17 anos)</option>
               <option value="adulto" class="dark:bg-black">Adulto (18+ anos)</option>

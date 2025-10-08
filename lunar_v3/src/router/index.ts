@@ -117,7 +117,23 @@ const routes: RouteRecordRaw[] = [
         path: '/v1/origins/work/create',
         name: 'workCreate',
         component: () => import('../pages/originals/work/Create.vue')
+      },
+      {
+        path: '/sobre',
+        name: 'Sobre',
+        component: () => import('../pages/about/Sobre.vue')
+      },
+      {
+        path: '/privacidade',
+        name: 'Privacidade',
+        component: () => import('../pages/therms/Privacidade.vue')
+      },
+      {
+        path: '/termos',
+        name: 'Termos',
+        component: () => import('../pages/therms/Termos.vue')
       }
+
     ]
   },  
 

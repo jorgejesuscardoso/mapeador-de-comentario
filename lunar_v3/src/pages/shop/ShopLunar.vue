@@ -212,7 +212,7 @@ watch(cart, (newVal) => {
 </script>
 
 <template>
-  <div class="lg:w-[85vw] bg-[rgba(0,0,0,0.75)] lg:rounded-xl text-white lg:px-6 px-3 pt-3 relative">
+  <div class="lg:w-[85vw] bg-[rgba(0,0,0,0.75)] lg:rounded-xl text-white lg:px-6 px-3 pt-3 relative mb-6">
     <h1 class="text-3xl font-bold mb-3">Lojinha Lunar <span class="text-xs text-gray-400">(Fase de testes)</span></h1>
 
     <div
@@ -258,7 +258,7 @@ watch(cart, (newVal) => {
 
     <!-- Serviços -->
     <div
-      class="lg:grid xl:grid-cols-4 lg:grid-cols-3 lg:gap-x-2 max-h-[71vh] 2xl:max-h-[77vh] overflow-y-auto overflow-x-hidden pb-20"
+      class="lg:grid xl:grid-cols-4 lg:grid-cols-3 lg:gap-x-2 pb-4"
     >
       <div
         v-for="service in services"
@@ -304,7 +304,7 @@ watch(cart, (newVal) => {
     <!-- Carrinho -->
     <div 
       v-if="showCart"
-      class="fixed inset-0 lg:inset-auto lg:top-0 lg:right-2 lg:w-10/12 w-full lg:mt-10 mt-11 max-h-screen lg:max-h-[90vh] z-30 bg-black/90 pb-3 shadow-lg flex flex-col"
+      class="fixed top-0 lg:right-2 right-0 w-full lg:w-[85vw] mt-14 h-screen z-50 bg-black/90 pb-3 shadow-lg flex flex-col"
     >
       <!-- Header -->
       <div class="flex items-center justify-between p-4 border-b border-purple-800">
@@ -330,7 +330,7 @@ watch(cart, (newVal) => {
       </div>
 
       <!-- Conteúdo scrollável -->
-      <div class="flex overflow-y-auto p-4 h-[90%]">
+      <div class="flex p-4">
         <ul class="space-y-2">
           <li
             v-for="(item, i) in cart"

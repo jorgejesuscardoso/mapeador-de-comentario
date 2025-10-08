@@ -140,12 +140,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex dark:bg-[#000] items-start lg:justify-end justify-center w-full mt-7 md:mt-10 min-h-screen bg-gray-50 px-4 py-10">
+  <div class="flex flex-col md:flex-row dark:bg-[#000] items-start lg:justify-end justify-center w-full mt-7 md:mt-14 min-h-screen bg-gray-50 px-4 py-8">
+    <div
+      class="md:hidden p-1"
+      @click="router.back()"
+    >
+      <Lucide
+        icon="ArrowLeft"
+        class="dark:text-white w-6 h-6 p-1 rounded-full dark:bg-white/40 text-black/70 bg-black/30"
+      />
+    </div>
     <!-- wrapper em grid/flex -->
-    <div class="flex flex-col md:flex-row items-start justify-between w-full lg:w-[80vw] xl:w-[83vw]">
+    <div class="flex flex-col md:flex-row items-start justify-between w-full lg:w-[80vw] xl:w-[83vw] mt-2 md:mt-0">
       
       <!-- seção do autor -->
-      <aside class="flex flex-col sm:flex-row md:flex-col w-full md:w-1/2 lg:w-[40%] xl:w-[30%] mb-6 md:mb-0 sm:pb-6 lg:pb-14 md:pb-0 md:min-h-screen min-h-[40vh] border-b-2 md:border-r-2 dark:border-[#ffffff10] gap-x-4 md:gap-x-0 md:pr-6 md:mr-6">
+      <aside class="flex flex-col sm:flex-row md:flex-col w-full md:w-1/2 lg:w-[40%] xl:w-[30%] mb-6 md:mb-0 sm:pb-6 lg:pb-14 md:pb-0 md:min-h-screen min-h-[40vh] border-b-2 md:border-b-0 md:border-r-2 dark:border-[#ffffff10] gap-x-4 md:gap-x-0 md:pr-6 md:mr-6">
         <!-- avatar + nome -->
         <div
           class="flex flex-col w-full sm:w-1/2 md:w-full"
@@ -244,7 +253,7 @@ onMounted(() => {
 
       <!-- seção das obras (já existente) -->
       <div class="lg:w-7/12 w-full xl:w-2/3 md:w-1/2 pb-24 md:pb-0 relative">
-        <h2 class="text-2xl font-bold mb-8 text-gray-800 border-b pb-2 dark:border-[#ffffff10] dark:text-gray-400">Minhas Obras</h2>
+        <h2 class="text-lg font-bold mb-8 text-gray-800 border-b pb-2 dark:border-[#ffffff10] dark:text-gray-400">Minhas Obras</h2>
 
         <div
           class="flex gap-5 absolute top-1 right-10 dark:text-gray-400"
@@ -298,10 +307,10 @@ onMounted(() => {
             </div>
 
             <!-- corpo -->
-            <div class="px-4 pb-4 flex flex-col flex-1">
+            <div class="px-4 pb-4 pt-2 flex flex-col flex-1">
               <div class="flex flex-col h-full">
                 <h3
-                  class="text-lg font-semibold text-gray-800 dark:text-gray-300 hover:underline cursor-pointer mb-1"
+                  class="text-base font-semibold text-gray-800 dark:text-gray-300 hover:underline cursor-pointer mb-1"
                   @click="goToDetail(book.id)"
                 >
                   {{ book.name }}

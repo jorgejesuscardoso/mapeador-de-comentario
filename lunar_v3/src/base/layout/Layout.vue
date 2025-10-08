@@ -6,6 +6,7 @@ import NotificationsContainer from '../notification/NotificationsContainer.vue';
 import { getSales } from '@/API/ShopLunar';
 import { toast } from '../utils/toast';
 import { getUserById, getUserWtpd } from '@/API/UserApi';
+import FooterLunar from '../footer/FooterLunar.vue';
 
 interface userData {
 	user: string
@@ -436,7 +437,7 @@ function toggle() {
 						class="rounded-2xl p-4 min-w-44 h-[50vh]"
 						:class="{
 							'bg-[rgba(0,0,0,0.8)]': !isRouteOrigins,
-							'bg-white dark:bg-transparent': isRouteOrigins
+							'dark:bg-transparent': isRouteOrigins
 						}"
 					>
 						<ul
@@ -559,7 +560,11 @@ function toggle() {
 
 			<!-- Mobile Nav -->
 			<div class="lg:hidden w-full searchFilterBg text-white fixed top-0 left-0 z-20"
-				:class="{'border-b-2 border-fuchsia-300': menuOpen, 'border-0':!menuOpen}"
+				:class="{
+					'border-b-2 border-fuchsia-300': menuOpen, 
+					'border-0':!menuOpen,
+					'hidden': route.path === '/v1/origins/work/create'
+				}"
 			>
 				<div 
 					v-if="showNotification" 
@@ -663,8 +668,24 @@ function toggle() {
 					<nav
   					ref="menuRef"
 						v-show="menuOpen"
-						class="bg-white text-violet-300 searchFilterBg2"
+						class="bg-white text-violet-300 searchFilterBg2 relative"
 					>
+					<!-- Botão switch Modo -->
+						<button
+							@click="toggle"
+							:aria-pressed="isDark"
+							aria-label="Alternar modo noturno"
+							class="absolute right-1 top-1 inline-flex items-center gap-3 p-1 rounded-full transition  backdrop-blur-sm text-white"
+							title="Alternar tema"
+							:class="{
+								'hidden': !isRouteOrigins
+							}"
+						>
+							<span class="flex items-center justify-center">
+								<Lucide :icon="isDark ? 'Moon' : 'Sun' " class="w-6 h-6" />
+							</span>
+						</button>
+
 						<ul class="grid grid-cols-2 font-semibold text-sm p-4 bg-[rgb(0,0,0,0.3)]">
 							<li>
 								<RouterLink 
@@ -677,11 +698,17 @@ function toggle() {
 									Home
 								</RouterLink>
 							</li>							
-							<li>
+							<li
+								:class="{
+									'hidden': isRouteOrigins
+								}"
+							>
 								<RouterLink 
 									to="/shop"
 									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
-									:class="{ 'bg-violet-100/10': route.path === '/shop' }"
+									:class="{ 
+										'bg-violet-100/10': route.path === '/shop',
+										}"
 									@click.stop="menuOpen = false" 
 								>
 									<Lucide icon="Store" size="14" />
@@ -725,7 +752,11 @@ function toggle() {
 								</RouterLink>
 							</li>
 
-							<li>
+							<li
+								:class="{
+									'hidden': isRouteOrigins
+								}"
+							>
 								<RouterLink 
 									to="/profile/orders"
 									:class="{ 'bg-violet-100/10': route.path === '/profile/orders' }"									
@@ -759,105 +790,109 @@ function toggle() {
 				</transition>
 			</div>
 
-			<main
-				class="flex bg-red-90i0 items-start justify-center relative"
-				:class="{
-					'w-full': isRouteOrigins,
-					'lg:w-[87vw] w-full min-h-screen pt-14 lg:mt-4': !isRouteOrigins
-				}"
-			>
-				<!-- Menu flutuante --> 
-				<transition name="fade"> 
-					<div 
-						ref="refShowWriteMenu"
-						v-if="showWriteMenu" 
-						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-[#2227] dark:text-[#ccc]"
+				<div
+					class="flex flex-col w-full items-end justify-start"
+				>
+					<main
+						class="flex flex-col bg-red-90i0 items-end justify-start relative"
 						:class="{
-							'right-0': storage?.licenses?.includes('premium'),
-							'right-10': !storage?.licenses?.includes('premium')
+							'w-full': isRouteOrigins,
+							'lg:w-[87vw] w-full min-h-screen pt-14 lg:mt-4': !isRouteOrigins
 						}"
-					> 
-						<ul
-							class="text-sm font-mono font-bold"
-						> 
-							<li
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer" 
-								@click="handlePermission"
-							>
-							<Lucide 
-									icon="PencilLine" 
-									class="h-4 w-4 text-gray-800 dark:text-[#ccc]" 
-								/>
-								Criar nova história 
-							</li> 
-							<li
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
-								@click="router.push(`/v1/origins/mywork/list`)"
+					>
+						<!-- Menu flutuante --> 
+						<transition name="fade"> 
+							<div 
+								ref="refShowWriteMenu"
+								v-if="showWriteMenu" 
+								class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-[#2227] dark:text-[#ccc]"
+								:class="{
+									'right-0': storage?.licenses?.includes('premium'),
+									'right-10': !storage?.licenses?.includes('premium')
+								}"
 							> 
-								<Lucide 
-									icon="BookOpenText" 
-									class="h-4 w-4 text-gray-600 dark:text-[#ccc]" 
-								/> 
-									Minhas histórias
-							</li>
-							<li 
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer border-t dark:border-[#fff2]"
-							>
-								<Lucide 
-									icon="Trophy" 
-									class="h-4 w-4 text-yellow-600 "
-								/> 
-								Lunar Contest 
-							</li> 
-						</ul> 
-					</div> 
-				</transition>
+								<ul
+									class="text-sm font-mono font-bold"
+								> 
+									<li
+										class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer" 
+										@click="handlePermission"
+									>
+									<Lucide 
+											icon="PencilLine" 
+											class="h-4 w-4 text-gray-800 dark:text-[#ccc]" 
+										/>
+										Criar nova história 
+									</li> 
+									<li
+										class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
+										@click="router.push(`/v1/origins/mywork/list`)"
+									> 
+										<Lucide 
+											icon="BookOpenText" 
+											class="h-4 w-4 text-gray-600 dark:text-[#ccc]" 
+										/> 
+											Minhas histórias
+									</li>
+									<li 
+										class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer border-t dark:border-[#fff2]"
+									>
+										<Lucide 
+											icon="Trophy" 
+											class="h-4 w-4 text-yellow-600 "
+										/> 
+										Lunar Contest 
+									</li> 
+								</ul> 
+							</div> 
+						</transition>
 
-				<!-- Menu flutuante Nav -->
-				 <transition name="fade"> 
-					<div 
-						ref="refShowWriteMenuNav"
-						v-if="showWriteMenuNav" 
-						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2"
-					> 
-						<ul
-							class="text-sm font-mono font-bold"
-						> 
-							<li
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer" 
-								@click="handlePermission"
-							>
-							<Lucide 
-									icon="PencilLine" 
-									class="h-4 w-4 text-gray-800" 
-								/>
-								Criar nova história 
-							</li> 
-							<li
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-								@click="router.push('/v1/origins/mywork/list')"
-							> 
-								<Lucide 
-									icon="BookOpenText" 
-									class="h-4 w-4 text-gray-600" 
-								/> 
-									Minhas histórias
-							</li>
-							<li 
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer border-t"
-							>
-								<Lucide 
-									icon="Trophy" 
-									class="h-4 w-4 text-yellow-600"
-								/> 
-								Lunar Contest 
-							</li> 
-						</ul> 
-					</div> 
-				</transition>
-				<router-view />
-			</main>
-
+						<!-- Menu flutuante Nav -->
+						<transition name="fade"> 
+								<div 
+									ref="refShowWriteMenuNav"
+									v-if="showWriteMenuNav" 
+									class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2"
+								> 
+									<ul
+										class="text-sm font-mono font-bold"
+									> 
+										<li
+											class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+											@click="handlePermission"
+										>
+										<Lucide 
+												icon="PencilLine" 
+												class="h-4 w-4 text-gray-800" 
+											/>
+											Criar nova história 
+										</li> 
+										<li
+											class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+											@click="router.push('/v1/origins/mywork/list')"
+										> 
+											<Lucide 
+												icon="BookOpenText" 
+												class="h-4 w-4 text-gray-600" 
+											/> 
+												Minhas histórias
+										</li>
+										<li 
+											class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer border-t"
+										>
+											<Lucide 
+												icon="Trophy" 
+												class="h-4 w-4 text-yellow-600"
+											/> 
+											Lunar Contest 
+										</li> 
+									</ul> 
+								</div> 
+							</transition>
+							<router-view />
+						</main>			
+						<FooterLunar />
+				</div>
 			<div
 				class="fixed bottom-10 right-2 z-10"
 			>
@@ -872,7 +907,6 @@ function toggle() {
 					/>
 				</button>
 			</div>
-
 			</div>
 
 		</div>
@@ -910,5 +944,5 @@ function toggle() {
   scrollbar-width: thin;           /* deixa a barra fina */
   scrollbar-color: rgba(100,100,100,0.4) transparent; /* polegar + track */
 }
-
+ 
 </style>
