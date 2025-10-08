@@ -17,7 +17,7 @@ export default {
           '@apply bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 hover:from-violet-700 hover:via-purple-700 hover:to-fuchsia-700': {},
         },
         '.bg-standard-dark': {
-          '@apply bg-gradient-to-r from-violet-950 via-purple-950 to-fuchsia-950 hover:from-violet-900 hover:via-purple-900 hover:to-fuchsia-900': {},
+          '@apply bg-gradient-to-r from-violet-800 via-purple-800 to-fuchsia-800 hover:from-violet-900 hover:via-purple-900 hover:to-fuchsia-900': {},
         },
       })
     })

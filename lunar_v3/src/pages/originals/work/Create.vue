@@ -125,12 +125,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-start justify-center w-full bg-white min-h-screen">
-    <header class="w-full sticky top-0 z-20 bg-white border-b border-violet-200 shadow-md px-6 py-3 flex items-center justify-between">
+  <div class="flex flex-col items-start justify-center w-full bg-white dark:bg-black min-h-screen">
+    <header class="w-full sticky top-0 z-20 bg-white border-b border-violet-200 dark:bg-black dark:border-[#fff2] shadow-md px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div>
-          <div class="font-bold text-gray-800 text-lg">{{ name || 'História sem título' }}</div>
-          <div class="font-semibold text-gray-800 text-sm">Adicione as informações do seu novo livro!</div>
+          <div class="font-bold text-gray-800 text-lg dark:text-gray-300">{{ name || 'História sem título' }}</div>
+          <div class="font-semibold text-gray-800 text-sm dark:text-gray-400">Adicione as informações do seu novo livro!</div>
         </div>
         <div v-if="saving" class="flex items-center justify-center text-green-500 gap-1">
           <p class="text-sm">Salvando...</p>
@@ -143,7 +143,7 @@ onMounted(() => {
           class="px-8 py-2 rounded-md text-white text-sm font-bold shadow-md transition-all duration-300"
           :class="{
             'bg-gray-400 cursor-not-allowed': saving,
-            'bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 hover:from-violet-700 hover:via-purple-700 hover:to-fuchsia-700': !saving
+            'bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 dark:bg-standard-dark hover:from-violet-700 hover:via-purple-700 hover:to-fuchsia-700': !saving
           }"
           :disabled="saving"
         >          
@@ -151,7 +151,7 @@ onMounted(() => {
         </button>
         <button  
           @click="router.back()"
-          class="px-4 py-2 rounded-md border text-sm":class="{
+          class="px-4 py-2 rounded-md border text-sm dark:text-gray-300 dark:border-[#fff3] dark:hover:text-black":class="{
             'bg-gray-400 cursor-not-allowed text-white': saving,
             'text-gray-600 hover:bg-gray-50': !saving
           }"
@@ -171,7 +171,7 @@ onMounted(() => {
         <div class="flex flex-col shadow-xl">
           <!-- Upload de capa -->
           <div class="flex flex-col">
-            <label class="w-64 min-h-96 flex items-center justify-center border bg-gray-200 rounded-md cursor-pointer hover:bg-gray-100">
+            <label class="w-64 min-h-96 flex items-center justify-center border bg-gray-200 dark:bg-[#ffffff10] dark:border-none rounded-md cursor-pointer hover:bg-gray-100">
               <span v-if="!coverPreview" class="flex flex-col items-center justify-center text-sm text-gray-500">
                 <Lucide
                   icon="FileImage"
@@ -199,9 +199,9 @@ onMounted(() => {
         </div>
 
         <!-- Coluna direita -->
-        <div class="flex flex-col gap-4 w-8/12 px-10 rounded-xl shadow-2xl bg-white border border-gray-200">
+        <div class="flex flex-col gap-4 w-8/12 px-10 rounded-xl shadow-2xl bg-white border dark:bg-[#ffffff08] dark:border-none border-gray-200">
           <h1
-            class="font-bold border-b border-gray-300 pb-2 my-4 text-lg text-gray-800"
+            class="font-bold border-b border-gray-300 pb-2 my-4 text-lg text-gray-800 dark:text-gray-300 dark:border-[#fff2]"
           >
             Dados do livro
           </h1>
@@ -209,7 +209,7 @@ onMounted(() => {
           <div>
             <label 
               for="title"
-              class="font-semibold text-lg text-gray-900"
+              class="font-semibold text-lg text-gray-900 dark:text-gray-400"
             >
               Título:
             </label>
@@ -218,7 +218,7 @@ onMounted(() => {
               type="text" 
               id="title"
               placeholder="História sem título!" 
-              class="text-lg border px-3 py-2 rounded-xl w-full text-gray-800 border-gray-300 placeholder:text-gray-500 focus:ring-1 focus:outline-none focus:ring-violet-300"/>
+              class="text-lg border px-3 py-2 rounded-xl w-full text-gray-800 border-gray-300 dark:text-gray-400 dark:bg-white/10 dark:border-none placeholder:text-gray-500 focus:ring-1 focus:outline-none focus:ring-violet-300"/>
             <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
           </div>
 
@@ -228,7 +228,7 @@ onMounted(() => {
           >
             <label 
               for="sinopse"
-              class="font-semibold text-lg text-gray-900"
+              class="font-semibold text-lg text-gray-900 dark:text-gray-400"
             >
               Sinopse:
             </label>
@@ -236,19 +236,19 @@ onMounted(() => {
               id="sinopse"
               v-model="sinopse" 
               placeholder="Em um reino repleto de magia..."
-              class="border border-gray-300 px-3 py-2 rounded w-full text-gray-800 resize-none focus:outline-none focus:ring-1 focus:ring-violet-300 min-h-[160px]"></textarea>
+              class="border border-gray-300 px-3 py-2 rounded w-full text-gray-800 resize-none focus:outline-none focus:ring-1 focus:ring-violet-300 min-h-[160px] dark:text-gray-400 dark:bg-white/10 dark:border-none"></textarea>
             <p v-if="errors.sinopse" class="text-red-500 text-sm mt-1">{{ errors.sinopse }}</p>
           </div>
           
           <!-- Gênero -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Gênero:</label>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Gênero:</label>
             <select 
               v-model="genre" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition"
+              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
             >
-              <option value="" class="text-black" >Selecione o gênero</option>
-              <option v-for="g in genres" :key="g.value" :value="g.value">{{ g.label }}</option>
+              <option value="" class="text-black dark:text-black" >Selecione o gênero</option>
+              <option v-for="g in genres" :key="g.value" :value="g.value" class="dark:bg-black">{{ g.label }}</option>
             </select>
             <p class="text-gray-500 text-xs mt-1">Gênero principal da sua obra.</p>
             <p v-if="errors.genre" class="text-red-500 text-sm mt-1">{{ errors.genre }}</p>
@@ -256,13 +256,13 @@ onMounted(() => {
 
           <!-- Subgênero -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Subgênero:</label>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Subgênero:</label>
             <select 
               v-model="subgenre" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition"
+              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
             >
-              <option value="" class="text-black">Selecione o subgênero</option>
-              <option v-for="s in subgenres" :key="s.value" :value="s.value">{{ s.label }}</option>
+              <option value="" class="text-black dark:text-black">Selecione o subgênero</option>
+              <option v-for="s in subgenres" :key="s.value" :value="s.value" class="dark:bg-black">{{ s.label }}</option>
             </select>
             <p class="text-gray-500 text-xs mt-1">Gênero secundário da sua obra.</p>
             <p v-if="errors.subgenre" class="text-red-500 text-sm mt-1">{{ errors.subgenre }}</p>
@@ -272,13 +272,13 @@ onMounted(() => {
 
           <!-- Público Alvo -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Público Alvo:</label>
-            <select v-model="target" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300">
-              <option value="">Selecione o público alvo</option>
-              <option value="infantil">Infantil (0-12 anos)</option>
-              <option value="jovem-adulto">Jovem Adulto (13-17 anos)</option>
-              <option value="adulto">Adulto (18+ anos)</option>
-              <option value="todos">Livre</option>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Público Alvo:</label>
+            <select v-model="target" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none">
+              <option value="" class="darK:text-black">Selecione o público alvo</option>
+              <option value="infantil" class="dark:bg-black">Infantil (0-12 anos)</option>
+              <option value="jovem-adulto" class="dark:bg-black">Jovem Adulto (13-17 anos)</option>
+              <option value="adulto" class="dark:bg-black">Adulto (18+ anos)</option>
+              <option value="todos" class="dark:bg-black">Livre</option>
             </select>
             <p class="text-gray-500 text-xs mt-1">
               Tenha em mente que se escolher um público com menos de 18 anos, o conteúdo da sua obra deve ser adequado a essa faixa etária. O mesmo se aplica para <strong>"Livre"</strong>.
@@ -291,14 +291,14 @@ onMounted(() => {
           <div
             class="mt-2"
           >            
-            <label class="block text-gray-900 text-lg font-medium mb-1">Tipo de obra:</label>
-            <select v-model="type" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300">
-              <option value="novel">Novel</option>
-              <option value="light-novel">Light Novel</option>
-              <option value="poema">Poema</option>
-              <option value="fanfic">Fanfic</option>
-              <option value="conto">Conto</option>
-              <option value="cronica">Crônica</option>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Tipo de obra:</label>
+            <select v-model="type" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none">
+              <option value="novel" class="dark:bg-black">Novel</option>
+              <option value="light-novel" class="dark:bg-black">Light Novel</option>
+              <option value="poema" class="dark:bg-black">Poema</option>
+              <option value="fanfic" class="dark:bg-black">Fanfic</option>
+              <option value="conto" class="dark:bg-black">Conto</option>
+              <option value="cronica" class="dark:bg-black">Crônica</option>
             </select>
             <p class="text-gray-500 text-xs mt-1">
               Selecione o formato da sua obra: Novel, Light Novel, Poema, Fanfic, Conto ou Crônica.
@@ -307,9 +307,9 @@ onMounted(() => {
 
           <!-- Tags -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Tags:</label>
-            <input v-model="tags" type="text" placeholder="Tags (separadas por vírgula)" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring focus:ring-violet-300"/>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Tags:</label>
+            <input v-model="tags" type="text" placeholder="Tags (separadas por vírgula) Ex: Terror, Assombração, Drama" 
+              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:outline-none focus:ring-1 focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none"/>
             <p class="text-gray-500 text-xs mt-1">
               Facilita encontrar sua obra nas pesquisas.
             </p>
@@ -318,7 +318,7 @@ onMounted(() => {
 
           <!-- Switch de conteúdo adulto -->
           <div class="flex flex-col items-start gap-2 border-t pt-3">
-            <label class="flex items-center justify-start gap-4 text-gray-900 text-lg font-medium mb-1">Conteúdo adulto:
+            <label class="flex items-center justify-start gap-4 text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Conteúdo adulto:
               <Switch
                 v-model="mature"
                 label=""
@@ -339,7 +339,7 @@ onMounted(() => {
           </div>
 
           <!-- Aviso limite capítulos -->
-          <div class="col-span-full bg-yellow-50 border p-4 rounded text-sm text-gray-700">
+          <div class="col-span-full bg-yellow-50 border p-4 rounded text-sm text-gray-700 dark:bg-[#ffffff15] dark:text-gray-400 dark:border-[#fff3]">
             <p><strong>Aviso:</strong> Seguindo boas práticas e buscando garantir máxima qualidade de leitura, visando um mercado amplo, todas as obras na <strong>Luna Origins</strong> devem ter capítulos médios (máx. 3.000 palavras). Não será possível publicar capítulos acima desse limite.</p>
             <div class="flex items-center mt-3">
               <input id="chaptersLimit" type="checkbox" v-model="chaptersLimit" class="accent-violet-600"/>
@@ -349,7 +349,7 @@ onMounted(() => {
           </div>
 
           <!-- Aviso legal -->
-          <div class="col-span-full bg-gray-100 border p-4 rounded text-sm text-gray-700">
+          <div class="col-span-full bg-gray-100 border p-4 rounded text-sm text-gray-700 dark:bg-[#ffffff15] dark:text-gray-400 dark:border-[#fff3]">
             <p><strong>Aviso legal:</strong> Todas as obras publicadas são protegidas pela <strong>Lei nº 9.610/1998</strong>. O plágio é crime e pode gerar sanções civis e penais. A <strong>Luna Origins</strong> não se responsabiliza por violações cometidas por usuários.</p>
             <p class="mt-2">Leia nossas <a href="/diretrizes" class="text-violet-700 underline">Diretrizes</a> para mais informações.</p>
 
@@ -367,7 +367,7 @@ onMounted(() => {
               class="px-8 py-2 rounded-md text-white text-sm font-bold shadow-md transition-all duration-300"
               :class="{
                 'bg-gray-400 cursor-not-allowed': saving,
-                'bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 hover:from-violet-700 hover:via-purple-700 hover:to-fuchsia-700': !saving
+                'bg-standard dark:bg-standard-dark': !saving
               }"
               :disabled="saving"
             >

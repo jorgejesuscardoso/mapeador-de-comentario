@@ -626,8 +626,10 @@ function toggle() {
 							<p
 								class="flex items-center justify-center gap-1py-1.5 rounded-md font-bold font-mono"
 							>
-								<Lucide icon="PencilLine" class="h-4 w-4 mr-2" />
-								<Lucide :icon="showWriteMenuNav ? 'ChevronUp' : 'ChevronDown'" class="h-4 w-4" />
+								<Lucide icon="PencilLine" class="h-4 w-4 mr-2" /><Lucide 
+									:icon="'ChevronDown'" 
+									class="h-4 w-4" 
+								/>
 							</p>
 						</div>
 						<!-- Notificações -->
@@ -769,7 +771,7 @@ function toggle() {
 					<div 
 						ref="refShowWriteMenu"
 						v-if="showWriteMenu" 
-						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2"
+						class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-none dark:text-[#ccc]"
 						:class="{
 							'right-0': storage?.licenses?.includes('premium'),
 							'right-10': !storage?.licenses?.includes('premium')
@@ -784,7 +786,7 @@ function toggle() {
 							>
 							<Lucide 
 									icon="PencilLine" 
-									class="h-4 w-4 text-gray-800" 
+									class="h-4 w-4 text-gray-800 dark:text-[#ccc]" 
 								/>
 								Criar nova história 
 							</li> 
@@ -794,16 +796,16 @@ function toggle() {
 							> 
 								<Lucide 
 									icon="BookOpenText" 
-									class="h-4 w-4 text-gray-600" 
+									class="h-4 w-4 text-gray-600 dark:text-[#ccc]" 
 								/> 
 									Minhas histórias
 							</li>
 							<li 
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer border-t"
+								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer border-t dark:border-[#fff2]"
 							>
 								<Lucide 
 									icon="Trophy" 
-									class="h-4 w-4 text-yellow-600"
+									class="h-4 w-4 text-yellow-600 "
 								/> 
 								Lunar Contest 
 							</li> 
