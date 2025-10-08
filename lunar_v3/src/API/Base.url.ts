@@ -1,5 +1,5 @@
-//const prod = 'https://map-v3.onrender.com'
-const prod = 'http://localhost:6060'
+const prod = 'https://map-v3.onrender.com'
+//const prod = 'http://localhost:6060'
 const ngrok = ''
 
 export const UrlBase = {
