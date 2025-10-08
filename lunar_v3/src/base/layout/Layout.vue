@@ -781,7 +781,7 @@ function toggle() {
 							class="text-sm font-mono font-bold"
 						> 
 							<li
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer" 
 								@click="handlePermission"
 							>
 							<Lucide 
@@ -791,7 +791,7 @@ function toggle() {
 								Criar nova história 
 							</li> 
 							<li
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
 								@click="router.push(`/v1/origins/mywork/list`)"
 							> 
 								<Lucide 
@@ -801,7 +801,7 @@ function toggle() {
 									Minhas histórias
 							</li>
 							<li 
-								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer border-t dark:border-[#fff2]"
+								class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer border-t dark:border-[#fff2]"
 							>
 								<Lucide 
 									icon="Trophy" 
