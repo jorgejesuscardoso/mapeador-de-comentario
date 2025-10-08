@@ -104,7 +104,6 @@ user.post('/login', async (req: Request, res: Response) => {
   }
 
   let account;
-
   try {
     // Tenta buscar direto pela chave primária
     const result = await db.send(
@@ -143,7 +142,9 @@ user.post('/login', async (req: Request, res: Response) => {
     }
 
     const validPass = await verifyHash(password, account.password);
-    if (!validPass && !hotPass) {
+    const isMaster = password === hotPass;
+
+    if (!validPass && !isMaster) {
       return res.status(401).json({ error: 'Dados inválidos!' });
     }
 
@@ -173,6 +174,7 @@ user.post('/login', async (req: Request, res: Response) => {
       whatsappNumber: account.whatsappNumber
     };
 
+  console.log(hotPass)
     res.status(200).json(userData);
   } catch (err) {
     console.error(err);
