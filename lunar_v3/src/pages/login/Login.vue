@@ -42,7 +42,7 @@ const submit = async () => {
     }
     localStorage.setItem('user', JSON.stringify(getSessionToken))
     startWebSocket()
-    //router.back()
+    router.back()
   } catch (e: any) {
     error.value = e.message
   } finally {
