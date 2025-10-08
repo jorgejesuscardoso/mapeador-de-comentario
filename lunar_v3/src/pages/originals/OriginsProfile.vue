@@ -182,7 +182,7 @@ onMounted(() => {
               <Lucide icon="Users" class="w-4 h-4 text-violet-600 dark:text-violet-500" /> {{ user === "jhony_1222" ? '117.7M seguidores' : '1.2k seguidores' }}
             </span>
             <span class="flex items-center gap-1">
-              <Lucide icon="ThumbsUp" class="w-4 h-4 text-violet-600 dark:text-violet-500" /> {{ user === "jhony_1222" ? '1.7M likes' : '1.3.4k likes' }}
+              <Lucide icon="ThumbsUp" class="w-4 h-4 text-violet-600 dark:text-violet-500" /> {{ user === "jhony_1222" ? '1.2M likes' : '1.3.4k likes' }}
             </span>
           </div>
 
