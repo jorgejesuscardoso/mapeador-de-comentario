@@ -15,7 +15,7 @@
     </p>
     <p>
       Aqui, cada livro é mais do que uma obra — é um universo a ser descoberto.
-      Nosso objetivo é construir uma comunidade envolvente, com perfis gamificados,
+      Nosso objetivo é construir uma comunidade envolvente,
       recomendações, interação social e eventos literários.
     </p>
     <p>

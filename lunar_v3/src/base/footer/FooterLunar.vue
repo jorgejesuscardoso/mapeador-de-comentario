@@ -19,7 +19,7 @@
         <ul class="space-y-2">
           <li><RouterLink to="/politica-de-privacidade" class="hover:text-violet-400 transition">Política de Privacidade</RouterLink></li>
           <li><RouterLink to="/termos-de-uso" class="hover:text-violet-400 transition">Termos de Uso</RouterLink></li>
-          <li><RouterLink to="/politica-de-cookies" class="hover:text-violet-400 transition">Política de Cookies</RouterLink></li>
+          <li><RouterLink to="/sobre" class="hover:text-violet-400 transition">Sobre</RouterLink></li>
         </ul>
       </div>
 
@@ -43,7 +43,7 @@
     <!-- Linha final -->
     <div class="mt-10 border-t border-zinc-800 pt-4 text-sm text-zinc-500 text-center">
       <p>&copy; {{ new Date().getFullYear() }} Projeto Lunar. Todos os direitos reservados.</p>
-      <p class="text-xs mt-1">Desenvolvido com ☕ e 🌙 por <span class="text-violet-400 font-medium">Bushido</span></p>
+      <p class="text-xs mt-1">Desenvolvido com muito ☕ por <span class="text-violet-400 font-medium">Bushido</span></p>
     </div>
   </footer>
 </template>

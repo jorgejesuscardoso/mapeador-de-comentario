@@ -124,12 +124,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/about/Sobre.vue')
       },
       {
-        path: '/privacidade',
-        name: 'Privacidade',
+        path: '/politica-de-privacidade',
+        name: 'privacidade',
         component: () => import('../pages/therms/Privacidade.vue')
       },
       {
-        path: '/termos',
+        path: '/termos-de-uso',
         name: 'Termos',
         component: () => import('../pages/therms/Termos.vue')
       }
