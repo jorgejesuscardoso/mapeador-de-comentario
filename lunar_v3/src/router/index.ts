@@ -83,7 +83,7 @@ const routes: RouteRecordRaw[] = [
         name: 'stream',
         component: MyFrame,
       }, 
-
+      ////////////////////////////////////////////////////////
 
 
       //originais
@@ -117,6 +117,11 @@ const routes: RouteRecordRaw[] = [
         name: 'workCreate',
         component: () => import('../pages/originals/work/Create.vue')
       },
+      {
+        path: '/v1/origins/work/:bookId',
+        name: 'workPublicView',
+        component: () => import('../pages/originals/work/BookPublicView.vue')
+      },
 
 
 
@@ -131,7 +136,7 @@ const routes: RouteRecordRaw[] = [
 
 
 
-
+///////////////////////////////////////////////////
       //termos
       {
         path: '/sobre',

@@ -184,6 +184,7 @@ onBeforeUnmount(() => {
                 :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" 
                 :alt="obra.name" 
                 class="h-[210px] aspect-[2/3] object-cover rounded-md shadow-md group-hover:shadow-xl transition"
+                @click="router.push(`/v1/origins/work/${obra.id}`)"
               />
 
               <!-- Posição -->
@@ -254,6 +255,7 @@ onBeforeUnmount(() => {
                 :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" 
                 :alt="obra.name" 
                 class="h-[210px] w-full object-cover shadow-md shadow-black/30 rounded group-hover:shadow-xl transition"
+                @click="router.push(`/v1/origins/work/${obra.id}`)"
               />
               
               <div class="my-2 text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate px-1">

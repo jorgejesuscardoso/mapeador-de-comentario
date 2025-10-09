@@ -1,0 +1,288 @@
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Lucide from '@/base/lucide/Lucide.vue'
+import { getBookLunarById } from '@/API/OriginalLunarApi'
+import { toast } from '@/base/utils/toast'
+import { genres } from './genres'
+
+// TYPES
+interface Chapter {
+  id: string
+  bookId?: string
+  title: string
+  views: number
+  votes: number
+  comments: any[]
+  createdAt: string
+  updatedAt: string
+  status: string // 'published' | 'draft'
+  wordsCount?: number
+  order?: number
+}
+
+interface Book {
+  id: string
+  author: string
+  name: string
+  cover: string
+  sinopse: string
+  tags: string[]
+  genre: string
+  createdAt: string
+  updatedAt: string
+  mature: boolean
+  chapters?: Chapter[]
+  views?: number
+  votes?: number
+}
+
+const route = useRoute()
+const router = useRouter()
+const bookId = route.params.bookId as string
+
+const loading = ref(true)
+const book = ref<Book | null>(null)
+const chapters = ref<Chapter[]>([])
+const following = ref(false) // exemplo de estado "seguir obra"
+const showFullSynopsis = ref(false)
+
+const genreMap: Record<string,string> = Object.fromEntries(genres.map(g => [g.value, g.label]))
+
+const genreLabel = (g: string) => genreMap[g] || g || '—'
+
+const publishedChapters = computed(() => {
+  return (chapters.value || [])
+    .filter(c => c.status === 'published')
+    .sort((a,b) => (a.order ?? 0) - (b.order ?? 0))
+})
+
+const totalViews = computed(() => {
+  // soma views dos capítulos (ou usa book.views se existir)
+  const sumCh = chapters.value.reduce((s, c) => s + (c.views || 0), 0)
+  return book.value?.views || sumCh || 0
+})
+
+function readingTimeEst(words = 0) {
+  const wpm = 200
+  return Math.max(1, Math.ceil((words || 0) / wpm))
+}
+
+async function fetchBook() {
+  try {
+    loading.value = true
+    const res = await getBookLunarById(bookId)
+    if (res.status === 200 && res.data) {
+      const data = res.data
+      book.value = {
+        id: data.id,
+        author: data.author,
+        cover: data.cover,
+        createdAt: data.createdAt,
+        genre: data.genre,
+        mature: data.mature,
+        name: data.name,
+        sinopse: data.sinopse,
+        tags: data.tags || [],
+        updatedAt: data.updatedAt,
+        views: data.views || 0,
+        votes: data.votes || 0,
+        chapters: data.chapters || []
+      }
+      chapters.value = data.chapters || []
+    } else {
+      // fallback
+      book.value = null
+      chapters.value = []
+    }
+  } catch (err) {
+    console.error(err)
+    book.value = null
+    chapters.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+function goToChapter(ch: Chapter) {
+  // ajustar rota conforme teu app — exemplo:
+  router.push(`/v1/origins/read/${bookId}/${ch.id}`)
+}
+
+function handleFollow() {
+  following.value = !following.value
+  // aqui tu pode chamar API pra seguir/desseguir
+}
+
+function shareBook() {
+  const url = window.location.href
+  if (navigator.share) {
+    navigator.share({ title: book.value?.name || 'Obra', url }).catch(()=>{})
+  } else {
+    navigator.clipboard.writeText(url)
+    // toast ou feedback visual pode ser adicionado
+    toast.success('Link copiado para a área de transferência')
+  }
+}
+
+onMounted(() => {
+  fetchBook()
+})
+</script>
+
+<template>
+  <div class="flex items-center justify-center mt-14 min-h-screen w-full bg-white dark:bg-[#000] text-gray-900 dark:text-gray-100 pb-24 m">
+    <div class="w-[85vw] px-4 md:px-8 pt-10">
+
+      <!-- HERO / SUMMARY -->
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        <!-- cover -->
+        <div class="md:col-span-1 flex justify-center">
+          <div class="w-[220px] md:w-[260px] shadow-xl rounded-lg overflow-hidden">
+            <div v-if="loading" class="h-[360px] w-full flex items-center justify-center bg-gray-100 dark:bg-white/5">
+              <Lucide icon="Image" class="w-10 h-10 text-gray-400" />
+            </div>
+            <img v-else :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="book?.name" class="w-full h-[360px] object-cover"/>
+          </div>
+        </div>
+
+        <!-- meta -->
+        <div class="md:col-span-2 flex flex-col gap-3">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h1 class="text-2xl md:text-3xl font-bold leading-tight">{{ book?.name || 'Título indisponível' }}</h1>
+              <div class="flex gap-3 items-center mt-2">
+                <button @click="router.push(`/v1/origins/author/${book?.author}`)" class="text-sm text-violet-700 dark:text-violet-300 font-medium hover:underline">
+                  por {{ book?.author || 'Anônimo' }}
+                </button>
+
+                <span class="text-xs text-gray-500 dark:text-gray-400">•</span>
+
+                <span class="text-xs text-gray-500 dark:text-gray-400">{{ genreLabel(book?.genre || '') }}</span>
+
+                <span v-if="book?.mature" class="ml-2 inline-block text-xs bg-red-600 text-white px-2 py-0.5 rounded">+18</span>
+              </div>
+            </div>
+
+            <!-- CTAs -->
+            <div class="flex items-center gap-2">
+              <button
+                @click="() => { if(publishedChapters.length) goToChapter(publishedChapters[0]) }"
+                :disabled="publishedChapters.length === 0 || loading"
+                class="px-4 py-2 rounded-md bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white font-semibold shadow-md disabled:opacity-60"
+              >
+                Ler primeiro
+              </button>
+
+              <button @click="handleFollow" class="px-3 py-2 rounded-md border text-sm font-medium" :class="following ? 'bg-violet-50 border-violet-400 text-violet-700' : 'bg-white dark:bg-[#000] '">
+                <Lucide icon="Heart" class="inline-block w-4 h-4 mr-1" /> {{ following ? 'Seguindo' : 'Seguir' }}
+              </button>
+
+              <button @click="shareBook" class="px-3 py-2 rounded-md border text-sm">
+                <Lucide icon="Share2" class="inline-block w-4 h-4 mr-1" /> Compartilhar
+              </button>
+            </div>
+          </div>
+
+          <!-- stats + tags -->
+          <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <div class="flex items-center gap-2">
+              <Lucide icon="Eye" class="w-4 h-4" /> <span>{{ totalViews.toLocaleString() }} visualizações</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <Lucide icon="Star" class="w-4 h-4" /> <span>{{ book?.votes?.toLocaleString() || 0 }} curtidas</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <Lucide icon="Clock" class="w-4 h-4" /> <span>{{ publishedChapters.length }} capítulos</span>
+            </div>
+
+            <div class="ml-2 flex items-center gap-2 flex-wrap">
+              <template v-for="t in book?.tags || []" :key="t">
+                <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-white/6 rounded-full text-gray-700 dark:text-gray-200 capitalize">#{{ t }}</span>
+              </template>
+            </div>
+          </div>
+
+          <!-- sinopse -->
+          <div class="mt-4 bg-white dark:bg-[#0000] rounded p-4 border border-gray-100 dark:border-[#ffffff10] shadow-sm">
+            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Sinopse</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              <span v-if="!loading">
+                <template v-if="book?.sinopse">
+                  <span v-if="showFullSynopsis">{{ book!.sinopse }}</span>
+                  <span v-else>
+                    {{ book!.sinopse.length > 400 ? book!.sinopse.slice(0, 400) + '...' : book!.sinopse }}
+                  </span>
+                </template>
+                <template v-else>Sinopse indisponível</template>
+              </span>
+            </p>
+
+            <div v-if="book?.sinopse && book!.sinopse.length > 400" class="mt-3">
+              <button @click="showFullSynopsis = !showFullSynopsis" class="text-xs text-violet-700 font-medium">
+                {{ showFullSynopsis ? 'Mostrar menos' : 'Ler mais' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CAPÍTULOS -->
+      <section class="mt-10">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">Capítulos Disponíveis</h2>
+          <div class="text-sm text-gray-500">
+            Ordenados por sequência
+          </div>
+        </div>
+
+        <!-- loading -->
+        <div v-if="loading" class="flex items-center justify-center py-20">
+          <Lucide icon="RefreshCw" class="w-12 h-12 animate-spin text-violet-600" />
+        </div>
+
+        <!-- empty state -->
+        <div v-else-if="publishedChapters.length === 0" class="border border-dashed border-gray-200 rounded-lg p-8 text-center">
+          <Lucide icon="BookOpen" class="w-16 h-16 mx-auto text-gray-400" />
+          <h3 class="text-lg font-semibold mt-4">Nenhum capítulo disponível</h3>
+          <p class="text-sm text-gray-500 mt-2">O autor ainda não publicou capítulos desta obra. Volte mais tarde ou siga a obra para receber notificações.</p>
+          <div class="mt-4 flex items-center justify-center gap-3">
+            <button @click="handleFollow" class="px-4 py-2 rounded-md bg-violet-600 text-white">Seguir a obra</button>
+            <button @click="shareBook" class="px-4 py-2 rounded-md border">Compartilhar</button>
+          </div>
+        </div>
+
+        <!-- list -->
+        <ul v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <li v-for="(ch, i) in publishedChapters" :key="ch.id" class="p-4 bg-white dark:bg-[#ffffff05] border border-gray-100 dark:border-[#ffffff10] rounded-lg shadow-sm hover:shadow-md transition flex flex-col">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="text-xs text-gray-500">Capítulo {{ i + 1 }}</div>
+                <h3 class="text-base font-semibold mt-1 cursor-pointer" @click="goToChapter(ch)">{{ ch.title }}</h3>
+                <div class="text-xs text-gray-500 mt-2 flex items-center gap-3">
+                  <span class="flex items-center gap-1"><Lucide icon="Eye" class="w-4 h-4" /> {{ ch.views.toLocaleString() }}</span>
+                  <span class="flex items-center gap-1"><Lucide icon="Star" class="w-4 h-4" /> {{ ch.votes.toLocaleString() }}</span>
+                  <span class="flex items-center gap-1"><Lucide icon="MessageCircleMore" class="w-4 h-4" /> {{ ch.comments.length }}</span>
+                  <span> ~ {{ readingTimeEst(ch.wordsCount) }} min</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col items-end gap-2">
+                <div class="text-xs text-gray-500">{{ new Date(ch.updatedAt).toLocaleDateString() }}</div>
+                <div class="flex gap-2">
+                  <button @click="goToChapter(ch)" class="px-3 py-1 rounded-md bg-violet-600 text-white text-sm">Ler</button>
+                  <button @click="shareBook" class="px-3 py-1 rounded-md border text-sm">Compart.</button>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+    </div>
+  </div>
+</template>
+
+<style scoped>
+/* pequenas melhorias visuais */
+</style>

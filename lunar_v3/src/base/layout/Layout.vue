@@ -792,7 +792,7 @@ function toggle() {
 									</li> 
 									<li
 										class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
-										@click="router.push(`/v1/origins/mywork/list`)"
+										@click="router.push(`/v1/origins/user/${storage?.user}`)"
 									> 
 										<Lucide 
 											icon="BookOpenText" 
@@ -835,7 +835,7 @@ function toggle() {
 										</li> 
 										<li
 											class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
-											@click="router.push('/v1/origins/mywork/list')"
+											@click="router.push(`/v1/origins/user/${storage?.user}`)"
 										> 
 											<Lucide 
 												icon="BookOpenText" 
