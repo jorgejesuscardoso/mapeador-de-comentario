@@ -4,6 +4,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/pages/therms/.vue"],
   "exclude": ["node_modules", "dist"]
 }

@@ -132,6 +132,16 @@ const routes: RouteRecordRaw[] = [
         path: '/termos-de-uso',
         name: 'Termos',
         component: () => import('../pages/therms/Termos.vue')
+      },
+      {
+        path: '/contato',
+        name: 'contato',
+        component: () => import('../pages/therms/Contato.vue')
+      },
+      {
+        path: '/cookies',
+        name: 'cookies',
+        component: () => import('../pages/therms/CookiesPolicy.vue')
       }
 
     ]

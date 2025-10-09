@@ -52,7 +52,6 @@ export const getBooks = async (books: any) => {
       signal: controller.signal, // ✅ isso ativa o AbortController
       body: books
     });
-    
     return response.data;
   } catch (err) {
     // ✅ lança o erro para que possa ser tratado por Promise.allSettled corretamente

@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+  http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+  <!-- Páginas principais -->
   <url>
     <loc>https://projetolunar.netlify.app/</loc>
+    <priority>1.00</priority>
+    <changefreq>daily</changefreq>
   </url>
+  <url>
+    <loc>https://projetolunar.netlify.app/sobre</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Usuário e perfil -->
   <url>
     <loc>https://projetolunar.netlify.app/profile</loc>
   </url>
@@ -12,6 +26,8 @@
   <url>
     <loc>https://projetolunar.netlify.app/profile/edit</loc>
   </url>
+
+  <!-- Membros e gamificação -->
   <url>
     <loc>https://projetolunar.netlify.app/members</loc>
   </url>
@@ -21,9 +37,16 @@
   <url>
     <loc>https://projetolunar.netlify.app/houses</loc>
   </url>
+
+  <!-- Loja -->
   <url>
     <loc>https://projetolunar.netlify.app/shop</loc>
   </url>
+  <url>
+    <loc>https://projetolunar.netlify.app/profile/orders</loc>
+  </url>
+
+  <!-- Originais e obras -->
   <url>
     <loc>https://projetolunar.netlify.app/v1/origins</loc>
   </url>
@@ -31,9 +54,39 @@
     <loc>https://projetolunar.netlify.app/v1/origins/work/create</loc>
   </url>
   <url>
+    <loc>https://projetolunar.netlify.app/v1/origins/mywork/list</loc>
+  </url>
+  <url>
+    <loc>https://projetolunar.netlify.app/v1/origins/mywork/cover</loc>
+  </url>
+
+  <!-- Sessões e login -->
+  <url>
     <loc>https://projetolunar.netlify.app/login</loc>
   </url>
   <url>
     <loc>https://projetolunar.netlify.app/register</loc>
   </url>
+
+  <!-- Páginas legais obrigatórias (Adsense / GDPR / LGPD) -->
+  <url>
+    <loc>https://projetolunar.netlify.app/politica-de-privacidade</loc>
+    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://projetolunar.netlify.app/termos-de-uso</loc>
+    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://projetolunar.netlify.app/cookies</loc>
+    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://projetolunar.netlify.app/contato</loc>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>

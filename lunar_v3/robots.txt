@@ -1,4 +1,9 @@
 User-agent: *
+Allow: /
 Disallow: /pages/video/
 
+# Sitemap principal
 Sitemap: https://projetolunar.netlify.app/sitemap.xml
+
+# Domínio preferencial
+Host: projetolunar.netlify.app
