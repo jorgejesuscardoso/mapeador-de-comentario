@@ -146,7 +146,7 @@ onMounted(() => {
   <div class="flex flex-col md:flex-row dark:bg-[#000] items-start lg:justify-end justify-center w-full mt-7 md:mt-14 min-h-screen bg-gray-50 px-4 py-8">
     <div
       class="md:hidden p-1"
-      @click="router.back()"
+      @click="router.push('/v1/origins')"
     >
       <Lucide
         icon="ArrowLeft"
