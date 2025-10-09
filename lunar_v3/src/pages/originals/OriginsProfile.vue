@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getBookLunarAuthor } from '@/API/OriginalLunarApi'
+import { getBookLunarAuthor, getBookLunarById } from '@/API/OriginalLunarApi'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { formatDate } from '@/base/utils/FormatDate'
 import { toast } from '@/base/utils/toast'
@@ -58,8 +58,11 @@ async function fetchBooks() {
       books.value = [] // <-- limpa sempre
       return
     }
+    const sliceTags = res.data.map((s, i) => {
+      return {...s, tags:s.tags.slice(0,3)}
+    })
+    books.value = sliceTags.filter(b => b && b.id) // só entra livro válido
 
-    books.value = res.data.filter(b => b && b.id) // só entra livro válido
   } catch (err) {
     console.error('Erro ao carregar livros', err)
     books.value = [] // evita lixo
@@ -254,7 +257,7 @@ onMounted(() => {
       <!-- seção das obras (já existente) -->
       <div class="lg:w-7/12 w-full xl:w-2/3 md:w-1/2 pb-24 md:pb-0 relative">
         <h2 class="text-lg font-bold mb-8 text-gray-800 border-b pb-2 dark:border-[#ffffff10] dark:text-gray-400">Minhas Obras</h2>
-
+        <!-- Botão de Configuração -->
         <div
           class="flex gap-5 absolute top-1 right-10 dark:text-gray-400"
         >
@@ -288,11 +291,22 @@ onMounted(() => {
 
         <!-- Grid de livros -->
         <ul v-else class="flex flex-col gap-2 w-full">
+          
           <li
             v-for="book in books"
             :key="book.id"
-            class="bg-white dark:bg-[#ffffff06] w-full shadow hover:shadow-lg transition overflow-hidden flex"
+            class="bg-white dark:bg-[#ffffff06] w-full border border-[#ddd] shadow hover:shadow-lg transition overflow-hidden flex relative"
           >
+            <div
+              class="absolute top-3 right-3 cursor-pointer"
+              @click="router.push(`/v1/origins/mywork/edit/${book.id}`)"
+            >
+              <Lucide
+                icon="Settings"
+                :stroke-width="2"
+                class="h-4 w-4 text-gray-700 hover:text-violet-600 dark:text-white"
+              />
+            </div>
             <!-- capa -->
             <div
               class="relative overflow-hidden group cursor-pointer"
@@ -301,7 +315,7 @@ onMounted(() => {
               <img
                 :src="book.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
                 alt="Capa"
-                class="w-32 aspect-[2/3]"
+                class="w-32 min-w-32 aspect-[2/3]"
               />
               <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition"></div>
             </div>
@@ -310,7 +324,7 @@ onMounted(() => {
             <div class="px-4 pb-4 pt-2 flex flex-col flex-1">
               <div class="flex flex-col h-full">
                 <h3
-                  class="text-base font-semibold text-gray-800 dark:text-gray-300 hover:underline cursor-pointer mb-1"
+                  class="text-base font-semibold text-gray-800 w-fit dark:text-gray-300 hover:underline cursor-pointer mb-1"
                   @click="goToDetail(book.id)"
                 >
                   {{ book.name }}
@@ -318,7 +332,7 @@ onMounted(() => {
                 <p class="text-[10px] text-gray-700 font-medium dark:text-gray-400">
                   Genêro: <span class="text-[#10f] font-semibold ml-1 dark:text-blue-400">{{ book.genre }}</span> 
                 </p>
-                <p class="text-xs text-gray-700 font-normal mt-2 line-clamp-3 dark:text-gray-500">
+                <p class="text-xs text-gray-700 font-normal text-wrap mt-2 line-clamp-3 dark:text-gray-500">
                   {{ book.sinopse }}
                 </p>
               </div>

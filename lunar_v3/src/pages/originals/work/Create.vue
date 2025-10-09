@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import { toast } from '@/base/utils/toast'
@@ -141,6 +141,75 @@ function selectSubGenre(g) {
   selectedLabelSub.value = g.label
   opensub.value = false
 }
+
+const tagList = ref<string[]>([])
+const tagInput = ref<HTMLInputElement | null>(null)
+
+function handleTagInput(e: KeyboardEvent) {
+  const input = e.target as HTMLInputElement
+  if (e.key === ',' || e.key === 'Enter') {
+    e.preventDefault()
+    const newTag = input.value.replace(',', '').trim()
+    if (newTag && !tagList.value.includes(newTag)) {
+      tagList.value.push(newTag)
+    }
+    input.value = ''
+    tags.value = tagList.value.join(', ')
+    nextTick(() => tagInput.value?.focus())
+  }
+}
+
+function removeTag(index: number) {
+  tagList.value.splice(index, 1)
+  tags.value = tagList.value.join(', ')
+  nextTick(() => tagInput.value?.focus())
+}
+
+const refGenre = ref<HTMLElement | null>()
+const refGenre2 = ref<HTMLElement | null>()
+const refSubgenre = ref<HTMLElement | null>()
+const refSubgenre2 = ref<HTMLElement | null>()
+
+const handleClickOutside = (event: MouseEvent) => {
+	try{
+		const target = event.target as Node;
+
+		// Fecha menu se clicar fora
+		if (
+			open.value &&
+			refGenre.value &&
+			refGenre2.value &&
+			!refGenre.value.contains(target) &&
+			!refGenre2.value.contains(target)
+		) {
+			open.value = false;
+			}
+
+		// Fecha notificações se clicar fora
+		if (
+		opensub.value &&
+		refSubgenre.value &&
+		refSubgenre2.value &&
+		!refSubgenre.value.contains(target) &&
+		!refSubgenre2.value.contains(target)
+		) {
+		opensub.value = false;
+		}
+  } catch (err){
+    console.error(err)
+  }
+};
+
+onMounted(async () => {
+  const getUser = JSON.parse(localStorage.getItem('user')) || {}
+  if(!getUser || !getUser.token || !getUser.user) return router.push('/v1/origins')
+  user.value = getUser.user
+
+  document.addEventListener('click', handleClickOutside);
+})
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
@@ -265,6 +334,7 @@ function selectSubGenre(g) {
             <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Gênero:</label>
             <div class="relative">
               <div 
+                ref="refGenre"
                 @click="open = !open" 
                 class="border truncate max-h-10 border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
               >
@@ -272,6 +342,7 @@ function selectSubGenre(g) {
               </div>
 
               <ul 
+                ref="refGenre2"
                 v-if="open" 
                 class="absolute z-50 w-full bg-white dark:bg-gray-900 mt-1 max-h-60 overflow-y-auto rounded-xl shadow-lg"
               >
@@ -294,6 +365,7 @@ function selectSubGenre(g) {
             <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Subgênero:</label>
             <div class="relative">
               <div 
+                ref="refSubgenre"
                 @click="opensub = !opensub" 
                 class="border truncate max-h-10 border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
               >
@@ -301,6 +373,7 @@ function selectSubGenre(g) {
               </div>
 
               <ul 
+                ref="refSubgenre2"
                 v-if="opensub" 
                 class="absolute z-50 w-full bg-white dark:bg-gray-900 mt-1 max-h-60 overflow-y-auto rounded-xl shadow-lg"
               >
@@ -358,11 +431,30 @@ function selectSubGenre(g) {
           <!-- Tags -->
           <div>
             <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Tags:</label>
-            <input v-model="tags" type="text" placeholder="Tags (separadas por vírgula) Ex: Terror, Assombração, Drama" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:outline-none focus:ring-1 focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none"/>
-            <p class="text-gray-500 text-xs mt-1">
-              Facilita encontrar sua obra nas pesquisas.
-            </p>
+
+            <!-- Área onde aparecem as tags -->
+            <div class="flex flex-wrap gap-2 mb-2">
+              <span 
+                v-for="(tag, i) in tagList" 
+                :key="i" 
+                class="flex items-center gap-1 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-violet-200 dark:hover:bg-violet-800 transition"
+                @click="removeTag(i)"
+              >
+                {{ tag }}
+                <Lucide icon="X" class="h-4 w-4" />
+              </span>
+            </div>
+
+            <!-- Input de tags -->
+            <input 
+              ref="tagInput"
+              type="text" 
+              placeholder="Digite uma tag e pressione vírgula ou Enter"
+              @keyup="handleTagInput"
+              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:outline-none focus:ring-1 focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none"
+            />
+
+            <p class="text-gray-500 text-xs mt-1">Facilita encontrar sua obra nas pesquisas.</p>
             <p v-if="errors.tags" class="text-red-500 text-sm mt-1">{{ errors.tags }}</p>
           </div>
 

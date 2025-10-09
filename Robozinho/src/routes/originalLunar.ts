@@ -48,9 +48,10 @@ bookLunar.post('/create', upload.single('cover'), async (req: Request, res: Resp
     data.id = randomId
     let fileName = ''
     let url = 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'
+    
     if (file) {
       // Gera um nome único para o arquivo
-      fileName = file.randomId;
+      fileName = randomId;
       url = await uploadImage(file.buffer, fileName);
     }
 
@@ -66,7 +67,7 @@ bookLunar.post('/create', upload.single('cover'), async (req: Request, res: Resp
         updatedAt: new Date().toISOString()
       }
     }))
-
+    
     res.status(200).json({ data });
   } catch (err) {
     console.error(err);
@@ -74,19 +75,39 @@ bookLunar.post('/create', upload.single('cover'), async (req: Request, res: Resp
   }
 });
 
-bookLunar.put('/update', async (req: Request, res: Response) => {
+bookLunar.patch('/update/:id', upload.single('cover'), async (req: Request, res: Response) => {
   try {
-    const { id } = req.query as { id?: string };
+    const { id } = req.params ;
     const data = req.body;
+    const file = (req as any).file;
 
     if (!id) {
-      return res.status(400).json({ error: 'Query id e name são obrigatórios' });
+      return res.status(400).json({ error: 'Paramento id é obrigatório' });
     }
 
     if (!data || Object.keys(data).length === 0) {
       return res.status(400).json({ error: 'Nenhum campo enviado para atualização' });
     }
+    
+    const hasBook = await await db.send(
+      new GetCommand({
+        TableName: tableName,
+        Key: { id: id.trim() }
+      })
+    );
 
+    if(!hasBook.Item) return res.status(400).json({ error: 'Nenhum livro encontrado!' });
+
+    if (file) {
+      // Gera um nome único para o arquivo      
+      let fileName = ''
+      fileName = Date.now().toString(36);
+      const url = await uploadImage(file.buffer, fileName);
+      data.cover = url
+    }
+
+    // Faz upload da imagem
+    // Atualiza cover no DynamoDB
     const updateExpressions: string[] = [];
     const expressionAttributeNames: Record<string, string> = {};
     const expressionAttributeValues: Record<string, any> = {};

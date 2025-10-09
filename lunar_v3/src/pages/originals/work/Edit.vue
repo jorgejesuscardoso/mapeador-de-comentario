@@ -1,29 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { toast } from '@/base/utils/toast'
-import { getBookLunarById } from '@/API/OriginalLunarApi'
+import { getBookLunarById, updateBook } from '@/API/OriginalLunarApi'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import { subgenres, genres } from './genres'
 import Switch from '@/base/utils/Switch.vue'
 import { createBook } from '@/API/OriginalLunarApi'
+import { nextTick } from 'vue'
 
-// Interfaces
-interface Chapter {
-  id: string
-  bookId: string
-  title: string
-  views: number
-  votes: number
-  comments: {}[]
-  paragraphs: string
-  createdAt: string
-  updatedAt: string
-  status: string 
-  wordsCount: number
-}
+// Estado
+const route = useRoute()
+const router = useRouter()
+const bookId = route.params.bookId as string
+const book = ref<Book>({
+  id: '',
+  name: '',
+  author: '',
+  cover: '',
+  sinopse: '',
+  target: '',
+  type: '',
+  tags: [],
+  genre: '',
+  subgenre: '',
+  mature: false,
+})
+
+const initialValues = ref()
 
 interface Book {
   id: string
@@ -32,12 +38,13 @@ interface Book {
   cover: string
   sinopse: string
   tags: string[]
+  type: string
+  target: string
+  subgenre: string
   genre: string
-  createdAt: string
-  updatedAt: string
   mature: boolean
 }
-
+const noHasImgModal = ref(false)
 const info = ref(false)
 const saving = ref(false)
 const coverFile = ref<File | null>(null)
@@ -45,33 +52,32 @@ const user = ref()
 
 // Schema de validação com Yup
 const schema = yup.object({
-  name: yup.string().required('O título é obrigatório'),
-  sinopse: yup.string().required('A sinopse é obrigatória').min(30, 'A sinopse deve ter pelo menos 30 caracteres'),
-  genre: yup.string().required('O gênero é obrigatório'),
-  subgenre: yup.string().required('O subgênero é obrigatório'),
-  target: yup.string().required('O público alvo é obrigatório'),
-  tags: yup.string().required('Adicione pelo menos uma tag'),
-  type: yup.string().required(),
-  mature: yup.boolean().default(false),
-  terms: yup.boolean().oneOf([true], 'Você deve aceitar os termos para continuar'),
-  chaptersLimit: yup.boolean().oneOf([true], 'Você deve aceitar o limite de capítulos para continuar')
+  name: yup.string(),
+  sinopse: yup.string().min(30, 'A sinopse deve ter pelo menos 30 caracteres'),
+  genre: yup.string(),
+  subgenre: yup.string(),
+  target: yup.string(),
+  tags: yup.string(),
+  type: yup.string(),
+  mature: yup.boolean(),
 })
 
 // Formulário
-const { handleSubmit, errors, meta } = useForm({
+const { handleSubmit, errors, meta, resetForm } = useForm({
   validationSchema: schema,
   initialValues: {
-    name: '',
-    sinopse: '',
-    genre: '',
-    subgenre: '',
-    target: '',
-    tags: '',
-    type: 'novel',
-    mature: false,
-    terms: false,
-    chaptersLimit: false
-  }
+  id: '',
+  name: '',
+  author: '',
+  cover: '',
+  sinopse: '',
+  target: '',
+  type: '',
+  tags: [],
+  genre: '',
+  subgenre: '',
+  mature: false,
+}
 })
 
 const { value: name } = useField<string>('name')
@@ -81,9 +87,7 @@ const { value: subgenre } = useField<string>('subgenre')
 const { value: target } = useField<string>('target')
 const { value: tags } = useField<string>('tags')
 const { value: mature } = useField<boolean>('mature')
-const { value: type } = useField<string>('type', 'novel')
-const { value: terms } = useField<boolean>('terms')
-const { value: chaptersLimit } = useField<boolean>('chaptersLimit')
+const { value: type } = useField<string>('type')
 
 // Estado da capa
 const coverPreview = ref<string | null>(null)
@@ -114,31 +118,38 @@ const onSubmit = handleSubmit(async (values) => {
     formData.append('type', values.type)
     formData.append('mature', String(values.mature || false))
     
-    values.tags.split(',')
-    .map(t => t.trim())
-    .filter(Boolean)
-    .forEach(tag => formData.append('tags[]', tag))
+    const tagsArray = Array.isArray(values.tags)
+      ? values.tags
+      : (values.tags as string).split(',').map(t => t.trim()).filter(Boolean)
+
+    tagsArray.forEach(tag => formData.append('tags[]', tag))
 
     // adiciona o arquivo da capa, se existir
     if (coverFile.value) {
       formData.append('cover', coverFile.value)
     }
 
+    let interval = 2000
+    if(!coverFile.value && !coverPreview.value) {
+      noHasImgModal.value = true
+      interval = 5000
+    }
     // chamada para API — precisa aceitar multipart/form-data
 
-    const response = await createBook(formData)
+    const response = await updateBook(formData, bookId)
     if(response.status !== 200) {
-      toast.error("Falha na criação do livro, tente novamente mais tarde!")
+      toast.error("Falha na modificação do livro, tente novamente mais tarde!")
       return
     }
-    toast.success('Livro criado com sucesso!')
-    console.log('response', response)
+    toast.success('Livro modificado com sucesso!')
+    
     saving.value = false
     setTimeout(() => {
+      noHasImgModal.value = false
       router.push(`/v1/origins/user/${user.value}`)
-    }, 2000);
+    }, interval);
   } catch (e) {
-    toast.error('Erro ao criar o livro!')
+    toast.error('Erro ao modificar o livro!')
     saving.value = false
   } finally {
     uploading.value = false
@@ -146,30 +157,24 @@ const onSubmit = handleSubmit(async (values) => {
   }
 })
 
-onMounted(() => {
-  const getUser = JSON.parse(localStorage.getItem('user')) || {}
-  if(!getUser || !getUser.token || !getUser.user) return router.push('/v1/origins')
-  user.value = getUser.user
-})
-// Estado
-const route = useRoute()
-const router = useRouter()
-const bookId = route.params.bookId as string
+const open = ref(false)
+const selectedLabel = ref('')
 
-const book = ref<Book>({
-  id: '',
-  name: '',
-  author: '',
-  cover: '',
-  sinopse: '',
-  tags: [],
-  genre: '',
-  createdAt: '',
-  mature: false,
-  updatedAt: ''
-})
+function selectGenre(g) {
+  genre.value = g.value
+  selectedLabel.value = g.label
+  open.value = false
+}
 
-const chapters = ref<Chapter[]>([])
+const opensub = ref(false)
+const selectedLabelSub = ref('')
+
+function selectSubGenre(g) {
+  subgenre.value = g.value
+  selectedLabelSub.value = g.label
+  opensub.value = false
+}
+
 const loading = ref(true)
 
 // API
@@ -181,17 +186,23 @@ async function fetchBook() {
       const work = {
         author: res.data.author,
         cover: res.data.cover,
-        createdAt: res.data.createdAt,
         genre: res.data.genre,
+        subgenre: res.data.subgenre,
         id: res.data.id,
         mature: res.data.mature,
         name: res.data.name,
         sinopse: res.data.sinopse,
-        tags: res.data.tags,
-        updatedAt: res.data.updatedAt        
+        type: res.data.type,
+        target: res.data.target,
       } as Book
+      
+      coverPreview.value = res.data.cover;
+      
+      const s = res.data.tags
+      work.tags = Array.isArray(res.data.tags) && res.data.tags.join(', ')
+      tagList.value = res.data.tags
       book.value = work
-      chapters.value = res.data.chapters
+      resetForm({ values: work })
     } else {
       toast.error('Erro ao carregar o livro ou capítulos')
     }
@@ -203,36 +214,111 @@ async function fetchBook() {
   }
 }
 
-// Ações do capítulo
-function editChapter(chapterId: string) {
-  router.push(`/v1/mywork/edit/${chapterId}`)
+watch(book, (val) =>{
+  initialValues.value = val
+}, {immediate: true})
+
+const tagList = ref<string[]>([])
+const tagInput = ref<HTMLInputElement | null>(null)
+
+function handleTagInput(e: KeyboardEvent) {
+  const input = e.target as HTMLInputElement
+  if (e.key === ',' || e.key === 'Enter') {
+    e.preventDefault()
+    const newTag = input.value.replace(',', '').trim()
+    if (newTag && !tagList.value.includes(newTag)) {
+      tagList.value.push(newTag)
+    }
+    input.value = ''
+    tags.value = tagList.value.join(', ')
+    nextTick(() => tagInput.value?.focus())
+  }
 }
 
-function togglePublish(chapter: Chapter) {
-  chapter.status = chapter.status === 'published' ? 'draft' : 'published'
-  toast.success(`Capítulo ${chapter.status === 'published' ? 'publicado' : 'despublicado'}!`)
+function removeTag(index: number) {
+  tagList.value.splice(index, 1)
+  tags.value = tagList.value.join(', ')
+  nextTick(() => tagInput.value?.focus())
 }
-
 // Inicializa
-onMounted(() => {
+
+const refGenre = ref<HTMLElement | null>()
+const refGenre2 = ref<HTMLElement | null>()
+const refSubgenre = ref<HTMLElement | null>()
+const refSubgenre2 = ref<HTMLElement | null>()
+
+const handleClickOutside = (event: MouseEvent) => {
+	try{
+		const target = event.target as Node;
+
+		// Fecha menu se clicar fora
+		if (
+			open.value &&
+			refGenre.value &&
+			refGenre2.value &&
+			!refGenre.value.contains(target) &&
+			!refGenre2.value.contains(target)
+		) {
+			open.value = false;
+			}
+
+		// Fecha notificações se clicar fora
+		if (
+		opensub.value &&
+		refSubgenre.value &&
+		refSubgenre2.value &&
+		!refSubgenre.value.contains(target) &&
+		!refSubgenre2.value.contains(target)
+		) {
+		opensub.value = false;
+		}
+  } catch (err){
+    console.error(err)
+  }
+};
+
+onMounted(async () => {
+  const getUser = JSON.parse(localStorage.getItem('user')) || {}
+  if(!getUser || !getUser.token || !getUser.user) return router.push('/v1/origins')
+  user.value = getUser.user
+
+  document.addEventListener('click', handleClickOutside);
   fetchBook()
 })
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <template>
-  <div class="flex flex-col items-end justify-center w-full bg-white min-h-screen">
-    <form @submit.prevent="onSubmit" 
-      class="flex flex-col gap-4 rounded-lg p-4 w-full lg:w-[85vw] mt-14"
+  <div class="flex flex-col items-end justify-center w-full dark:bg-black bg-white min-h-screen pb-10">
+    <div
+      v-if="noHasImgModal"
+      class="flex items-center justify-center bg-black/40 fixed inset-0 z-50"
     >
-
       <div
-        class="flex  items-start justify-center gap-5 px-6"
+        class="bg-white rounded-xl shadow-2xl p-6 w-[400px] flex flex-col justify-between"
+      >
+        <div>
+          <h2 class="text-xl font-bold text-gray-800 mb-3">Capa não detectada</h2>
+          <p class="text-gray-700 leading-relaxed">
+            Nenhum envio de capa foi detectado, e a capa atual foi removida.  
+            As alterações serão salvas <strong>mantendo a capa anterior</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+    <form @submit.prevent="onSubmit" 
+      class="flex flex-col gap-4 rounded-lg p-2 md:p-4 w-full lg:w-[85vw] mt-14"
+    >
+      <div
+        class="flex flex-col md:flex-row items-center md:items-start justify-center gap-5 md:px-6"
       >
         <!-- Coluna esquerda -->
-        <div class="flex flex-col shadow-xl">
+        <div class="flex flex-col">
           <!-- Upload de capa -->
           <div class="flex flex-col">
-            <label class="w-64 min-h-96 flex items-center justify-center border bg-gray-200 rounded-md cursor-pointer hover:bg-gray-100">
+            <label class="w-64 min-h-96 flex items-center justify-center md:border dark:bg-[#ffffff10] bg-gray-200 rounded-md cursor-pointer hover:bg-gray-100 relative">
               <span v-if="!coverPreview" class="flex flex-col items-center justify-center text-sm text-gray-500">
                 <Lucide
                   icon="FileImage"
@@ -244,6 +330,17 @@ onMounted(() => {
               <img v-else :src="coverPreview" class="w-full h-full border border-purple-200  object-cover rounded-md"/>
               <input type="file" class="hidden" @change="onCoverChange" accept="image/*"/>
             </label>
+          </div>
+          <div
+            class="flex items-center justify-center mt-4"
+          >
+            <button
+              type="button"
+              class="border text-sm px-3 py-1 bg-[#810c0c] dark:border-none rounded text-gray-200 font-normal cursor-pointer"
+              @click="coverPreview = ''"
+            >
+              Remover Capa
+            </button>
           </div>
         </div>
         <!-- Info -->
@@ -260,9 +357,9 @@ onMounted(() => {
         </div>
 
         <!-- Coluna direita -->
-        <div class="flex flex-col gap-4 w-8/12 px-10 rounded-xl shadow-2xl bg-white border border-gray-200">
+        <div class="flex flex-col gap-4 px-3 md:px-10 rounded-xl shadow-2xl bg-white border dark:bg-[#ffffff08] dark:border-none border-gray-200">
           <h1
-            class="font-bold border-b border-gray-300 pb-2 my-4 text-lg text-gray-800"
+            class="font-bold border-b border-gray-300 pb-2 my-4 text-lg text-gray-800 dark:text-gray-300 dark:border-[#fff2]"
           >
             Dados do livro
           </h1>
@@ -270,7 +367,7 @@ onMounted(() => {
           <div>
             <label 
               for="title"
-              class="font-semibold text-lg text-gray-900"
+              class="font-semibold text-lg text-gray-900 dark:text-gray-400"
             >
               Título:
             </label>
@@ -279,7 +376,7 @@ onMounted(() => {
               type="text" 
               id="title"
               placeholder="História sem título!" 
-              class="text-lg border px-3 py-2 rounded-xl w-full text-gray-800 border-gray-300 placeholder:text-gray-500 focus:ring-1 focus:outline-none focus:ring-violet-300"/>
+              class="text-lg border px-3 py-2 rounded-xl w-full text-gray-800 border-gray-300 dark:text-gray-400 dark:bg-white/10 dark:border-none placeholder:text-gray-500 focus:ring-1 focus:outline-none focus:ring-violet-300"/>
             <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
           </div>
 
@@ -289,7 +386,7 @@ onMounted(() => {
           >
             <label 
               for="sinopse"
-              class="font-semibold text-lg text-gray-900"
+              class="font-semibold text-lg text-gray-900 dark:text-gray-400"
             >
               Sinopse:
             </label>
@@ -297,34 +394,68 @@ onMounted(() => {
               id="sinopse"
               v-model="sinopse" 
               placeholder="Em um reino repleto de magia..."
-              class="border border-gray-300 px-3 py-2 rounded w-full text-gray-800 resize-none focus:outline-none focus:ring-1 focus:ring-violet-300 min-h-[160px]"></textarea>
+              class="border border-gray-300 px-3 py-2 rounded w-full text-gray-800 resize-none focus:outline-none focus:ring-1 focus:ring-violet-300 min-h-[160px] dark:text-gray-400 dark:bg-white/10 dark:border-none"></textarea>
             <p v-if="errors.sinopse" class="text-red-500 text-sm mt-1">{{ errors.sinopse }}</p>
           </div>
           
           <!-- Gênero -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Gênero:</label>
-            <select 
-              v-model="genre" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition"
-            >
-              <option value="" class="text-black" >Selecione o gênero</option>
-              <option v-for="g in genres" :key="g.value" :value="g.value">{{ g.label }}</option>
-            </select>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Gênero:</label>
+            <div class="relative">
+              <div 
+                ref="refGenre"
+                @click="open = !open" 
+                class="border truncate max-h-10 border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none capitalize bg-white shadow-sm hover:border-violet-400 transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
+              >
+                {{ genre || selectedLabel || 'Selecione o gênero' }}
+              </div>
+
+              <ul 
+                ref="refGenre2"
+                v-if="open" 
+                class="absolute z-50 w-full bg-white dark:bg-gray-900 mt-1 max-h-60 overflow-y-auto rounded-xl shadow-lg border border-gray-400"
+              >
+                <li 
+                  v-for="g in genres" 
+                  :key="g.value" 
+                  @click="selectGenre(g)" 
+                  class="dark:bg-black dark:hover:bg-[#ffffff03] dark:text-white pl-2 hover:bg-[#0001] cursor-pointer"
+                >
+                  {{ g.label }}
+                </li>
+              </ul>
+            </div>
             <p class="text-gray-500 text-xs mt-1">Gênero principal da sua obra.</p>
             <p v-if="errors.genre" class="text-red-500 text-sm mt-1">{{ errors.genre }}</p>
           </div>
 
           <!-- Subgênero -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Subgênero:</label>
-            <select 
-              v-model="subgenre" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 transition"
-            >
-              <option value="" class="text-black">Selecione o subgênero</option>
-              <option v-for="s in subgenres" :key="s.value" :value="s.value">{{ s.label }}</option>
-            </select>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Subgênero:</label>
+            <div class="relative">
+              <div 
+                ref="refSubgenre"
+                @click="opensub = !opensub" 
+                class="border truncate max-h-10 border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:ring-violet-300 focus:outline-none bg-white shadow-sm hover:border-violet-400 capitalize transition dark:text-gray-400 dark:bg-white/10 dark:border-none"
+              >
+                {{ subgenre || selectedLabelSub || 'Selecione o gênero' }}
+              </div>
+
+              <ul 
+                ref="refSubgenre2"
+                v-if="opensub" 
+                class="absolute z-50 w-full bg-white dark:bg-gray-900 mt-1 max-h-60 overflow-y-auto rounded-xl shadow-lg border border-gray-400"
+              >
+                <li 
+                  v-for="g in subgenres" 
+                  :key="g.value" 
+                  @click="selectSubGenre(g)" 
+                  class="dark:bg-black dark:hover:bg-[#ffffff03] dark:text-white pl-2 hover:bg-[#0001] cursor-pointer"
+                >
+                  {{ g.label }}
+                </li>
+              </ul>
+            </div>
             <p class="text-gray-500 text-xs mt-1">Gênero secundário da sua obra.</p>
             <p v-if="errors.subgenre" class="text-red-500 text-sm mt-1">{{ errors.subgenre }}</p>
           </div>
@@ -333,13 +464,13 @@ onMounted(() => {
 
           <!-- Público Alvo -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Público Alvo:</label>
-            <select v-model="target" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300">
-              <option value="">Selecione o público alvo</option>
-              <option value="infantil">Infantil (0-12 anos)</option>
-              <option value="jovem-adulto">Jovem Adulto (13-17 anos)</option>
-              <option value="adulto">Adulto (18+ anos)</option>
-              <option value="todos">Livre</option>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Público Alvo:</label>
+            <select v-model="target" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none">
+              <option value="" class="dark:bg-black">Selecione o público alvo</option>
+              <option value="infantil" class="dark:bg-black">Infantil (0-12 anos)</option>
+              <option value="jovem-adulto" class="dark:bg-black">Jovem Adulto (13-17 anos)</option>
+              <option value="adulto" class="dark:bg-black">Adulto (18+ anos)</option>
+              <option value="todos" class="dark:bg-black">Livre</option>
             </select>
             <p class="text-gray-500 text-xs mt-1">
               Tenha em mente que se escolher um público com menos de 18 anos, o conteúdo da sua obra deve ser adequado a essa faixa etária. O mesmo se aplica para <strong>"Livre"</strong>.
@@ -352,14 +483,14 @@ onMounted(() => {
           <div
             class="mt-2"
           >            
-            <label class="block text-gray-900 text-lg font-medium mb-1">Tipo de obra:</label>
-            <select v-model="type" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300">
-              <option value="novel">Novel</option>
-              <option value="light-novel">Light Novel</option>
-              <option value="poema">Poema</option>
-              <option value="fanfic">Fanfic</option>
-              <option value="conto">Conto</option>
-              <option value="cronica">Crônica</option>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Tipo de obra:</label>
+            <select v-model="type" class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring-1 focus:outline-none focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none">
+              <option value="novel" class="dark:bg-black">Novel</option>
+              <option value="light-novel" class="dark:bg-black">Light Novel</option>
+              <option value="poema" class="dark:bg-black">Poema</option>
+              <option value="fanfic" class="dark:bg-black">Fanfic</option>
+              <option value="conto" class="dark:bg-black">Conto</option>
+              <option value="cronica" class="dark:bg-black">Crônica</option>
             </select>
             <p class="text-gray-500 text-xs mt-1">
               Selecione o formato da sua obra: Novel, Light Novel, Poema, Fanfic, Conto ou Crônica.
@@ -368,18 +499,37 @@ onMounted(() => {
 
           <!-- Tags -->
           <div>
-            <label class="block text-gray-900 text-lg font-medium mb-1">Tags:</label>
-            <input v-model="tags" type="text" placeholder="Tags (separadas por vírgula)" 
-              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:ring focus:ring-violet-300"/>
-            <p class="text-gray-500 text-xs mt-1">
-              Facilita encontrar sua obra nas pesquisas.
-            </p>
+            <label class="block text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Tags:</label>
+
+            <!-- Área onde aparecem as tags -->
+            <div class="flex flex-wrap gap-2 mb-2">
+              <span 
+                v-for="(tag, i) in tagList" 
+                :key="i" 
+                class="flex items-center gap-1 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-violet-200 dark:hover:bg-violet-800 transition"
+                @click="removeTag(i)"
+              >
+                {{ tag }}
+                <Lucide icon="X" class="h-4 w-4" />
+              </span>
+            </div>
+
+            <!-- Input de tags -->
+            <input 
+              ref="tagInput"
+              type="text" 
+              placeholder="Digite uma tag e pressione vírgula ou Enter"
+              @keyup="handleTagInput"
+              class="border border-gray-300 px-3 py-2 rounded-xl w-full text-gray-800 focus:outline-none focus:ring-1 focus:ring-violet-300 dark:text-gray-400 dark:bg-white/10 dark:border-none"
+            />
+
+            <p class="text-gray-500 text-xs mt-1">Facilita encontrar sua obra nas pesquisas.</p>
             <p v-if="errors.tags" class="text-red-500 text-sm mt-1">{{ errors.tags }}</p>
           </div>
 
           <!-- Switch de conteúdo adulto -->
           <div class="flex flex-col items-start gap-2 border-t pt-3">
-            <label class="flex items-center justify-start gap-4 text-gray-900 text-lg font-medium mb-1">Conteúdo adulto:
+            <label class="flex items-center justify-start gap-4 text-gray-900 text-lg font-medium mb-1 dark:text-gray-400">Conteúdo adulto:
               <Switch
                 v-model="mature"
                 label=""
@@ -399,36 +549,15 @@ onMounted(() => {
             </p>
           </div>
 
-          <!-- Aviso limite capítulos -->
-          <div class="col-span-full bg-yellow-50 border p-4 rounded text-sm text-gray-700">
-            <p><strong>Aviso:</strong> Seguindo boas práticas e buscando garantir máxima qualidade de leitura, visando um mercado amplo, todas as obras na <strong>Luna Origins</strong> devem ter capítulos médios (máx. 3.000 palavras). Não será possível publicar capítulos acima desse limite.</p>
-            <div class="flex items-center mt-3">
-              <input id="chaptersLimit" type="checkbox" v-model="chaptersLimit" class="accent-violet-600"/>
-              <label for="chaptersLimit" class="ml-2">Entendi e aceito o limite de tamanho por capítulo.</label>
-            </div>
-            <p v-if="errors.chaptersLimit" class="text-red-500 text-sm mt-1">{{ errors.chaptersLimit }}</p>
-          </div>
-
-          <!-- Aviso legal -->
-          <div class="col-span-full bg-gray-100 border p-4 rounded text-sm text-gray-700">
-            <p><strong>Aviso legal:</strong> Todas as obras publicadas são protegidas pela <strong>Lei nº 9.610/1998</strong>. O plágio é crime e pode gerar sanções civis e penais. A <strong>Luna Origins</strong> não se responsabiliza por violações cometidas por usuários.</p>
-            <p class="mt-2">Leia nossas <a href="/diretrizes" class="text-violet-700 underline">Diretrizes</a> para mais informações.</p>
-
-            <div class="flex items-center mt-3">
-              <input id="terms" type="checkbox" v-model="terms" class="accent-violet-600"/>
-              <label for="terms" class="ml-2">Li, entendi e aceito os termos legais.</label>
-            </div>
-            <p v-if="errors.terms" class="text-red-500 text-sm mt-1">{{ errors.terms }}</p>
-          </div>
-
           <!-- Botão Criar -->
           <div class="col-span-full flex justify-center pb-6">
             <button 
+              type="button"
               @click="onSubmit" 
               class="px-8 py-2 rounded-md text-white text-sm font-bold shadow-md transition-all duration-300"
               :class="{
                 'bg-gray-400 cursor-not-allowed': saving,
-                'bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 hover:from-violet-700 hover:via-purple-700 hover:to-fuchsia-700': !saving
+                'bg-standard dark:bg-standard-dark': !saving
               }"
               :disabled="saving"
             >

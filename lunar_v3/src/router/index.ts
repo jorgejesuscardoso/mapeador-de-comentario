@@ -83,20 +83,14 @@ const routes: RouteRecordRaw[] = [
         name: 'stream',
         component: MyFrame,
       }, 
+
+
+
+      //originais
       { 
         path: '/v1/origins', 
         name: 'originalsLunar',
         component: () => import('../pages/originals/OriginalsLunar.vue'),
-      },
-      {
-        path: '/v1/origins/mywork/write/:bookId/:chapterId',
-        name: 'wiretMyWork',
-        component: () => import('../pages/originals/work/BookPageEditor.vue')
-      },
-      {
-        path: '/v1/origins/mywork/cover',
-        name: 'wireMyWorkCover',
-        component: () => import('../pages/originals/work/UploadCover.vue')
       },
       {
         path: '/v1/origins/user/:user',
@@ -104,20 +98,41 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../pages/originals/OriginsProfile.vue')
       },
       {
+        path: '/v1/origins/mywork/write/:bookId/:chapterId',
+        name: 'wiretMyWork',
+        component: () => import('../pages/originals/work/BookPageEditor.vue')
+      },
+      {
         path: '/v1/origins/mywork/detail/:bookId',
         name: 'myWorkDetail',
         component: () => import('../pages/originals/work/Detail.vue')
       },
       {
-        path: '/v1/origins/mywork/list',
+        path: '/v1/origins/mywork/edit/:bookId',
         name: 'myWorkList',
-        component: () => import('../pages/originals/OriginsProfile.vue')
+        component: () => import('../pages/originals/work/Edit.vue')
       },
       {
         path: '/v1/origins/work/create',
         name: 'workCreate',
         component: () => import('../pages/originals/work/Create.vue')
       },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      //termos
       {
         path: '/sobre',
         name: 'Sobre',

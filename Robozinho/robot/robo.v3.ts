@@ -61,8 +61,6 @@ export const FindBook = async (id: string) => {
   const cached = bookCache.get(id);
 
   if (cached && (now - cached.timestamp) < ONE_HOUR) {
-    // ✅ Retorna do cache se não passou 1h
-    console.log("chamou no cache")
     return cached.data;
   }
 
@@ -107,7 +105,6 @@ export const FindBook = async (id: string) => {
 
     // ✅ Atualiza o cache
     bookCache.set(id, { timestamp: now, data });
-    console.log('nao chamou cache')
     return data;
   } catch (error: any) {
     console.error('Erro na requisição:', error.response?.status, error.message);

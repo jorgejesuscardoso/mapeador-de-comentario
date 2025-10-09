@@ -118,6 +118,26 @@ export const getBookLunarAuthor = async (author: string) => {
   }
 };
 
+export const updateBook = async (formdata: FormData, id: string) => {
+  try {
+    const controller = new AbortController();
+
+    const response = await axios.patch(
+      `${endPoint}/update/${id}`,
+      formdata,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        signal: controller.signal
+      }
+    );
+    return response;
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';
+    throw new Error(msg);
+  }
+};
 
 //CHAPTERS
 export const createChapters = async (bookId: string) => {

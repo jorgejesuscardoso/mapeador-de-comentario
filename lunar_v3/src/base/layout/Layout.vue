@@ -214,8 +214,10 @@ watch(
     menuOpen.value = false
     showNotification.value = false
     showNotification2.value = false
+		scrollToTop()
   }
 )
+
 provide('isAdmin', isAdmin)
 provide('isBeta', isBeta)
 provide('isPremium',isPremium)

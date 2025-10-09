@@ -316,7 +316,7 @@ onMounted(() => {
                   <Lucide icon="Star" fill="gray" class="w-4 h-4"/> {{ chapter.votes.toLocaleString() }}
                 </span>
                 <span class="flex items-center gap-1 ">
-                  <Lucide icon="MessageCircle" fill="#777" class="w-4 h-4"/> {{ chapter.comments.length.toLocaleString() }}
+                  <Lucide icon="MessageCircleMore" fill="#eee" class="w-4 h-4"/> {{ chapter.comments.length.toLocaleString() }}
                 </span>
                 <span class="flex items-center font-semibold gap-1">
                   {{ chapter.status === 'published' ? 'Publicado' : 'Rascunho' }}: {{ new Date(chapter.updatedAt).toLocaleDateString() }}
