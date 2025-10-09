@@ -652,11 +652,11 @@ function toggle() {
 							</span>
 						</button>
 
-						<ul class="grid grid-cols-2 font-semibold text-sm p-4">
+						<ul class="grid grid-cols-2 gap-y-1 font-semibold text-sm p-4">
 							<li>
 								<RouterLink 
 									:to="isRouteOrigins ? '/v1/origins' : '/'"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
 									:class="{ 'bg-violet-100/10': route.path === '/' }"
 									@click.stop="menuOpen = false" 
 								>
@@ -671,7 +671,7 @@ function toggle() {
 							>
 								<RouterLink 
 									to="/shop"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
 									:class="{ 
 										'bg-violet-100/10': route.path === '/shop',
 										}"
@@ -684,7 +684,7 @@ function toggle() {
 							<li>
 								<RouterLink 
 									:to="isRouteOrigins ? `/v1/origins/user/${storage?.user}` || '' : '/profile'"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
 									:class="{ 'bg-violet-100/10': route.path === '/profile' ||  route.path === `/profile/*` }"
 									@click.stop="menuOpen = false" 
 								>
@@ -699,7 +699,7 @@ function toggle() {
 							>
 								<RouterLink 
 									to="/register"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-xs"
+									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
 								>
 									<Lucide icon="FileInput" size="14" />
 									Registro
@@ -738,7 +738,7 @@ function toggle() {
 							>
 								<RouterLink 
 									:to="!isLogged ? '/login': ''"
-									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-sm"
 									:class="{
 										'hover:bg-green-100 text-green-400': !isLogged,
 										'hover:bg-red-100 text-red-400': isLogged
