@@ -258,7 +258,7 @@ onMounted(() => {
         <!-- list -->
         <ul v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <li v-for="(ch, i) in publishedChapters" :key="ch.id" class="p-4 bg-white dark:bg-[#ffffff05] border border-gray-100 dark:border-[#ffffff10] rounded-lg shadow-sm hover:shadow-md transition flex flex-col">
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex items-start justify-between gap-4 relative">
               <div>
                 <div class="text-xs text-gray-500">Capítulo {{ i + 1 }}</div>
                 <h3 class="text-base font-semibold mt-1 cursor-pointer" @click="goToChapter(ch)">{{ ch.title }}</h3>
@@ -266,16 +266,12 @@ onMounted(() => {
                   <span class="flex items-center gap-1"><Lucide icon="Eye" class="w-4 h-4" /> {{ ch.views.toLocaleString() }}</span>
                   <span class="flex items-center gap-1"><Lucide icon="Star" class="w-4 h-4" /> {{ ch.votes.toLocaleString() }}</span>
                   <span class="flex items-center gap-1"><Lucide icon="MessageCircleMore" class="w-4 h-4" /> {{ ch.comments.length }}</span>
-                  <span> ~ {{ readingTimeEst(ch.wordsCount) }} min</span>
+                  <span class="block w-20"> ~ {{ readingTimeEst(ch.wordsCount) }} min</span>
                 </div>
               </div>
 
-              <div class="flex flex-col items-end gap-2">
+              <div class="flex flex-col items-end gap-2 absolute top-0 right-0">
                 <div class="text-xs text-gray-500">{{ new Date(ch.updatedAt).toLocaleDateString() }}</div>
-                <div class="flex gap-2">
-                  <button @click="goToChapter(ch)" class="px-3 py-1 rounded-md bg-violet-600 text-white text-sm">Ler</button>
-                  <button @click="shareBook" class="px-3 py-1 rounded-md border text-sm">Compart.</button>
-                </div>
               </div>
             </div>
           </li>
