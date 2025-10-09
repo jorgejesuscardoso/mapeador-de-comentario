@@ -63,7 +63,7 @@ chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
     const id = randomId;
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
-
+    console.log(bookResult.Item)
     const newChapter = {
       bookId: bookId.trim(),
       id,
@@ -71,6 +71,7 @@ chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
       paragraphs: '',
       wordsCount: wordsCount,
       comments: [],
+      bookName: bookResult?.Item?.name || 'Nome indisponível',
       votes: 0,
       views: 0,
       createdAt,

@@ -291,8 +291,7 @@ function toggle() {
 					:class="isRouteOrigins ? 'bg-white' : 'bg-black'"
 				>
 					<h1 
-						class="flex items-center text-purple-700 dark:text-purple-400 gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"						
-						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
+						class="flex items-center text-purple-700 dark:text-purple-400 gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
 					>
 						<!-- Texto -->
 						<span

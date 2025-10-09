@@ -20,7 +20,7 @@ const schema = yup.object({
   name: yup.string().required('O título é obrigatório'),
   sinopse: yup.string().required('A sinopse é obrigatória').min(30, 'A sinopse deve ter pelo menos 30 caracteres'),
   genre: yup.string().required('O gênero é obrigatório'),
-  subgenre: yup.string().required('O subgênero é obrigatório'),
+  subgenre: yup.string(),
   target: yup.string().required('O público alvo é obrigatório'),
   tags: yup.string().required('Adicione pelo menos uma tag'),
   type: yup.string().required(),

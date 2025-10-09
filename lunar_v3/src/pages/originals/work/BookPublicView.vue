@@ -90,6 +90,7 @@ async function fetchBook() {
         chapters: data.chapters || []
       }
       chapters.value = data.chapters || []
+      console.log('Book data:', book.value)
     } else {
       // fallback
       book.value = null
@@ -132,23 +133,27 @@ onMounted(() => {
 
 <template>
   <div class="flex items-center justify-center mt-14 min-h-screen w-full bg-white dark:bg-[#000] text-gray-900 dark:text-gray-100 pb-24 m">
-    <div class="w-[85vw] px-4 md:px-8 pt-10">
-
+    <div class="w-full md:w-[75vw] px-4 md:px-8 pt-6 md:pt-10">
+      <div>
+        <button @click="router.back()" class="text-sm text-gray-500 dark:text-gray-400 hover:underline flex items-center gap-1 mb-6">
+          <Lucide icon="ArrowLeft" class="w-4 h-4" /> Voltar
+        </button>
+      </div>
       <!-- HERO / SUMMARY -->
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+      <section class="flex flex-col items-center md:flex-row md:items-start md:justify-between">
         <!-- cover -->
-        <div class="md:col-span-1 flex justify-center">
-          <div class="w-[220px] md:w-[260px] shadow-xl rounded-lg overflow-hidden">
-            <div v-if="loading" class="h-[360px] w-full flex items-center justify-center bg-gray-100 dark:bg-white/5">
+        <div class="flex items-start col-span-1 justify-start">
+          <div class="md:w-[240px] shadow-xl rounded-lg overflow-hidden">
+            <div v-if="loading" class="h-[380px] w-full flex items-center justify-center bg-gray-100 dark:bg-white/5">
               <Lucide icon="Image" class="w-10 h-10 text-gray-400" />
             </div>
-            <img v-else :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="book?.name" class="w-full h-[360px] object-cover"/>
+            <img v-else :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="book?.name" class="w-[500px] md:h-[350px] object-cover"/>
           </div>
         </div>
 
         <!-- meta -->
-        <div class="md:col-span-2 flex flex-col gap-3">
-          <div class="flex items-start justify-between gap-4">
+        <div class="w-full md:w-8/12 md:col-span-2 mt-4 md:mt-0 flex flex-col gap-3">
+          <div class="flex flex-col items-start justify-between gap-4">
             <div>
               <h1 class="text-2xl md:text-3xl font-bold leading-tight">{{ book?.name || 'Título indisponível' }}</h1>
               <div class="flex gap-3 items-center mt-2">
@@ -165,13 +170,13 @@ onMounted(() => {
             </div>
 
             <!-- CTAs -->
-            <div class="flex items-center gap-2">
+            <div class="grid md:grid-cols-3 grid-cols-2 items-center gap-2">
               <button
                 @click="() => { if(publishedChapters.length) goToChapter(publishedChapters[0]) }"
                 :disabled="publishedChapters.length === 0 || loading"
-                class="px-4 py-2 rounded-md bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white font-semibold shadow-md disabled:opacity-60"
+                class="px-4 py-2 rounded-md bg-standard text-sm text-white font-semibold shadow-md disabled:opacity-60"
               >
-                Ler primeiro
+                Iniciar Leitura
               </button>
 
               <button @click="handleFollow" class="px-3 py-2 rounded-md border text-sm font-medium" :class="following ? 'bg-violet-50 border-violet-400 text-violet-700' : 'bg-white dark:bg-[#000] '">
@@ -198,7 +203,7 @@ onMounted(() => {
 
             <div class="ml-2 flex items-center gap-2 flex-wrap">
               <template v-for="t in book?.tags || []" :key="t">
-                <span class="text-xs px-2 py-1 bg-gray-100 dark:bg-white/6 rounded-full text-gray-700 dark:text-gray-200 capitalize">#{{ t }}</span>
+                <span class="text-xs flex h-6 items-center justify-center p-2 bg-purple-200 dark:bg-white/6 rounded-full text-purple-800 dark:text-purple-700 capitalize">#{{ t }}</span>
               </template>
             </div>
           </div>
@@ -231,9 +236,7 @@ onMounted(() => {
       <section class="mt-10">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold">Capítulos Disponíveis</h2>
-          <div class="text-sm text-gray-500">
-            Ordenados por sequência
-          </div>
+          <span class="text-sm text-gray-500">{{ publishedChapters.length }} capítulo(s)</span>
         </div>
 
         <!-- loading -->
