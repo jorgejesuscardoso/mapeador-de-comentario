@@ -15,7 +15,7 @@ onMounted(() => {
 
 <template>	
 	<div
-		class="relative flex items-center justify-center pr-3"
+		class="relative flex items-center justify-center md:pr-3"
 	>
 		<div
 			class="pb-6 w-full lg:w-[85vw]"

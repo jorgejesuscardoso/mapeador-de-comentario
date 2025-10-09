@@ -292,7 +292,7 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
 <template>
   <div
     class="p-4 lg:rounded-xl bg-[rgba(0,0,0,0.75)]"
-  >
+  > 
     <div
       @click="showFilterBar = !showFilterBar"    
       class="flex bg-[rgb(0,0,0,0.6)] w-fit p-2 mb-2 shadow-xl rounded-lg cursor-pointer"

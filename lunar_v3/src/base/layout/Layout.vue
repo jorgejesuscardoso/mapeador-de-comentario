@@ -171,7 +171,7 @@ onMounted(async () => {
 	if(isAdmin){
 		const response = await getSales()
 		if(response.status === 200) {
-			notification.value = 1		
+			notification.value = 0		
 		}
 	}
 	 // Carrega GA4
@@ -301,7 +301,7 @@ function toggle() {
 					>
 						<!-- Ícone principal -->
 						<Lucide
-							:icon="isRouteOrigins ? 'Stars' : 'MoonStar'"
+							:icon="isRouteOrigins ? '' : 'MoonStar'"
 							class="transition-all duration-300"
 							:class="{
 								'h-3 w-3 dark:text-white text-purple-700 absolute left-0 top-0': isRouteOrigins,
@@ -312,18 +312,13 @@ function toggle() {
 
 						<!-- Texto -->
 						<span
+							class="w-44 text-start"
 							:class="{
 								'ml-3': isRouteOrigins
 							}"
 						>
-							{{ isRouteOrigins ? 'Luna Origins' : 'Projeto Lunar' }}
+							Projeto Lunar
 						</span>
-						<Lucide
-							v-if="isRouteOrigins"
-							icon="Stars"
-							class="transition-all duration-300 h-3 w-3 dark:text-white text-purple-700 absolute left-36 bottom-0"
-							:stroke-width="1.5"
-						/>
 						<!-- Botão switch -->
 						
 						<button
@@ -334,7 +329,7 @@ function toggle() {
 							}"
 							@click.stop="router.push(isRouteOrigins ? '/' : '/v1/origins')"
 						>
-							{{ isRouteOrigins ? 'Biblioteca Lunar' : 'Luna Origins' }}
+							{{ isRouteOrigins ? 'Biblioteca Lunar' : 'Originais Lunar' }}
 						</button>
 
 						<!-- Botão switch Modo -->
@@ -561,10 +556,8 @@ function toggle() {
 				</div>
 
 			<!-- Mobile Nav -->
-			<div class="lg:hidden w-full searchFilterBg text-white fixed top-0 left-0 z-20"
+			<div class="lg:hidden w-full  text-white fixed top-0 left-0 z-20"
 				:class="{
-					'border-b-2 border-fuchsia-300': menuOpen, 
-					'border-0':!menuOpen,
 					'hidden': route.path === '/v1/origins/work/create'
 				}"
 			>
@@ -576,47 +569,31 @@ function toggle() {
 						
 					/>
 				</div>
-				<div class="flex items-center justify-between p-4 bg-[rgb(0,0,0,0.3)]">
+				<div 
+					class="flex items-center justify-between p-4 bg-[rgb(0,0,0)] dark:border-b dark:border-gray-600"
+				>
 					<h1 
-						class="flex items-center gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
-						:class="{
-							'text-purple-400': isRouteOrigins,
-							'text-white': !isRouteOrigins
-						}"
+						class="flex items-center text-purple-400 gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
+						
 						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
-					>
-						<!-- Ícone principal -->
-						<Lucide
-							:icon="isRouteOrigins ? 'Stars' : 'MoonStar'"
-							class="transition-all duration-300"
-							:class="{
-								'h-3 w-3 text-white absolute left-0 top-0': isRouteOrigins,
-								'h-5 w-5 text-yellow-400': !isRouteOrigins
-							}"
-							:stroke-width="1.5"
-						/>
-
+					>						
 						<!-- Texto -->
 						<span
 							class="text-xs"
-							:class="{
-								'ml-3': isRouteOrigins
-							}"
 						>
-							{{ isRouteOrigins ? 'Luna Origins' : 'Projeto Lunar' }}
+							Projeto Lunar
 						</span>
-						<Lucide
-							v-if="isRouteOrigins"
-							icon="Stars"
-							class="transition-all duration-300 h-3 w-3 text-white absolute right-24 bottom-0"
-							:stroke-width="1.5"
-						/>
+
 						<!-- Botão switch -->
 						<button
-							class="ml-5 px-2 py-0.5 rounded-md text-xs font-semibold transition-all duration-200 bg-purple-800/70 border border-purple-600 text-purple-200"							
+							class="flex items-center justify-center ml-5 px-2 py-1 rounded-md text-xs font-semibold transition-all duration-200 text-purple-100 bg-[#ffffff15] border border-gray-950"							
 							@click.stop="router.push(isRouteOrigins ? '/' : '/v1/origins')"
 						>
-							{{ isRouteOrigins ? 'Biblioteca' : 'Origins' }}
+							{{ isRouteOrigins ? 'Biblioteca' : 'Originais' }}
+							<Lucide 
+								icon="ArrowUpDown"
+								class="h-3 w-3 ml-1"
+							/>
 						</button>
 					</h1>
 
@@ -640,6 +617,7 @@ function toggle() {
 							</p>
 						</div>
 						<!-- Notificações -->
+
 						<button 
 							ref="refNotification2"
 							@click="showNotification = !showNotification, menuOpen = false" 
@@ -654,10 +632,11 @@ function toggle() {
 								{{ notification }}
 							</span>
 						</button>
+
 						<!-- Menu flutuante -->
 						<button 
 							ref="menuRef2"
-							@click.stop="menuOpen = !menuOpen, showNotification = false" 
+							@click.stop="menuOpen = !menuOpen, showNotification = false, showWriteMenuNav = false" 
 							aria-label="Abrir menu"
 							class="mx-3"
 						>
@@ -670,7 +649,7 @@ function toggle() {
 					<nav
   					ref="menuRef"
 						v-show="menuOpen"
-						class="bg-white text-violet-300 searchFilterBg2 relative"
+						class="text-violet-300 bg-black relative border-b rounded-b-lg border-gray-600"
 					>
 					<!-- Botão switch Modo -->
 						<button
@@ -688,7 +667,7 @@ function toggle() {
 							</span>
 						</button>
 
-						<ul class="grid grid-cols-2 font-semibold text-sm p-4 bg-[rgb(0,0,0,0.3)]">
+						<ul class="grid grid-cols-2 font-semibold text-sm p-4">
 							<li>
 								<RouterLink 
 									:to="isRouteOrigins ? '/v1/origins' : '/'"

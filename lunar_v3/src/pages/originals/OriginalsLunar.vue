@@ -125,11 +125,11 @@ onMounted(async () => {
             {{ grupo.label }}:
           </h3>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 place-items-center z-50">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-2 gap-y-6 place-items-center z-50">
             <div v-for="obra in grupo.books" :key="obra.id" class="relative group w-[160px] max-w-[180px] cursor-pointer  darpk:bg-[#ffffff05] ">
-              <img :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="obra.name" class="w-11/12 h-[210px] object-contai cursor-pointer shadow-md group-hover:shadow-xl transition"/>
+              <img :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="obra.name" class="min-w-[140px] h-[210px] aspect-2/3 object-cover cursor-pointer shadow-md shadow-black/30 group-hover:shadow-xl transition"/>
               
-              <div v-if="obra.tags?.length" class="my-1 text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate px-2">
+              <div v-if="obra.tags?.length" class="my-3 text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate px-2">
                 por: <span class="text-blue-700 dark:text-blue-500">{{ obra.author || 'Anônimo'}}</span>
               </div>
               <div v-if="obra.tags?.length" class="mb-1 text-[11px] font-medium text-indigo-800 dark:text-indigo-500 truncate px-2 capitalize">

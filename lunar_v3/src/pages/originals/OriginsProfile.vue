@@ -295,7 +295,7 @@ onMounted(() => {
           <li
             v-for="book in books"
             :key="book.id"
-            class="bg-white dark:bg-[#ffffff06] w-full border border-[#ddd] shadow hover:shadow-lg transition overflow-hidden flex relative"
+            class="bg-white dark:bg-[#ffffff06] w-full border border-[#ddd] dark:border-gray-950 shadow hover:shadow-lg transition overflow-hidden flex relative"
           >
             <div
               class="absolute top-3 right-3 cursor-pointer"
@@ -309,13 +309,13 @@ onMounted(() => {
             </div>
             <!-- capa -->
             <div
-              class="relative overflow-hidden group cursor-pointer"
+              class="flex relative overflow-hidden group cursor-pointer"
               @click="goToDetail(book.id)"
             >
               <img
                 :src="book.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
                 alt="Capa"
-                class="w-32 min-w-32 aspect-[2/3]"
+                class="h-[195px] w-[125px] object-cover"
               />
               <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition"></div>
             </div>
@@ -332,7 +332,7 @@ onMounted(() => {
                 <p class="text-[10px] text-gray-700 font-medium dark:text-gray-400">
                   Genêro: <span class="text-[#10f] font-semibold ml-1 dark:text-blue-400">{{ book.genre }}</span> 
                 </p>
-                <p class="text-xs text-gray-700 font-normal text-wrap mt-2 line-clamp-3 dark:text-gray-500">
+                <p class="text-xs text-gray-700 font-normal text-wrap mt-2 line-clamp-2 md:line-clamp-3 dark:text-gray-500">
                   {{ book.sinopse }}
                 </p>
               </div>
