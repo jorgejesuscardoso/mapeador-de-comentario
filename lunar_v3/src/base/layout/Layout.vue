@@ -287,53 +287,39 @@ function toggle() {
 				}"
 			>
 				<div 
-					class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 "
-					:class="{
-						'': isRouteOrigins,
-						'bg-[rgba(0,0,0,0.7)]': !isRouteOrigins,				}"
+					class="flex items-center justify-between whitespace-nowrap text-center p-1 h-14 dark:bg-black"
+					:class="isRouteOrigins ? 'bg-white' : 'bg-black'"
 				>
 					<h1 
-						class="flex items-center gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
-						:class="{
-							'bg-standard bg-clip-text text-transparent ': isRouteOrigins,
-							'text-white': !isRouteOrigins
-						}"
+						class="flex items-center text-purple-700 dark:text-purple-400 gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"						
+						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
 					>
-						<!-- Ícone principal -->
-						<Lucide
-							:icon="isRouteOrigins ? '' : 'MoonStar'"
-							class="transition-all duration-300"
-							:class="{
-								'h-3 w-3 dark:text-white text-purple-700 absolute left-0 top-0': isRouteOrigins,
-								'h-7 w-7 text-yellow-400': !isRouteOrigins
-							}"
-							:stroke-width="1.5"
-						/>
-
 						<!-- Texto -->
 						<span
 							class="w-44 text-start"
-							:class="{
-								'ml-3': isRouteOrigins
-							}"
 						>
 							Projeto Lunar
 						</span>
-						<!-- Botão switch -->
 						
+						<!-- Botão switch -->
 						<button
-							class="ml-5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-200"
-							:class="{ 
-								'bg-purple-100 text-purple-700 hover:bg-purple-200': !isRouteOrigins,
-								'bg-gray-900 text-white hover:bg-gray-700': isRouteOrigins
-							}"
+							class="flex items-center justify-center ml-5 px-2 py-1 rounded-md text-xs font-semibold transition-all duration-200 text-purple-100 dark:bg-[#ffffff15] bg-black/80 border"
+							:class="{
+								'border-gray-800': !isRouteOrigins,
+								'border-none': isRouteOrigins
+							}"					
 							@click.stop="router.push(isRouteOrigins ? '/' : '/v1/origins')"
 						>
-							{{ isRouteOrigins ? 'Biblioteca Lunar' : 'Originais Lunar' }}
+							{{ isRouteOrigins ? 'Biblioteca' : 'Originais' }}
+							<Lucide 
+								icon="ArrowUpDown"
+								class="h-3 w-3 ml-1"
+							/>
 						</button>
 
 						<!-- Botão switch Modo -->
 						<button
+							v-if="isRouteOrigins"
 							@click="toggle"
 							:aria-pressed="isDark"
 							aria-label="Alternar modo noturno"
@@ -573,8 +559,7 @@ function toggle() {
 					class="flex items-center justify-between p-4 bg-[rgb(0,0,0)] dark:border-b dark:border-gray-600"
 				>
 					<h1 
-						class="flex items-center text-purple-400 gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"
-						
+						class="flex items-center text-purple-400 gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"						
 						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
 					>						
 						<!-- Texto -->
@@ -651,7 +636,7 @@ function toggle() {
 						v-show="menuOpen"
 						class="text-violet-300 bg-black relative border-b rounded-b-lg border-gray-600"
 					>
-					<!-- Botão switch Modo -->
+					<!-- Botão switch tema -->
 						<button
 							@click="toggle"
 							:aria-pressed="isDark"

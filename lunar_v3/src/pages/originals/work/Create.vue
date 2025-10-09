@@ -46,6 +46,8 @@ const { handleSubmit, errors, meta } = useForm({
   }
 })
 
+
+
 const { value: name } = useField<string>('name')
 const { value: sinopse } = useField<string>('sinopse')
 const { value: genre } = useField<string>('genre')
@@ -105,7 +107,6 @@ const onSubmit = handleSubmit(async (values) => {
     }
     toast.success('Livro criado com sucesso!')
     console.log('response', response)
-    saving.value = false
     setTimeout(() => {
       router.push(`/v1/origins/user/${user.value}`)
     }, 2000);
@@ -113,8 +114,7 @@ const onSubmit = handleSubmit(async (values) => {
     toast.error('Erro ao criar o livro!')
     saving.value = false
   } finally {
-    uploading.value = false
-    saving.value = false
+    console.log()
   }
 })
 
@@ -504,7 +504,8 @@ onUnmounted(() => {
 
           <!-- Botão Criar -->
           <div class="col-span-full flex justify-center pb-6">
-            <button 
+            <button
+              type="button"
               @click="onSubmit" 
               class="px-8 py-2 rounded-md text-white text-sm font-bold shadow-md transition-all duration-300"
               :class="{
