@@ -108,7 +108,7 @@ function wheelDelegateHandler(e: WheelEvent) {
   if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
     e.preventDefault() // necessário { passive: false } ao registrar
     // ajusta a sensibilidade se quiser (multiplicador)
-    const multiplier = 0.5 // aumenta se quiser rolar mais/menos por tick
+    const multiplier = 0.8 // aumenta se quiser rolar mais/menos por tick
     container.scrollLeft += e.deltaY * multiplier
   }
 }
@@ -248,12 +248,12 @@ onBeforeUnmount(() => {
             <div 
               v-for="obra in grupo.books" 
               :key="obra.id" 
-              class="flex flex-col cursor-pointer relative group"
+              class="flex flex-col cursor-pointer relative group min-w-[140px] max-w-[141px]"
             >
               <img 
                 :src="obra.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" 
                 :alt="obra.name" 
-                class="h-[210px] w-[140px] object-cover shadow-md shadow-black/30 rounded group-hover:shadow-xl transition"
+                class="h-[210px] w-full object-cover shadow-md shadow-black/30 rounded group-hover:shadow-xl transition"
               />
               
               <div class="my-2 text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate px-1">
