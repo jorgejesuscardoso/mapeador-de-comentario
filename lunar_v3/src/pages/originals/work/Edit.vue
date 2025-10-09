@@ -293,6 +293,24 @@ onUnmounted(() => {
 <template>
   <div class="flex flex-col items-end justify-center w-full dark:bg-black bg-white min-h-screen pb-10">
     <div
+      class="flex items-start justify-end mt-16 w-full"
+    >
+      <div
+        class="flex items-center text-sm gap-1 dark:text-gray-200 lg:w-[85vw] w-full ml-4 md:mt-0 md:ml-0 mt-2"
+      >
+        <span
+          class="flex items-center cursor-pointer"
+          @click="router.push('/v1/origins/user/JcBushido')"
+        >
+          <Lucide
+            icon="ArrowLeft"
+            class="w-4 h-4"
+          />
+          Voltar
+        </span>
+      </div>
+    </div>
+    <div
       v-if="noHasImgModal"
       class="flex items-center justify-center bg-black/40 fixed inset-0 z-50"
     >

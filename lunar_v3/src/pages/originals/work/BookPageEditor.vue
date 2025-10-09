@@ -296,7 +296,7 @@ function scheduleSave() {
   }, 3000)
 }
 
-const cancelEdit = () => router.back()
+const cancelEdit = () => router.push('/v1/origins/user/JcBushido')
 
 // ========================
 // lifecycle

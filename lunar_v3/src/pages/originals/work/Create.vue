@@ -238,7 +238,7 @@ onUnmounted(() => {
           {{ saving ? 'Criando' : 'Criar' }}
         </button>
         <button  
-          @click="router.back()"
+          @click="router.push('/v1/origins/user/JcBushido')"
           class="px-4 py-2 rounded-md border text-sm dark:text-gray-300 dark:border-[#fff3] dark:hover:text-black":class="{
             'bg-gray-400 cursor-not-allowed text-white': saving,
             'text-gray-600 hover:bg-gray-50': !saving
