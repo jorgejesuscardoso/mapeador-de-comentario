@@ -579,7 +579,7 @@ onUnmounted(() => {
               }"
               :disabled="saving"
             >
-              {{ saving ? 'Criando' : 'Criar' }}
+              {{ saving ? 'Salvando' : 'Salvar' }}
             </button>
           </div>      
         </div>
