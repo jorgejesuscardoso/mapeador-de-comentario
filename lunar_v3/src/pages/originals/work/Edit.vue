@@ -116,7 +116,7 @@ const onSubmit = handleSubmit(async (values) => {
     formData.append('subgenre', values.subgenre)
     formData.append('target', values.target)
     formData.append('type', values.type)
-    formData.append('mature', String(values.mature || false))
+    formData.append('mature', String(values.mature ? 'true' : 'false'))
     
     const tagsArray = Array.isArray(values.tags)
       ? values.tags
@@ -191,12 +191,13 @@ async function fetchBook() {
         type: res.data.type,
         target: res.data.target,
       } as Book
-      
+      console.log(res.data)
       coverPreview.value = res.data.cover;
       
       const s = res.data.tags
       work.tags = Array.isArray(res.data.tags) && res.data.tags.join(', ')
       tagList.value = res.data.tags
+      work.mature = res.data.mature === 'true' ? true : false
       book.value = work
       resetForm({ values: work })
     } else {
@@ -341,7 +342,7 @@ onUnmounted(() => {
                 />
                 Adicionar capa
               </span>
-              <img v-else :src="coverPreview" class="w-full h-full border border-purple-200  object-cover rounded-md"/>
+              <img v-else :src="coverPreview" class="w-full h-full border border-purple-200 dark:border-none object-cover rounded-md"/>
               <input type="file" class="hidden" @change="onCoverChange" accept="image/*"/>
             </label>
           </div>

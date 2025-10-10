@@ -26,7 +26,7 @@ export interface Book {
   createdAt: string         // Data de criação (ISO string)
   updatedAt: string         // Última atualização (ISO string)
 
-  mature: boolean
+  mature: string
   
   // Possíveis extensões futuras
   status?: string  // Estado da obra
@@ -218,7 +218,7 @@ onBeforeUnmount(() => {
 
               <!-- Badge 18+ -->
               <span 
-                v-if="obra.mature" 
+                v-if="obra.mature === 'true'" 
                 class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded">
                 +18
               </span>
@@ -271,7 +271,12 @@ onBeforeUnmount(() => {
               <div class="text-gray-800 dark:text-gray-400 text-[10px] flex items-center gap-1 px-1">
                 <Lucide icon="Eye" class="w-4 h-4"/> {{ formatNumber(obra.views) }} visualizações
               </div>
-              <span v-if="obra.mature" class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded">+18</span>
+              <span 
+                v-if="obra.mature === 'true'" 
+                class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded"
+              >
+                +18
+              </span>
             </div>
           </div>
 
