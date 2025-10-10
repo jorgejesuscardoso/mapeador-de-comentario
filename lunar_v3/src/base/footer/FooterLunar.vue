@@ -1,5 +1,7 @@
 
 <script setup>
+import Lucide from '../lucide/Lucide.vue';
+
 // Nenhum script necessário no momento
 </script>
 <template>
@@ -27,19 +29,28 @@
 
       <!-- Redes sociais -->
       <div>
-        <h3 class="text-lg font-semibold text-white mb-3">Conecte-se</h3>
-        <div class="flex space-x-4">
+        <h3 class="text-lg font-semibold text-white mb-3">Nossas redes</h3>
+        <div class="flex flex-col items-start space-y-1">
           <a href="https://twitter.com" target="_blank" class="hover:text-violet-400 transition">
-            <i class="fab fa-twitter text-xl"></i>
+            <i class="flex items-center justify-center text-base gap-1 fab fa-twitter">
+              <Lucide icon="Twitter" class="w-4 h-4" />
+              Twitter
+            </i>
           </a>
           <a href="https://instagram.com" target="_blank" class="hover:text-violet-400 transition">
-            <i class="fab fa-instagram text-xl"></i>
+            <i class="flex items-center justify-center text-base gap-1 fab fa-instagram">
+              <Lucide icon="Instagram" class="w-4 h-4" />
+              Instagram
+            </i>
           </a>
           <a href="https://github.com" target="_blank" class="hover:text-violet-400 transition">
             <i class="fab fa-github text-xl"></i>
           </a>
           <a href="https://github.com" target="_blank" class="hover:text-violet-400 transition">
-            <i class="fab fa-github text-xl"></i>
+            <i class="flex items-center justify-center text-base gap-1 fab fa-github">
+              <Lucide icon="Github" class="w-4 h-4" />
+              GitHub
+            </i>
           </a>
         </div>
       </div>

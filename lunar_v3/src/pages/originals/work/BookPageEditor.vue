@@ -406,18 +406,23 @@ onUnmounted(() => {
       </div>
       <div class="flex gap-2">
         <button 
-          class="md:px-4 px-2 md:py-2 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white text-sm font-bold shadow-sm"
+          class="md:px-4 px-2 md:py-2 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white md:text-sm text-xs font-bold shadow-sm"
           @click="save(true)"
         >
           Publicar
         </button>
         <button 
           @click="save(false)" 
-          class="md:px-4 px-2 md:py-2 py-1.5 rounded-md bg-standard dark:bg-standard-dark dark:text-gray-300 dark:hover:text-white text-white text-sm font-bold shadow-sm"
+          class="md:px-4 px-2 md:py-2 py-1.5 rounded-md bg-standard dark:bg-standard-dark dark:text-gray-300 dark:hover:text-white text-white  md:text-sm text-xs font-bold shadow-sm"
         >
           Salvar
         </button>
-        <button @click="cancelEdit" class="md:px-4 px-2 md:py-2 p-1.5 rounded-md border text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:hover:text-black">Cancelar</button>
+        <button 
+          @click="cancelEdit" 
+          class="md:px-4 px-2 md:py-2 p-1.5 rounded-md border  md:text-sm text-xs text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:hover:text-black"
+        >
+          Cancelar
+        </button>
       </div>
     </header>
     <section class="w-full px-6 py-6 flex justify-center bg-white dark:bg-[#ffffff04]">
