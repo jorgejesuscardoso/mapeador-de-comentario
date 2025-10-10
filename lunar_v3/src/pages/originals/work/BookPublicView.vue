@@ -132,8 +132,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center mt-14 min-h-screen w-full bg-white dark:bg-[#000] text-gray-900 dark:text-gray-100 pb-24 m">
-    <div class="w-full md:w-[75vw] px-4 md:px-8 pt-6 md:pt-10">
+  <div class="flex items-center justify-center mt-14 min-h-screen w-full bg-white dark:bg-[#000] text-gray-900 dark:text-gray-100 pb-24">
+    <div class="w-full md:w-[75vw] px-2 md:px-8 pt-6 md:pt-10">
       <div>
         <button @click="router.back()" class="text-sm text-gray-500 dark:text-gray-400 hover:underline flex items-center gap-1 mb-6">
           <Lucide icon="ArrowLeft" class="w-4 h-4" /> Voltar
@@ -142,12 +142,12 @@ onMounted(() => {
       <!-- HERO / SUMMARY -->
       <section class="flex flex-col items-center md:flex-row md:items-start md:justify-between">
         <!-- cover -->
-        <div class="flex items-start col-span-1 justify-start">
+        <div class="flex items-start col-span-1 justify-start ">
           <div class="md:w-[240px] shadow-xl rounded-lg overflow-hidden">
             <div v-if="loading" class="h-[380px] w-full flex items-center justify-center bg-gray-100 dark:bg-white/5">
               <Lucide icon="Image" class="w-10 h-10 text-gray-400" />
             </div>
-            <img v-else :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="book?.name" class="w-[500px] md:h-[350px] object-cover"/>
+            <img v-else :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" :alt="book?.name" class="md:w-[240px] md:h-[350px] object-cover"/>
           </div>
         </div>
 
@@ -179,11 +179,11 @@ onMounted(() => {
                 Iniciar Leitura
               </button>
 
-              <button @click="handleFollow" class="px-3 py-2 rounded-md border text-sm font-medium" :class="following ? 'bg-violet-50 border-violet-400 text-violet-700' : 'bg-white dark:bg-[#000] '">
+              <button @click="handleFollow" class="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium" :class="following ? 'bg-violet-50 border-violet-400 text-violet-700' : 'bg-white dark:bg-[#000] '">
                 <Lucide icon="Heart" class="inline-block w-4 h-4 mr-1" /> {{ following ? 'Seguindo' : 'Seguir' }}
               </button>
 
-              <button @click="shareBook" class="px-3 py-2 rounded-md border text-sm">
+              <button @click="shareBook" class="px-3 py-2 rounded-md border border-gray-300 text-sm">
                 <Lucide icon="Share2" class="inline-block w-4 h-4 mr-1" /> Compartilhar
               </button>
             </div>
@@ -232,50 +232,90 @@ onMounted(() => {
         </div>
       </section>
 
-      <!-- CAPÍTULOS -->
-      <section class="mt-10">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold">Capítulos Disponíveis</h2>
-          <span class="text-sm text-gray-500">{{ publishedChapters.length }} capítulo(s)</span>
-        </div>
+       <!-- CAPÍTULOS + RECOMENDADOS -->
+      <section class="mt-10 flex flex-col lg:flex-row lg:items-start lg:gap-2">
+        <!-- LISTA DE CAPÍTULOS -->
+        <div class="flex flex-col w-full">
+          <div class="flex items-center justify-between mb-1">
+            <h2 class="text-xl font-semibold">Capítulos Disponíveis</h2>
+            <span class="text-sm text-gray-500">{{ publishedChapters.length }} capítulo(s)</span>
+          </div>
 
-        <!-- loading -->
-        <div v-if="loading" class="flex items-center justify-center py-20">
-          <Lucide icon="RefreshCw" class="w-12 h-12 animate-spin text-violet-600" />
-        </div>
+          <!-- loading -->
+          <div v-if="loading" class="flex items-center justify-center py-20">
+            <Lucide icon="RefreshCw" class="w-12 h-12 animate-spin text-violet-600" />
+          </div>
 
-        <!-- empty state -->
-        <div v-else-if="publishedChapters.length === 0" class="border border-dashed border-gray-200 rounded-lg p-8 text-center">
-          <Lucide icon="BookOpen" class="w-16 h-16 mx-auto text-gray-400" />
-          <h3 class="text-lg font-semibold mt-4">Nenhum capítulo disponível</h3>
-          <p class="text-sm text-gray-500 mt-2">O autor ainda não publicou capítulos desta obra. Volte mais tarde ou siga a obra para receber notificações.</p>
-          <div class="mt-4 flex items-center justify-center gap-3">
-            <button @click="handleFollow" class="px-4 py-2 rounded-md bg-violet-600 text-white">Seguir a obra</button>
-            <button @click="shareBook" class="px-4 py-2 rounded-md border">Compartilhar</button>
+          <!-- empty state -->
+          <div v-else-if="publishedChapters.length === 0" class="border border-dashed border-gray-200 rounded-lg p-8 text-center">
+            <Lucide icon="BookOpen" class="w-16 h-16 mx-auto text-gray-400" />
+            <h3 class="text-lg font-semibold mt-4">Nenhum capítulo disponível</h3>
+            <p class="text-sm text-gray-500 mt-2">
+              O autor ainda não publicou capítulos desta obra. Volte mais tarde ou siga a obra para receber notificações.
+            </p>
+            <div class="mt-4 flex items-center justify-center gap-3">
+              <button @click="handleFollow" class="px-4 py-2 rounded-md bg-violet-600 text-white">Seguir a obra</button>
+              <button @click="shareBook" class="px-4 py-2 rounded-md border">Compartilhar</button>
+            </div>
+          </div>
+
+          <!-- lista -->
+          <div
+            v-else
+            class="w-full border border-gray-200 dark:border-white/10 shadow-xl rounded-xl h-fit custom-scrollbar"
+          >
+            <ul class="flex flex-col gap-0.5">
+              <li
+                v-for="(ch, i) in publishedChapters"
+                :key="ch.id"
+                class="first:rounded-t-xl px-4 py-2 bg-white dark:bg-[#ffffff05] border-b border-gray-300 dark:border-[#ffffff10] transition flex flex-col"
+              >
+                <div class="flex items-start justify-between gap-4 relative">
+                  <div>
+                    <div class="text-xs text-gray-500">Capítulo {{ i + 1 }}</div>
+                    <h3 class="text-base font-semibold mt-1 w-fit cursor-pointer hover:underline" @click="goToChapter(ch)">
+                      {{ ch.title }}
+                    </h3>
+                    <div class="text-xs text-gray-500 mt-2 flex items-center gap-3">
+                      <span class="flex items-center gap-1"><Lucide icon="Eye" class="w-4 h-4" /> {{ ch.views.toLocaleString() }}</span>
+                      <span class="flex items-center gap-1"><Lucide icon="Star" class="w-4 h-4" /> {{ ch.votes.toLocaleString() }}</span>
+                      <span class="flex items-center gap-1"><Lucide icon="MessageCircleMore" class="w-4 h-4" /> {{ ch.comments.length }}</span>
+                      <span class="block w-20"> ~ {{ readingTimeEst(ch.wordsCount) }} min</span>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col items-end gap-2 absolute top-0 right-0">
+                    <div class="text-xs text-gray-500">{{ new Date(ch.updatedAt).toLocaleDateString() }}</div>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <!-- list -->
-        <ul v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <li v-for="(ch, i) in publishedChapters" :key="ch.id" class="p-4 bg-white dark:bg-[#ffffff05] border border-gray-100 dark:border-[#ffffff10] rounded-lg shadow-sm hover:shadow-md transition flex flex-col">
-            <div class="flex items-start justify-between gap-4 relative">
-              <div>
-                <div class="text-xs text-gray-500">Capítulo {{ i + 1 }}</div>
-                <h3 class="text-base font-semibold mt-1 cursor-pointer" @click="goToChapter(ch)">{{ ch.title }}</h3>
-                <div class="text-xs text-gray-500 mt-2 flex items-center gap-3">
-                  <span class="flex items-center gap-1"><Lucide icon="Eye" class="w-4 h-4" /> {{ ch.views.toLocaleString() }}</span>
-                  <span class="flex items-center gap-1"><Lucide icon="Star" class="w-4 h-4" /> {{ ch.votes.toLocaleString() }}</span>
-                  <span class="flex items-center gap-1"><Lucide icon="MessageCircleMore" class="w-4 h-4" /> {{ ch.comments.length }}</span>
-                  <span class="block w-20"> ~ {{ readingTimeEst(ch.wordsCount) }} min</span>
+        <!-- ASIDE DE RECOMENDAÇÕES -->
+        <aside class="block md:w-5/12 shrink-0 md:mt-10 mt-2 lg:mt-0 border dark:border-white/10 shadow-lg rounded-lg h-fit">
+          <div class="sticky top-24 bg-white dark:bg-[#000] border border-gray-100 dark:border-[#ffffff10] rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Talvez você também goste</h3>
+            <ul class="space-y-1">
+              <li v-for="r in 6" :key="r" class="flex gap-3 items-center cursor-pointer bg-gray-200 dark:bg-[#ffffff06] hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded-md transition">
+                <div class="w-[60px] h-[85px] rounded overflow-hidden bg-gray-200 dark:bg-white/5 flex-shrink-0">
+                  <img
+                    src="https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp"
+                    alt="Recomendação"
+                    class="w-full h-full object-cover"
+                  />
                 </div>
-              </div>
-
-              <div class="flex flex-col items-end gap-2 absolute top-0 right-0">
-                <div class="text-xs text-gray-500">{{ new Date(ch.updatedAt).toLocaleDateString() }}</div>
-              </div>
-            </div>
-          </li>
-        </ul>
+                <div class="flex flex-col">
+                  <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200 leading-tight">
+                    Obra recomendada {{ r }}
+                  </h4>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">por Autor Exemplo</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </aside>
       </section>
 
     </div>
