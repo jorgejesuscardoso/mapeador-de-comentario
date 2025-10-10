@@ -227,7 +227,10 @@ onBeforeUnmount(() => {
         </div>
 
 
-        <div>
+        <div
+          v-if="hasObras"
+          class="mb-10"
+        >
           <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
             📚 Explorar por Gênero
           </h2>
