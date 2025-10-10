@@ -5,6 +5,7 @@ import sharp from 'sharp';
 import { v2 as cloudinary } from 'cloudinary';
 import { v4 as uuid } from 'uuid'
 import { GetCommand, ScanCommand, PutCommand, UpdateCommand, QueryCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { getAllChapterByBookId } from "../model/chapters.model";
 
 const chaptersLunar = express.Router();
 const tableName = 'booksLunar';
@@ -85,7 +86,8 @@ chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
         Item: newChapter
       })
     );
-
+    
+    console.log(newChapter)
     res.status(201).json(id);
   } catch (err) {
     console.error(err);
@@ -94,6 +96,27 @@ chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
 });
 
 //get por id
+chaptersLunar.get('/read/:bookId/:chapterId', async (req: Request, res: Response) => {
+  try {
+    const { bookId, chapterId } = req.params;
+
+    if (!bookId || !chapterId) {
+      return res.status(400).json({ error: 'bookId e chapterId são obrigatórios!' });
+    }
+    const data = await getAllChapterByBookId(bookId, chapterId) as any;
+    if (!data) {
+      return res.status(400).json({ error: 'Falha ao buscar capítulo!' });
+    }
+
+    //pegar capipítulo com o id mas próximo i
+
+    res.status(200).json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar capítulo' });
+  }
+});
+
 chaptersLunar.get('/:bookId/:chapterId', async (req: Request, res: Response) => {
   try {
     const { bookId, chapterId } = req.params;
@@ -133,14 +156,12 @@ chaptersLunar.get('/:bookId/:chapterId', async (req: Request, res: Response) => 
       bookName: bookResult?.Item?.name
     }
 
-
     res.status(200).json(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar capítulo' });
   }
 });
-
 //get pelo title
 chaptersLunar.get('/chapter/title/:title', async (req: Request, res: Response) => {
   try {
@@ -178,8 +199,7 @@ chaptersLunar.patch('/:bookId/:chapterId', async (req: Request, res: Response) =
   try {
     const { bookId, chapterId } = req.params;
     const { body } = req.body; // pode conter title, paragraphs etc.
-   
-    console.log(body)
+
     if (!bookId || !chapterId) {
       return res.status(400).json({ error: 'bookId e chapterId são obrigatórios!' });
     }
@@ -191,19 +211,22 @@ chaptersLunar.patch('/:bookId/:chapterId', async (req: Request, res: Response) =
     // montar dinamicamente UpdateExpression
     let updateExp = "SET updatedAt = :updatedAt";
     const expValues: any = { ":updatedAt": new Date().toISOString() };
+    const expNames: any = {}; // aqui vamos mapear os nomes reservados
 
     Object.keys(body).forEach((key, idx) => {
-      updateExp += `, ${key} = :val${idx}`;
+      const attrName = `#attr${idx}`;
+      updateExp += `, ${attrName} = :val${idx}`;
       expValues[`:val${idx}`] = body[key];
+      expNames[attrName] = key;
     });
 
-    const id = chapterId;
     const result = await db.send(
       new UpdateCommand({
         TableName: tableChapterName,
-        Key: { bookId, id },
+        Key: { bookId, id: chapterId },
         UpdateExpression: updateExp,
         ExpressionAttributeValues: expValues,
+        ExpressionAttributeNames: expNames,
         ReturnValues: "ALL_NEW"
       })
     );
@@ -213,7 +236,7 @@ chaptersLunar.patch('/:bookId/:chapterId', async (req: Request, res: Response) =
     console.error(err);
     res.status(500).json({ error: 'Erro ao atualizar capítulo' });
   }
-});
+}); 
 
 chaptersLunar.delete('/:bookId/:chapterId', async (req: Request, res: Response) => {
   try {

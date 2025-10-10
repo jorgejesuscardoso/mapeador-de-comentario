@@ -45,12 +45,14 @@ class App {
             otc: "1.0.0.0",
             classic: "1.0.0.0"
         }
-        this.app.use(express.json());
+        this.app.use(express.json({ limit: "10mb" }));
+        this.app.use(express.urlencoded({ limit: "10mb", extended: true }));
         this.app.use('/static', express.static(path.join(__dirname, '../public')));
         this.app.get('/versions', (req, res) => {
             res.json(resp);
         });
     }
+    
 
     // Configuração de rotas
     private routes(): void {
