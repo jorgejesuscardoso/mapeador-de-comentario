@@ -134,7 +134,7 @@ function goToBook() {
     </header>
 
     <!-- BODY -->
-    <div class="flex w-full max-w-7xl mx-auto px-4  py-8 gap-6">     
+    <div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-4  py-8 gap-6">     
 
       <!-- LEft ASIDE -->
       <aside class="hidden lg:block lg:w-3/12">
@@ -180,54 +180,54 @@ function goToBook() {
       </main>
 
       <!-- ASIDE DE RECOMENDAÇÕES -->
-        <aside class="md:w-3/12 mt-10 lg:mt-0 h-fit">
-          <div class="sticky top-24 bg-white dark:bg-[#000] rounded-lg shadow-md p-2 md:p-4">
-            <h3 class="text-xl font-semibold mb-4 dark:text-gray-300">Leia também</h3>
-            <ul class="space-y-3">
-              <li
-                v-for="r in 6"
-                :key="r"
-                class="flex gap-3 items-start cursor-pointer bgo-gray-100 daork:bg-[#ffffff06] hover:bg-gray-50 dark:hover:bg-white/5 transition"
-              >
-                <!-- Capa -->
-                <div class="w-[66px] h-[98px] overflow-hidden bg-gray-200 dark:bg-white/5 flex-shrink-0">
-                  <img
-                    src="https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp"
-                    alt="Recomendação"
-                    class="h-full w-full object-cover"
-                  />
+      <aside class="md:w-3/12 mt-10 lg:mt-0 h-fit">
+        <div class="sticky top-24 bg-white dark:bg-[#000] rounded-lg shadow-md p-2 md:p-4">
+          <h3 class="text-xl font-semibold mb-4 dark:text-gray-300">Leia também</h3>
+          <ul class="space-y-3">
+            <li
+              v-for="r in 6"
+              :key="r"
+              class="flex gap-3 items-start cursor-pointer bgo-gray-100 daork:bg-[#ffffff06] hover:bg-gray-50 dark:hover:bg-white/5 transition"
+            >
+              <!-- Capa -->
+              <div class="w-[66px] h-[98px] overflow-hidden bg-gray-200 dark:bg-white/5 flex-shrink-0">
+                <img
+                  src="https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp"
+                  alt="Recomendação"
+                  class="h-full w-full object-cover"
+                />
+              </div>
+
+              <!-- Infos -->
+              <div class="flex flex-col justify-between">
+                <!-- Título e autor -->
+                <div>
+                  <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight line-clamp-2">
+                    Obra recomendada {{ r }}
+                  </h4>
                 </div>
 
-                <!-- Infos -->
-                <div class="flex flex-col justify-between">
-                  <!-- Título e autor -->
-                  <div>
-                    <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight line-clamp-2">
-                      Obra recomendada {{ r }}
-                    </h4>
+                <!-- Metadados -->
+                <div class="flex flex-wrap items-center gap-2 mt-1 text-xs text-gray-600 dark:text-gray-100">
+                  <div class="flex items-center gap-1">
+                    <Lucide icon="Eye" class="w-3.5 h-3.5" />
+                    <span>{{ 314 * r }}</span>
                   </div>
-
-                  <!-- Metadados -->
-                  <div class="flex flex-wrap items-center gap-2 mt-1 text-xs text-gray-600 dark:text-gray-100">
-                    <div class="flex items-center gap-1">
-                      <Lucide icon="Eye" class="w-3.5 h-3.5" />
-                      <span>{{ 314 * r }}</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <Lucide icon="Star" fill="#777" class="text-[#777] w-3.5 h-3.5" />
-                      <span>{{ 13 * 3 * 7 * r }}</span>
-                    </div>
+                  <div class="flex items-center gap-1">
+                    <Lucide icon="Star" fill="#777" class="text-[#777] w-3.5 h-3.5" />
+                    <span>{{ 13 * 3 * 7 * r }}</span>
                   </div>
-
-                  <!-- Sinopse -->
-                  <p class="text-xs text-gray-700 dark:text-gray-300 leading-snug mt-2 line-clamp-2">
-                    Em um mundo dominado pelas sombras, um jovem guerreiro busca a verdade sobre seu passado, enquanto enfrenta forças que desafiam os próprios deuses...
-                  </p>
                 </div>
-              </li>
-            </ul>
-          </div>
-        </aside>
+
+                <!-- Sinopse -->
+                <p class="text-xs text-gray-700 dark:text-gray-300 leading-snug mt-2 line-clamp-2">
+                  Em um mundo dominado pelas sombras, um jovem guerreiro busca a verdade sobre seu passado, enquanto enfrenta forças que desafiam os próprios deuses...
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </aside>
     </div>
   </div>
 </template>
