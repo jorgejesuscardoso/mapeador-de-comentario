@@ -110,13 +110,13 @@ function goToBook() {
 <template>
   <div class="w-full min-h-screen flex flex-col bg-white dark:bg-[#000]">
     <!-- HEADER -->
-    <header class="w-full sticky top-14 z-20 bg-white border-b dark:border-[#ffffff10] shadow-sm px-6 py-3 flex items-center justify-between dark:bg-[#000]">
+    <header class="w-full sticky top-14 z-20 bg-white border-b dark:border-[#ffffff10] shadow-sm md:px-6 p-1 md:py-3 flex items-center justify-between dark:bg-[#000]">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-14 hidden md:block">
+        <div class="w-10 h-14">
           <img
             :src="bookData?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
             alt="Capa"
-            class="w-full h-full object-cover rounded-md"
+            class="w-full h-full object-cover rounded"
           />
         </div>
         <div>
