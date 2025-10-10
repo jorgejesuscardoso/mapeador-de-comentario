@@ -137,25 +137,25 @@ function goToBook() {
     <div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto md:px-4  py-8 gap-6">     
 
       <!-- LEft ASIDE -->
-      <aside class="hidden lg:block lg:w-3/12">
+      <aside class="hidden lg:block lg:w-3/12 pr-1 lg:border-r border-[#00000030] dark:border-white/10">
         <div class="sticky top-52 space-y-6">
           <div class="border dark:border-white/10 rounded-lg shadow-md bg-white dark:bg-[#000] p-4">
             <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Espaço futuro</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              Aqui vai ter comentários, estatísticas, ranking, notas do autor, ou até propaganda.
+              Aqui vai ter comentários, estatísticas, ranking, notas do autor, ou propaganda.
             </p>
           </div>
         </div>
       </aside>
 
       <!-- MAIN READING AREA -->
-      <main class="flex-1 md:px-6 px-4 py-8 flex justify-center">
-        <div class="flex flex-col items-center justify-start max-w-4xl w-full">
+      <main class="flex py-8 justify-center w-5/12">
+        <div class="flex flex-col items-center justify-start ">
           <h2 class="text-2xl font-bold text-gray-900 dark:text-[#ddd] text-center mb-1">
             {{ chapter?.title || 'Capítulo sem título' }}
           </h2>
           <!-- Metricas views votes comments reais-->
-          <div class="flex justify-center gap-6 mb-32 text-gray-600 dark:text-gray-400 text-xs">
+          <div class="flex justify-center gap-6 mb-32 text-gray-500 dark:text-gray-400 text-xs">
             <div class="flex items-center gap-1">
               <Lucide icon="Eye" class="w-4 h-4" />
               <span>{{ formatNumber(chapter?.views) || 0 }}</span>
