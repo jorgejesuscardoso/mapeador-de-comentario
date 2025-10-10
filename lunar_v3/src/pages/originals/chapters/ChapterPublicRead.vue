@@ -134,7 +134,7 @@ function goToBook() {
     </header>
 
     <!-- BODY -->
-    <div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-4  py-8 gap-6">     
+    <div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto md:px-4  py-8 gap-6">     
 
       <!-- LEft ASIDE -->
       <aside class="hidden lg:block lg:w-3/12">
@@ -149,7 +149,7 @@ function goToBook() {
       </aside>
 
       <!-- MAIN READING AREA -->
-      <main class="flex-1 px-6 py-8 flex justify-center">
+      <main class="flex-1 md:px-6 px-4 py-8 flex justify-center">
         <div class="flex flex-col items-center justify-start max-w-4xl w-full">
           <h2 class="text-2xl font-bold text-gray-900 dark:text-[#ddd] text-center mb-1">
             {{ chapter?.title || 'Capítulo sem título' }}
@@ -180,8 +180,8 @@ function goToBook() {
       </main>
 
       <!-- ASIDE DE RECOMENDAÇÕES -->
-      <aside class="md:w-3/12 mt-10 lg:mt-0 h-fit">
-        <div class="sticky top-24 bg-white dark:bg-[#000] rounded-lg shadow-md p-2 md:p-4">
+      <aside class="md:w-3/12 mt-10 lg:mt-0 h-fit border-t lg:border-t-0 pt-6 lg:pt-0 lg:border-l border-[#00000030] dark:border-white/10">
+        <div class="sticky top-24 bg-white dark:bg-[#000] rounded-lg shadow-md px-4 md:p-4">
           <h3 class="text-xl font-semibold mb-4 dark:text-gray-300">Leia também</h3>
           <ul class="space-y-3">
             <li
