@@ -230,7 +230,7 @@ function timeAgo(dateStr = ''): string {
          
           <!-- PRÓXIMO CAPÍTULO -->
            <div
-            class="mt-20 mb-10 p-6 text-center text-gray-600 dark:text-gray-400"
+            class="mt-20 p-6 text-center text-gray-600 dark:text-gray-400"
            >
             <button
               class="px-4 py-2 bg-gray-200 dark:bg-white/10 rounded hover:bg-gray-300 dark:hover:bg-white/20 transition"
@@ -241,8 +241,8 @@ function timeAgo(dateStr = ''): string {
 
 
           <!-- COMENTÁRIOS -->
-          <section class="w-full mt-44 max-w-prose">
-            <div class="pt-6">
+          <section class="w-full max-w-prose">
+            <div class="">
               <div class="flex items-center justify-between mb-2">
                 <h3 class="text-lg font-semibold dark:text-gray-200">
                   Comentários
