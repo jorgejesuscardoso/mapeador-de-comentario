@@ -70,6 +70,7 @@ export const getBookLunarById = async (bookId: string) => {
       }
     );
     
+    
     return response;
   } catch (err: any) {
     const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';

@@ -67,13 +67,13 @@ const deleteChapter = async () => {
   }
 }
 
+const activeChapterMenu = ref<string | null>(null)
+
 const book = ref<Book | null>(null)
 const chapters = ref<Chapter[]>([])
 const loading = ref(true)
 const newChapters = ref(false)
 const isDelete = ref(false)
-// substitui showChapterMenu por controle por id
-const activeChapterMenu = ref<string | null>(null)
 
 async function fetchBook() {
   try {
@@ -92,6 +92,7 @@ async function fetchBook() {
         tags: res.data.tags,
         updatedAt: res.data.updatedAt
       }
+      
       chapters.value = res.data.chapters || []
     } else {
       toast.error('Erro ao carregar o livro ou capítulos')

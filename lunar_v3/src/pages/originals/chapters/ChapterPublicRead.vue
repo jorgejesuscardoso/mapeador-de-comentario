@@ -169,7 +169,10 @@ function goToNextChapter() {
   <div class="w-full min-h-screen flex flex-col bg-white dark:bg-[#000]">
     <!-- HEADER -->
     <header class="w-full sticky top-14 z-10 bg-white border-b dark:border-[#ffffff10] shadow-sm md:px-4 px-1 py-2 md:py-1 flex items-center justify-between dark:bg-[#000]">
-      <div class="flex items-center gap-3">
+      <div 
+        class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition pl-2 pr-8 py-1 h-full"
+        @click="goToBook"        
+      >
         <div class="w-10 h-14">
           <img
             :src="bookData?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
