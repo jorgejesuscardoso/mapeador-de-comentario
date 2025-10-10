@@ -142,7 +142,7 @@ function goToBook() {
           <div class="border dark:border-white/10 rounded-lg shadow-md bg-white dark:bg-[#000] p-4">
             <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Espaço futuro</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              Aqui tu pode colocar comentários, estatísticas, ranking, notas do autor, ou até propaganda.
+              Aqui vai ter comentários, estatísticas, ranking, notas do autor, ou até propaganda.
             </p>
           </div>
         </div>
@@ -178,7 +178,7 @@ function goToBook() {
           <div v-else class="text-center text-gray-500 dark:text-gray-400">Carregando capítulo...</div>
         </div>
       </main>
-       <!-- Right ASIDE -->
+
       <!-- ASIDE DE RECOMENDAÇÕES -->
         <aside class="md:w-3/12 mt-10 lg:mt-0 h-fit">
           <div class="sticky top-24 bg-white dark:bg-[#000] rounded-lg shadow-md p-2 md:p-4">
