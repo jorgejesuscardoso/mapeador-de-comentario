@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getBookLunarById, getChapterLunarById } from '@/API/OriginalLunarApi'
+import { getBookLunarById, getChapterLunarById, getChapterLunarToReadById } from '@/API/OriginalLunarApi'
 import Lucide from '@/base/lucide/Lucide.vue'
 import formatNumber from '@/base/utils/FormatNumber'
 
@@ -18,6 +18,7 @@ interface Chapter {
   status: string // 'published' | 'draft'
   wordsCount?: number
   order?: number
+  nextPart?: string
 }
 
 // router / params
@@ -47,6 +48,7 @@ function htmlToText(html: string): string {
 
 // computed: texto limpo / contadores
 const plainText = computed(() => htmlToText(chapter.value?.paragraphs || ''))
+
 const wordCount = computed(() => {
   const t = (plainText.value || '').trim()
   if (!t) return 0
@@ -54,36 +56,26 @@ const wordCount = computed(() => {
 })
 const charCount = computed(() => (plainText.value || '').length)
 
-// lifecycle: buscar dados
-onMounted(async () => {
-  loading.value = true
+const fetchChapter = async () => {
   try {
     // busca capítulo e livro em paralelo
-    const [chapterRes, bookRes] = await Promise.all([
-      getChapterLunarById(bookId, chapterId),
-      getBookLunarById ? getBookLunarById(bookId) : Promise.resolve({ status: 404 })
-    ])
-
-    if (chapterRes?.status === 200) {
-      chapter.value = chapterRes.data
+    const response = await getChapterLunarToReadById(bookId, chapterId)
+    
+    if (response?.status === 200) {
+      chapter.value = response.data.currentChapter
+      chapter.value.nextPart = response.data.nextPart || null
       title.value = chapter.value?.title || ''
-      console.log(chapter.value)
+      bookData.value = {
+        bookName: response.data.name || 'Livro sem título',
+        cover: response.data.cover || ''
+      }
     } else {
       // fallback mínimo
       chapter.value = { paragraphs: '', title: '' }
       title.value = ''
-      console.warn('Capítulo não encontrado', chapterRes)
+      console.warn('Capítulo não encontrado', response)
     }
 
-    if (bookRes?.status === 200) {
-      bookData.value = bookRes
-    } else {
-      // se a API de book não existir ou retornar 404, tentamos extrair do chapter (caso tenha)
-      bookData.value = {
-        bookName: chapter.value?.bookName || '',
-        cover: chapter.value?.cover || ''
-      }
-    }
   } catch (err) {
     console.error('Erro ao carregar capítulo/livro:', err)
     // mantém objetos vazios pra evitar crashes no template
@@ -92,12 +84,15 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+}
+// lifecycle: buscar dados
+onMounted(async () => {
+  loading.value = true
+  fetchChapter()
+  loading.value = false
 })
 
 // helpers de navegação
-function goBack() {
-  router.back()
-}
 
 function goToBook() {
   router.push(`/v1/origins/book/${bookId}`)
@@ -154,6 +149,18 @@ function timeAgo(dateStr = ''): string {
   return d.toLocaleDateString()
 }
 
+const hasNextPart = computed(() => {
+  return chapter.value?.nextPart && chapter.value.nextPart !== ''
+})
+
+// navegação pro próximo capítulo
+function goToNextChapter() {
+  if (hasNextPart.value) {
+    router.push(`/v1/origins/read/${bookId}/${chapter.value.nextPart}`)
+    fetchChapter()
+  }
+}
+
 // exportados (script setup já acidentalmente "exporta" tudo usado no template)
 </script>
 
@@ -161,7 +168,7 @@ function timeAgo(dateStr = ''): string {
 <template>
   <div class="w-full min-h-screen flex flex-col bg-white dark:bg-[#000]">
     <!-- HEADER -->
-    <header class="w-full sticky top-14 z-20 bg-white border-b dark:border-[#ffffff10] shadow-sm md:px-6 p-1 md:py-3 flex items-center justify-between dark:bg-[#000]">
+    <header class="w-full sticky top-14 z-10 bg-white border-b dark:border-[#ffffff10] shadow-sm md:px-4 px-1 py-2 md:py-1 flex items-center justify-between dark:bg-[#000]">
       <div class="flex items-center gap-3">
         <div class="w-10 h-14">
           <img
@@ -188,9 +195,9 @@ function timeAgo(dateStr = ''): string {
     <div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto md:px-4  py-8 gap-6">     
 
       <!-- LEft ASIDE -->
-      <aside class="hidden lg:block lg:w-3/12 pr-1 lg:border-r border-[#00000030] dark:border-white/10">
+      <aside class="hidden lg:block lg:w-3/12">
         <div class="sticky top-52 space-y-6">
-          <div class="border dark:border-white/10 rounded-lg shadow-md bg-white dark:bg-[#000] p-4">
+          <div class="bg-white dark:bg-[#000] p-4">
             <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Espaço futuro</h3>
             <p class="text-sm text-gray-600 dark:text-gray-400">
               Aqui vai ter comentários, estatísticas, ranking, notas do autor, ou propaganda.
@@ -200,13 +207,13 @@ function timeAgo(dateStr = ''): string {
       </aside>
 
       <!-- MAIN READING AREA -->
-      <main class="flex md:py-8 items-center justify-center md:w-5/12 w-full md:px-0 px-4">
+      <main class="flex items-center justify-center md:w-5/12 w-full md:px-0 px-4">
         <div class="flex flex-col items-center justify-start ">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-[#ddd] text-center mb-1">
+          <h2 class="text-2xl font-bold text-gray-950 dark:text-[#ddd] text-center mb-1">
             {{ chapter?.title || 'Capítulo sem título' }}
           </h2>
           <!-- Metricas views votes comments reais-->
-          <div class="flex justify-center gap-6 mb-32 text-gray-500 dark:text-gray-400 text-xs">
+          <div class="flex justify-center gap-6 mb-24 text-gray-500 dark:text-gray-400 text-xs">
             <div class="flex items-center gap-1">
               <Lucide icon="Eye" class="w-4 h-4" />
               <span>{{ formatNumber(chapter?.views) || 0 }}</span>
@@ -222,22 +229,26 @@ function timeAgo(dateStr = ''): string {
           </div>
           <article 
             v-if="!loading" 
-            class="prose prose-lg dark:prose-invert dark:text-[#ccc] max-w-none font-serif leading-relaxed"
+            class="prose prose-lg dark:prose-invert text-[#222] dark:text-[#ccc] max-w-none font-serif leading-relaxed"
             v-html="chapter?.paragraphs"
           />
           
           <div v-else class="text-center text-gray-500 dark:text-gray-400">Carregando capítulo...</div>
          
           <!-- PRÓXIMO CAPÍTULO -->
-           <div
-            class="mt-20 p-6 text-center text-gray-600 dark:text-gray-400"
-           >
+          <div class="m-14 text-center text-gray-600 dark:text-gray-400">
             <button
-              class="px-4 py-2 bg-gray-200 dark:bg-white/10 rounded hover:bg-gray-300 dark:hover:bg-white/20 transition"
+              v-if="hasNextPart"
+              @click="goToNextChapter"
+              class="px-4 py-2 bg-standard text-white dark:bg-standard-dark rounded hover:opacity-90 transition"
             >
-              Próximo capítulo (em breve)
+              Próximo capítulo
             </button>
-           </div>
+
+            <p v-else class="text-sm italic text-gray-500 dark:text-gray-400">
+              Você chegou ao último capítulo disponível 🚀
+            </p>
+          </div>
 
 
           <!-- COMENTÁRIOS -->
@@ -253,14 +264,14 @@ function timeAgo(dateStr = ''): string {
                 <div class="flex items-center gap-2 text-xs">
                   <button
                     @click="sortOrder = 'newest'"
-                    :class="sortOrder === 'newest' ? 'font-semibold' : 'text-gray-500 dark:text-gray-400'"
+                    :class="sortOrder === 'newest' ? 'font-semibold text-gray-800 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'"
                     class="px-2 py-1 rounded"
                   >
                     Mais recentes
                   </button>
                   <button
                     @click="sortOrder = 'oldest'"
-                    :class="sortOrder === 'oldest' ? 'font-semibold' : 'text-gray-500 dark:text-gray-400'"
+                    :class="sortOrder === 'oldest' ? 'font-semibold text-gray-800 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'"
                     class="px-2 py-1 rounded"
                   >
                     Mais antigos
@@ -273,10 +284,14 @@ function timeAgo(dateStr = ''): string {
               </div>
 
               <ul class="space-y-6 border-t pt-6" v-if="commentsVisible.length">
-                <li v-for="c in commentsVisible" :key="c.id" class="flex gap-3">
+                <li 
+                  v-for="c in commentsVisible" 
+                  :key="c.id" 
+                  class="flex gap-3 items-start border-b border-gray-200 dark:border-white/10 pb-3"
+                >
                   <!-- avatar -->
                   <div
-                    class="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/6 flex items-center justify-center text-sm text-gray-700 dark:text-gray-300 overflow-hidden"
+                    class="w-10 h-10 rounded-full bg-gray-200 dark:bg-white/6 flex items-center justify-center text-sm text-gray-700 dark:text-gray-300 overflow-hidden "
                   >
                     <img v-if="c.avatar" :src="c.avatar" alt="avatar" class="w-full h-full object-cover" />
                     <span v-else>{{ (c.author || 'A')[0] }}</span>
@@ -309,7 +324,7 @@ function timeAgo(dateStr = ''): string {
               <div v-if="commentsVisible.length < commentsSorted.length" class="mt-6 text-center">
                 <button
                   @click="showMoreComments"
-                  class="px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-800 rounded hover:bg-gray-700 dark:hover:bg-gray-700 transition"
+                  class="px-4 py-2 text-sm font-medium text-white bg-gray-950 dark:bg-gray-800 rounded hover:bg-gray-700 dark:hover:bg-gray-700 transition"
                 >
                   Ver mais comentários
                 </button>
@@ -320,8 +335,8 @@ function timeAgo(dateStr = ''): string {
       </main>
 
       <!-- ASIDE DE RECOMENDAÇÕES -->
-      <aside class="md:w-3/12 mt-10 lg:mt-0 h-fit border-t lg:border-t-0 pt-6 lg:pt-0 lg:border-l border-[#00000030] dark:border-white/10">
-        <div class="sticky top-24 bg-white dark:bg-[#000] rounded-lg shadow-md px-4 md:p-4">
+      <aside class="md:w-3/12 mt-10 lg:mt-0 h-fit border-t lg:border-t-0 pt-6 lg:pt-0 border-[#00000030] dark:border-white/10">
+        <div class="sticky top-24 bg-white dark:bg-[#000] rounded-lg px-4 md:p-4">
           <h3 class="text-xl font-semibold mb-4 dark:text-gray-300">Leia também</h3>
           <ul class="space-y-3">
             <li

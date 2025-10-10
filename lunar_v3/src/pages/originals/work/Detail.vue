@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, inject, watch } from 'vue'
+import { ref, onMounted, inject, watch, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { toast } from '@/base/utils/toast'
-import { createChapters, deleteChapterLunarById, getBookLunarById } from '@/API/OriginalLunarApi'
+import { createChapters, deleteChapterLunarById, getBookLunarById, updateChapterLunarById } from '@/API/OriginalLunarApi'
 import formatNumber from '@/base/utils/FormatNumber'
 import { formatDate } from '@/base/utils/FormatDate'
 
@@ -59,7 +59,7 @@ const deleteChapter = async () => {
     }
     toast.success("Capítulo deletado com sucesso!")
     isDelete.value = false
-    fetchBook()
+    await fetchBook()
   } catch(err) {
     toast.error("Falha ao deletar capítulo!")
     isDelete.value = false
@@ -72,6 +72,8 @@ const chapters = ref<Chapter[]>([])
 const loading = ref(true)
 const newChapters = ref(false)
 const isDelete = ref(false)
+// substitui showChapterMenu por controle por id
+const activeChapterMenu = ref<string | null>(null)
 
 async function fetchBook() {
   try {
@@ -90,7 +92,7 @@ async function fetchBook() {
         tags: res.data.tags,
         updatedAt: res.data.updatedAt
       }
-      chapters.value = res.data.chapters
+      chapters.value = res.data.chapters || []
     } else {
       toast.error('Erro ao carregar o livro ou capítulos')
     }
@@ -99,6 +101,34 @@ async function fetchBook() {
     toast.error('Erro ao carregar dados do livro')
   } finally {
     loading.value = false
+  }
+}
+
+const togglePublication = async (chId: string, fator: string) => {
+  try {
+    if(fator === 'pub') {      
+      const response = await updateChapterLunarById(bookId, chId, { status: 'published' })
+      if (response && (response.status === 200 || response.status === 204)) {
+        toast.success('Capítulo publicado com sucesso!')
+        activeChapterMenu.value = null
+        await fetchBook()
+      } else {
+        toast.error('Falha ao publicar capítulo')
+      }
+      return
+    }
+    
+    const response = await updateChapterLunarById(bookId, chId, { status: 'draft' })
+    if (response && (response.status === 200 || response.status === 204)) {
+        toast.success('Publicação removida com sucesso!')
+        activeChapterMenu.value = null
+        await fetchBook()
+      } else {
+        toast.error('Falha ao remover publicação')
+      }
+  } catch (err) {
+    console.error(err)
+    toast.error('Erro na operação!')
   }
 }
 
@@ -115,13 +145,28 @@ const handleCreateNewChapters = async () => {
     }
     toast.success("Capítulo criado com sucesso!!!")
     loading.value = false
-    fetchBook()
+    await fetchBook()
   } catch (err) {
     console.error(err)
     toast.error("Falha ao criar capítulo.")
     loading.value = false
   }
+}
 
+function toggleChapterMenu(id: string) {
+  activeChapterMenu.value = activeChapterMenu.value === id ? null : id
+}
+
+// Fecha o menu ao clicar fora
+function onGlobalClick(e: MouseEvent) {
+  if (!activeChapterMenu.value) return
+  const activeId = activeChapterMenu.value
+  const menuEl = document.getElementById(`chapter-menu-${activeId}`)
+  const btnEl = document.getElementById(`chapter-btn-${activeId}`)
+  const target = e.target as Node
+  if (menuEl && menuEl.contains(target)) return
+  if (btnEl && btnEl.contains(target)) return
+  activeChapterMenu.value = null
 }
 
 onMounted(() => {
@@ -130,20 +175,19 @@ onMounted(() => {
   isPremium.value = storage.licenses.some((s) => s === 'premium')
   isBeta.value = storage.licenses.some((s) => s === 'ebeta_tester')
   fetchBook()
+
+  // adiciona listener global para fechar menus ao clicar fora
+  window.addEventListener('click', onGlobalClick)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('click', onGlobalClick)
 })
 </script>
 
 <template>
   <div class="flex flex-col items-start justify-center w-full md:mt-0 mt-2 bg-white dark:bg-[#000] gray-50 min-h-screen">
-    <div
-      class="md:hidden fixed z-40 top-16 left-3 mt-1 p-1"
-      @click="router.back()"
-    >
-      <Lucide
-        icon="ArrowLeft"
-        class="dark:text-white/60 w-6 h-6 p-1 rounded-full dark:bg-white/20 text-white/90 bg-black/40"
-      />
-    </div>
+  
     <div
       class="w-full lg:w-[85vw] flex items-center justify-start  md:mt-0 px-3 md:px-6 py-4 bg-white dark:bg-[#000] border-b dark:border-[#ffffff10] shadow-sm"
     >
@@ -151,7 +195,8 @@ onMounted(() => {
        Detalhes do livro
       </h2>
     </div>
-    <!-- Modal de confirmação -->
+
+    <!-- Modal de confirmação DELETE-->
     <div
       v-if="isDelete"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -179,7 +224,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Modal de confirmação -->
+    <!-- Modal de confirmação CREATE -->
     <div
       v-if="newChapters"
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -206,6 +251,8 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <!-- Fim do Modal -->
+
     <!-- Wrapper -->
     <div class="flex flex-col justify-end lg:flex-row gap-2 md:gap-8 w-full lg:w-[85vw] p-2 md:p-6">
       
@@ -225,9 +272,7 @@ onMounted(() => {
           :src="book?.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'" 
           alt="Capa do livro" 
           class="w-full max-w-md shadow-lg dark:shadow-black dark:border-none object-cover border shadow-gray-500"
-        >
-        </img>
-
+        />
         <!-- CTA Premium -->
         <div 
           v-if="!isPremium"
@@ -258,43 +303,98 @@ onMounted(() => {
           class="flex items-center justify-between pb-2 mb-2 border-b dark:border-[#ffffff10]"
         >
           <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Capítulos:</h2>
-          <button
-            class="flex items-center justify-center text-xs px-2 py-1 bg-standard text-white rounded font-semibold relative"
-            @click="newChapters = true"
-          >
-            <div
-              class="hidden dark:flex bg-[#0002] hover:bg-[#00000005] w-full h-full absolute"
+          <div class="flex gap-2">
+            <button
+              class="flex items-center justify-center gap-2 text-sm px-3.5 py-2 bg-standard text-white rounded-md font-semibold relative"
+              @click="router.push(`/v1/origins/work/${bookId}`)"
             >
-                <!-- Empty state -->
-            </div>
-            <Lucide
-              icon="Plus"
-              class="h-4 w-4"
-            />
-            NOVO CAPÍTULO
-          </button>
+              <Lucide
+                icon="BookOpen"
+                class="h-4 w-4"
+              />
+              LER
+            </button>
+
+            <button
+              class="flex items-center justify-center gap-2 text-sm px-3.5 py-2 bg-standard text-white rounded font-semibold relative"
+              @click="newChapters = true"
+            >
+              <Lucide
+                icon="Plus"
+                class="h-4 w-4"
+              />
+              NOVO CAPÍTULO
+            </button>
+          </div>
         </div>
 
         <div v-if="loading" class="flex items-center justify-center text-violet-600 py-20">
           <Lucide icon="RefreshCw" class="w-12 h-12 animate-spin"/>
         </div>
 
-        <ul v-else class="flex flex-col gap-1 md:gap-4">
+        <ul v-else class="flex flex-col gap-1.5">
           <li 
             v-for="chapter in chapters" 
             :key="chapter.id" 
-            class="bg-white rounded shadow dark:border-none dark:bg-[#ffffff05]  border border-gray-300 md:border-gray-200 gap-6 p-3 flex items-center justify-between hover:shadow-xl transition relative"
+            class="relative bg-white dark:bg-[#080808] rounded shadow border border-gray-200 dark:border-[#1f1f1f] gap-6 p-3 flex items-center justify-between hover:shadow-lg transition"
           >
+            <!-- botão do menu (controle por id) -->
             <div
-              class="absolute top-2 right-2"
-              @click="isDelete = true, idTodelete = chapter.id"
+              :id="`chapter-btn-${chapter.id}`"
+              class="absolute top-3 right-3 cursor-pointer p-1 rounded hover:bg-violet-600/10 transition"
+              @click.stop="toggleChapterMenu(chapter.id)"
             >
               <Lucide
-                icon="X"
+                icon="EllipsisVertical"
                 :stroke-width="2"
-                class="h-4 w-4 text-gray-600"
+                class="h-4 w-4 text-gray-600 dark:text-gray-300"
               />
             </div>
+
+            <!-- Menu de ações (apenas para o capítulo ativo) -->
+            <div
+              v-if="activeChapterMenu === chapter.id"
+              :id="`chapter-menu-${chapter.id}`"
+              class="absolute top-10 right-3 bg-white dark:bg-[#0f1720] border border-gray-200 dark:border-[#2b2b2b] rounded-lg shadow-xl z-50 w-44 animate-fadeIn"
+            >
+              <ul class="flex flex-col text-sm">
+                <li>
+                  <button
+                    @click="() => { goToChapter(chapter); activeChapterMenu = null }"
+                    class="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-violet-600/10 transition"
+                  >
+                    ✏️ Editar capítulo
+                  </button>
+                </li>
+
+                <li v-if="chapter.status === 'draft'">
+                  <button
+                    @click="() => { togglePublication(chapter.id, 'pub'); activeChapterMenu = null }"
+                    class="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-violet-600/10 transition"
+                  >
+                    🚀 Publicar capítulo
+                  </button>
+                </li>
+                <li v-if="chapter.status === 'published'">
+                  <button
+                    @click="() => { togglePublication(chapter.id, null); activeChapterMenu = null }"
+                    class="w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-violet-600/10 transition"
+                  >
+                    🛑 Remover publicação
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    @click="() => { idTodelete = chapter.id; isDelete = true; activeChapterMenu = null }"
+                    class="w-full text-left px-4 py-2 text-red-500 hover:bg-red-600/10 dark:hover:bg-red-900/30 transition"
+                  >
+                    🗑️ Deletar capítulo
+                  </button>
+                </li>
+              </ul>
+            </div>
+
             <div>
               <Lucide
                 icon="Menu"
@@ -304,19 +404,16 @@ onMounted(() => {
             </div>
           
             <!-- título -->
-            <div
-              class="w-full"
-            >
+            <div class="w-full">
               <h3 
                 @click="goToChapter(chapter)"
-                class="md:text-lg text-base font-semibold text-gray-800 cursor-pointer dark:text-gray-400"
+                class="md:text-sm text-base font-semibold text-gray-800 dark:text-gray-200 cursor-pointer"
               >
                 {{ chapter.title }}
               </h3>
               
-
               <!-- métricas -->
-              <div class="flex flex-wrap gap-3 md:gap-6 text-xs md:text-sm text-gray-500 mt-2 dark:text-gray-400">
+              <div class="flex flex-wrap gap-3 md:gap-6 text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-2 items-center">
                 <span class="flex items-center gap-1">
                   <Lucide icon="Eye" fill="#eee" class="w-4 h-4"/> {{ formatNumber(chapter.views) }}
                 </span>
@@ -342,3 +439,14 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 160ms ease-out;
+}
+/* adaptações sutis para o menu em dark mode */
+</style>

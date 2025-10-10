@@ -69,6 +69,7 @@ export const getBookLunarById = async (bookId: string) => {
         signal: controller.signal
       }
     );
+    
     return response;
   } catch (err: any) {
     const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';
@@ -181,10 +182,31 @@ export const getChapterLunarById = async (bookId: string, chapterId: string) => 
   }
 };
 
-export const updateChapterLunarById = async (bookId: string, chapterId: string, body: any) => {
+export const getChapterLunarToReadById = async (bookId: string, chapterId: string) => {
   try {
     const controller = new AbortController();
 
+    const response = await axios.get(
+      `${endPointChapters}/read/${bookId}/${chapterId}`,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        signal: controller.signal
+      }
+    ); 
+    
+    return response;
+  } catch (err: any) {
+    const msg = err?.response?.data?.error || 'Erro inesperado no upload da capa';
+    throw new Error(msg);
+  }
+};
+
+export const updateChapterLunarById = async (bookId: string, chapterId: string, body: any) => {
+  try {
+    const controller = new AbortController();
+ 
     const response = await axios.patch(
       `${endPointChapters}/${bookId}/${chapterId}`,
       {

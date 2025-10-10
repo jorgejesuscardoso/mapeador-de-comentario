@@ -33,7 +33,7 @@ interface Book {
   genre: string
   createdAt: string
   updatedAt: string
-  mature: boolean
+  mature: string // 'true' | 'false'
   status: string // 'ongoing' | 'complete'
   chapters?: Chapter[]
   views?: number
@@ -91,7 +91,6 @@ async function fetchBook() {
         commentsTotal: data.commentsTotal || 0,
       }
       chapters.value = data.chapters || []
-      console.log('Book data:', book.value)
     } else {
       // fallback
       book.value = null
@@ -180,7 +179,13 @@ onMounted(() => {
 
                 <span class="text-xs text-gray-500 dark:text-gray-400">{{ genreLabel(book?.genre || '') }}</span>
 
-                <span v-if="book?.mature" class="ml-2 inline-block text-xs bg-red-600 text-white px-2 py-0.5 rounded">+18</span>
+                <span v-if="book?.mature === 'true'" class="ml-2 inline-block text-xs bg-red-600 text-white px-2 py-0.5 rounded">+18</span>
+                <span
+                  v-else
+                  class="ml-2 inline-block text-xs bg-green-600 text-white px-2 py-0.5 rounded"
+                >
+                  LIVRE
+                </span>
               </div>
             </div>
 

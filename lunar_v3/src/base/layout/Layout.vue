@@ -714,7 +714,7 @@ function toggle() {
 					<main
 						class="flex flex-col items-center justify-start relative w-full min-h-screen"
 						:class="{
-							'mt-14': route.path !== '/v1/origins/work/create',
+							'mt-14': route.path !== '/v1/origins/work/create' && !route.path.startsWith('/v1/origins/mywork/write'),
 						}"
 					>
 						<!-- Menu flutuante --> 

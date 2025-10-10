@@ -267,24 +267,58 @@ function onInput() {
   scheduleSave()
 }
 
-async function save() {
+function cleanEditorHTML(editorEl: HTMLElement) {
+  const clone = editorEl.cloneNode(true) as HTMLElement;
+
+  // remove todos os atributos desnecessários e spans
+  clone.querySelectorAll('*').forEach((el) => {
+    if (el.nodeName !== 'P' && el.nodeName !== 'BR') {
+      const textNode = document.createTextNode(el.textContent || '');
+      el.replaceWith(textNode);
+    } else {
+      // mantém id, remove classe/style
+      if (el.nodeName === 'P') {
+        el.removeAttribute('class');
+        el.removeAttribute('style');
+      }
+    }
+  });
+
+  return clone.innerHTML;
+}
+
+async function save(pub?: boolean) {
   if (!editor.value) return
-  normalizeEditor() // garante IDs e estrutura antes de salvar
-
-  // pega todos os <p> e salva o elemento completo (outerHTML)
-  const ps = Array.from(editor.value.querySelectorAll('p'))
-  const fullHtml = ps.map(p => p.outerHTML).join('')
-
-  const payload = {
+  normalizeEditor()
+  
+  const ps = cleanEditorHTML(editor.value);
+  const payload: {
+    title: string;
+    wordsCount: number;
+    paragraphs: string;
+    status?: string;
+  } = {
     title: title.value,
     wordsCount: wordCount.value,
-    paragraphs: fullHtml,
-  }
+    paragraphs: ps
+  };
 
-  await updateChapterLunarById(bookId, chapterId, payload)
-  
+  if(pub) {
+    payload.status = 'published'
+  } 
+
+  const response = await updateChapterLunarById(bookId, chapterId, payload)
   saving.value = true
   setTimeout(() => { saving.value = false }, 1000)
+  if(pub && response.status === 200) {
+    toast.success('Capítulo publicado com sucesso!')
+    router.push(`/v1/origins/read/${bookId}/${chapterId}`)
+    return
+  } else {
+    toast.error('Falha ao salvar e publicar capítulo')
+    return
+  }
+  
 }
 
 function scheduleSave() {
@@ -295,7 +329,7 @@ function scheduleSave() {
   }, 10 * 60 * 1000) // 10 minutos de inatividade
 }
 
-const cancelEdit = () => router.push('/v1/origins/user/JcBushido')
+const cancelEdit = () => router.back()
 
 // ========================
 // lifecycle
@@ -322,6 +356,26 @@ onMounted(async () => {
   }
   setTimeout(() => ensureInitialParagraph(), 0)
 })
+
+const handlePublication = async (chId: string) => {
+  try {
+    if(!chId) {
+      toast.error('ID do capítulo inválido')
+      return
+    }        
+    const response = await updateChapterLunarById(bookId, chId, { status: 'published' })
+    if (response && (response.status === 200 || response.status === 204)) {
+      toast.success('Capítulo publicado com sucesso!')
+      router.push(`/v1/origins/read/${bookId}/${chId}`)
+      return
+    } else {
+      toast.error('Falha ao publicar capítulo')
+    }
+  } catch (err) {
+    console.error(err)
+    toast.error('Erro na operação!')
+  }
+}
 
 watch(title, () =>{
   if(holdPrevSave > 0) return  scheduleSave()
@@ -351,11 +405,21 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="flex gap-2">
-        <button @click="save" class="md:px-4 px-2 md:py-2 py-1.5 rounded-md bg-standard dark:bg-standard-dark dark:text-gray-300 dark:hover:text-white text-white text-sm font-bold shadow-sm">Salvar</button>
+        <button 
+          class="md:px-4 px-2 md:py-2 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white text-sm font-bold shadow-sm"
+          @click="save(true)"
+        >
+          Publicar
+        </button>
+        <button 
+          @click="save(false)" 
+          class="md:px-4 px-2 md:py-2 py-1.5 rounded-md bg-standard dark:bg-standard-dark dark:text-gray-300 dark:hover:text-white text-white text-sm font-bold shadow-sm"
+        >
+          Salvar
+        </button>
         <button @click="cancelEdit" class="md:px-4 px-2 md:py-2 p-1.5 rounded-md border text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:hover:text-black">Cancelar</button>
       </div>
     </header>
-
     <section class="w-full px-6 py-6 flex justify-center bg-white dark:bg-[#ffffff04]">
       <input v-model="title" type="text" placeholder="Título do capítulo..." class="w-full bg-transparent border-b dark:border-[#ffffff20] border-gray-300 focus:outline-none py-2 text-2xl font-bold text-center placeholder-gray-400 dark:text-gray-400"/>
     </section>
