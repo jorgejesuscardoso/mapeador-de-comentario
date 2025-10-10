@@ -4,6 +4,8 @@ import { useRoute, useRouter } from 'vue-router'
 import Lucide from '@/base/lucide/Lucide.vue'
 import { toast } from '@/base/utils/toast'
 import { createChapters, deleteChapterLunarById, getBookLunarById } from '@/API/OriginalLunarApi'
+import formatNumber from '@/base/utils/FormatNumber'
+import { formatDate } from '@/base/utils/FormatDate'
 
 interface Chapter {
   id: string
@@ -132,7 +134,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row items-start justify-end w-full mt-14 bg-white dark:bg-[#000] gray-50 min-h-screen">
+  <div class="flex flex-col items-start justify-center w-full md:mt-0 mt-2 bg-white dark:bg-[#000] gray-50 min-h-screen">
     <div
       class="md:hidden fixed z-40 top-16 left-3 mt-1 p-1"
       @click="router.back()"
@@ -142,7 +144,13 @@ onMounted(() => {
         class="dark:text-white/60 w-6 h-6 p-1 rounded-full dark:bg-white/20 text-white/90 bg-black/40"
       />
     </div>
-
+    <div
+      class="w-full lg:w-[85vw] flex items-center justify-start  md:mt-0 px-3 md:px-6 py-4 bg-white dark:bg-[#000] border-b dark:border-[#ffffff10] shadow-sm"
+    >
+      <h2 class="text-xl font-bold text-gray-700 dark:text-gray-300">
+       Detalhes do livro
+      </h2>
+    </div>
     <!-- Modal de confirmação -->
     <div
       v-if="isDelete"
@@ -310,16 +318,16 @@ onMounted(() => {
               <!-- métricas -->
               <div class="flex flex-wrap gap-3 md:gap-6 text-xs md:text-sm text-gray-500 mt-2 dark:text-gray-400">
                 <span class="flex items-center gap-1">
-                  <Lucide icon="Eye" fill="#eee" class="w-4 h-4"/> {{ chapter.views.toLocaleString() }}
+                  <Lucide icon="Eye" fill="#eee" class="w-4 h-4"/> {{ formatNumber(chapter.views) }}
                 </span>
                 <span class="flex items-center gap-1">
-                  <Lucide icon="Star" fill="gray" class="w-4 h-4"/> {{ chapter.votes.toLocaleString() }}
+                  <Lucide icon="Star" fill="gray" class="w-4 h-4"/> {{ formatNumber(chapter.votes) }}
                 </span>
                 <span class="flex items-center gap-1 ">
-                  <Lucide icon="MessageCircleMore" fill="#eee" class="w-4 h-4"/> {{ chapter.comments.length.toLocaleString() }}
+                  <Lucide icon="MessageCircleMore" fill="#eee" class="w-4 h-4"/> {{ formatNumber(chapter.comments.length) }}
                 </span>
                 <span class="flex items-center font-semibold gap-1">
-                  {{ chapter.status === 'published' ? 'Publicado' : 'Rascunho' }}: {{ new Date(chapter.updatedAt).toLocaleDateString() }}
+                  {{ chapter.status === 'published' ? 'Publicado' : 'Rascunho' }}: {{ formatDate(chapter.updatedAt) }}
                 </span>
                 <span>Palavras: {{ chapter.wordsCount || 0 }}</span>
               </div>

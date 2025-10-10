@@ -291,21 +291,8 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
 
 <template>
   <div
-    class="p-4 lg:rounded-xl bg-[rgba(0,0,0,0.75)]"
+    class="p-4 w-[95vw]"
   > 
-    <div
-      @click="showFilterBar = !showFilterBar"    
-      class="flex bg-[rgb(0,0,0,0.6)] w-fit p-2 mb-2 shadow-xl rounded-lg cursor-pointer"
-    >
-      <Lucide 
-        icon="ListFilter"
-        class="text-violet-200 w-3 h-3"
-      />
-      <Lucide 
-        :icon="!showFilterBar ? 'ChevronDown' : 'ChevronUp'"
-        class="text-violet-200 w-3 h-3"
-      />
-    </div>
     <div
       v-if="showFilterBar"
       class="mb-2 relative px-4 py-2 pb-3 shadow-lg rounded-xl"

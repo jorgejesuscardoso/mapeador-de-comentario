@@ -388,13 +388,13 @@ onMounted(async () => {
 
 <template>
   <div
-    class="flex flex-col items-start min-w-full justify-start"
+    class="flex flex-col items-center justify-center w-full bg-black/70"
   >
     <header
-      class="w-full"
+      class="md:w-[90vw] mt-2 w-[97vw]"
     >
       <div
-        class="flex flex-col bg-white sm:mx-4 py-4 px-2 lg:rounded-xl shadow-lg relative"
+        class="flex flex-col bg-white sm:mx-4 py-4 lg:rounded-xl shadow-lg relative"
       > 
       <!-- <div
         class="cursor-pointer"
@@ -574,7 +574,7 @@ onMounted(async () => {
     </header>
 
     <div 
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 sm:p-4 min-w-full"
+      class="grid grid-cols-1 mt-2 md:mt-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-2 sm:p-4 md:w-[90vw] w-[97vw]"
     >
       <div
         v-if="!isLoading && data.length > 0"

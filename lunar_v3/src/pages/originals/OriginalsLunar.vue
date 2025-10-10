@@ -5,6 +5,7 @@ import Lucide from "@/base/lucide/Lucide.vue"
 import { useRouter } from "vue-router"
 import { getBookLunar } from "@/API/OriginalLunarApi"
 import { genres } from "./work/genres"
+import formatNumber from "@/base/utils/FormatNumber"
 
 const isBeta = ref(inject('isBeta'))
 const router = useRouter()
@@ -127,9 +128,9 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    class="w-full dark:bg-[#000] bg-white min-h-screen mt-10 lg:mt-14 flex font items-start justify-end px-6"
+    class="w-full dark:bg-[#000] bg-white min-h-screen flex font items-start justify-center px-3 md:px-6"
   >
-    <div class="w-full lg:w-[83vw] lg:mt-10 mt-14">
+    <div class="w-full lg:w-[86vw] lg:mt-10 mt-14">
       <header
         class="relative"
       >
@@ -164,7 +165,7 @@ onBeforeUnmount(() => {
         
         <!-- SEÇÃO PROMOCIONAL -->
         <div v-if="topVotadas.length" class="mb-14">
-          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
             🔥 As Mais Votadas
           </h2>
           <p
@@ -211,7 +212,7 @@ onBeforeUnmount(() => {
                   {{ obra.name }}
                 </h3>
                 <p class="text-xs text-gray-600 dark:text-gray-400">
-                  ⭐ {{ obra.votes.toLocaleString() }} votos
+                  ⭐ {{ formatNumber(obra.views) }} votos
                 </p>
               </div>
 
@@ -227,7 +228,7 @@ onBeforeUnmount(() => {
 
 
         <div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
             📚 Explorar por Gênero
           </h2>
 
@@ -237,10 +238,10 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- SEÇÃO GÊNEROS -->
-        <div v-for="(grupo, key, index) in generos" :key="key" class="mb-14">
+        <div v-for="(grupo, key, index) in generos" :key="key" class="mb-6">
 
           <!-- Cabeçalho do gênero -->
-          <h3 class="font-semibold mb-1 text-gray-800 dark:text-gray-300">
+          <h3 class="font-semibold mb-1 text-gray-800 dark:text-gray-300 md:text-2xl">
             {{ grupo.label }}:
           </h3>
 
@@ -265,7 +266,7 @@ onBeforeUnmount(() => {
                 #{{ obra.tags[0] }}
               </div>
               <div class="text-gray-800 dark:text-gray-400 text-[10px] flex items-center gap-1 px-1">
-                <Lucide icon="Eye" class="w-4 h-4"/> {{ obra.views.toLocaleString() }}
+                <Lucide icon="Eye" class="w-4 h-4"/> {{ formatNumber(obra.views) }} visualizações
               </div>
               <span v-if="obra.mature" class="absolute top-1 left-1 bg-red-600 text-white text-[10px] font-bold px-1 py-0.5 rounded">+18</span>
             </div>

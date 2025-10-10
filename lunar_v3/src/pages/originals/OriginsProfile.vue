@@ -6,6 +6,7 @@ import { toast } from '@/base/utils/toast'
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { notification } from './mock'
+import formatNumber from '@/base/utils/FormatNumber'
 
 export interface Book {
   id: string                // Identificador único (PK)
@@ -143,21 +144,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col md:flex-row dark:bg-[#000] items-start lg:justify-end justify-center w-full mt-7 md:mt-14 min-h-screen bg-gray-50 px-4 py-8">
-    <div
-      class="md:hidden p-1"
-      @click="router.push('/v1/origins')"
-    >
-      <Lucide
-        icon="ArrowLeft"
-        class="dark:text-white w-6 h-6 p-1 rounded-full dark:bg-white/40 text-black/70 bg-black/30"
-      />
-    </div>
+  <div class="flex flex-col md:flex-row dark:bg-[#000] items-start justify-center w-full min-h-screen bg-gray-50 px-4 py-8">
     <!-- wrapper em grid/flex -->
-    <div class="flex flex-col md:flex-row items-start justify-between w-full lg:w-[80vw] xl:w-[83vw] mt-2 md:mt-0">
+    <div class="flex flex-col md:flex-row items-start justify-between w-full lg:w-[86vw] mt-2 md:mt-0">
       
       <!-- seção do autor -->
-      <aside class="flex flex-col sm:flex-row md:flex-col w-full md:w-1/2 lg:w-[40%] xl:w-[30%] mb-6 md:mb-0 sm:pb-6 lg:pb-14 md:pb-0 md:min-h-screen min-h-[40vh] border-b-2 md:border-b-0 md:border-r-2 dark:border-[#ffffff10] gap-x-4 md:gap-x-0 md:pr-6 md:mr-6">
+      <aside class="flex flex-col sm:flex-row md:flex-col w-full md:w-1/2  mb-6 md:mb-0 sm:pb-6 lg:pb-14 md:pb-0 md:min-h-screen min-h-[40vh] border-b-2 md:border-b-0 md:border-r-2 dark:border-[#ffffff10] gap-x-4 md:gap-x-0 md:pr-6 md:mr-6">
         <!-- avatar + nome -->
         <div
           class="flex flex-col w-full sm:w-1/2 md:w-full"
@@ -255,7 +247,7 @@ onMounted(() => {
       </aside>
 
       <!-- seção das obras (já existente) -->
-      <div class="lg:w-7/12 w-full xl:w-2/3 md:w-1/2 pb-24 md:pb-0 relative">
+      <div class="lg:w-8/12 w-full md:w-1/2 pb-24 md:pb-0 relative">
         <h2 class="text-lg font-bold mb-8 text-gray-800 border-b pb-2 dark:border-[#ffffff10] dark:text-gray-400">Minhas Obras</h2>
         <!-- Botão de Configuração -->
         <div
@@ -315,7 +307,7 @@ onMounted(() => {
               <img
                 :src="book.cover || 'https://res.cloudinary.com/dffkokd7l/image/upload/v1759525530/projeto-lunar/ChatGPT%20Image%203%20de%20out.%20de%202025%2C%2017_25_41-1759525529098.webp'"
                 alt="Capa"
-                class="h-[195px] w-[125px] object-cover"
+                class="h-[190px] aspect-[2/3] object-cover"
               />
               <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition"></div>
             </div>
@@ -332,7 +324,7 @@ onMounted(() => {
                 <p class="text-[10px] text-gray-700 font-medium dark:text-gray-400">
                   Genêro: <span class="text-[#10f] font-semibold ml-1 dark:text-blue-400">{{ book.genre }}</span> 
                 </p>
-                <p class="text-xs text-gray-700 font-normal text-wrap mt-2 line-clamp-2 md:line-clamp-3 dark:text-gray-500">
+                <p class="text-xs text-gray-700 font-normal text-wrap mt-2 line-clamp-3 md:line-clamp-2 dark:text-gray-500">
                   {{ book.sinopse }}
                 </p>
               </div>
@@ -351,13 +343,13 @@ onMounted(() => {
               <!-- métricas -->
               <div class="w-fit gap-4 mt-auto flex text-[10px] dark:text-gray-400 dark:border-[#ffffff40] text-gray-700 border-t pt-1">
                 <span class="flex items-center gap-1">
-                  <Lucide icon="Star" class="w-3 h-3" /> {{ book.votes?.toLocaleString() || 0 }}
+                  <Lucide icon="Star" class="w-3 h-3" /> {{ formatNumber(book.votes) || 0 }}
                 </span>
                 <span class="flex items-center gap-1">
-                  <Lucide icon="MessageCircleMore" class="w-3 h-3" /> {{ book.commentsTotal?.toLocaleString() || 0 }}
+                  <Lucide icon="MessageCircleMore" class="w-3 h-3" /> {{ formatNumber(book.commentsTotal) || 0 }}
                 </span>
                 <span class="flex items-center gap-1">
-                  <Lucide icon="Eye" class="w-3 h-3" /> {{ book.views?.toLocaleString() || 0 }}
+                  <Lucide icon="Eye" class="w-3 h-3" /> {{ formatNumber(book.views) || 0 }}
                 </span>
               </div>
             </div>

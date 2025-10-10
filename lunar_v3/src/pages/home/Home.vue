@@ -15,11 +15,9 @@ onMounted(() => {
 
 <template>	
 	<div
-		class="relative flex items-center justify-center md:pr-3"
+		class="min-w-full relative flex items-center justify-center bg-[rgba(0,0,0,0.75)]"
 	>
-		<div
-			class="pb-6 w-full lg:w-[85vw]"
-		>
+		<div>
 			<AllbooksCard
 				@update-length="totalBooks = $event"
 			/>

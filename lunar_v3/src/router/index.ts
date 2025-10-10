@@ -122,6 +122,11 @@ const routes: RouteRecordRaw[] = [
         name: 'workPublicView',
         component: () => import('../pages/originals/work/BookPublicView.vue')
       },
+      {
+        path: '/v1/origins/read/:bookId/:chapterId',
+        name: 'workRead',
+        component: () => import('../pages/originals/chapters/ChapterPublicRead.vue')
+      },
 
 
 

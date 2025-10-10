@@ -57,6 +57,7 @@ bookLunar.post('/create', upload.single('cover'), async (req: Request, res: Resp
 
     // Faz upload da imagem
     data.cover = url
+    data.status = 'ongoing'
     // Atualiza cover no DynamoDB
 
     await db.send(new PutCommand({
@@ -267,10 +268,24 @@ bookLunar.get('/:id', async (req: Request, res: Response) => {
       })
     );
 
-    // 3. Montar resposta
+    // 3. Calcular métricas agregadas
+    let totalViews = 0;
+    let totalVotes = 0;
+    let totalComments = 0;
+
+    chaptersResult.Items?.forEach((chapter: any) => {
+      totalViews += parseInt(chapter.views || 0, 10);
+      totalVotes += parseInt(chapter.votes || 0, 10);
+      totalComments += chapter.comments?.length || 0;
+    });
+
+    // 4. Montar resposta
     const response = {
       ...bookResult.Item,
-      chapters: chaptersResult.Items || []
+      chapters: chaptersResult.Items || [],
+      views: totalViews,
+      votes: totalVotes,
+      commentsTotal: totalComments
     };
 
     res.status(200).json(response);

@@ -143,17 +143,13 @@ const onSubmit = handleSubmit(async (values) => {
     }
     toast.success('Livro modificado com sucesso!')
     
-    saving.value = false
     setTimeout(() => {
-      noHasImgModal.value = false
       router.push(`/v1/origins/user/${user.value}`)
     }, interval);
   } catch (e) {
     toast.error('Erro ao modificar o livro!')
-    saving.value = false
   } finally {
-    uploading.value = false
-    saving.value = false
+    console.log()
   }
 })
 

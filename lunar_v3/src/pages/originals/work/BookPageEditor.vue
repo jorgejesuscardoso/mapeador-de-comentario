@@ -33,10 +33,9 @@ const wordCount = computed(() =>
 const charCount = computed(() => editorText.value.length)
 
 // ids
-let paragraphIdCounter = 0
+
 function generateId() {
-  paragraphIdCounter++
-  return `coment-paragraph-${Date.now()}-${paragraphIdCounter}`
+  return `comment-paragraph-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`
 }
 
 // ========================
@@ -293,7 +292,7 @@ function scheduleSave() {
   inactivityTimer = setTimeout(() => {
     save()
     inactivityTimer = null
-  }, 3000)
+  }, 10 * 60 * 1000) // 10 minutos de inatividade
 }
 
 const cancelEdit = () => router.push('/v1/origins/user/JcBushido')
@@ -358,7 +357,7 @@ onUnmounted(() => {
     </header>
 
     <section class="w-full px-6 py-6 flex justify-center bg-white dark:bg-[#ffffff04]">
-      <input v-model="title" type="text" placeholder="Título do capítulo..." class="w-full bg-transparent border-b dark:border-[#ffffff20] border-gray-300 focus:outline-none py-2 text-xl font-bold text-center placeholder-gray-400 dark:text-gray-400"/>
+      <input v-model="title" type="text" placeholder="Título do capítulo..." class="w-full bg-transparent border-b dark:border-[#ffffff20] border-gray-300 focus:outline-none py-2 text-2xl font-bold text-center placeholder-gray-400 dark:text-gray-400"/>
     </section>
 
     <main class="flex-1 px-6 pb-12 flex justify-center bg-white dark:bg-[#ffffff04] ">

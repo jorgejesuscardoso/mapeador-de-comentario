@@ -56,7 +56,7 @@ chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
       })
     );
 
-    if(!bookResult) {
+    if(!bookResult.Item) {
       return res.status(400).json({ error: 'Livro não encontrado!' })
     }
 
@@ -71,9 +71,10 @@ chaptersLunar.get('/create/:bookId', async (req: Request, res: Response) => {
       paragraphs: '',
       wordsCount: wordsCount,
       comments: [],
-      bookName: bookResult?.Item?.name || 'Nome indisponível',
+      bookName: bookResult?.Item?.name,
       votes: 0,
       views: 0,
+      status: 'draft',
       createdAt,
       updatedAt
     };

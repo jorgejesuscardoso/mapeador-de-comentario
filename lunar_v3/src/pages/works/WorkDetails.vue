@@ -121,7 +121,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="lg:px-10 mx-auto min-h-screen flex">
+  <div class="lg:px-10 lg:py-5 mx-auto min-h-screen flex">
 
     <LoadCard v-if="isLoading" class="m-auto"/>
 

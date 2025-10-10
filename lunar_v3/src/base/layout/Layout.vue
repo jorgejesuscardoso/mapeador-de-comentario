@@ -23,6 +23,8 @@ const showPremiumButton = !(storage?.value?.licenses?.includes('premium'));
 const route = useRoute();
 const router = useRouter();
 
+const showNavMenu = ref(false)
+
 const menuOpen = ref(false);
 const notification = ref(0)
 const showNotification = ref(false)
@@ -41,8 +43,8 @@ const showWriteMenu = ref(false)
 
 const menuRef = ref<HTMLElement | null>(null);
 const menuRef2 = ref<HTMLElement | null>(null);
-const refNotification = ref<HTMLElement | null>(null);
-const refNotification2 = ref<HTMLElement | null>(null);
+const refNavPc = ref<HTMLElement | null>(null);
+const refNavPc2 = ref<HTMLElement | null>(null);
 const refShowWriteMenu = ref<HTMLElement | null>(null);
 const refShowWriteMenu2 = ref<HTMLElement | null>(null);
 const refShowWriteMenuNav = ref<HTMLElement | null>(null);
@@ -75,13 +77,13 @@ const handleClickOutside = (event: MouseEvent) => {
 
 		// Fecha notificações se clicar fora
 		if (
-		showNotification.value &&
-		refNotification.value &&
-		refNotification2.value &&
-		!refNotification.value.contains(target) &&
-		!refNotification2.value.contains(target)
+		showNavMenu.value &&
+		refNavPc.value &&
+		refNavPc2.value &&
+		!refNavPc.value.contains(target) &&
+		!refNavPc2.value.contains(target)
 		) {
-		showNotification.value = false;
+		showNavMenu.value = false;
 		}
 
 		// Fecha notificações se clicar fora
@@ -214,6 +216,7 @@ watch(
     menuOpen.value = false
     showNotification.value = false
     showNotification2.value = false
+		showNavMenu.value = false
 		scrollToTop()
   }
 )
@@ -295,6 +298,7 @@ function toggle() {
 					>
 						<!-- Texto -->
 						<span
+							@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
 							class="w-44 text-start"
 						>
 							Projeto Lunar
@@ -342,7 +346,7 @@ function toggle() {
 							@click="showWriteMenu = !showWriteMenu"
 						>
 							<button
-								class="flex items-center justify-center gap-1 px-4 py-1.5 rounded-md font-bold font-mono"
+								class="flex items-center justify-center gap-1 px-4 py-1.5 font-bold font-mono  border-r border-gray-500"
 								:class="{
 									'text-black dark:text-gray-300': isRouteOrigins,
 									'text-white': !isRouteOrigins
@@ -370,7 +374,16 @@ function toggle() {
 						</div>
 
 						<!-- Usuário -->
-						<div v-if="userLocalData && isLogged">
+						<div 
+							ref="refNavPc"
+							v-if="userLocalData && isLogged"
+							@click="showNavMenu = !showNavMenu"
+							class="flex items-center justify-center h-full cursor-pointer px-2 relative z-10"
+						>
+							<Lucide 
+								icon="EllipsisVertical"
+								class="h-4 w-4 dark:text-gray-300 text-gray-700 mr-2"
+							/>
 							<img 
 								:src="userLocalData?.avatar"
 								alt="Foto de perfil"
@@ -379,27 +392,18 @@ function toggle() {
 						</div>
 						<Lucide
 							v-else
-							icon="UserCircle"
+							icon="UserCircle cursor-pointer"
 							class="h-10 w-10"
 							:class="{
 								'text-purple-500': isRouteOrigins
 							}"
-							:stroke-width="0.7"
+							:stroke-width="0.7"							
+							@click="showNavMenu = !showNavMenu"
 						/>
 					</div>
 				</div>
 			</header>
 		</div>	
-		
-		<div 
-			ref="refShowWriteMenu"
-			v-if="showNotification2" 
-			class="hidden lg:flex z-50"
-		>
-			<NotificationsContainer 
-				
-			/>
-		</div>
 
 		<div
 			class="flex items-center justify-end searchFilterBg2 "
@@ -409,34 +413,36 @@ function toggle() {
 			>
 
 				<div
-					class=" h-full mt-1 fixed top-16 left-0 z-50"
-					:class="{
-						'hidden': route.path.startsWith('/v1/origins/mywork/write') || route.path === '/v1/origins/work/create',
-						'hidden lg:flex': !route.path.startsWith('/v1/origins/mywork/write') && route.path !== '/v1/origins/work/create'
-					}"
+					ref="refNavPc2"
+					v-if="showNavMenu"
+					class=" h-full fixed top-14 right-1 z-50"
 				>
 					<nav
-						class="rounded-2xl p-4 min-w-44 h-[50vh]"
-						:class="{
-							'bg-[rgba(0,0,0,0.8)]': !isRouteOrigins,
-							'dark:bg-transparent': isRouteOrigins
-						}"
+						class="rounded-b-md py-2 px-1 min-w-44 h-fit min-h-[30vh] bg-[#ffffff] border-gray-300 dark:bg-black border dark:border-white/10 shadow-xl shadow-black/30"
 					>
 						<ul
-							class="flex flex-col w-full gap-1 text-violet-400 font-semibold text-[11px]"
-						>
+							class="flex flex-col w-full md:gap-1 text-gray-600 dark:text-gray-400 font-semibold text-sm"
+						>						
+							<li>
+								<RouterLink 
+									:to="isRouteOrigins ? `/v1/origins/user/${storage?.user}` || '' : '/profile'"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
+								>
+									<Lucide
+											icon="CircleUserRound"
+											size="18"
+									/>
+									Perfil
+								</RouterLink>
+							</li>
 							<li>
 								<RouterLink 
 									:to="isRouteOrigins ? '/v1/origins' : '/'"
-									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
-									:class="{
-										'bg-violet-100/10': route.path === '/',
-										'hover:bg-gray-300 dark:hover:bg-[#ffffff10] hover:text-gray-800 text-gray-700 dark:text-gray-300':  isRouteOrigins,
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/' && !isRouteOrigins,									}"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
 								>
 									<Lucide
 											icon="Home"
-											size="16"
+											size="18"
 									/>
 									Home
 								</RouterLink>
@@ -446,12 +452,7 @@ function toggle() {
 							>
 								<RouterLink 
 									to="/shop"
-									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
-									:class="{
-										'bg-violet-100/10': route.path === '/shop',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/shop'
-									}"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
 								>
 									<Lucide
 											icon="Store"
@@ -460,57 +461,37 @@ function toggle() {
 									Lojinha Lunar
 								</RouterLink>
 							</li>
-							<li>
-								<RouterLink 
-									:to="isRouteOrigins ? `/v1/origins/user/${storage?.user}` || '' : '/profile'"
-									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition"
-									:class="{
-										'bg-violet-100/10': route.path === '/profile',
-										'hover:bg-gray-300 dark:hover:bg-[#ffffff10] hover:text-gray-800 text-gray-700 dark:text-gray-300':  isRouteOrigins,
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile'
-									}"
-								>
-									<Lucide
-											icon="CircleUserRound"
-											size="14"
-									/>
-									Perfil
-								</RouterLink>
-							</li>
 
 							
 								<li>
 									<RouterLink 
 										v-if="!isLogged"
 										to="/register"
-										class="flex items-center gap-2 px-2 py-1 rounded-md"
-										:class="{'hover:bg-gray-300 dark:hover:bg-[#ffffff10] hover:text-gray-800 text-gray-700 dark:text-gray-300':  isRouteOrigins}"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
 									>
 										<Lucide icon="FileInput" size="14" />
 										Registro
 									</RouterLink>
 								</li>
 
+								<!-- Notificação -->
 								<li>
 									<RouterLink 
 										to="#"
-										class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive line-through"
+										class="flex items-center gap-2 px-2 py-1 text-inactive line-through"
 									>
 										<Lucide icon="Bell" size="14" />
 										Notificações
 									</RouterLink>
 								</li>
+							<!-- ////// -->
 
 								<li
 									v-if="!isRouteOrigins"
 								>
 									<RouterLink 
 										to="/profile/orders"
-										class="flex items-center gap-2 px-2 py-1 rounded-md":class="{
-										'bg-violet-100/10': route.path === '/profile/orders',
-										'hover:bg-gray-300 hover:text-gray-800 text-gray-700':  isRouteOrigins,
-										'hover:bg-gray-100 hover:text-violet-800': route.path !== '/profile/orders'
-									}"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
 									>
 										<Lucide icon="Package" size="14" />
 										Meus pedidos
@@ -522,15 +503,11 @@ function toggle() {
 								>
 									<RouterLink 
 										:to="!isLogged ? '/login': ''"
-										class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-xs"
-										:class="{
-											'hover:bg-green-100 text-green-400': !isLogged,
-											'hover:bg-red-100 dark:hover:bg-[#ffffff10] text-red-600': isLogged
-										}"
+										class="flex w-full border-t border-gray-300 dark:border-gray-800 px-2 py-3 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
 									>
 										<Lucide
 												:icon="isLogged ? 'LogOut': 'LogIn'"
-												size="14"
+												size="18"
 										/>
 										{{ isLogged ? 'Sair' : 'Login' }}
 									</RouterLink>
@@ -548,17 +525,17 @@ function toggle() {
 			>
 				<div 
 					v-if="showNotification" 
-					ref="refNotification" 
+					ref="refNavPc" 
 				>
 					<NotificationsContainer 
 						
 					/>
 				</div>
 				<div 
-					class="flex items-center justify-between p-4 bg-[rgb(0,0,0)] dark:border-b dark:border-gray-600"
+					class="flex items-center justify-between py-4 px-1 bg-[rgb(0,0,0)] dark:border-b dark:border-gray-600"
 				>
 					<h1 
-						class="flex items-center text-purple-400 gap-2 font-serif font-bold text-xl italic cursor-pointer select-none relative"						
+						class="flex items-center text-purple-400 gap-1 font-serif font-bold text-xl italic cursor-pointer select-none relative"						
 						@click="router.push(isRouteOrigins ? '/v1/origins' : '/')"
 					>						
 						<!-- Texto -->
@@ -570,7 +547,7 @@ function toggle() {
 
 						<!-- Botão switch -->
 						<button
-							class="flex items-center justify-center ml-5 px-2 py-1 rounded-md text-xs font-semibold transition-all duration-200 text-purple-100 bg-[#ffffff15] border border-gray-950"							
+							class="flex items-center justify-center ml-1 px-2 py-1 rounded-md text-xs font-semibold transition-all duration-200 text-purple-100 bg-[#ffffff15] border border-gray-950"							
 							@click.stop="router.push(isRouteOrigins ? '/' : '/v1/origins')"
 						>
 							{{ isRouteOrigins ? 'Biblioteca' : 'Originais' }}
@@ -582,13 +559,12 @@ function toggle() {
 					</h1>
 
 					<div
-						class="flex items-center justify-between w-4/12"
+						class="flex items-center justify-between w-5/12"
 					>
 						<!-- Escrever -->
 						<div
-							v-if="isRouteOrigins"
 							ref="refShowWriteMenuNav2"
-							class="flex items-center justify-center h-full cursor-pointer px-2"
+							class="flex items-center justify-center h-full cursor-pointer"
 							@click="showWriteMenuNav = !showWriteMenuNav"
 						>
 							<p
@@ -596,26 +572,24 @@ function toggle() {
 							>
 								<Lucide icon="PencilLine" class="h-4 w-4 mr-2" /><Lucide 
 									:icon="'ChevronDown'" 
-									class="h-4 w-4" 
+									class="h-3 w-3" 
 								/>
 							</p>
 						</div>
-						<!-- Notificações -->
 
-						<button 
-							ref="refNotification2"
-							@click="showNotification = !showNotification, menuOpen = false" 
-							aria-label="Abrir Notificações"
-							class="relative"
+						<!-- Switch theme -->
+						<button
+							@click="toggle"
+							:aria-pressed="isDark"
+							aria-label="Alternar modo noturno"
+							class="inline-flex items-center gap-3 p-1 rounded-full mx-1 transition backdrop-blur-sm text-gray-50"
+							title="Alternar tema"
 						>
-							<Lucide icon="Bell" size="24" />
-							<span
-								v-if="notification > 0"
-								class="flex items-center justify-center bg-white text-red-700 text-xs font-semibold rounded-full h-4 w-4 absolute -top-1 -right-1"
-							>
-								{{ notification }}
+							<span class="flex items-center justify-center w-6 h-6">
+								<Lucide :icon="isDark ? 'Moon' : 'Sun' " class="w-5 h-5" />
 							</span>
 						</button>
+						
 
 						<!-- Menu flutuante -->
 						<button 
@@ -631,193 +605,171 @@ function toggle() {
 
 				<transition name="fade">
 					<nav
-  					ref="menuRef"
-						v-show="menuOpen"
-						class="text-violet-300 bg-black relative border-b rounded-b-lg border-gray-600"
+						ref="menuRef"
+						v-if="menuOpen"
+						class="rounded-b-md py-2 px-1 min-w-44 h-fit bg-[#ffffff] border-gray-300 dark:bg-black border dark:border-white/10 shadow-xl shadow-black/30"
 					>
-					<!-- Botão switch tema -->
-						<button
-							@click="toggle"
-							:aria-pressed="isDark"
-							aria-label="Alternar modo noturno"
-							class="absolute right-1 top-1 inline-flex items-center gap-3 p-1 rounded-full transition  backdrop-blur-sm text-white"
-							title="Alternar tema"
-							:class="{
-								'hidden': !isRouteOrigins
-							}"
-						>
-							<span class="flex items-center justify-center">
-								<Lucide :icon="isDark ? 'Moon' : 'Sun' " class="w-6 h-6" />
-							</span>
-						</button>
-
-						<ul class="grid grid-cols-2 gap-y-1 font-semibold text-sm p-4">
-							<li>
-								<RouterLink 
-									:to="isRouteOrigins ? '/v1/origins' : '/'"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
-									:class="{ 'bg-violet-100/10': route.path === '/' }"
-									@click.stop="menuOpen = false" 
-								>
-									<Lucide icon="Home" size="16" />
-									Home
-								</RouterLink>
-							</li>							
-							<li
-								:class="{
-									'hidden': isRouteOrigins
-								}"
-							>
-								<RouterLink 
-									to="/shop"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
-									:class="{ 
-										'bg-violet-100/10': route.path === '/shop',
-										}"
-									@click.stop="menuOpen = false" 
-								>
-									<Lucide icon="Store" size="14" />
-									Lojinha Lunar
-								</RouterLink>
-							</li>
+						<ul
+							class="grid grid-cols-2 w-full gap-2 md:gap-1 text-gray-600 dark:text-gray-400 font-semibold text-sm pb-2"
+						>						
 							<li>
 								<RouterLink 
 									:to="isRouteOrigins ? `/v1/origins/user/${storage?.user}` || '' : '/profile'"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
-									:class="{ 'bg-violet-100/10': route.path === '/profile' ||  route.path === `/profile/*` }"
-									@click.stop="menuOpen = false" 
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
 								>
-									<Lucide icon="CircleUserRound" size="14" />
+									<Lucide
+											icon="CircleUserRound"
+											size="18"
+									/>
 									Perfil
 								</RouterLink>
 							</li>
-
-							
-							<li
-								v-if="!isLogged"
-							>
-								<RouterLink 
-									to="/register"
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-sm"
-								>
-									<Lucide icon="FileInput" size="14" />
-									Registro
-								</RouterLink>
-							</li>
-
-							
-
 							<li>
 								<RouterLink 
-									to="#"									
-									class="flex items-center gap-2 px-2 py-1 rounded-md text-inactive"
+									:to="isRouteOrigins ? '/v1/origins' : '/'"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
 								>
-									<Lucide icon="Bell" size="14" />
-									Notificações
+									<Lucide
+											icon="Home"
+											size="18"
+									/>
+									Home
+								</RouterLink>
+							</li>
+							<li
+								v-if="!isRouteOrigins"
+							>
+								<RouterLink 
+									to="/shop"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
+								>
+									<Lucide
+											icon="Store"
+											size="14"
+									/>
+									Lojinha Lunar
 								</RouterLink>
 							</li>
 
-							<li
-								:class="{
-									'hidden': isRouteOrigins
-								}"
-							>
-								<RouterLink 
-									to="/profile/orders"
-									:class="{ 'bg-violet-100/10': route.path === '/profile/orders' }"									
-									class="flex items-center gap-2 px-2 py-1 rounded-md"
-								>
-									<Lucide icon="Package" size="14" />
-									Meus pedidos
-								</RouterLink>
-							</li>
 							
-							<li
-								@click="handleLogout"
-							>
-								<RouterLink 
-									:to="!isLogged ? '/login': ''"
-									class="flex w-full px-2 py-1 items-center justify-start gap-2 rounded-md transition text-sm"
-									:class="{
-										'hover:bg-green-100 text-green-400': !isLogged,
-										'hover:bg-red-100 text-red-400': isLogged
-									}"
+								<li
+									v-if="!isLogged"								
 								>
-									<Lucide
-											:icon="isLogged ? 'LogOut': 'LogIn'"
-											size="14"
-									/>
-									{{ isLogged ? 'Sair' : 'Login' }}
-								</RouterLink>
-							</li>
+									<RouterLink 
+										to="/register"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
+									>
+										<Lucide icon="FileInput" size="14" />
+										Registro
+									</RouterLink>
+								</li>
+
+								<!-- Notificação -->
+								<li>
+									<RouterLink 
+										to="#"
+										class="flex items-center gap-2 px-2 py-1 text-inactive line-through"
+									>
+										<Lucide icon="Bell" size="14" />
+										Notificações
+									</RouterLink>
+								</li>
+							<!-- ////// -->
+
+								<li
+									v-if="!isRouteOrigins"
+								>
+									<RouterLink 
+										to="/profile/orders"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
+									>
+										<Lucide icon="Package" size="14" />
+										Meus pedidos
+									</RouterLink>
+								</li>
+							
+								<li
+									@click="handleLogout"
+								>
+									<RouterLink 
+										:to="!isLogged ? '/login': ''"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 transition dark:hover:bg-white/5 hover:bg-black/10"
+									>
+										<Lucide
+												:icon="isLogged ? 'LogOut': 'LogIn'"
+												size="18"
+										/>
+										{{ isLogged ? 'Sair' : 'Login' }}
+									</RouterLink>
+								</li>
+							
 						</ul>
 					</nav>
 				</transition>
 			</div>
 
 				<div
-					class="flex flex-col w-full items-end justify-start"
+					class="flex flex-col w-full items-center justify-start"
 				>
 					<main
-						class="flex flex-col bg-red-90i0 items-end justify-start relative"
+						class="flex flex-col items-center justify-start relative w-full min-h-screen"
 						:class="{
-							'w-full': isRouteOrigins,
-							'lg:w-[87vw] w-full min-h-screen pt-14 lg:mt-4': !isRouteOrigins
+							'mt-14': route.path !== '/v1/origins/work/create',
 						}"
 					>
 						<!-- Menu flutuante --> 
-						<transition name="fade"> 
-							<div 
-								ref="refShowWriteMenu"
-								v-if="showWriteMenu" 
-								class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-[#2227] dark:text-[#ccc]"
-								:class="{
-									'right-0': storage?.licenses?.includes('premium'),
-									'right-10': !storage?.licenses?.includes('premium')
-								}"
-							> 
-								<ul
-									class="text-sm font-mono font-bold"
+							<transition name="fade"> 
+								<div 
+									ref="refShowWriteMenu"
+									v-if="showWriteMenu" 
+									class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-[#2227] dark:text-[#ccc]"
+									:class="{
+										'right-0': storage?.licenses?.includes('premium'),
+										'right-10': !storage?.licenses?.includes('premium')
+									}"
 								> 
-									<li
-										class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer" 
-										@click="handlePermission"
-									>
-									<Lucide 
-											icon="PencilLine" 
-											class="h-4 w-4 text-gray-800 dark:text-[#ccc]" 
-										/>
-										Criar nova história 
-									</li> 
-									<li
-										class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
-										@click="router.push(`/v1/origins/user/${storage?.user}`)"
+									<ul
+										class="text-sm font-mono font-bold"
 									> 
+										<li
+											class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer" 
+											@click="handlePermission"
+										>
 										<Lucide 
-											icon="BookOpenText" 
-											class="h-4 w-4 text-gray-600 dark:text-[#ccc]" 
-										/> 
-											Minhas histórias
-									</li>
-									<li 
-										class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer border-t dark:border-[#fff2]"
-									>
-										<Lucide 
-											icon="Trophy" 
-											class="h-4 w-4 text-yellow-600 "
-										/> 
-										Lunar Contest 
-									</li> 
-								</ul> 
-							</div> 
-						</transition>
+												icon="PencilLine" 
+												class="h-4 w-4 text-gray-800 dark:text-[#ccc]" 
+											/>
+											Criar nova história 
+										</li> 
+										<li
+											class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer"
+											@click="router.push(`/v1/origins/user/${storage?.user}`)"
+										> 
+											<Lucide 
+												icon="BookOpenText" 
+												class="h-4 w-4 text-gray-600 dark:text-[#ccc]" 
+											/> 
+												Minhas histórias
+										</li>
+										<li 
+											class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer border-t dark:border-[#fff2]"
+										>
+											<Lucide 
+												icon="Trophy" 
+												class="h-4 w-4 text-yellow-600 "
+											/> 
+											Lunar Contest 
+										</li> 
+									</ul> 
+								</div> 
+							</transition>
 
-						<!-- Menu flutuante Nav -->
-						<transition name="fade"> 
+							<!-- Menu flutuante Nav -->
+							<transition name="fade"> 
 								<div 
 									ref="refShowWriteMenuNav"
 									v-if="showWriteMenuNav" 
-									class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2"
+									class="fixed top-14 w-52 bg-white shadow-lg text-gray-800 rounded-b-xl overflow-hidden border z-50 py-2 dark:bg-black dark:border-[#2227] dark:text-[#ccc]"
 								> 
 									<ul
 										class="text-sm font-mono font-bold"
@@ -828,7 +780,7 @@ function toggle() {
 										>
 										<Lucide 
 												icon="PencilLine" 
-												class="h-4 w-4 text-gray-800" 
+												class="h-4 w-4" 
 											/>
 											Criar nova história 
 										</li> 
@@ -838,7 +790,7 @@ function toggle() {
 										> 
 											<Lucide 
 												icon="BookOpenText" 
-												class="h-4 w-4 text-gray-600" 
+												class="h-4 w-4 " 
 											/> 
 												Minhas histórias
 										</li>
