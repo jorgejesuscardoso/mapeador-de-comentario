@@ -252,7 +252,7 @@ bookLunar.get('/:id', async (req: Request, res: Response) => {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar livro e capítulos' });
   }
-});
+}); 
 
 //get name
 bookLunar.get('/by-name/:name', async (req: Request, res: Response) => {

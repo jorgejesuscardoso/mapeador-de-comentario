@@ -11,6 +11,7 @@ export const getBookById = async (id: string) => {
       return { error: 'O id é obrigátorio!' };
     }
 
+    
     // 1. Buscar o livro
     const bookResult = await db.send(
       new GetCommand({
@@ -19,6 +20,7 @@ export const getBookById = async (id: string) => {
       })
     );
 
+    
     if (!bookResult.Item || bookResult.Item.isDeleted) {
       return { error: 'Livro não encontrado' };
     }
@@ -33,11 +35,7 @@ export const getBookById = async (id: string) => {
         }
       })
     );
-
-    if (!chaptersResult.Items || chaptersResult.Items.length === 0) {
-      return { error: 'Nenhum capítulo encontrado para este livro' };
-    }
-
+    
     // 3. Calcular métricas agregadas
     let totalViews = 0;
     let totalVotes = 0;
