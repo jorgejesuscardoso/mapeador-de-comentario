@@ -355,7 +355,7 @@ onBeforeUnmount(() => {
             <div
               v-if="activeChapterMenu === chapter.id"
               :id="`chapter-menu-${chapter.id}`"
-              class="absolute top-10 right-3 bg-white dark:bg-[#0f1720] border border-gray-200 dark:border-[#2b2b2b] rounded-lg shadow-xl z-50 w-44 animate-fadeIn"
+              class="absolute top-10 right-3 bg-white dark:bg-[#0f1720] border border-gray-200 dark:border-[#2b2b2b] rounded-lg shadow-xl z-50 w-52 animate-fadeIn"
             >
               <ul class="flex flex-col text-sm">
                 <li>
