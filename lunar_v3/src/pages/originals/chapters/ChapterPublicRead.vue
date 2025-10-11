@@ -210,7 +210,7 @@ function goToNextChapter() {
       </aside>
 
       <!-- MAIN READING AREA -->
-      <main class="flex items-center justify-center md:w-5/12 w-full md:px-0 px-4">
+      <main class="flex items-start justify-center md:w-5/12 w-full md:px-0 px-4">
         <div class="flex flex-col items-center justify-start ">
           <h2 class="text-2xl font-bold text-gray-950 dark:text-[#ddd] text-center mb-1">
             {{ chapter?.title || 'Capítulo sem título' }}
