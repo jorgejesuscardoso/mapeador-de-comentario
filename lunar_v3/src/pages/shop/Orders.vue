@@ -102,7 +102,7 @@ onMounted(fetchOrders)
 </script>
 
 <template>
-  <div class="lg:w-[85vw] bg-[rgba(0,0,0,0.75)] text-white rounded-lg p-6 shadow-lg w-full min-h-screen">
+  <div class="lg:w-[65vw] bg-[rgba(0,0,0,0.75)] text-white rounded-lg p-6 shadow-lg w-full min-h-screen">
     <h1 class="text-2xl font-bold mb-4 flex items-center justify-between gap-2">
       <p
         class="flex items-center"

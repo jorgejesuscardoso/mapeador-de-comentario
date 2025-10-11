@@ -121,21 +121,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="lg:px-10 lg:py-5 mx-auto min-h-screen flex">
+  <div class="lg:px-10 lg:py-5 mx-auto min-h-screen flex w-full justify-end">
 
     <LoadCard v-if="isLoading" class="m-auto"/>
 
-    <div v-else-if="book" class="bg-[rgb(0,0,0,0.7)] rounded-xl">
-      <div class="flex flex-col md:flex-row p-4 relative">
-        <div
-          class="flex items-center gap-1 pb-1 text-xs border-b border-gray-300 lg:border-0 mb-4 text-purple-400 font-semibold lg:absolute  lg:left-4"  
-        >
-          <Lucide
-            icon="ArrowLeft"
-            class="h-5 w-5 mb-1"        
-            @click="goBack"
-          />
-        </div>
+    <div v-else-if="book" class="bg-[rgb(0,0,0,0.7)] md:w-[80vw] ">
+      <div class="flex flex-col md:flex-row p-4 relative rounded-lg bg-white/5">       
         <img
           :src="book.cover"
           alt="Capa do livro"
@@ -207,28 +198,28 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div v-if="book?.caps?.length" class="p-2 lg:px-10 pb-5">
+      <div v-if="book?.caps?.length" class="p-2 pb-5 lg:mt-4 md:bg-white/5 rounded-lg">
         <h2 class="text-xl font-bold text-violet-200 mb-4">Capítulos</h2>
 
-        <ul class="divide-y divide-gray-300 rounded overflow-hidden shadow-md bg-black/70">
+        <ul class="divide-y divide-gray-300 rounded overflow-hidden shadow-md ">
           <li 
             v-for="cap in book.caps as capsData[]"
             :key="cap.url"
-            class="px-4 py-2 hover:bg-black/50 cursor-pointer transition relative"
+            class="px-4 py-3 hover:bg-black/50 cursor-pointer transition relative"
             @click.stop="{ handleCapsId(cap); handleGetLength(cap.length)}"
           >
             <div class="flex justify-between items-center">
               <div>
-                <h3 class="text-sm font-semibold text-white">
+                <h3 class="text-sm text-white">
                   {{ cap.title }}
                 </h3>
-                <p class="text-xs text-fuchsia-400 mt-1">
+                <p class="text-[11px] text-fuchsia-400 mt-1">
                   Criado em: {{ formatDate(cap.createdAt) }}
                 </p>
               </div>
               <div                
-                v-if="book.user.userName != '3ricautora'"
-                class="flex items-center justify-between gap-4 text-xs text-fuchsia-400 text-right"
+                v-if="book.user.userName !== '3ricautora'"
+                class="flex items-center justify-between gap-4 text-[11px] text-fuchsia-400 text-right"
               >
                 <p>👁 {{ cap.reads }} leituras</p>
                 <p>💬 {{ cap.comments }} comentários</p>

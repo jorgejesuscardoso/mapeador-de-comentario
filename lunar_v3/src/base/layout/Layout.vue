@@ -285,7 +285,7 @@ function toggle() {
 			<header 
 				class="hidden lg:block w-full text-gray-50 overflow-hidden fixed z-40 "
 				:class="{
-					'searchFilterBg2': !isRouteOrigins,
+					'border-b border-[#fff2]': !isRouteOrigins,
 					'dark:bg-gray-950 dark:border-gray-900 bg-white border-b border-purple-200': isRouteOrigins
 				}"
 			>
@@ -406,15 +406,15 @@ function toggle() {
 		</div>	
 
 		<div
-			class="flex items-center justify-end searchFilterBg2 "
+			class="flex items-center justify-end bg-[rgb(0,0,0)]"
 		>
 			<div
-				class="flex bg-[rgba(0,0,0,0.6)] w-full items-center justify-end"
+				class="flex w-full items-center justify-end"
 			>
 
 				<div
 					ref="refNavPc2"
-					v-if="showNavMenu"
+					v-if="showNavMenu && isRouteOrigins"
 					class=" h-full fixed top-14 right-1 z-50"
 				>
 					<nav
@@ -517,6 +517,99 @@ function toggle() {
 					</nav>
 				</div>
 
+				<!-- Nav pc2 -->
+				<div
+					v-if="!isRouteOrigins"
+					class="hidden md:flex h-full fixed top-16 left-1 z-40"
+				>
+					<nav
+						class="rounded-md py-4 px-1 min-w-48 h-fit min-h-[50vh] bg-neutral-950"
+					>
+						<ul
+							class="flex flex-col w-full md:gap-1 text-[#bbb] font-semibold text-sm"
+						>						
+							<li>
+								<RouterLink 
+									:to="isRouteOrigins ? `/v1/origins/user/${storage?.user}` || '' : '/profile'"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition hover:bg-white/5"
+								>
+									<Lucide
+											icon="CircleUserRound"
+											size="18"
+									/>
+									Perfil
+								</RouterLink>
+							</li>
+							<li>
+								<RouterLink 
+									:to="isRouteOrigins ? '/v1/origins' : '/'"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition hover:bg-white/5"
+								>
+									<Lucide
+											icon="Home"
+											size="18"
+									/>
+									Home
+								</RouterLink>
+							</li>
+							<li
+								v-if="!isRouteOrigins"
+							>
+								<RouterLink 
+									to="/shop"
+									class="flex w-full px-2 py-1 items-center justify-start gap-2 transition hover:bg-white/5"
+								>
+									<Lucide
+											icon="Store"
+											size="14"
+									/>
+									Lojinha Lunar
+								</RouterLink>
+							</li>
+
+							
+								<li>
+									<RouterLink 
+										v-if="!isLogged"
+										to="/register"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 transition hover:bg-white/5"
+									>
+										<Lucide icon="FileInput" size="14" />
+										Registro
+									</RouterLink>
+								</li>								
+
+								<li
+									v-if="!isRouteOrigins"
+								>
+									<RouterLink 
+										to="/profile/orders"
+										class="flex w-full px-2 py-1 items-center justify-start gap-2 transition hover:bg-white/5"
+									>
+										<Lucide icon="Package" size="14" />
+										Meus pedidos
+									</RouterLink>
+								</li>
+							
+								<li
+									@click="handleLogout"
+								>
+									<RouterLink 
+										:to="!isLogged ? '/login': ''"
+										class="flex w-full border-t border-gray-300 dark:border-gray-800 px-2 py-3 items-center justify-start gap-2 transition hover:bg-white/5"
+									>
+										<Lucide
+												:icon="isLogged ? 'LogOut': 'LogIn'"
+												size="18"
+										/>
+										{{ isLogged ? 'Sair' : 'Login' }}
+									</RouterLink>
+								</li>
+							
+						</ul>
+					</nav>
+				</div>
+
 			<!-- Mobile Nav -->
 			<div class="lg:hidden w-full  text-white fixed top-0 left-0 z-20"
 				:class="{
@@ -532,7 +625,7 @@ function toggle() {
 					/>
 				</div>
 				<div 
-					class="flex items-center justify-between py-4 px-1 bg-[rgb(0,0,0)] dark:border-b dark:border-gray-600"
+					class="flex items-center justify-between py-4 px-1 bg-[rgb(0,0,0)] border-b border-[#fff3] dark:border-gray-600"
 				>
 					<h1 
 						class="flex items-center text-purple-400 gap-1 font-serif font-bold text-xl italic cursor-pointer select-none relative"						
@@ -607,7 +700,7 @@ function toggle() {
 					<nav
 						ref="menuRef"
 						v-if="menuOpen"
-						class="rounded-b-md py-2 px-1 min-w-44 h-fit bg-[#ffffff] border-gray-300 dark:bg-black border dark:border-white/10 shadow-xl shadow-black/30"
+						class="rounded-b-md py-2 px-1 min-w-44 h-fit bg-[#ffffff] border-gray-50 dark:bg-black border dark:border-white/10 shadow-xl shadow-black/30"
 					>
 						<ul
 							class="grid grid-cols-2 w-full gap-2 md:gap-1 text-gray-600 dark:text-gray-400 font-semibold text-sm pb-2"

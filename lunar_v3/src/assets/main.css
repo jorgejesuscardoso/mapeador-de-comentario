@@ -26,24 +26,6 @@ html, body, #app {
   transition: background-color 250ms ease, color 250ms ease;
 }
 
-.userCard{
-    background-image: url('/bgCard.png');
-    background-position: center;
-    background-size: contain;
-}
-
-.searchFilterBg {    
-    background-image: url('/bgCard.png');
-    background-position: start;
-    background-size: cover;
-}
-
-.searchFilterBg2 {    
-    background-image: url('/bgCard.png');
-    background-position: start;
-    background-repeat: repeat;
-}
-
 .seu-container {
   -ms-overflow-style: none; /* IE e Edge antigo */
   scrollbar-width: none;    /* Firefox */

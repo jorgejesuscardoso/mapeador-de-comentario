@@ -15,7 +15,7 @@ onMounted(() => {
 
 <template>	
 	<div
-		class="min-w-full relative flex items-center justify-center bg-[rgba(0,0,0,0.75)]"
+		class="min-w-full relative flex items-center justify-end bg-[rgba(0,0,0,0.75)]"
 	>
 		<div>
 			<AllbooksCard

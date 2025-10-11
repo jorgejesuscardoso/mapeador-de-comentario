@@ -166,7 +166,6 @@ async function fetchBooks() {
   }
 }
 
-
 async function loadBooksNormally(cacheKey: string) {
   const timeoutLimit = 50000; // 50 segundos
   const retryInterval = 5000; // 5 segundos
@@ -264,7 +263,6 @@ onMounted(async () => {
   window.scrollTo({ top: 0, behavior: 'smooth'})
 });
 
-
 async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) {
   const freshBooks = await fetchBooks();
 
@@ -285,13 +283,40 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
   }
 }
 
+// --- Controle de scroll e renderização ---
+const showCardsNumber = 8;
+const visibleCount = ref(showCardsNumber) // começa com 20 itens
+const observerTarget = ref<HTMLElement | null>(null)
+
+const visibleBooks = computed(() => filteredData.value.slice(0, visibleCount.value))
+
+// Carrega mais livros quando o observador vê o fim da lista
+const loadMoreBooks = () => {
+  if (visibleCount.value < filteredData.value.length) {
+    visibleCount.value += showCardsNumber
+  }
+}
+
+// Observador pra detectar quando chega no fim da lista
+onMounted(() => {
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      loadMoreBooks()
+    }
+  }, { threshold: 0.2 })
+
+  if (observerTarget.value) {
+    observer.observe(observerTarget.value)
+  }
+})
+
 
 </script>
 
 
 <template>
   <div
-    class="p-4 w-[95vw]"
+    class="w-screen p-1 md:p-4 md:w-[85vw]"
   > 
     <div
       v-if="showFilterBar"
@@ -309,13 +334,13 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
     <div class="flex items-center justify-center w-full rounded-lg">
       <div>
         <div 
-          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-1"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-3"
         >
           <div
             v-if="!isLoading"
-            v-for="book in filteredData"
+            v-for="book in visibleBooks"
             :key="book.id"
-            class="flex items-center flex-col bg-[rgb(0,0,0,0.9)] rounded-xl shadow-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 pt-2 cursor-pointer relative"
+            class="flex items-center flex-col bg-[rgb(255,255,255,0.025)] rounded-xl overflow-hidden transition-shadow duration-300 pt-2 cursor-pointer relative"
           >
             <span
               class="absolute top-4 left-2 text-xs font-semibold"
@@ -360,7 +385,10 @@ async function updateBooksInBackground(cacheKey: string, oldBooks: booksData[]) 
               </div>
             </div>
           </div>
-
+          <div ref="observerTarget" class="h-10 flex justify-center items-center text-gray-500">
+          <span v-if="visibleCount < filteredData.length">Carregando mais livros...</span>
+          <span v-else>🎉 Fim da lista!</span>
+        </div>
 
         </div>
       </div>

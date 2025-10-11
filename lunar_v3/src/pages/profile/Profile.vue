@@ -140,376 +140,133 @@ onMounted(async () => {
     />
     
   </div>
-  <div class="flex flex-col justify-center items-center w-full lg:w-[85vw] lg:rounded-xl lg:p-4 p-1 min-h-screen relative b0g-[rgba(0,0,0,0.75)]">
-      <div
-        v-if="!isLoading"
-        class="rounded-2xl w-full mx-auto  shadow-sm text-gray-800 space-y-6"
-      >
-        <div class="flex flex-col lg:flex-row items-start min-h-full gap-2 lg:gap-0 w-full lg:mb-2">
-          <!-- Perfil à esquerda -->
-          <div class="flex flex-col items-center text-center w-full lg:w-1/2 relative userCard border border-gray-800 lg:shadow-lg rounded-xl">
-            
-            <!-- Moeda promocional -->
-            <div
-              v-if="!promosActived?.includes('start')"
-              class="flex items-center justify-center flex-col absolute top-24 right-6 z-50 w-14"
-            >
-              <button
-                class="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border-2 border-yellow-600 shadow-xl flex items-center justify-center animate-bounce hover:scale-110 transition-transform duration-300"
-                @click="showReward = !showReward"
-              >
-                <Lucide icon="Bitcoin" class="w-6 h-6 text-white drop-shadow" />
-              </button>
-
-              <p class="text-white text-[10px] text-center">+10 pontos</p>
-            </div>
-
-            <!-- TAG DE ROLE -->
-              <div
-                class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.7)] rounded-2xl py-4"
-              > 
-                <div
-                  class="flex flex-col items-end gap-0.5 absolute top-0 right-0"
-                >
-                  <div
-                    v-if="tierData?.role"
-                    class="rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
-                    :class="roleTag.class "
-                  >
-                    {{
-                      roleTag.label
-                    }}
-                  </div>
-                  <div 
-                    v-if="userData?.licenses && userData?.licenses.length > 0"
-                    class="flex flex-col items-end gap-0.5"
-                  >
-                    <ul
-                      v-for="lin in userData?.licenses"
-                      :key="lin"
-                      class="rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md appearance-none"
-                      :class="roleTag.class"
-                    >
-                      <li>
-                        {{ roleMap[lin] ?? lin }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <!-- TAG DE TIER -->
-                <div
-                  class="absolute top-0 left-0 flex items-center justify-center gap-2"
-                >
-                  <p
-                    v-if="tierData?.tier"
-                    class="rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold shadow-md"
-                    :class="tierData?.colorClass"
-                  >
-                    {{
-                      tierData?.fullLabel
-                    }}
-                  </p>
-
-                  <span
-                    class="flex gap-1 text-white text-[10px] w-fit text-start"
-                    @click="router.push('/tierlist')"
-                  >
-                    <Lucide
-                      icon="TableProperties"
-                      class="w-5 h-5"
-                    />
-                  </span>
-                </div>
-                
-              <img
-                :src="userData.avatar || ''"
-                alt="Avatar"
-                class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
-              />
-
-              <!--House-->
-              <!-- <div
-                v-if="tierData?.house?.thumb"
-                class="flex flex-col items-center rounded-md p-1 absolute top-14 left-2 lg:top-5 lg:left-16 "
-              >
-                <h3 class="text-xs mb-1 font-semibold text-purple-400 ">
-                  {{ formatRankingPosition(tierData.house.rankingPosition) }}
-                </h3>
-                <div
-                  class="flex items-center"
-                >
-                  <img 
-                    :src="`/houses_flags/${tierData?.house?.thumb}`"
-                    alt="Bandeira da Casa"
-                    class="w-12 h-12 object-contain rounded-full border-2 bg-white/50 border-purple-400 shadow"
-                  >
-                </div>
-                <p
-                  class="flex items-center justify-center text-xs text-purple-400 rounded-full bg-fuch5sia-800 px-2 h-6 font-semibold"
-                >
-                  {{ tierData.house.name }}
-                </p>
-
-                <p class="flex items-center justify-center text-[10px] font-medium text-purple-400">
-                  <Lucide
-                    icon="Bitcoin" 
-                    class="w-3 h-3 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center mr-1" 
-                    /> {{ tierData.house?.points?.toLocaleString('pt-br') || 'Sem casa' }} pts.
-                </p>
-              </div> -->
-
-              <div
-                class="flex items-start justify-center mt-4 w-full"
-              >
-
-                <div>
-                  <h2 class="text-lg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
-                 
-                  <p class="text-sm text-indigo-400">@{{ userData.userName }}</p>
-                  <div
-                    class="flex flex-wrap flex-row w-full justify-center my-3 gap-2"
-                  >
-                    <p                      
-                      class="text-sm font-semibold text-purple-400"
-                    >
-                      Subs:
-                    </p>
-                    <p 
-                      v-for="sub in tierData?.subs || []"
-                      class="text-sm text-fuchsia-400 after:content-[','] last:after:content-['.']">
-                      {{ sub }}
-                    </p>
-                  </div>
-                  
-                  <!-- Botão de editar perfil -->
-                  <button
-                    class="my-2 inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-md transition-all duration-300 group"
-                    @click="router.push('/profile/edit')"
-                  >
-                    <Lucide icon="Edit" class="w-4 h-4 text-white group-hover:rotate-12 transition-transform duration-300" />
-                    Editar Perfil
-                  </button>
-                  <p class="text-sm text-violet-300 max-w-md px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
-                  <a
-                    :href="userData.perfilWtpd"
-                    target="_blank"
-                    class="flex items-center w-52  mx-auto text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition"
-                  >
-                  <Lucide
-                    icon="ExternalLink"
-                    class="w-4 h-4"
-                  />
-                    Ver perfil no Wattpad
-                  </a>   
-
-                </div>
-              </div>
-              </div>
-          </div>
-
-          <!-- Estatísticas à direita -->
-          <div class="w-full lg:w-6/12">
-            <div
-              v-if="tierData?.tier"
-              class="lg:px-6"
-            >
-              <div class="bg-[rgb(0,0,0,0.7)] rounded-xl p-4 shadow-md mb-2">
-              
-                <!-- Cabeçalho bonito -->
-                <div class="flex items-center justify-between">
-                  <h3 class="text-sm font-semibold text-purple-400 uppercase tracking-wider">Progresso de Tier</h3>
-                  <div class="flex items-center gap-1 text-xs font-semibold text-gray-400">
-                   <p>Tier Atual: </p>
-                    <div :class="tierData?.colorClass" class="flex flex-col px-2 py-1 rounded shadow relative">
-                      <span>{{ tierData.fullLabel }}</span>
-                      <span class="absolute top-6 right-0 text-purple-400">{{ tierData.progressText }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Progresso numérico -->
-                <p class="flex items-center justify-start gap-1 text-sm text-gray-200 mt-4">
-                  
-                <Lucide
-                 icon="Bitcoin" 
-                 class="w-4 h-4 text-white drop-shadow rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 border border-yellow-600 shadow-xl flex items-center justify-center" 
-                 /> 
-                  Falta <span class="font-bold text-purple-400">{{ tierData.pointsToNext }}</span> pts para se tornar 
-                  <span class="font-semibold text-purple-400">{{ tierData?.nextTierLabel }}</span>
-                </p>
-
-                <!-- Barra de progresso estilizada -->
-                <div class="relative w-full h-3 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-                  <div
-                    class="absolute top-0 left-0 h-full bg-purple-600 transition-all duration-700 ease-out"
-                    :style="{ width: ((tierData?.eloPoints / tierData?.maxPoints) * 100) + '%' }"
-                  ></div>
-                </div>
-
-                <!-- Detalhes numéricos opcionais -->
-                <div class="text-[11px] text-gray-300 mt-1 text-right relative">
-                 
-                  <span class="absolute top-0 right-1/2 text-purple-400">{{ tierData.progressPercent }}%</span> 
-
-                  {{ tierData?.eloPoints }} / {{ tierData?.maxPoints }} pontos
-                </div>
-              </div>
-            </div>
-
-            <div v-else class="lg:px-6 mb-4">
-              <div class="bg-[rgb(0,0,0,0.7)] rounded-xl p-4 shadow-md border border-gray-200 space-y-2 text-center">
-                <h3 class="text-xs font-semibold text-gray-700 uppercase tracking-wider">Você ainda não foi ranqueado</h3>
-                <p class="text-xs text-gray-600">
-                  🌑 Colete pontos para começar sua jornada no Ranking Lunar.<br>
-                  Conquiste feitos, participe da comunidade e não falhe nas leituras!
-                </p>
-                <div class="mt-2">
-                  <span class="inline-block px-3 py-1 rounded-full text-xs bg-gray-300 text-gray-600 font-semibold tracking-wider">
-                    Tier: Desconhecido
-                  </span>
-                </div>
-              </div>
-            </div>
-
-
-
-            <div class="grid grid-cols-2 w-full sm:grid-cols-2 gap-2 lg:px-6">
-               <!-- Pontos tier -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
-                  > 
-                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-400" />
-                    {{ tierData?.rakingPosition?.toLocaleString('pt-br') || "N/A" }}
-                  </p>
-                  <p class="text-sm text-gray-300">Ranking Geral</p>
-                </div>
-              </div>
-
-              <!-- Ranking casa -->
-              <!-- <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
-                  > 
-                    <Lucide icon="Trophy" class="w-5 h-5 text-purple-400" />
-                    {{ tierData?.houseRakingPosition?.toLocaleString('pt-br') || "N/A" }}
-                  </p>
-                  <p class="text-sm text-gray-300">Ranking na Casa</p>
-                </div>
-              </div> -->
-              <!-- Pontos Lunar -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
-                  > 
-                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-400" />
-                    {{ tierData?.points?.toLocaleString('pt-br') || 0 }}
-                  </p>
-                  <p class="text-sm text-gray-300">Pontos Lunar</p>
-                </div>
-              </div>
-
-              <!-- Pontos elo -->
-              <!-- <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-start gap-3 text-xl font-bold text-purple-400"
-                  > 
-                    <Lucide icon="CirclePoundSterling" class="w-5 h-5 text-purple-400" />
-                    {{ tierData?.tierPoints?.toLocaleString('pt-br') || 0 }}
-                  </p>
-                  <p class="text-sm text-gray-300">Pontos de Elo Total</p>
-                </div>
-              </div> -->
-
-              
-
-              <!-- Seguidores -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-400"
-                  > 
-                    <Lucide icon="Users" class="w-5 h-5 text-purple-400" />
-                    {{ userData.numFollowers }}
-                  </p>
-                  <p class="text-sm text-gray-300">Seguidores</p>
-                </div>
-              </div>
-
-              <!-- Seguindo -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-400"
-                  > 
-                    <Lucide icon="UserPlus" class="w-5 h-5 text-purple-400" />
-                    {{ userData.numFollowing }}
-                  </p>
-                  <p class="text-sm text-gray-300">Seguindo</p>
-                </div>
-              </div>
-
-              <!-- Histórias publicadas -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-between  gap-1 text-xl font-bold text-purple-400"
-                  >  
-                    <Lucide icon="BookOpen" class="w-5 h-5 text-purple-400" />
-                    {{ userData.numPublished }}
-                  </p>
-                  <p class="text-sm text-gray-300">Histórias</p>
-                </div>
-              </div>
-
-              <!-- Votos recebidos -->
-              <div class="bg-[rgb(0,0,0,0.7)] p-4 rounded-xl shadow-sm flex items-center gap-3">
-                <div>
-                  <p 
-                    class="flex items-center justify-between gap-1 text-xl font-bold text-purple-400"
-                  > 
-                    <Lucide icon="Star" class="w-5 h-5 text-purple-400 fill-yellow-500" />
-                    {{ userData.votesReceived }}
-                  </p>
-                  <p class="text-sm text-gray-300">Votos totais</p>
-                </div>
-              </div>
-            </div>
+  <div class="flex flex-col md:flex-row mt-4 md:mt-0 md:justify-end justify-center items-center md:items-start w-full lg:rounded-xl gap-3 lg:p-2 p-1 min-h-screen relative">
+    <div
+      v-if="!isLoading"
+      class="rounded-2xl md:w-4/12 shadow-sm text-gray-800"
+    >
+      <div class="flex flex-col lg:flex-row items-start min-h-full gap-2 lg:gap-0 w-full lg:mb-2">
+        <!-- Perfil à esquerda -->
+        <div class="flex flex-col items-center text-center w-full relative  pr-6 md:border-r border-gray-800 lg:shadow-lg ">
           
+          <!-- TAG DE ROLE -->
             <div
-              class="hidden w-full lg:flex mt-6 lg:px-6"
+              class="flex items-center w-full flex-col bg-[rgba(0,0,0,0.7)] rounded-2xl py-4"
+            > 
+              <div
+                class="flex lg:hidden  flex-col items-end gap-0.5 absolute top-0 right-0"
+              >
+                <div
+                  v-if="tierData?.role"
+                  class="rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md"
+                  :class="roleTag.class "
+                >
+                  {{
+                    roleTag.label
+                  }}
+                </div>
+                <div 
+                  v-if="userData?.licenses && userData?.licenses.length > 0"
+                  class="flex flex-col items-end gap-0.5"
+                >
+                  <ul
+                    v-for="lin in userData?.licenses"
+                    :key="lin"
+                    class="rounded-bl-xl rounded-tr-xl px-3 py-1 w-fit text-xs font-semibold text-white shadow-md appearance-none"
+                    :class="roleTag.class"
+                  >
+                    <li>
+                      {{ roleMap[lin] ?? lin }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- TAG DE TIER -->
+              <div
+                class="absolute top-0 left-0 flex items-center justify-center gap-2"
+              >
+                <p
+                  v-if="tierData?.tier"
+                  class="rounded-br-xl rounded-tl-xl px-3 py-1 text-xs font-semibold shadow-md"
+                  :class="tierData?.colorClass"
+                >
+                  {{
+                    tierData?.fullLabel
+                  }}
+                </p>
+              </div>
+              
+            <img
+              :src="userData.avatar || ''"
+              alt="Avatar"
+              class="w-32 h-32 rounded-full border-4 border-purple-300 object-cover shadow"
+            />
+
+            <div
+              class="flex items-start justify-center mt-4 w-full"
             >
-              <RegisterBook />
+
+              <div>
+                <h2 class="text-lbaseg font-bold text-purple-400">{{ userData.name || userData.userName }}</h2>
+                
+                <p class="text-xs text-indigo-400 mb-4">@{{ userData.userName }}</p>
+              
+                
+                <!-- Botão de editar perfil -->
+                <button
+                  class="my-3 inline-flex items-center gap-2 px-4 py-1 text-xs font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-md transition-all duration-300 group"
+                  @click="router.push('/profile/edit')"
+                >
+                  <Lucide icon="Edit" class="w-4 h-4 text-white group-hover:rotate-12 transition-transform duration-300" />
+                  Editar Perfil
+                </button>
+                <p class="text-xs text-violet-300 max-w-11/12 px-3">{{ userData.description || 'Sem bio ainda.' }}</p>
+                <a
+                  :href="userData.perfilWtpd"
+                  target="_blank"
+                  class="flex items-center w-52  mx-auto text-xs justify-center gap-2 mt-4 bg-purple-600 text-white font-semibold px-4 py-2 rounded-xl hover:bg-purple-700 transition"
+                >
+                <Lucide
+                  icon="ExternalLink"
+                  class="w-4 h-4"
+                />
+                  Ver perfil no Wattpad
+                </a>   
+
+              </div>
             </div>
+            </div>
+            
+          <div
+            class="w-full lg:block hidden my-2 border-y border-gray-800 pt-2"
+          >
+            <RegisterBook />
           </div>
         </div>
       </div>
+    </div>
 
 
-      <div v-else class="flex flex-col items-center justify-center gap-3 mt-12 text-purple-700 animate-pulse">
-        <div class="bg-fuchsia-100/60 p-4 rounded-xl shadow w-full max-w-md border border-purple-300">
-          <div class="flex items-center justify-center gap-2 mb-2">
-            <Lucide icon="Loader2" class="w-5 h-5 animate-spin text-purple-600" />
-            <span class="text-base font-medium">Carregando perfil Lunar...</span>
-          </div>
-          <p class="text-sm text-gray-600">Estamos alinhando os astros para exibir seu perfil magicamente.</p>
+    <div v-else class="flex flex-col items-center justify-center gap-3 mt-22 text-purple-700 animate-pulse">
+      <div class="bg-fuchsia-100/60 p-4 rounded-xl shadow w-full max-w-md border border-purple-300">
+        <div class="flex items-center justify-center gap-2 mb-2">
+          <Lucide icon="Loader2" class="w-5 h-5 animate-spin text-purple-600" />
+          <span class="text-base font-medium">Carregando perfil Lunar...</span>
         </div>
+        <p class="text-sm text-gray-600">Estamos alinhando os astros para exibir seu perfil magicamente.</p>
       </div>
+    </div>
         
     
-      <div
-        class="w-full lg:hidden mt-2 lg:mt-0"
-      >
-        <RegisterBook />
-      </div>
+    <div
+      class="w-full lg:hidden mt-2 lg:mt-0"
+    >
+      <RegisterBook />
+    </div>
 
     <div
       v-if="!isLoading && !isLoadingLibrary"
-      class="flex w-full mt-2 lg:mt-0 mb-4 bg-[rgb(0,0,0,0.8)] p-4 rounded-2xl pb-14"
+      class="flex md:w-6/12 bg-[rgb(0,0,0,0.8)] px-4 rounded-2xl"
     >
       <BookCard
         v-if="userProp"

@@ -60,13 +60,10 @@ onMounted(async () => {
     class="w-full"
   >
     <h2 
-      class="flex justify-between text-base font-bold text-start text-white border-b border-purple-500 cursor-pointer"  
-      @click="showWork = !showWork"    
+      class="flex justify-between text-base font-bold text-start text-white border-b border-purple-500 cursor-pointer"   
     >
       {{ thirdUser ? `Obras de ${userId} no Lunar`: 'Suas obras na biblioteca Lunar' }}
-      <Lucide
-        :icon="!showWork ? 'ChevronDown' : 'ChevronUp'"
-       />
+     
     </h2>
 
     <div v-if="isLoading" class="text-gray-500">Carregando livros...</div>
@@ -74,12 +71,12 @@ onMounted(async () => {
 
     <div 
       v-if="showWork && !isLoading"
-      class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
+      class="grid grid-cols-1  gap-4 mt-4"
     >
       <div
         v-for="book in userBooks"
         :key="book.id"
-        class="p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition relative flex gap-4"
+        class="p-4 border-b border-[#fff2] shadow-sm hover:shadow-md transition relative flex gap-4"
       >     
         <!-- Capa do livro -->
         <div>

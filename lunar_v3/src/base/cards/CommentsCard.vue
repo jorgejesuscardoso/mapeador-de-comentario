@@ -388,10 +388,10 @@ onMounted(async () => {
 
 <template>
   <div
-    class="flex flex-col items-center justify-center w-full bg-black/70"
+    class="flex flex-col items-center justify-center md:items-end w-full bg-black/70"
   >
     <header
-      class="md:w-[90vw] mt-2 w-[97vw]"
+      class="md:w-[85vw] mt-2 w-[97vw]"
     >
       <div
         class="flex flex-col bg-white sm:mx-4 py-4 lg:rounded-xl shadow-lg relative"
@@ -574,7 +574,7 @@ onMounted(async () => {
     </header>
 
     <div 
-      class="grid grid-cols-1 mt-2 md:mt-1 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-2 sm:p-4 md:w-[90vw] w-[97vw]"
+      class="grid grid-cols-1 mt-2 md:mt-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2 sm:p-4 md:w-[85vw] w-[97vw]"
     >
       <div
         v-if="!isLoading && data.length > 0"
