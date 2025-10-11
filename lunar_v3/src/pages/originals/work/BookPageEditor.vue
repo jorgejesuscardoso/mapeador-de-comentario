@@ -310,12 +310,15 @@ async function save(pub?: boolean) {
   const response = await updateChapterLunarById(bookId, chapterId, payload)
   saving.value = true
   setTimeout(() => { saving.value = false }, 1000)
+  localStorage.removeItem('unsavedChanges')
+  unsavedChanges.value = false
+  console.log(pub)
   if(pub && response.status === 200) {
     toast.success('Capítulo publicado com sucesso!')
-    router.push(`/v1/origins/read/${bookId}/${chapterId}`)
+    unsavedChanges.value = false
     return
-  } else {
-    toast.error('Falha ao salvar e publicar capítulo')
+  } else if(!pub) {
+    toast.success('Capítulo publicado com sucesso!')
     return
   }
   
@@ -381,6 +384,39 @@ watch(title, () =>{
   if(holdPrevSave > 0) return  scheduleSave()
   holdPrevSave++
 })
+
+const unsavedChanges = ref(false)
+
+watch([title, editorText], ([newTitle, newText], [oldTitle, oldText]) => {
+  if (holdPrevSave > 0) {
+    unsavedChanges.value = true
+    localStorage.setItem('unsavedChanges', 'true')
+  }
+})
+
+onMounted(() => {
+  // intercepta mudança de rota
+  router.beforeEach((to, from, next) => {
+    const hasUnsaved = localStorage.getItem('unsavedChanges') === 'true'
+    if (hasUnsaved) {
+      // aqui tu pode lançar um modal bonito em vez do confirm()
+      const confirmLeave = window.confirm('Você tem alterações não salvas! Deseja realmente sair sem salvar?')
+      if (!confirmLeave) return next(false)
+      localStorage.removeItem('unsavedChanges')
+    }
+    next()
+  })
+
+  // intercepta fechamento da aba
+  window.addEventListener('beforeunload', (e) => {
+    const hasUnsaved = localStorage.getItem('unsavedChanges') === 'true'
+    if (hasUnsaved) {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+  })
+})
+
 
 onUnmounted(() => {
   if (inactivityTimer) clearTimeout(inactivityTimer)
