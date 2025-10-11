@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getBookLunarById, getChapterLunarById, getChapterLunarToReadById } from '@/API/OriginalLunarApi'
 import Lucide from '@/base/lucide/Lucide.vue'
 import formatNumber from '@/base/utils/FormatNumber'
+import { nextTick } from 'vue'
 
 interface Chapter {
   id: string
@@ -56,10 +57,10 @@ const wordCount = computed(() => {
 })
 const charCount = computed(() => (plainText.value || '').length)
 
-const fetchChapter = async () => {
+const fetchChapter = async (ch: string) => {
   try {
     // busca capítulo e livro em paralelo
-    const response = await getChapterLunarToReadById(bookId, chapterId)
+    const response = await getChapterLunarToReadById(bookId, ch || chapterId)
     
     if (response?.status === 200) {
       chapter.value = response.data.currentChapter
@@ -69,6 +70,7 @@ const fetchChapter = async () => {
         bookName: response.data.name || 'Livro sem título',
         cover: response.data.cover || ''
       }
+      
     } else {
       // fallback mínimo
       chapter.value = { paragraphs: '', title: '' }
@@ -88,14 +90,14 @@ const fetchChapter = async () => {
 // lifecycle: buscar dados
 onMounted(async () => {
   loading.value = true
-  fetchChapter()
+  fetchChapter(chapterId)
   loading.value = false
 })
 
 // helpers de navegação
 
 function goToBook() {
-  router.push(`/v1/origins/book/${bookId}`)
+  router.push(`/v1/origins/work/${bookId}`)
 }
 
 
@@ -154,13 +156,26 @@ const hasNextPart = computed(() => {
 })
 
 // navegação pro próximo capítulo
-function goToNextChapter() {
+async function goToNextChapter() {
   if (hasNextPart.value) {
     router.push(`/v1/origins/read/${bookId}/${chapter.value.nextPart}`)
-    fetchChapter()
+    await fetchChapter(chapter.value.nextPart)
   }
 }
 
+watch(
+  () => route.fullPath, // observa mudanças na rota inteira
+  async () => {
+    // espera o DOM atualizar com o novo capítulo
+    await nextTick()
+    
+    // rola pro topo suavemente
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+)
 // exportados (script setup já acidentalmente "exporta" tudo usado no template)
 </script>
 
@@ -195,7 +210,7 @@ function goToNextChapter() {
     </header>
 
     <!-- BODY -->
-    <div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto md:px-4  py-8 gap-6">     
+    <div class="flex flex-col lg:flex-row w-full max-w-7xl mx-auto md:px-4  py-8">     
 
       <!-- LEft ASIDE -->
       <aside class="hidden lg:block lg:w-3/12">
@@ -210,7 +225,7 @@ function goToNextChapter() {
       </aside>
 
       <!-- MAIN READING AREA -->
-      <main class="flex items-start justify-center md:w-5/12 w-full md:px-0 px-4">
+      <main class="flex items-start justify-center md:w-6/12 w-full md:px-0 px-4">
         <div class="flex flex-col items-center justify-start ">
           <h2 class="text-2xl font-bold text-gray-950 dark:text-[#ddd] text-center mb-1">
             {{ chapter?.title || 'Capítulo sem título' }}
@@ -232,14 +247,14 @@ function goToNextChapter() {
           </div>
           <article 
             v-if="!loading" 
-            class="prose prose-lg dark:prose-invert text-[#222] dark:text-[#ccc] max-w-none font-serif leading-relaxed"
+            class="prose prose-lg lg:px-16 dark:prose-invert text-[#222] dark:text-[#ccc] max-w-none font-serif leading-relaxed border-b pb-10 border-gray-300 shadow-b shadow-md dark:border-white/10 dark:shadow-[#ffffff07]"
             v-html="chapter?.paragraphs"
           />
           
           <div v-else class="text-center text-gray-500 dark:text-gray-400">Carregando capítulo...</div>
          
           <!-- PRÓXIMO CAPÍTULO -->
-          <div class="m-14 text-center text-gray-600 dark:text-gray-400">
+          <div class="w-full my-20 text-center text-gray-600 dark:text-gray-400">
             <button
               v-if="hasNextPart"
               @click="goToNextChapter"

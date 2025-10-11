@@ -90,7 +90,7 @@ async function fetchBook() {
         chapters: data.chapters || [],
         commentsTotal: data.commentsTotal || 0,
       }
-      console.log(res.data)
+      
       chapters.value = data.chapters || []
     } else {
       // fallback
