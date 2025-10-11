@@ -133,8 +133,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-center justify-end min-h-screen w-full bg-white dark:bg-[#000] text-gray-900 dark:text-gray-100 pb-24">
-    <div class="md:mr-32 w-full md:w-[75vw] px-2 md:px-8 pt-6 md:pt-10">
+  <div class="flex items-center justify-center min-h-screen w-full bg-white dark:bg-[#000] text-gray-900 dark:text-gray-100 pb-24">
+    <div class="w-full md:w-[85vw] px-2 md:px-8 pt-6 md:pt-10">
       <div
         class="w-20"
       >
@@ -143,7 +143,7 @@ onMounted(() => {
         </button>
       </div>
       <!-- HERO / SUMMARY -->
-      <section class="flex flex-col items-center md:flex-row md:items-start md:justify-between gap-6">
+      <section class="flex flex-col items-center md:flex-row md:items-start md:justify-between gap-6 border-b border-[#00000010] dark:border-[#ffffff10] md:pb-6 bg-white dark:bg-[#0000] shadow-lg">
         <!-- cover -->
         <div class="flex items-start col-span-1 justify-start ">
           <div class="md:w-[240px] shadow-xl rounded-lg overflow-hidden">
@@ -249,7 +249,7 @@ onMounted(() => {
        <!-- CAPÍTULOS + RECOMENDADOS -->
       <section class="mt-10 flex flex-col lg:flex-row lg:items-start lg:gap-2">
         <!-- LISTA DE CAPÍTULOS -->
-        <div class="flex flex-col w-full">
+        <div class="flex flex-col w-full md:mr-2">
           <div class="flex items-center justify-between mb-1">
             <h2 class="text-xl font-semibold">Capítulos Disponíveis</h2>
             <span class="text-sm text-gray-500">{{ publishedChapters.length }} capítulo(s)</span>
@@ -261,7 +261,7 @@ onMounted(() => {
           </div>
 
           <!-- empty state -->
-          <div v-else-if="publishedChapters.length === 0" class="border border-dashed border-gray-200 rounded-lg p-8 text-center">
+          <div v-else-if="publishedChapters.length === 0" class=" rounded-lg p-8 text-center mt-14">
             <Lucide icon="BookOpen" class="w-16 h-16 mx-auto text-gray-400" />
             <h3 class="text-lg font-semibold mt-4">Nenhum capítulo disponível</h3>
             <p class="text-sm text-gray-500 mt-2">
@@ -308,8 +308,8 @@ onMounted(() => {
         </div>
 
         <!-- ASIDE DE RECOMENDAÇÕES -->
-        <aside class="md:w-8/12 mt-10 lg:mt-0 border dark:border-white/10 shadow-lg rounded-lg h-fit">
-          <div class="sticky top-24 bg-white dark:bg-[#000] border border-gray-300 dark:border-[#ffffff10] rounded-lg shadow-md p-2 md:p-4">
+        <aside class="md:w-8/12 mt-10 lg:mt-0 rounded-lg h-fit">
+          <div class="sticky top-24 rounded-lg shadow-md p-2 md:p-4">
             <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Talvez você também goste</h3>
             <ul class="space-y-3">
               <li
