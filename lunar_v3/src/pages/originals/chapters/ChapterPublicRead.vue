@@ -176,7 +176,26 @@ watch(
     })
   }
 )
-// exportados (script setup já acidentalmente "exporta" tudo usado no template)
+
+// velocidade média de leitura (palavras por minuto)
+const readingSpeed = 250
+
+// cálculo do tempo estimado com segundos exatos
+const readingTime = computed(() => {
+  if (!wordCount.value) return { minutes: 0, seconds: 0, formatted: '0s' }
+
+  const totalMinutes = wordCount.value / readingSpeed
+  const minutes = Math.floor(totalMinutes)
+  const seconds = Math.round((totalMinutes - minutes) * 60)
+
+  const formatted =
+    minutes > 0
+      ? `${minutes} min ${seconds.toString().padStart(2, '0')} s`
+      : `${seconds} s`
+
+  return { minutes, seconds, formatted }
+})
+
 </script>
 
 
@@ -203,7 +222,7 @@ watch(
             {{ title || 'Capítulo sem título' }}
           </div>
           <div class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">
-            {{ wordCount }} palavras • {{ charCount }} caracteres
+            {{ wordCount }} palavras • {{ charCount }} caracteres • ⏱ {{ readingTime.formatted }}
           </div>
         </div>
       </div>
