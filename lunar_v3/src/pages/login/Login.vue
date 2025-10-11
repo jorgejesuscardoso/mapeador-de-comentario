@@ -91,8 +91,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center searchFilterBg p-4">
-    <div class="bg-[rgb(0,0,0,0.7)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5">
+  <div class="min-h-screen flex items-center justify-center searchFilterBg p-4 bg-black">
+    <div class="bg-[#ffffff08] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5">
       <h2 class="text-2xl font-bold text-center text-fuchsia-400 mb-6">Login</h2>
 
       <div v-if="error" class="text-red-600 text-sm text-center">{{ error }}</div>

@@ -392,11 +392,8 @@ function toggle() {
 						</div>
 						<Lucide
 							v-else
-							icon="UserCircle cursor-pointer"
-							class="h-10 w-10"
-							:class="{
-								'text-purple-500': isRouteOrigins
-							}"
+							icon="UserCircle"
+							class="h-10 w-10 cursor-pointer text-gray-700 dark:text-gray-300"
 							:stroke-width="0.7"							
 							@click="showNavMenu = !showNavMenu"
 						/>

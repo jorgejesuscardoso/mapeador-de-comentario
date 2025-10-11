@@ -85,9 +85,9 @@ onMounted(() =>{
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center searchFilterBg p-4">
-    <div class="bg-[rgb(0,0,0,0.7)] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-3">
-      <h2 class="text-2xl font-bold text-center text-purple-400">Registrar Conta</h2>
+  <div class="min-h-screen flex items-center justify-center searchFilterBg p-4 bg-black">
+    <div class="bg-[#ffffff07] p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-3">
+      <h2 class="text-2xl font-bold text-center text-purple-400">Registrar</h2>
 
       <span v-if="error" class="text-red-600 text-sm text-center">{{ error }}</span>
       <span v-if="success" class="text-green-600 text-sm text-center">Usuário criado com sucesso! Redirecionando...</span>
@@ -164,7 +164,7 @@ onMounted(() =>{
         <!-- Botão de envio com controle de validação -->
         <button
           :disabled="loading || !isFormValid"
-          class="w-full py-2 bg-[rgb(0,0,0,0.5)] hover:bg-purple-700 text-white rounded-xl transition duration-200 disabled:opacity-50"
+          class="w-full py-2 bg-[#ffffff] hover:bg-purple-700 text-black hover:text-white rounded-xl transition duration-200 disabled:opacity-50 cursor-pointer"
         >
           {{ loading ? 'Registrando...' : 'Registrar' }}
         </button>
